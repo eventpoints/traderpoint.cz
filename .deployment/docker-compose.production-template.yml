@@ -74,18 +74,6 @@ services:
           - php
       restart: always
 
-  database:
-    image: postgis/postgis:17rc1-master
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: "__TRADERPOINT_POSTGRES_DBNAME__"
-      POSTGRES_PASSWORD: "__TRADERPOINT_POSTGRES_PASSWORD__"
-      POSTGRES_USER: "__TRADERPOINT_POSTGRES_USER__"
-    volumes:
-      - ./db-data:/var/lib/postgresql/data:rw
-    networks:
-      - internal
-
   adminer:
     image: adminer:4.8.0
     restart: unless-stopped
