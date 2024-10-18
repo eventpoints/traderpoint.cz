@@ -20,13 +20,11 @@ services:
       timeout: 3s
       retries: 3
       start_period: 30s
-    depends_on:
-      - database
     restart: unless-stopped
     environment:
       APP_ENV: "prod"
       APP_SECRET: "__TRADERPOINT_APP_SECRET__"
-      DATABASE_URL: "postgresql://__TRADERPOINT_POSTGRES_USER__:__TRADERPOINT_POSTGRES_PASSWORD__@__TRADERPOINT_POSTGRES_HOST__:__TRADERPOINT_POSTGRES_PORT__/__TRADERPOINT_POSTGRES_DBNAME__?serverVersion=13&charset=utf8"
+      DATABASE_URL: "postgresql://__TRADERPOINT_POSTGRES_USER__:__TRADERPOINT_POSTGRES_PASSWORD__@external-db-host:5432/__TRADERPOINT_POSTGRES_DBNAME__?serverVersion=13&charset=utf8"
       MAILER_DSN: "__TRADERPOINT_MAILER_DSN__"
       MESSENGER_TRANSPORT_DSN: "__TRADERPOINT_MESSENGER_TRANSPORT_DSN__"
       MERCURE_PUBLIC_URL: "https://traderpoint.cz/.well-known/mercure"
@@ -39,46 +37,46 @@ services:
   caddy:
     image: ghcr.io/eventpoints/traderpoint.cz-caddy:main
     depends_on:
-        - php
+      - php
     restart: unless-stopped
     environment:
-        SERVER_NAME: ":80"
-        MERCURE_PUBLISHER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
-        MERCURE_SUBSCRIBER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
+      SERVER_NAME: ":80"
+      MERCURE_PUBLISHER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
+      MERCURE_SUBSCRIBER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
     volumes:
-        - php_socket:/var/run/php
-        - caddy_data:/data
-        - caddy_config:/config
-        - ./Caddyfile:/etc/caddy/Caddyfile
+      - php_socket:/var/run/php
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./Caddyfile:/etc/caddy/Caddyfile
     expose:
-        - "80"
+      - "80"
     labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.traderpoint.rule=Host(`traderpoint.cz`)"
-        - "traefik.http.routers.traderpoint.tls=true"
-        - "traefik.http.routers.traderpoint.tls.certresolver=le"
+      - "traefik.enable=true"
+      - "traefik.http.routers.traderpoint.rule=Host(`traderpoint.cz`)"
+      - "traefik.http.routers.traderpoint.tls=true"
+      - "traefik.http.routers.traderpoint.tls.certresolver=le"
     networks:
-        - traefik
-        - internal
+      - traefik
+      - internal
 
   supervisor:
-      image: okteto/supervisor:0.4.0
-      container_name: supervisor
-      volumes:
-          - ./supervisor:/supervisor  # Mount your supervisor config
-      environment:
-          - SUPERVISOR_CONFIG=/supervisor/supervisord.conf  # Define the config path
-      networks:
-          - internal
-      depends_on:
-          - php
-      restart: always
+    image: okteto/supervisor:0.4.0
+    container_name: supervisor
+    volumes:
+      - ./supervisor:/supervisor  # Mount your supervisor config
+    environment:
+      - SUPERVISOR_CONFIG=/supervisor/supervisord.conf  # Define the config path
+    networks:
+      - internal
+    depends_on:
+      - php
+    restart: always
 
   adminer:
     image: adminer:4.8.0
     restart: unless-stopped
     environment:
-      ADMINER_DEFAULT_SERVER: database
+      ADMINER_DEFAULT_SERVER: external-db-host
     expose:
       - "8080"
     labels:
