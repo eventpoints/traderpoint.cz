@@ -59,19 +59,6 @@ services:
       - traefik
       - internal
 
-  supervisor:
-    image: okteto/supervisor:0.4.0
-    container_name: supervisor
-    volumes:
-      - ./supervisor:/supervisor  # Mount your supervisor config
-    environment:
-      - SUPERVISOR_CONFIG=/supervisor/supervisord.conf  # Define the config path
-    networks:
-      - internal
-    depends_on:
-      - php
-    restart: always
-
   adminer:
     image: adminer:4.8.0
     restart: unless-stopped
