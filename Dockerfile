@@ -1,4 +1,4 @@
-FROM ghcr.io/eventpoints/php:main AS composer
+FROM ghcr.io/eventpoints/php:main AS php
 
 ENV APP_ENV="prod" \
     APP_DEBUG=0 \
@@ -10,20 +10,14 @@ RUN rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 RUN mkdir -p var/cache var/log
 
+# Intentionally split into multiple steps to leverage docker layer caching
 COPY composer.json composer.lock symfony.lock ./
 
 RUN composer install --no-dev --prefer-dist --no-interaction --no-scripts
 
-FROM node:21 as js-builder
+# Production yarn build
+COPY ./assets ./assets
 
-WORKDIR /build
-
-# We need /vendor here
-COPY --from=composer /app .
-
-FROM composer as php
-
-COPY --from=js-builder /build .
 COPY . .
 
 # Need to run again to trigger scripts with application code present

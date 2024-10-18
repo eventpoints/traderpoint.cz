@@ -25,7 +25,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/eventpoints/traderpoint.com-php
+            ghcr.io/eventpoints/traderpoint.cz-php
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
@@ -38,7 +38,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/eventpoints/traderpoint.com-caddy
+            ghcr.io/eventpoints/traderpoint.cz-caddy
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
