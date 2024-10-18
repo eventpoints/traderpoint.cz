@@ -1,4 +1,4 @@
-FROM ghcr.io/eventpoints/php:main AS composer
+FROM php:8.3-fpm-alpine AS composer
 
 ENV APP_ENV="prod" \
     APP_DEBUG=0 \
@@ -14,12 +14,6 @@ COPY composer.json composer.lock symfony.lock ./
 
 RUN composer install --no-dev --prefer-dist --no-interaction --no-scripts
 
-
-FROM node:21 as js-builder
-
-WORKDIR /build
-
-# We need /vendor here
 COPY --from=composer /app .
 
 FROM composer as php
@@ -32,7 +26,6 @@ RUN composer install --no-dev --no-interaction --classmap-authoritative
 RUN composer symfony:dump-env prod
 RUN chmod -R 777 var
 
-
-FROM ghcr.io/eventpoints/caddy:main AS caddy
+FROM caddy:latest AS caddy
 
 COPY --from=php /app/public public/
