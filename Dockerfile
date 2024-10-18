@@ -14,22 +14,12 @@ COPY composer.json composer.lock symfony.lock ./
 
 RUN composer install --no-dev --prefer-dist --no-interaction --no-scripts
 
-
 FROM node:21 as js-builder
 
 WORKDIR /build
 
 # We need /vendor here
 COPY --from=composer /app .
-
-# Install npm packages
-COPY package.json yarn.lock webpack.config.js ./
-RUN yarn install
-
-# Production yarn build
-COPY ./assets ./assets
-
-RUN yarn run build
 
 FROM composer as php
 
