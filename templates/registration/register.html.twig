@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card my-3">
+                    {{ form_start(registrationForm) }}
+                    <div class="card-header">
+                        <h1 class="h3 mb-3 font-weight-normal">{{ 'register'|trans|title }}</h1>
+                    </div>
+                    <div class="card-body vstack gap-3 text-center">
+                        {{ form_row(registrationForm.name) }}
+                        {{ form_row(registrationForm.email) }}
+                        <div class="input-group mb-3" {{ stimulus_controller('password-visibility') }}>
+                            {{ form_widget(registrationForm.plainPassword, {
+                                attr: {
+                                    'data-password-visibility-target': 'input'
+                                }
+                            }) }}
+                            <button data-action="password-visibility#toggle" class="btn btn-light" type="button"
+                                    id="button-addon2">
+                                <span data-password-visibility-target="icon" class="bi bi-eye"></span>
+                                <span data-password-visibility-target="icon" class="hidden bi bi-eye-slash"></span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <div class="card-footer vstack gap-2 text-center">
+                        <button type="submit" class="btn btn-primary">{{ 'register'|trans }}</button>
+                        <a href="{{ path('app_login') }}" type="button" class="link-dark">{{ 'login'|trans }}</a>
+                    </div>
+
+                    <div class="text-center">
+                        {#                            <a class="link-dark" href="{{ path('app_terms') }}">{{ 'terms-and-conditions'|trans }}</a> #}
+                    </div>
+                    {{ form_end(registrationForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

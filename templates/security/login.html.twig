@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center g-0 mt-3">
+            <div class="col-md-4">
+                <div class="card h-100 shadow">
+                    <div class="card-header">
+                        <div class="fs-3 fw-bold text-uppercase">{{ 'login'|trans|title }}</div>
+                    </div>
+                    <form method="post">
+                        <div class="card-body vstack gap-3">
+
+                            {% if error %}
+                                <div
+                                        class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                            {% endif %}
+                            <div class="form-floating">
+                                <input type="email" value="{{ last_username }}" name="email" id="inputEmail"
+                                       class="form-control" autocomplete="email"
+                                       placeholder="{{ 'email-placeholder'|trans }}" required autofocus>
+                                <label for="inputEmail">{{ 'email-address'|trans }}</label>
+                            </div>
+                            <div class="form-floating">
+                                <input type="password" name="password" id="inputPassword" class="form-control"
+                                       autocomplete="current-password" required
+                                       placeholder="{{ 'password-placeholder'|trans }}">
+                                <label for="inputPassword">{{ 'password'|trans }}</label>
+                            </div>
+
+                            <input type="hidden" name="_csrf_token"
+                                   value="{{ csrf_token('authenticate') }}"
+                            >
+                            <div class="text-end">
+                                {#                                        <a class="btn btn-link" href="{{ path('user_forgot_password') }}">{{ 'forgot-password'|trans }}</a> #}
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="vstack gap-2 text-center">
+                                <button type="submit" class="btn btn-primary">{{ 'login'|trans }}</button>
+                                <a href="{{ path('app_register') }}" type="button"
+                                   class="link-dark">{{ 'register'|trans }}</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

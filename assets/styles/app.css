@@ -1,3 +1,7 @@
-body {
-    background-color: skyblue;
+/*body {*/
+/*    background-color: rebeccapurple !important;*/
+/*}*/
+
+.hidden {
+    display: none;
 }

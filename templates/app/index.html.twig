@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center g-3">
+
+            <div class="col-12 col-md-8">
+                {{ form_start(userFilterForm) }}
+                <div class="input-group">
+                    {{ form_row(userFilterForm.keyword) }}
+                    <button type="submit" class="btn btn-secondary">
+                        {{ 'search'|trans }}
+                    </button>
+                </div>
+
+                {{ form_end(userFilterForm) }}
+            </div>
+
+            <div class="col-12 col-md-8">
+
+                <div class="row g-3">
+                    {% for userAvgRatingDto in users %}
+
+                        <div class="col-12 col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-white">
+                                    <div class="text-center mb-3">
+                                        <img class="object-fit-cover rounded-circle mb-3"
+                                             src="https://placehold.co/150x150"
+                                             height="120"
+                                             width="120"/>
+                                        <div class="lead">{{ userAvgRatingDto.user.name }}</div>
+                                    </div>
+                                </div>
+                                <div class="card-header bg-white">
+                                    <div class=" hstack gap-1 flex-wrap">
+                                        {% for user_skill in userAvgRatingDto.user.skills %}
+                                            <span class="badge text-bg-primary">{{ user_skill.skill.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div> {{ userAvgRatingDto.averageRating|round(1) }} <i
+                                                    class="bi bi-star-fill text-warning"></i></div>
+                                        <div>{{ userAvgRatingDto.user.reviews.count }} reviews</div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-white">
+                                    <a href="{{ path('show_service', {id: userAvgRatingDto.user.id}) }}" class="btn btn-secondary w-100">
+                                        view
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted">{{ 'none-found'|trans }}</div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
