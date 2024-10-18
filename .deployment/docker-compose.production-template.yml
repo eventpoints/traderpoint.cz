@@ -37,7 +37,7 @@ services:
       - database
 
   caddy:
-    image: ghcr.io/eventpoints/caddy.com-caddy:main
+    image: ghcr.io/eventpoints/traderpoint.com-caddy:main
     depends_on:
       - php
     restart: unless-stopped
