@@ -11,7 +11,7 @@ volumes:
 
 services:
   php:
-    image: ghcr.io/eventpoints/traderpoint.cz-php:main
+    image: php:8.3-fpm-alpine
     volumes:
       - php_socket:/var/run/php
       - ./php/php.ini:/usr/local/etc/php/php.ini
@@ -35,7 +35,7 @@ services:
       - internal
 
   caddy:
-    image: ghcr.io/eventpoints/traderpoint.cz-caddy:main
+    image: caddy:latest
     depends_on:
       - php
     restart: unless-stopped
@@ -63,9 +63,9 @@ services:
     image: okteto/supervisor:0.4.0
     container_name: supervisor
     volumes:
-      - ./supervisor:/supervisor  # Mount your supervisor config
+      - ./supervisor:/supervisor
     environment:
-      - SUPERVISOR_CONFIG=/supervisor/supervisord.conf  # Define the config path
+      - SUPERVISOR_CONFIG=/supervisor/supervisord.conf
     networks:
       - internal
     depends_on:
