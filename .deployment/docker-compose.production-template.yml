@@ -1,3 +1,5 @@
+version: "3.9"
+
 networks:
   traefik:
     external: true
@@ -20,19 +22,20 @@ services:
       timeout: 3s
       retries: 3
       start_period: 30s
-    restart: unless-stopped
-    environment:
-      APP_ENV: "prod"
-      APP_SECRET: "__TRADERPOINT_APP_SECRET__"
-      DATABASE_URL: "postgresql://__TRADERPOINT_POSTGRES_USER__:__TRADERPOINT_POSTGRES_PASSWORD__@database:5432/__TRADERPOINT_POSTGRES_DBNAME__?serverVersion=13&charset=utf8"
-      MAILER_DSN: "__TRADERPOINT_MAILER_DSN__"
-      MESSENGER_TRANSPORT_DSN: "__TRADERPOINT_MESSENGER_TRANSPORT_DSN__"
-      MERCURE_PUBLIC_URL: "https://traderpoint.cz/.well-known/mercure"
-      MERCURE_JWT_SECRET: "__TRADERPOINT_MERCURE_JWT_SECRET__"
-    networks:
-      - internal
     depends_on:
       - database
+    restart: unless-stopped
+    environment:
+      MERCURE_PUBLIC_URL: "https://traderpoint.cz/.well-known/mercure"
+      APP_ENV: "prod"
+      DATABASE_URL: "postgresql://__TRADERPOINT_POSTGRES_USER__:__TRADERPOINT_POSTGRES_PASSWORD__@database:5432/__TRADERPOINT_POSTGRES_DBNAME__?serverVersion=13&charset=utf8"
+      MERCURE_JWT_SECRET: "__TRADERPOINT_MERCURE_JWT_SECRET__"
+      APP_SECRET: "__TRADERPOINT_APP_SECRET__"
+      MAILER_DSN: "__TRADERPOINT_MAILER_DSN__"
+      MESSENGER_TRANSPORT_DSN: "__TRADERPOINT_MESSENGER_TRANSPORT_DSN__"
+      APP_TIMEZONE: "__TRADERPOINT_APP_TIMEZONE__"
+    networks:
+      - internal
 
   caddy:
     image: ghcr.io/eventpoints/traderpoint.cz-caddy:main
@@ -52,7 +55,7 @@ services:
       - "80"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traderpoint.rule=Host(`traderpoint.cz`)"
+      - "traefik.http.routers.traderpoint.rule=Host(`traderpoint.cz`, `www.traderpoint.cz`)"
       - "traefik.http.routers.traderpoint.tls=true"
       - "traefik.http.routers.traderpoint.tls.certresolver=le"
     networks:
@@ -71,6 +74,14 @@ services:
     networks:
       - internal
 
+  asset-compile:
+    image: ghcr.io/eventpoints/traderpoint.cz-php:main
+    command: sh -c "bin/console tailwind:build --minify && bin/console asset-map:compile"
+    depends_on:
+      - php
+    networks:
+      - internal
+
   adminer:
     image: adminer:4.8.0
     restart: unless-stopped
@@ -86,5 +97,3 @@ services:
     networks:
       - internal
       - traefik
-    depends_on:
-      - database
