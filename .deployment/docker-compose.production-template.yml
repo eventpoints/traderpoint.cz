@@ -61,15 +61,15 @@ services:
 
   database:
     image: postgres:17
-    platform: linux/arm64
-    ports:
-      - "5432:5432"
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: residewise
-      POSTGRES_PASSWORD: residewise
-      POSTGRES_USER: root
+      POSTGRES_DB: "__TRADERPOINT_POSTGRES_DBNAME__"
+      POSTGRES_PASSWORD: "__TRADERPOINT_POSTGRES_PASSWORD__"
+      POSTGRES_USER: "__TRADERPOINT_POSTGRES_USER__"
     volumes:
-      - ./docker/db/data:/var/lib/postgresql/data:rw
+      - ./db-data:/var/lib/postgresql/data:rw
+    networks:
+      - internal
 
   adminer:
     image: adminer:4.8.0
