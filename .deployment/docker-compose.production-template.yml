@@ -29,8 +29,6 @@ services:
       MESSENGER_TRANSPORT_DSN: "__TRADERPOINT_MESSENGER_TRANSPORT_DSN__"
       MERCURE_PUBLIC_URL: "https://traderpoint.cz/.well-known/mercure"
       MERCURE_JWT_SECRET: "__TRADERPOINT_MERCURE_JWT_SECRET__"
-      RECAPTCHA3_KEY: "__TRADERPOINT_RECAPTCHA3_KEY__"
-      RECAPTCHA3_SECRET: "__TRADERPOINT_RECAPTCHA3_SECRET__"
     networks:
       - internal
     depends_on:
@@ -43,8 +41,8 @@ services:
     restart: unless-stopped
     environment:
       SERVER_NAME: ":80"
-      MERCURE_PUBLISHER_JWT_KEY: "__RESIDEWISE_MERCURE_JWT_SECRET__"
-      MERCURE_SUBSCRIBER_JWT_KEY: "__RESIDEWISE_MERCURE_JWT_SECRET__"
+      MERCURE_PUBLISHER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
+      MERCURE_SUBSCRIBER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
     volumes:
       - php_socket:/var/run/php
       - caddy_data:/data
