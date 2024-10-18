@@ -37,14 +37,14 @@ services:
       - database
 
   caddy:
-    image: ghcr.io/eventpoints/traderpoint.com-caddy:main
+    image: ghcr.io/eventpoints/caddy.com-caddy:main
     depends_on:
       - php
     restart: unless-stopped
     environment:
       SERVER_NAME: ":80"
-      MERCURE_PUBLISHER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
-      MERCURE_SUBSCRIBER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
+      MERCURE_PUBLISHER_JWT_KEY: "__RESIDEWISE_MERCURE_JWT_SECRET__"
+      MERCURE_SUBSCRIBER_JWT_KEY: "__RESIDEWISE_MERCURE_JWT_SECRET__"
     volumes:
       - php_socket:/var/run/php
       - caddy_data:/data
