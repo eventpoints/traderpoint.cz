@@ -36,6 +36,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
 
+    /**
+     * @param UserFilterDto $userFilterDto
+     * @return array<int, UserAvgRatingDto>
+     */
     public function findByUserFilterDto(UserFilterDto $userFilterDto): array
     {
         $qb = $this->createQueryBuilder('user');
@@ -63,7 +67,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $output;
     }
 
-    public function findOneAverageRatingByUser(User $user)
+    public function findOneAverageRatingByUser(User $user) : null|float
     {
         $qb = $this->createQueryBuilder('user');
         $qb->leftJoin('user.reviews', 'review')

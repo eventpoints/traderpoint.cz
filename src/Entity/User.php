@@ -64,8 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @param string $name
-     * @param string|null $email
-     * @param string|null $password
+     * @param string $email
      * @param bool $isVerified
      */
     public function __construct(string $name, string $email, bool $isVerified = false)

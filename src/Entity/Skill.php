@@ -28,19 +28,17 @@ class Skill
     private Collection $users;
 
     /**
-     * One Category has Many Categories.
      * @var Collection<int, Skill>
      */
     #[ORM\OneToMany(targetEntity: Skill::class, mappedBy: 'trade',cascade: ['persist'])]
     private Collection $skills;
 
-    /** Many Categories have One Category. */
     #[ORM\ManyToOne(targetEntity: Skill::class, inversedBy: 'skills')]
     #[ORM\JoinColumn(name: 'trade_id', referencedColumnName: 'id')]
     private Skill|null $trade = null;
 
     /**
-     * @param string|null $name
+     * @param string $name
      */
     public function __construct(string $name)
     {
@@ -109,7 +107,7 @@ class Skill
 
 
     /**
-     * @return Collection<int, UserSkill>
+     * @return Collection<int, Skill>
      */
     public function getSkills(): Collection
     {

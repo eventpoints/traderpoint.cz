@@ -54,14 +54,14 @@ class AppFixtures extends Fixture
                 $review = new Review(
                     title: $faker->text(random_int(5, 20)),
                     content: $faker->realText,
-                    responseRating: $responseRating,
-                    customerServicesRating: $customerServicesRating,
-                    workQualityRating: $workQualityRating,
-                    valueForMoneyRating: $valueForMoneyRating,
+                    responseRating: (string)$responseRating,
+                    customerServicesRating: (string)$customerServicesRating,
+                    workQualityRating: (string)$workQualityRating,
+                    valueForMoneyRating: (string)$valueForMoneyRating,
                     owner: $user
                 );
-                $overallRating = round(($responseRating + $customerServicesRating + $workQualityRating + $valueForMoneyRating) / 4, 2) ;
-                $review->setOverallRating($overallRating);
+                $overallRating = round(($responseRating + $customerServicesRating + $workQualityRating + $valueForMoneyRating) / 4, 2);
+                $review->setOverallRating((string) $overallRating);
                 $user->addReview($review);
             }
 
@@ -84,12 +84,15 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 
-    private function getRandomFloat($min = 0.0, $max = 5.0): float
+    private function getRandomFloat(float $min = 0.0, float $max = 5.0): float
     {
         return round($min + mt_rand() / mt_getrandmax() * ($max - $min), 2);
     }
 
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     private function getSkills(): array
     {
         return [
