@@ -25,7 +25,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/eventpoints/kontractpoint.com-php
+            ghcr.io/eventpoints/traderpoint.com-php
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
@@ -38,7 +38,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/eventpoints/kontractpoint.com-caddy
+            ghcr.io/eventpoints/traderpoint.com-caddy
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
@@ -84,7 +84,7 @@ jobs:
       - docker
     environment:
       name: prod
-      url: https://kontractpoint.com
+      url: https://traderpoint.cz
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -106,7 +106,7 @@ jobs:
         with:
           switches: -azvr --exclude='docker-compose.production-template.yml'
           path: ./.deployment/
-          remote_path: /kontractpoint.com
+          remote_path: /traderpoint.cz
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_user: ${{ secrets.DEPLOY_USERNAME }}
           remote_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
@@ -118,6 +118,6 @@ jobs:
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           script_stop: true
           script: |
-            cd /kontractpoint.com
+            cd /traderpoint.cz
             docker-compose pull
             docker-compose up -d
