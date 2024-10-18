@@ -11,7 +11,7 @@ volumes:
 
 services:
   php:
-    image: ghcr.io/eventpoints/traderpoint.cz-php:main
+    image: ghcr.io/eventpoints/traderpoint.com-php:main
     volumes:
       - php_socket:/var/run/php
       - ./php/php.ini:/usr/local/etc/php/php.ini
@@ -35,7 +35,7 @@ services:
       - internal
 
   caddy:
-    image: ghcr.io/eventpoints/traderpoint.cz-caddy:main
+    image: ghcr.io/eventpoints/traderpoint.com-caddy:main
     depends_on:
       - php
     restart: unless-stopped
@@ -47,7 +47,7 @@ services:
       - php_socket:/var/run/php
       - caddy_data:/data
       - caddy_config:/config
-      - ./Caddyfile:/etc/caddy/Caddyfile
+      - Caddyfile:/etc/caddy/Caddyfile
     expose:
       - "80"
     labels:
