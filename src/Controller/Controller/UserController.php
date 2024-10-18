@@ -41,6 +41,12 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[Route(path: '/hello-world', name: 'hi')]
+    public function hellow(Request $request): Response
+    {
+            return $this->render('app/about.html.twig');
+    }
+
     #[Route(path: '/show/{id}', name: 'show_service')]
     public function show(User $user, Request $request): Response
     {
