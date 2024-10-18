@@ -24,7 +24,7 @@ services:
     environment:
       APP_ENV: "prod"
       APP_SECRET: "__TRADERPOINT_APP_SECRET__"
-      DATABASE_URL: "postgresql://__TRADERPOINT_POSTGRES_USER__:__TRADERPOINT_POSTGRES_PASSWORD__@external-db-host:5432/__TRADERPOINT_POSTGRES_DBNAME__?serverVersion=13&charset=utf8"
+      DATABASE_URL: "postgresql://__TRADERPOINT_POSTGRES_USER__:__TRADERPOINT_POSTGRES_PASSWORD__@database:5432/__TRADERPOINT_POSTGRES_DBNAME__?serverVersion=17&charset=utf8"
       MAILER_DSN: "__TRADERPOINT_MAILER_DSN__"
       MESSENGER_TRANSPORT_DSN: "__TRADERPOINT_MESSENGER_TRANSPORT_DSN__"
       MERCURE_PUBLIC_URL: "https://traderpoint.cz/.well-known/mercure"
@@ -33,6 +33,8 @@ services:
       RECAPTCHA3_SECRET: "__TRADERPOINT_RECAPTCHA3_SECRET__"
     networks:
       - internal
+    depends_on:
+      - database
 
   caddy:
     image: ghcr.io/eventpoints/traderpoint.com-caddy:main
@@ -59,6 +61,18 @@ services:
       - traefik
       - internal
 
+  database:
+    image: postgres:17
+    platform: linux/arm64
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: residewise
+      POSTGRES_PASSWORD: residewise
+      POSTGRES_USER: root
+    volumes:
+      - ./docker/db/data:/var/lib/postgresql/data:rw
+
   adminer:
     image: adminer:4.8.0
     restart: unless-stopped
@@ -74,3 +88,5 @@ services:
     networks:
       - internal
       - traefik
+    depends_on:
+      - database
