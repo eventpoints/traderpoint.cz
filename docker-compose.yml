@@ -1,7 +1,7 @@
 services:
   php:
     image: ghcr.io/eventpoints/php:sha-ea6c165
-    platform: linux/amd64
+    platform: linux/arm64
     volumes:
       - .:/app:cached
       - php_socket:/var/run/php
@@ -18,7 +18,7 @@ services:
 
   caddy:
     image: ghcr.io/eventpoints/caddy:sha-fc43d4e
-    platform: linux/amd64
+    platform: linux/arm64
     depends_on:
       - php
     environment:

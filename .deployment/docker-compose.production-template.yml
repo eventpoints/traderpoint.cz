@@ -1,4 +1,13 @@
-version: "3.9"
+networks:
+  traefik:
+    external: true
+  internal:
+    external: false
+
+volumes:
+  php_socket:
+  caddy_data:
+  caddy_config:
 
 services:
   php:
@@ -62,6 +71,7 @@ services:
       - ./db-data:/var/lib/postgresql/data:rw
     networks:
       - internal
+    hostname: database
 
   adminer:
     image: adminer:4.8.0
@@ -79,14 +89,8 @@ services:
       - internal
       - traefik
 
-volumes:
-  php_socket:
-  caddy_data:
-  caddy_config:
-
 networks:
   traefik:
     external: true
   internal:
-    driver: bridge
     external: false
