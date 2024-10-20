@@ -1,5 +1,3 @@
-version: "3.9"
-
 networks:
   traefik:
     external: true
@@ -28,7 +26,7 @@ services:
     environment:
       APP_ENV: "prod"
       MERCURE_PUBLIC_URL: "https://traderpoint.cz/.well-known/mercure"
-      DATABASE_URL: "postgresql://__TRADERPOINT_POSTGRES_USER__:__TRADERPOINT_POSTGRES_PASSWORD__@database:5432/__TRADERPOINT_POSTGRES_DBNAME__?serverVersion=13&charset=utf8"
+      DATABASE_URL: "postgresql://__TRADERPOINT_POSTGRES_USER__:__TRADERPOINT_POSTGRES_PASSWORD__@database:5432/__TRADERPOINT_POSTGRES_DBNAME__?serverVersion=17&charset=utf8"
       MERCURE_JWT_SECRET: "__TRADERPOINT_MERCURE_JWT_SECRET__"
       APP_SECRET: "__TRADERPOINT_APP_SECRET__"
       MAILER_DSN: "__TRADERPOINT_MAILER_DSN__"
@@ -63,7 +61,7 @@ services:
       - internal
 
   database:
-    image: postgres:13
+    image: postgres:17
     restart: unless-stopped
     environment:
       POSTGRES_DB: "__TRADERPOINT_POSTGRES_DBNAME__"
@@ -71,14 +69,6 @@ services:
       POSTGRES_USER: "__TRADERPOINT_POSTGRES_USER__"
     volumes:
       - ./db-data:/var/lib/postgresql/data:rw
-    networks:
-      - internal
-
-  asset-compile:
-    image: ghcr.io/eventpoints/traderpoint.cz-php:main
-    command: sh -c "bin/console asset-map:compile"
-    depends_on:
-      - php
     networks:
       - internal
 
