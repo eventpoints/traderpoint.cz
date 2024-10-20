@@ -1,13 +1,4 @@
-networks:
-  traefik:
-    external: true
-  internal:
-    external: false
-
-volumes:
-  php_socket:
-  caddy_data:
-  caddy_config:
+version: "3.9"
 
 services:
   php:
@@ -87,3 +78,15 @@ services:
     networks:
       - internal
       - traefik
+
+volumes:
+  php_socket:
+  caddy_data:
+  caddy_config:
+
+networks:
+  traefik:
+    external: true
+  internal:
+    driver: bridge
+    external: false

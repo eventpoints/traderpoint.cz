@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   php:
     image: ghcr.io/eventpoints/php:sha-ea6c165
@@ -15,6 +13,8 @@ services:
       start_period: 30s
     depends_on:
       - database
+    networks:
+      - app-network
 
   caddy:
     image: ghcr.io/eventpoints/caddy:sha-fc43d4e
@@ -32,18 +32,17 @@ services:
       - caddy_config:/config
       - ./public:/app/public
     ports:
-      # HTTP
       - target: 80
         published: 80
         protocol: tcp
-      # HTTPS
       - target: 443
         published: 443
         protocol: tcp
-      # HTTP/3
       - target: 443
         published: 443
         protocol: udp
+    networks:
+      - app-network
 
   database:
     image: postgres:17
@@ -55,6 +54,8 @@ services:
       POSTGRES_USER: root
     volumes:
       - ./docker/db/data:/var/lib/postgresql/data:rw
+    networks:
+      - app-network
 
   adminer:
     image: adminer:4.8.0
@@ -64,8 +65,14 @@ services:
       ADMINER_DEFAULT_SERVER: database
     depends_on:
       - database
+    networks:
+      - app-network
 
 volumes:
   php_socket:
   caddy_data:
   caddy_config:
+
+networks:
+  app-network:
+    driver: bridge
