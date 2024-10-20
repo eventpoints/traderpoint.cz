@@ -1,7 +1,9 @@
+version: "3.9"
+
 services:
   php:
-    image: ghcr.io/eventpoints/php:main
-    platform: linux/arm64
+    image: ghcr.io/eventpoints/php:sha-ea6c165
+    platform: linux/amd64
     volumes:
       - .:/app:cached
       - php_socket:/var/run/php
@@ -15,8 +17,8 @@ services:
       - database
 
   caddy:
-    image: ghcr.io/eventpoints/caddy:main
-    platform: linux/arm64
+    image: ghcr.io/eventpoints/caddy:sha-fc43d4e
+    platform: linux/amd64
     depends_on:
       - php
     environment:
@@ -44,13 +46,12 @@ services:
         protocol: udp
 
   database:
-    image: postgres:17
-    platform: linux/arm64
+    image: postgres:13
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: residewise
-      POSTGRES_PASSWORD: residewise
+      POSTGRES_DB: traderpoint
+      POSTGRES_PASSWORD: traderpoint
       POSTGRES_USER: root
     volumes:
       - ./docker/db/data:/var/lib/postgresql/data:rw
