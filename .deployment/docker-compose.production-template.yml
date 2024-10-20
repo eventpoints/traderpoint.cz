@@ -81,9 +81,10 @@ services:
 networks:
   traefik:
     external: true
-  internal:
     driver: bridge
+  internal:
     external: false
+    driver: bridge
 
 volumes:
   php_socket:
