@@ -7,9 +7,11 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->extension('framework', [
         'asset_mapper' => [
+            'server' => false,
             'paths' => [
                 'assets/',
             ],
         ],
     ]);
+};
 };
