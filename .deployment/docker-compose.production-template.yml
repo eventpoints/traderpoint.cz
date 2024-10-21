@@ -14,7 +14,7 @@ services:
     environment:
       APP_ENV: "prod"
       MERCURE_PUBLIC_URL: "https://traderpoint.cz/.well-known/mercure"
-      DATABASE_URL: "postgresql://__TRADERPOINT_POSTGRES_USER__:__TRADERPOINT_POSTGRES_PASSWORD__@localhost:5432/__TRADERPOINT_POSTGRES_DBNAME__?serverVersion=17&charset=utf8"
+      DATABASE_URL: "postgresql://__TRADERPOINT_POSTGRES_USER__:__TRADERPOINT_POSTGRES_PASSWORD__@database:5432/__TRADERPOINT_POSTGRES_DBNAME__?serverVersion=17&charset=utf8"
       MERCURE_JWT_SECRET: "__TRADERPOINT_MERCURE_JWT_SECRET__"
       APP_SECRET: "__TRADERPOINT_APP_SECRET__"
       MAILER_DSN: "__TRADERPOINT_MAILER_DSN__"
@@ -51,7 +51,6 @@ services:
   database:
     image: postgres:17
     restart: unless-stopped
-    hostname: localhost,
     environment:
       POSTGRES_DB: "__TRADERPOINT_POSTGRES_DBNAME__"
       POSTGRES_PASSWORD: "__TRADERPOINT_POSTGRES_PASSWORD__"
