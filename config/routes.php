@@ -14,5 +14,4 @@ return static function (RoutingConfigurator $routingConfigurator): void {
             '_locale' => '[a-z]{2}',
         ]);
 
-
 };

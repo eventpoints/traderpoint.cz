@@ -20,11 +20,10 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class UserController extends AbstractController
 {
-
     public function __construct(
-        private readonly UserRepository               $userRepository,
-        private readonly ReviewRepository             $reviewRepository,
-        private readonly PaginatorInterface           $paginator,
+        private readonly UserRepository $userRepository,
+        private readonly ReviewRepository $reviewRepository,
+        private readonly PaginatorInterface $paginator,
         private readonly Base64ImageUploaderInterface $base64ImageUploader
     )
     {
@@ -44,13 +43,13 @@ class UserController extends AbstractController
 
             return $this->render('app/index.html.twig', [
                 'userFilterForm' => $userFilterForm,
-                'usersPagination' => $usersPagination
+                'usersPagination' => $usersPagination,
             ]);
         }
 
         return $this->render('app/index.html.twig', [
             'userFilterForm' => $userFilterForm,
-            'usersPagination' => $usersPagination
+            'usersPagination' => $usersPagination,
         ]);
     }
 
@@ -85,7 +84,7 @@ class UserController extends AbstractController
         }
 
         return $this->render('user/dashboard.html.twig', [
-            'serviceProfileForm' => $serviceProfileForm
+            'serviceProfileForm' => $serviceProfileForm,
         ]);
     }
 
@@ -97,8 +96,7 @@ class UserController extends AbstractController
 
         return $this->render('user/show.html.twig', [
             'user' => $user,
-            'reviewsPagination' => $reviewsPagination
+            'reviewsPagination' => $reviewsPagination,
         ]);
     }
-
 }

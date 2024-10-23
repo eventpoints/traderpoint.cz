@@ -18,9 +18,6 @@ class Skill
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
     private null|Uuid $id = null;
 
-    #[ORM\Column(length: 255)]
-    private string $name;
-
     /**
      * @var Collection<int, User>
      */
@@ -37,16 +34,14 @@ class Skill
     #[ORM\JoinColumn(name: 'trade_id', referencedColumnName: 'id')]
     private Skill|null $trade = null;
 
-    /**
-     * @param string $name
-     */
-    public function __construct(string $name)
+    public function __construct(
+        #[ORM\Column(length: 255)]
+        private string $name
+    )
     {
-        $this->name = $name;
         $this->users = new ArrayCollection();
         $this->skills = new ArrayCollection();
     }
-
 
     public function getId(): Uuid
     {
@@ -75,7 +70,7 @@ class Skill
 
     public function addUser(User $user): static
     {
-        if (!$this->users->contains($user)) {
+        if (! $this->users->contains($user)) {
             $this->users->add($user);
         }
 
@@ -98,7 +93,6 @@ class Skill
         $this->trade = $trade;
     }
 
-
     /**
      * @return Collection<int, Skill>
      */
@@ -109,7 +103,7 @@ class Skill
 
     public function addSkill(Skill $skill): static
     {
-        if (!$this->skills->contains($skill)) {
+        if (! $this->skills->contains($skill)) {
             $this->skills->add($skill);
         }
 
@@ -121,5 +115,4 @@ class Skill
         $this->skills->removeElement($skill);
         return $this;
     }
-
 }

@@ -11,7 +11,6 @@ use Doctrine\Persistence\ObjectManager;
 
 class UserSkillFixtures extends Fixture implements DependentFixtureInterface
 {
-
     public function load(ObjectManager $manager): void
     {
         for ($userCount = 0; $userCount < 50; $userCount++) {
@@ -42,5 +41,4 @@ class UserSkillFixtures extends Fixture implements DependentFixtureInterface
             SkillFixtures::class,
         ];
     }
-
 }

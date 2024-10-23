@@ -15,7 +15,6 @@
     "jdenticon/jdenticon": "^1.0",
     "knplabs/knp-paginator-bundle": "^6.6",
     "nesbot/carbon": "^3.8",
-    "paquettg/php-html-parser": "^3.1",
     "phpdocumentor/reflection-docblock": "^5.4",
     "phpstan/phpdoc-parser": "^1.33",
     "symfony/asset": "7.1.*",

@@ -13,6 +13,6 @@ final readonly class OverallRatingCalculator
     {
         $totalRating = $responseRating + $customerServicesRating + $workQualityRating + $valueForMoneyRating;
         $overallRating = $totalRating / 4;
-        return (string)round($overallRating, 2);
+        return (string) round($overallRating, 2);
     }
 }

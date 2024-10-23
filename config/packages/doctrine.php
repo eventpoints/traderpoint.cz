@@ -15,8 +15,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'use_savepoints' => true,
             'types' => [
                 'datetime_immutable' => DateTimeImmutableType::class,
-                'datetime' => DateTimeType::class
-            ]
+                'datetime' => DateTimeType::class,
+            ],
         ],
         'orm' => [
             'auto_generate_proxy_classes' => true,

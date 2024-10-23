@@ -22,11 +22,6 @@ class Image implements Stringable
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private CarbonImmutable $createdAt;
 
-    /**
-     * @param User $owner
-     * @param string|null $base64
-     * @param string|null $oldFilename
-     */
     public function __construct(
         #[ORM\ManyToOne(inversedBy: 'images')]
         private User $owner,
@@ -88,6 +83,6 @@ class Image implements Stringable
 
     public function __toString(): string
     {
-        return (string)$this->getBase64();
+        return (string) $this->getBase64();
     }
 }

@@ -10,7 +10,6 @@ use Faker\Factory;
 
 class ReviewFixtures extends Fixture implements DependentFixtureInterface
 {
-
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
@@ -27,15 +26,15 @@ class ReviewFixtures extends Fixture implements DependentFixtureInterface
             $review = new Review(
                 title: $faker->text(random_int(5, 20)),
                 content: $faker->realText,
-                responseRating: (string)$responseRating,
-                customerServicesRating: (string)$customerServicesRating,
-                workQualityRating: (string)$workQualityRating,
-                valueForMoneyRating: (string)$valueForMoneyRating,
+                responseRating: (string) $responseRating,
+                customerServicesRating: (string) $customerServicesRating,
+                workQualityRating: (string) $workQualityRating,
+                valueForMoneyRating: (string) $valueForMoneyRating,
                 reviewer: $reviewer,
                 reviewee: $reviewee
             );
             $overallRating = round(($responseRating + $customerServicesRating + $workQualityRating + $valueForMoneyRating) / 4, 2);
-            $review->setOverallRating((string)$overallRating);
+            $review->setOverallRating((string) $overallRating);
             $manager->persist($review);
             $this->addReference(name: "review_$reviewCount", object: $review);
         }
@@ -49,12 +48,10 @@ class ReviewFixtures extends Fixture implements DependentFixtureInterface
         return round($min + mt_rand() / mt_getrandmax() * ($max - $min), 2);
     }
 
-
     public function getDependencies(): array
     {
         return [
             UserFixtures::class,
         ];
     }
-
 }

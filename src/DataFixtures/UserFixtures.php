@@ -16,12 +16,11 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
     private const FAKE_USER_PASSWORD = '12345678';
 
     public function __construct(
-        private UserPasswordHasherInterface $userPasswordHasher,
-        private AvatarService               $avatarService,
+        private readonly UserPasswordHasherInterface $userPasswordHasher,
+        private readonly AvatarService $avatarService,
     )
     {
     }
-
 
     public function load(ObjectManager $manager): void
     {
@@ -46,5 +45,4 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             SkillFixtures::class,
         ];
     }
-
 }

@@ -37,5 +37,4 @@ class ImageRepository extends ServiceEntityRepository
                 ->flush();
         }
     }
-
 }

@@ -27,9 +27,7 @@ class UserFilterType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => UserFilterDto::class,
-            'empty_data' => function (Form $form) {
-                return new UserFilterDto(keyword: $form->get('keyword')->getData());
-            },
+            'empty_data' => fn(Form $form): \App\DataTransferObject\UserFilterDto => new UserFilterDto(keyword: $form->get('keyword')->getData()),
         ]);
     }
 }

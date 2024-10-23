@@ -13,9 +13,9 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 class EmailVerifier
 {
     public function __construct(
-        private VerifyEmailHelperInterface $verifyEmailHelper,
-        private MailerInterface $mailer,
-        private EntityManagerInterface $entityManager
+        private readonly VerifyEmailHelperInterface $verifyEmailHelper,
+        private readonly MailerInterface $mailer,
+        private readonly EntityManagerInterface $entityManager
     ) {
     }
 
@@ -25,7 +25,9 @@ class EmailVerifier
             $verifyEmailRouteName,
             (string) $user->getId(),
             (string) $user->getEmail(),
-            ['id' => $user->getId()]
+            [
+                'id' => $user->getId(),
+            ]
         );
 
         $context = $email->getContext();

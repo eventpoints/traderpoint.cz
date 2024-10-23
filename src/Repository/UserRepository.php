@@ -26,7 +26,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
         }
 
@@ -57,10 +57,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         }
     }
 
-
     /**
-     * @param UserFilterDto $userFilterDto
-     * @param bool $isQuery
      * @return array<int, User>|Query
      */
     public function findByUserFilterDto(UserFilterDto $userFilterDto, bool $isQuery = false): array|Query
@@ -94,6 +91,4 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         return $qb->getQuery()->getSingleScalarResult();
     }
-
-
 }

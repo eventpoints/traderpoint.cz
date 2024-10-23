@@ -33,7 +33,10 @@ class RegistrationFormType extends AbstractType
                     'class' => 'form-floating',
                 ],
                 'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password', 'placeholder' => 'password'],
+                'attr' => [
+                    'autocomplete' => 'new-password',
+                    'placeholder' => 'password',
+                ],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please enter a password',

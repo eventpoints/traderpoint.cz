@@ -57,7 +57,7 @@ class ReviewRepository extends ServiceEntityRepository
     /**
      * @return array<int, Review>|Query
      */
-    public function findByReviewee(Uuid $userId, bool $isQuery = false) : array|Query
+    public function findByReviewee(Uuid $userId, bool $isQuery = false): array|Query
     {
         $qb = $this->createQueryBuilder('review');
         $qb->andWhere(
@@ -72,5 +72,4 @@ class ReviewRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
-
 }

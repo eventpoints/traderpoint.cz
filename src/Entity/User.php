@@ -27,21 +27,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
     private null|Uuid $id = null;
 
-    #[ORM\Column(length: 255, type: Types::STRING)]
-    private string $name;
-
-    #[ORM\Column(length: 180)]
-    #[Assert\Email]
-    private string $email;
-
     #[ORM\Column(nullable: true)]
     private null|string $phoneNumber = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private null|string $description = null;
-
-    #[ORM\Column(type: Types::TEXT)]
-    private string $avatar;
 
     /**
      * @var list<string> The user roles
@@ -73,9 +63,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'users', cascade: ['persist'])]
     private Collection $skills;
 
-    #[ORM\Column]
-    private bool $isVerified = false;
-
     /**
      * @var Collection<int, Image> $images
      */
@@ -88,17 +75,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private CarbonImmutable|null $createdAt;
 
-    /**
-     * @param string $name
-     * @param string $email
-     * @param bool $isVerified
-     */
-    public function __construct(string $name, string $email, string $avatar, bool $isVerified = false)
+    public function __construct(
+        #[ORM\Column(length: 255, type: Types::STRING)]
+        private string $name,
+        #[ORM\Column(length: 180)]
+        #[Assert\Email]
+        private string $email,
+        #[ORM\Column(type: Types::TEXT)]
+        private string $avatar,
+        #[ORM\Column]
+        private bool $isVerified = false
+    )
     {
-        $this->name = $name;
-        $this->email = $email;
-        $this->isVerified = $isVerified;
-        $this->avatar = $avatar;
         $this->receivedReviews = new ArrayCollection();
         $this->authoredReviews = new ArrayCollection();
         $this->skills = new ArrayCollection();
@@ -106,7 +94,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updatedAt = new CarbonImmutable();
         $this->createdAt = new CarbonImmutable();
     }
-
 
     public function getId(): Uuid
     {
@@ -132,13 +119,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string)$this->email;
+        return $this->email;
     }
 
     /**
      * @return list<string>
      * @see UserInterface
-     *
      */
     public function getRoles(): array
     {
@@ -193,7 +179,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addReceivedReview(Review $review): static
     {
-        if (!$this->receivedReviews->contains($review)) {
+        if (! $this->receivedReviews->contains($review)) {
             $this->receivedReviews->add($review);
             $review->setReviewee($this);
         }
@@ -203,10 +189,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeReceivedReview(Review $review): static
     {
-        if ($this->receivedReviews->removeElement($review)) {
-            if ($review->getReviewee() === $this) {
-                $review->setReviewee(null);
-            }
+        if ($this->receivedReviews->removeElement($review) && $review->getReviewee() === $this) {
+            $review->setReviewee(null);
         }
 
         return $this;
@@ -222,7 +206,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addAuthoredReview(Review $review): static
     {
-        if (!$this->authoredReviews->contains($review)) {
+        if (! $this->authoredReviews->contains($review)) {
             $this->authoredReviews->add($review);
             $review->setReviewer($this);
         }
@@ -232,10 +216,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeAuthoredReview(Review $review): static
     {
-        if ($this->authoredReviews->removeElement($review)) {
-            if ($review->getReviewer() === $this) {
-                $review->setReviewer(null);
-            }
+        if ($this->authoredReviews->removeElement($review) && $review->getReviewer() === $this) {
+            $review->setReviewer(null);
         }
 
         return $this;
@@ -251,7 +233,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addSkill(Skill $skill): static
     {
-        if (!$this->skills->contains($skill)) {
+        if (! $this->skills->contains($skill)) {
             $this->skills->add($skill);
         }
 
@@ -302,9 +284,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             return 0.0;
         }
 
-        $totalRating = $this->receivedReviews->reduce(function (float $carry, Review $review) {
-            return $carry + (float)$review->getOverallRating();
-        }, 0.0);
+        $totalRating = $this->receivedReviews->reduce(fn(float $carry, Review $review): float => $carry + (float) $review->getOverallRating(), 0.0);
 
         return round($totalRating / $this->receivedReviews->count(), 2);
     }
@@ -339,7 +319,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addImage(Image $image): static
     {
-        if (!$this->images->contains($image)) {
+        if (! $this->images->contains($image)) {
             $this->images->add($image);
             $image->setOwner($this);
         }
@@ -373,6 +353,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->createdAt = $createdAt;
     }
-
 }
 

@@ -15,7 +15,7 @@ final class Base64ImageUploaderService implements Base64ImageUploaderInterface
     {
         $manager = new ImageManager(new Driver());
         $image = $manager->read(input: $realPath, decoders: FilePathImageDecoder::class);
-        $image->scaleDown(width: $width,height: $height);
+        $image->scaleDown(width: $width, height: $height);
         return $image->toJpeg()->toDataUri();
     }
 }

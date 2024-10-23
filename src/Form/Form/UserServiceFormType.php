@@ -19,7 +19,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserServiceFormType extends AbstractType
 {
-
     public function __construct(
         private readonly TranslatorInterface $translator
     )
@@ -108,7 +107,7 @@ class UserServiceFormType extends AbstractType
                     'class' => 'form-floating',
                 ],
                 'autocomplete' => true,
-                'multiple' => true
+                'multiple' => true,
             ]);
     }
 

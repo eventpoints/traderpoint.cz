@@ -18,10 +18,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route(path: '/reviews')]
 class ReviewController extends AbstractController
 {
-
     public function __construct(
-        private readonly ReviewRepository        $reviewRepository,
-        private readonly TranslatorInterface     $translator,
+        private readonly ReviewRepository $reviewRepository,
+        private readonly TranslatorInterface $translator,
         private readonly OverallRatingCalculator $overallRatingCalculator
     )
     {
@@ -35,11 +34,13 @@ class ReviewController extends AbstractController
         $reviewForm->handleRequest($request);
 
         if ($reviewForm->isSubmitted() && $reviewForm->isValid()) {
-            $overallRating = $this->overallRatingCalculator->calculate(responseRating: (float)$review->getResponseRating(), customerServicesRating: (float)$review->getCustomerServicesRating(), workQualityRating: (float)$review->getWorkQualityRating(), valueForMoneyRating: (float)$review->getValueForMoneyRating());
+            $overallRating = $this->overallRatingCalculator->calculate(responseRating: (float) $review->getResponseRating(), customerServicesRating: (float) $review->getCustomerServicesRating(), workQualityRating: (float) $review->getWorkQualityRating(), valueForMoneyRating: (float) $review->getValueForMoneyRating());
             $review->setOverallRating($overallRating);
             $this->reviewRepository->save(entity: $review, flush: true);
             $this->addFlash(type: FlashEnum::SUCCESS->value, message: $this->translator->trans('flash.review-successful'));
-            return $this->redirectToRoute(route: 'show_service', parameters: ['id' => $reviewee->getId()]);
+            return $this->redirectToRoute(route: 'show_service', parameters: [
+                'id' => $reviewee->getId(),
+            ]);
         }
 
         return $this->render('review/create.html.twig', [
@@ -48,5 +49,4 @@ class ReviewController extends AbstractController
         ]);
 
     }
-
 }

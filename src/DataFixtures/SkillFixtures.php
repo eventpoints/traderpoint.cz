@@ -25,5 +25,4 @@ class SkillFixtures extends Fixture
         }
         $manager->flush();
     }
-
 }

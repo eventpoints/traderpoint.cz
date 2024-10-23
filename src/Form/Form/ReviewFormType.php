@@ -13,8 +13,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ReviewFormType extends AbstractType
 {
-
-
     public function __construct(
         private readonly TranslatorInterface $translator
     )
@@ -35,16 +33,16 @@ class ReviewFormType extends AbstractType
                 ],
             ])
             ->add('responseRating', RatingRangeType::class, [
-                'label' => $this->translator->trans('review.responseRating')
+                'label' => $this->translator->trans('review.responseRating'),
             ])
             ->add('customerServicesRating', RatingRangeType::class, [
-                'label' => $this->translator->trans('review.customerServicesRating')
+                'label' => $this->translator->trans('review.customerServicesRating'),
             ])
             ->add('workQualityRating', RatingRangeType::class, [
-                'label' => $this->translator->trans('review.workQualityRating')
+                'label' => $this->translator->trans('review.workQualityRating'),
             ])
             ->add('valueForMoneyRating', RatingRangeType::class, [
-                'label' => $this->translator->trans('review.valueForMoneyRating')
+                'label' => $this->translator->trans('review.valueForMoneyRating'),
             ]);
     }
 
