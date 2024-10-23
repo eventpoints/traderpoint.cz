@@ -1,0 +1,9 @@
+parameters:
+	level: 6
+	paths:
+		- ./src
+		- ./config
+		- ./tests
+	ignoreErrors:
+	    - '#\$id is never written, only read#'
+	reportUnmatchedIgnoredErrors: false
