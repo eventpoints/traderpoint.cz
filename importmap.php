@@ -78,4 +78,8 @@ return [
         'version' => '2.3.1',
         'type' => 'css',
     ],
+    'lightgallery/css/lightgallery.css' => [
+        'version' => '2.7.2',
+        'type' => 'css',
+    ],
 ];
