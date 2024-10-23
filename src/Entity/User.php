@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Carbon\CarbonImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -81,6 +82,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private Collection $images;
 
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private CarbonImmutable|null $updatedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private CarbonImmutable|null $createdAt;
+
     /**
      * @param string $name
      * @param string $email
@@ -96,6 +103,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->authoredReviews = new ArrayCollection();
         $this->skills = new ArrayCollection();
         $this->images = new ArrayCollection();
+        $this->updatedAt = new CarbonImmutable();
+        $this->createdAt = new CarbonImmutable();
     }
 
 
@@ -294,7 +303,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $totalRating = $this->receivedReviews->reduce(function (float $carry, Review $review) {
-            return $carry + (float) $review->getOverallRating();
+            return $carry + (float)$review->getOverallRating();
         }, 0.0);
 
         return round($totalRating / $this->receivedReviews->count(), 2);
@@ -330,7 +339,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addImage(Image $image): static
     {
-        if (! $this->images->contains($image)) {
+        if (!$this->images->contains($image)) {
             $this->images->add($image);
             $image->setOwner($this);
         }
@@ -343,6 +352,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->images->removeElement($image);
 
         return $this;
+    }
+
+    public function getUpdatedAt(): ?CarbonImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?CarbonImmutable $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    public function getCreatedAt(): ?CarbonImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?CarbonImmutable $createdAt): void
+    {
+        $this->createdAt = $createdAt;
     }
 
 }

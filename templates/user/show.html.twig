@@ -14,25 +14,31 @@
                                  height="120"
                                  width="120"/>
                             <div class="lead">{{ user.name }}</div>
-                            <div class="fw-bold fs-5 d-flex gap-1 align-items-center justify-content-center"> {{ app.user.averageRating }}<i class="bi bi-star-fill text-warning"></i></div>
+                            <div class="fw-bold fs-5 d-flex gap-1 align-items-center justify-content-center"> {{ user.averageRating }}
+                                <i class="bi bi-star-fill text-warning"></i></div>
                         </div>
                     </div>
                     <div class="card-header bg-white">
                         <div class=" hstack gap-1 flex-wrap">
                             {% for skill in user.skills %}
-                                <span class="badge text-bg-secondary">{{ skill.name }}</span>
+                                <span class="badge text-bg-secondary">{{ skill.name|trans }}</span>
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="card-body p-1">
-                        <div class="row g-1 justify-content-between" {{ stimulus_controller('lightbox') }}>
-                            {% for image in app.user.images %}
-                                <a href="{{ image.base64 }}" class="col-4">
-                                    <img src="{{ image.base64 }}" class="rounded w-100 object-fit-cover"
-                                         style="height: 100px"/>
-                                </a>
-                            {% endfor %}
+                    {% if not user.images.empty %}
+                        <div class="card-body p-1">
+                            <div class="row g-1 justify-content-between" {{ stimulus_controller('lightbox') }}>
+                                {% for image in user.images %}
+                                    <a href="{{ image.base64 }}" class="col-4">
+                                        <img src="{{ image.base64 }}" class="rounded w-100 object-fit-cover"
+                                             style="height: 100px"/>
+                                    </a>
+                                {% endfor %}
+                            </div>
                         </div>
+                    {% endif %}
+                    <div class="card-footer bg-white text-center">
+                        <span class="text-muted small">{{ user.createdAt.diffForHumans }}</span>
                     </div>
                 </div>
 
