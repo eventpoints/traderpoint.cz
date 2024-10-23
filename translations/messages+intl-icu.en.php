@@ -11,4 +11,10 @@ return array (
   'email-address' => '__email-address',
   'password-placeholder' => '__password-placeholder',
   'password' => '__password',
+    'review.responseRating' => 'response time',
+    'review.customerServicesRating' => 'customer services',
+    'review.workQualityRating' => 'work quality',
+    'review.valueForMoneyRating' => 'value for money',
+
+
 );

@@ -71,4 +71,15 @@ return [
     '@symfony/stimulus-bridge/lazy-controller-loader' => [
         'version' => '3.2.2',
     ],
+    'tom-select' => [
+        'version' => '2.3.1',
+    ],
+    'tom-select/dist/css/tom-select.bootstrap5.css' => [
+        'version' => '2.3.1',
+        'type' => 'css',
+    ],
+    'lightgallery/css/lightgallery.css' => [
+        'version' => '2.7.2',
+        'type' => 'css',
+    ],
 ];

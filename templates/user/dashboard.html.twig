@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center g-3">
+            <div class="col-12 col-md-4">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <div class="text-center mb-3">
+                            <img class="object-fit-cover border border-3 rounded-circle mb-3"
+                                 src="{{ app.user.avatar }}"
+                                 height="120"
+                                 width="120"/>
+                            <div class="lead">{{ app.user.name }}</div>
+                        </div>
+                    </div>
+                    <div class="card-header bg-white">
+                        <div class=" hstack gap-1 flex-wrap">
+                            {% for skill in app.user.skills %}
+                                <span class="badge text-bg-secondary">{{ skill.name|trans }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="card-header bg-white p-1">
+                        <div class="row g-1 justify-content-between" {{ stimulus_controller('lightbox') }}>
+                            {% for image in app.user.images %}
+                                <a href="{{ image.base64 }}" class="col-4">
+                                    <img src="{{ image.base64 }}" class="rounded w-100 object-fit-cover"
+                                         style="height: 100px"/>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ path('show_service', {id: app.user.id}) }}"
+                           class="d-flex justify-content-between align-items-center">
+                            <div> {{ app.user.averageRating }} <i
+                                        class="bi bi-star-fill text-warning"></i></div>
+                            <div>{{ app.user.receivedReviews.count }} reviews</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    {{ form_start(serviceProfileForm) }}
+                    <div class="card-header fs-4">
+                        {{ 'service-profile'|trans }}
+                    </div>
+                    <div class="card-body vstack gap-3">
+                        {{ form_row(serviceProfileForm.name) }}
+                        {{ form_row(serviceProfileForm.avatar) }}
+                        {{ form_row(serviceProfileForm.servicePhotos) }}
+                        {{ form_row(serviceProfileForm.description) }}
+                        {{ form_row(serviceProfileForm.email) }}
+                        {{ form_row(serviceProfileForm.phoneNumber) }}
+                        {{ form_row(serviceProfileForm.skills) }}
+                    </div>
+                    <div class="card-footer text-end">
+                        <button type="submit" class="btn btn-primary">{{ 'save'|trans }}</button>
+                    </div>
+                    {{ form_end(serviceProfileForm) }}
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

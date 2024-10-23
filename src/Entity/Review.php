@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ReviewRepository;
-use DateTimeImmutable;
+use Carbon\CarbonImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
@@ -39,11 +39,14 @@ class Review
     #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: 1)]
     private ?string $valueForMoneyRating = null;
 
-    #[ORM\Column]
-    private ?DateTimeImmutable $createdAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private CarbonImmutable|null $createdAt;
 
-    #[ORM\ManyToOne(inversedBy: 'reviews')]
-    private ?User $owner = null;
+    #[ORM\ManyToOne(inversedBy: 'receivedReviews')]
+    private ?User $reviewee = null;
+
+    #[ORM\ManyToOne(inversedBy: 'authoredReviews')]
+    private ?User $reviewer = null;
 
     /**
      * @param string|null $title
@@ -52,9 +55,10 @@ class Review
      * @param string|null $customerServicesRating
      * @param string|null $workQualityRating
      * @param string|null $valueForMoneyRating
-     * @param User|null $owner
+     * @param User|null $reviewer
+     * @param User|null $reviewee
      */
-    public function __construct(?string $title, ?string $content, ?string $responseRating, ?string $customerServicesRating, ?string $workQualityRating, ?string $valueForMoneyRating, ?User $owner)
+    public function __construct(null|string $title = null, null|string $content = null, null|string $responseRating = null, null|string $customerServicesRating = null, null|string $workQualityRating = null, null|string $valueForMoneyRating = null, null|User $reviewer = null, null|User $reviewee = null)
     {
         $this->title = $title;
         $this->content = $content;
@@ -62,8 +66,9 @@ class Review
         $this->customerServicesRating = $customerServicesRating;
         $this->workQualityRating = $workQualityRating;
         $this->valueForMoneyRating = $valueForMoneyRating;
-        $this->owner = $owner;
-        $this->createdAt = new DateTimeImmutable();
+        $this->reviewer = $reviewer;
+        $this->reviewee = $reviewee;
+        $this->createdAt = new CarbonImmutable();
     }
 
     public function getId(): Uuid
@@ -155,27 +160,33 @@ class Review
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?CarbonImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeImmutable $createdAt): static
+    public function setCreatedAt(?CarbonImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
-
-        return $this;
     }
-
-    public function getOwner(): ?User
+    public function getReviewee(): ?User
     {
-        return $this->owner;
+        return $this->reviewee;
     }
 
-    public function setOwner(?User $owner): static
+    public function setReviewee(?User $reviewee): void
     {
-        $this->owner = $owner;
-
-        return $this;
+        $this->reviewee = $reviewee;
     }
+
+    public function getReviewer(): ?User
+    {
+        return $this->reviewer;
+    }
+
+    public function setReviewer(?User $reviewer): void
+    {
+        $this->reviewer = $reviewer;
+    }
+
 }

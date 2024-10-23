@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center g-3">
+            <div class="col-12 col-md-4">
+                <div class="card mb-3">
+                    <div class="card-header bg-white">
+                        <div class="text-center mb-3">
+                            <img class="object-fit-cover rounded-circle mb-3 border border-3"
+                                 src="{{ user.avatar }}"
+                                 height="120"
+                                 width="120"/>
+                            <div class="lead">{{ user.name }}</div>
+                            <div class="fw-bold fs-5 d-flex gap-1 align-items-center justify-content-center"> {{ app.user.averageRating }}<i class="bi bi-star-fill text-warning"></i></div>
+                        </div>
+                    </div>
+                    <div class="card-header bg-white">
+                        <div class=" hstack gap-1 flex-wrap">
+                            {% for skill in user.skills %}
+                                <span class="badge text-bg-secondary">{{ skill.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="card-body p-1">
+                        <div class="row g-1 justify-content-between" {{ stimulus_controller('lightbox') }}>
+                            {% for image in app.user.images %}
+                                <a href="{{ image.base64 }}" class="col-4">
+                                    <img src="{{ image.base64 }}" class="rounded w-100 object-fit-cover"
+                                         style="height: 100px"/>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-12 col-md-5">
+                <div class="vstack gap-3">
+                    <div class="text-end">
+                        <a class="btn btn-secondary"
+                           href="{{ path('create_review', {id: user.id}) }}"> {{ 'leave-review'|trans }} </a>
+                    </div>
+
+                    {% for review in reviewsPagination %}
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div class="fw-bold">{{ review.title }}</div>
+                                <a data-bs-toggle="collapse" href="#review_{{ review.id }}" role="button"
+                                   aria-expanded="false">
+                                    {{ review.overallRating|round(1) }}
+                                    <span class="bi bi-star-fill text-warning"></span>
+                                </a>
+                            </div>
+                            <div class="list-group list-group-flush collapse" id="review_{{ review.id }}">
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>Response Rating</div>
+                                    <div>{{ review.responseRating|round(1) }}</div>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>Customer Service Rating</div>
+                                    <div>{{ review.customerServicesRating|round(1) }}</div>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>Work Quality Rating</div>
+                                    <div>{{ review.workQualityRating|round(1) }}</div>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>Value for Money Rating</div>
+                                    <div>{{ review.valueForMoneyRating|round(1) }}</div>
+                                </div>
+                            </div>
+                            <div class="card-body">{{ review.content }}</div>
+                        </div>
+                    {% endfor %}
+
+                    <div class="my-5">
+                        {{ knp_pagination_render(reviewsPagination) }}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -2,10 +2,10 @@
 
 namespace App\Repository;
 
-use App\DataTransferObject\UserAvgRatingDto;
 use App\DataTransferObject\UserFilterDto;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -35,39 +35,56 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    public function save(User $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()
+            ->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()
+                ->flush();
+        }
+    }
+
+    public function remove(User $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()
+            ->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()
+                ->flush();
+        }
+    }
+
 
     /**
      * @param UserFilterDto $userFilterDto
-     * @return array<int, UserAvgRatingDto>
+     * @param bool $isQuery
+     * @return array<int, User>|Query
      */
-    public function findByUserFilterDto(UserFilterDto $userFilterDto): array
+    public function findByUserFilterDto(UserFilterDto $userFilterDto, bool $isQuery = false): array|Query
     {
         $qb = $this->createQueryBuilder('user');
 
-        $qb->leftJoin('user.skills', 'user_skill')
-            ->leftJoin('user_skill.skill', 'skill')
+        $qb->leftJoin('user.skills', 'skill')
             ->leftJoin('skill.trade', 'trade')
-            ->leftJoin('user.reviews', 'review');
+            ->leftJoin('user.receivedReviews', 'review');
 
-        $qb->orWhere($qb->expr()->like($qb->expr()->lower('user.name'), ':keyword'));
-        $qb->orWhere($qb->expr()->like($qb->expr()->lower('trade.name'), ':keyword'));
-        $qb->orWhere($qb->expr()->like($qb->expr()->lower('skill.name'), ':keyword'));
+        $qb->orWhere($qb->expr()->like($qb->expr()->lower('user.name'), ':keyword'))
+            ->orWhere($qb->expr()->like($qb->expr()->lower('trade.name'), ':keyword'))
+            ->orWhere($qb->expr()->like($qb->expr()->lower('skill.name'), ':keyword'));
 
         $qb->setParameter('keyword', '%' . strtolower($userFilterDto->getKeyword()) . '%');
 
-        $qb->addSelect('user', $qb->expr()->avg('review.overallRating') . ' AS averageOverallRating');
-
-        $qb->groupBy('user.id');
-
-        $output = [];
-        foreach ($qb->getQuery()->getResult() as $result) {
-            $output[] = new UserAvgRatingDto(user: $result[0], averageRating: $result['averageOverallRating']);
+        if ($isQuery) {
+            return $qb->getQuery();
         }
 
-        return $output;
+        return $qb->getQuery()->getResult();
     }
 
-    public function findOneAverageRatingByUser(User $user) : null|float
+    public function findOneAverageRatingByUser(User $user): null|float
     {
         $qb = $this->createQueryBuilder('user');
         $qb->leftJoin('user.reviews', 'review')

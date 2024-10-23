@@ -11,7 +11,6 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -34,6 +33,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email]
     private string $email;
 
+    #[ORM\Column(nullable: true)]
+    private null|string $phoneNumber = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private null|string $description = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private string $avatar;
+
     /**
      * @var list<string> The user roles
      */
@@ -44,36 +52,50 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[UserPassword]
     private string $password;
 
     /**
      * @var Collection<int, Review>
      */
-    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'owner',cascade: ['persist', 'remove'])]
-    private Collection $reviews;
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'reviewee', cascade: ['persist', 'remove'])]
+    private Collection $receivedReviews;
 
     /**
-     * @var Collection<int, UserSkill>
+     * @var Collection<int, Review>
      */
-    #[ORM\OneToMany(targetEntity: UserSkill::class, mappedBy: 'owner',cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'reviewer', cascade: ['persist', 'remove'])]
+    private Collection $authoredReviews;
+
+    /**
+     * @var Collection<int, Skill>
+     */
+    #[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'users', cascade: ['persist'])]
     private Collection $skills;
 
     #[ORM\Column]
     private bool $isVerified = false;
 
     /**
+     * @var Collection<int, Image> $images
+     */
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    private Collection $images;
+
+    /**
      * @param string $name
      * @param string $email
      * @param bool $isVerified
      */
-    public function __construct(string $name, string $email, bool $isVerified = false)
+    public function __construct(string $name, string $email, string $avatar, bool $isVerified = false)
     {
         $this->name = $name;
         $this->email = $email;
         $this->isVerified = $isVerified;
-        $this->reviews = new ArrayCollection();
+        $this->avatar = $avatar;
+        $this->receivedReviews = new ArrayCollection();
+        $this->authoredReviews = new ArrayCollection();
         $this->skills = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
 
@@ -155,27 +177,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Review>
      */
-    public function getReviews(): Collection
+    public function getReceivedReviews(): Collection
     {
-        return $this->reviews;
+        return $this->receivedReviews;
     }
 
-    public function addReview(Review $review): static
+    public function addReceivedReview(Review $review): static
     {
-        if (!$this->reviews->contains($review)) {
-            $this->reviews->add($review);
-            $review->setOwner($this);
+        if (!$this->receivedReviews->contains($review)) {
+            $this->receivedReviews->add($review);
+            $review->setReviewee($this);
         }
 
         return $this;
     }
 
-    public function removeReview(Review $review): static
+    public function removeReceivedReview(Review $review): static
     {
-        if ($this->reviews->removeElement($review)) {
-            // set the owning side to null (unless already changed)
-            if ($review->getOwner() === $this) {
-                $review->setOwner(null);
+        if ($this->receivedReviews->removeElement($review)) {
+            if ($review->getReviewee() === $this) {
+                $review->setReviewee(null);
             }
         }
 
@@ -183,32 +204,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, UserSkill>
+     * @return Collection<int, Review>
+     */
+    public function getAuthoredReviews(): Collection
+    {
+        return $this->authoredReviews;
+    }
+
+    public function addAuthoredReview(Review $review): static
+    {
+        if (!$this->authoredReviews->contains($review)) {
+            $this->authoredReviews->add($review);
+            $review->setReviewer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAuthoredReview(Review $review): static
+    {
+        if ($this->authoredReviews->removeElement($review)) {
+            if ($review->getReviewer() === $this) {
+                $review->setReviewer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Skill>
      */
     public function getSkills(): Collection
     {
         return $this->skills;
     }
 
-    public function addSkill(UserSkill $skill): static
+    public function addSkill(Skill $skill): static
     {
         if (!$this->skills->contains($skill)) {
             $this->skills->add($skill);
-            $skill->setOwner($this);
         }
 
         return $this;
     }
 
-    public function removeSkill(UserSkill $skill): static
+    public function removeSkill(Skill $skill): static
     {
-        if ($this->skills->removeElement($skill)) {
-            // set the owning side to null (unless already changed)
-            if ($skill->getOwner() === $this) {
-                $skill->setOwner(null);
-            }
-        }
-
+        $this->skills->removeElement($skill);
         return $this;
     }
 
@@ -234,4 +277,73 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->name = $name;
     }
 
+    public function getAvatar(): string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(string $avatar): void
+    {
+        $this->avatar = $avatar;
+    }
+
+    public function getAverageRating(): float
+    {
+        if ($this->receivedReviews->isEmpty()) {
+            return 0.0;
+        }
+
+        $totalRating = $this->receivedReviews->reduce(function (float $carry, Review $review) {
+            return $carry + (float) $review->getOverallRating();
+        }, 0.0);
+
+        return round($totalRating / $this->receivedReviews->count(), 2);
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(?string $phoneNumber): void
+    {
+        $this->phoneNumber = $phoneNumber;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): static
+    {
+        if (! $this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): static
+    {
+        $this->images->removeElement($image);
+
+        return $this;
+    }
+
 }
+

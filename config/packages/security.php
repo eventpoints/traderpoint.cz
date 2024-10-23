@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Entity\User;
+use App\Security\AppCustomAuthenticator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -27,13 +28,15 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'main' => [
                 'lazy' => true,
                 'provider' => 'app_user_provider',
-                'form_login' => [
-                    'login_path' => 'app_login',
-                    'check_path' => 'app_login',
-                    'enable_csrf' => true,
-                ],
+                'custom_authenticator' => AppCustomAuthenticator::class,
                 'logout' => [
                     'path' => 'app_logout',
+                ],
+                'remember_me' => [
+                    'secret' => '%kernel.secret%',
+                    'lifetime' => 604800,
+                    'path' => '/',
+                    'always_remember_me' => true,
                 ],
             ],
         ],

@@ -22,15 +22,15 @@ class Skill
     private string $name;
 
     /**
-     * @var Collection<int, UserSkill>
+     * @var Collection<int, User>
      */
-    #[ORM\OneToMany(targetEntity: UserSkill::class, mappedBy: 'skill')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'skills')]
     private Collection $users;
 
     /**
      * @var Collection<int, Skill>
      */
-    #[ORM\OneToMany(targetEntity: Skill::class, mappedBy: 'trade',cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: Skill::class, mappedBy: 'trade', cascade: ['persist'])]
     private Collection $skills;
 
     #[ORM\ManyToOne(targetEntity: Skill::class, inversedBy: 'skills')]
@@ -66,32 +66,25 @@ class Skill
     }
 
     /**
-     * @return Collection<int, UserSkill>
+     * @return Collection<int, User>
      */
     public function getUsers(): Collection
     {
         return $this->users;
     }
 
-    public function addUser(UserSkill $user): static
+    public function addUser(User $user): static
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->setSkill($this);
         }
 
         return $this;
     }
 
-    public function removeUser(UserSkill $user): static
+    public function removeUser(User $user): static
     {
-        if ($this->users->removeElement($user)) {
-            // set the owning side to null (unless already changed)
-            if ($user->getSkill() === $this) {
-                $user->setSkill(null);
-            }
-        }
-
+        $this->users->removeElement($user);
         return $this;
     }
 

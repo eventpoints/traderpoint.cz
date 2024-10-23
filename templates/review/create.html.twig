@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center g-0 mt-3">
+            <div class="col-md-4">
+                <div class="card mb-5">
+                    {{ form_start(reviewForm) }}
+                    <div class="card-header">
+                        <div class="fs-3 fw-bold text-uppercase">{{ 'review'|trans|title }}</div>
+                    </div>
+                    <div class="card-body vstack gap-3">
+                        {{ form_row(reviewForm.title) }}
+                        {{ form_row(reviewForm.content) }}
+                        {{ form_row(reviewForm.customerServicesRating) }}
+                        {{ form_row(reviewForm.responseRating) }}
+                        {{ form_row(reviewForm.workQualityRating) }}
+                        {{ form_row(reviewForm.valueForMoneyRating) }}
+                    </div>
+                    <div class="card-footer">
+                        <div class="vstack gap-2 text-center">
+                            <button type="submit" class="btn btn-primary">{{ 'leave-review'|trans }}</button>
+                        </div>
+                    </div>
+                    {{ form_end(reviewForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
