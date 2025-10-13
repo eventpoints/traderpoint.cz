@@ -4,52 +4,61 @@
 
 {% block body %}
     <div class="container">
-        <div class="row justify-content-center g-3">
+        <div class="row justify-content-center g-3 align-items-center">
 
             <div class="col-12 col-md-8">
-                {{ form_start(userFilterForm) }}
-                <div class="input-group">
-                    {{ form_row(userFilterForm.keyword) }}
-                    <button type="submit" class="btn btn-secondary">
-                        {{ 'search'|trans }}
-                    </button>
+                {{ form_start(traderFilterForm) }}
+                <div class="row justify-content-between align-items-center g-2">
+                    <div class="col-12 col-md-5">
+                        {{ form_row(traderFilterForm.skill) }}
+                    </div>
+                    <div class="col-12 col-md-5">
+                        {{ form_row(traderFilterForm.city) }}
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <button type="submit" class="btn btn-secondary w-100">
+                            {{ 'search'|trans }}
+                        </button>
+                    </div>
                 </div>
-
-                {{ form_end(userFilterForm) }}
+                {{ form_end(traderFilterForm) }}
             </div>
 
             <div class="col-12 col-md-8">
-
                 <div class="row g-3">
-                    {% for user in usersPagination %}
+                    {% for trader in traderPagination %}
 
                         <div class="col-12 col-md-6">
                             <div class="card">
                                 <div class="card-header bg-white">
                                     <div class="text-center mb-3">
                                         <img class="object-fit-cover rounded-circle border border-3 mb-3"
-                                             src="{{ user.avatar }}"
+                                             src="{{ trader.owner.avatar }}"
                                              height="120"
                                              width="120"/>
-                                        <div class="lead">{{ user.name }}</div>
+                                        <div class="lead">{{ trader.owner.fullName }}</div>
                                     </div>
                                 </div>
                                 <div class="card-header bg-white">
                                     <div class=" hstack gap-1 flex-wrap">
-                                        {% for skill in user.skills %}
+                                        {% for city in trader.cities %}
+                                            <span class="badge text-bg-light">{{ city.name|title }}</span>
+                                        {% endfor %}
+                                        {% for skill in trader.skills %}
                                             <span class="badge text-bg-secondary">{{ skill.name|trans }}</span>
                                         {% endfor %}
                                     </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <div> {{ user.averageRating }} <i
+                                        <div> {{ trader.averageRating }} <i
                                                     class="bi bi-star-fill text-warning"></i></div>
-                                        <div>{{ 'number_of_reviews'|trans({count: user.receivedReviews.count}) }}</div>
+                                        <div>{{ 'number_of_reviews'|trans({count: trader.reviews.count}) }}</div>
                                     </div>
                                 </div>
                                 <div class="card-footer bg-white">
-                                    <a href="{{ path('show_service', {id: user.id}) }}" class="btn btn-secondary w-100">
+                                    <a href="{{ path('show_trader', {id: trader.id}) }}"
+                                       class="btn btn-secondary w-100">
                                         view
                                     </a>
                                 </div>
@@ -62,7 +71,7 @@
 
                 <div class="col-12">
                     <div class="my-5">
-                        {{ knp_pagination_render(usersPagination) }}
+                        {{ knp_pagination_render(traderPagination) }}
                     </div>
                 </div>
 

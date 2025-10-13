@@ -1,0 +1,134 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container min-vh-100">
+        <div class="row justify-content-center g-3 mt-3">
+
+            <div class="col-12 col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="fs-5">{{ engagement.title }}</div>
+                        <div>
+                            <div class="badge bg-primary">{{ 'quotes-received'|trans({count: engagement.quotes.count}) }}</div>
+                            <div class="badge bg-primary">{{ (engagement.budget / 100)|format_currency(engagement.currencyCodeEnum.value, {}, 'en') }}</div>
+                        </div>
+                    </div>
+                    {% if engagement.quote and app.user == engagement.quote.owner %}
+                        {{ ux_map(map, { style: 'height: 250px' }) }}
+                        <div class="list-group list-group-flush">
+                           <div class="list-group-item d-flex justify-content-between">
+                               <div>{{ engagement.address }}</div>
+                               <div></div>
+                           </div>
+                        </div>
+                    {% endif %}
+                    <div class="card-header d-flex flex-wrap gap-2">
+                        <div>
+                            <img class="rounded-circle avatar-50" src="{{ engagement.owner.avatar }}">
+                        </div>
+                        <div>
+                            <div>{{ engagement.owner.fullName|title }}</div>
+                            <div>{{ engagement.createdAt.diffForHumans }}</div>
+                        </div>
+                    </div>
+                    <div class="card-body">{{ engagement.description }}</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                {% if engagement.hasAlreadySubmittedQuote(app.user) %}
+                    {% set mostRecentQuote = engagement.getMostRecentQuoteFor(app.user) %}
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-start">
+                            <div class="fs-4">{{ (mostRecentQuote.price) |format_currency(mostRecentQuote.currency.value) }}</div>
+                            <div>
+                                <span class="badge text-bg-primary rounded-pill">{{ mostRecentQuote.status.value|trans }}</span>
+                            </div>
+                        </div>
+                        <div class="card-header">
+                            <span class="badge rounded-pill text-bg-dark">{{ mostRecentQuote.startAt|format_datetime }}</span>
+                            <span class="badge rounded-pill text-bg-dark">{{ 'duration-in-hours'|trans({duration: mostRecentQuote.expectedDurationHours}) }}</span>
+                            <span class="badge rounded-pill text-bg-dark">{{ mostRecentQuote.includesMaterials ? 'includes-materials'|trans : 'does-not-includes-materials'|trans }}</span>
+                            <span class="badge rounded-pill text-bg-dark">{{ 'warranty-duration-in-months'|trans({duration: mostRecentQuote.warrantyMonths}) }}</span>
+                        </div>
+                        <div class="card-body">{{ mostRecentQuote.message|nl2br }}</div>
+                    </div>
+                {% else %}
+                    {{ form_errors(quoteForm) }}
+                    <div class="card">
+                        {{ form_start(quoteForm) }}
+                        <div class="card-header fs-5">{{ 'send-quotation'|trans|title }}</div>
+                        <div class="card-body vstack gap-3">
+                            {{ form_row(quoteForm.startAt) }}
+                            <div class="bg-white rounded-3 p-3" {{ stimulus_controller('duration-presets', {
+                                hoursPerDay: 8,
+                                hoursPerWeek: 40,
+                                weeksPerMonth: 4
+                            }) }}>
+                                <div {{ stimulus_controller('duration-presets', { hoursPerDay: 8, hoursPerWeek: 40, weeksPerMonth: 4 }) }}>
+                                    {{ form_widget(quoteForm.expectedDurationHours, {
+                                        attr: {
+                                            class: (quoteForm.expectedDurationHours.vars.attr.class|default('form-control')),
+                                            'data-duration-presets-target': 'input'
+                                        }
+                                    }) }}
+
+                                    <div class="d-flex gap-2 mt-2">
+                                        <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+                                                {{ stimulus_action('duration-presets','add','click',{ amount: 8 }) }}>{{ 'plus-one-day'|trans }}</a>
+                                        <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+                                                {{ stimulus_action('duration-presets','add','click',{ amount: 40 }) }}>{{ 'plus-one-week'|trans }}</a>
+                                        <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+                                                {{ stimulus_action('duration-presets','add','click',{ amount: 160 }) }}>{{ 'plus-one-month'|trans }}</a>
+                                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill"
+                                                {{ stimulus_action('duration-presets','reset','click',{ amount: 0 }) }}>{{ 'reset'|trans }}</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="bg-white p-3 rounded-3" {{ stimulus_controller('price-percent', { roundTo: 100 }) }}>
+                                {{ form_row(quoteForm.priceNetCents) }}
+
+                                <div class="d-flex gap-2">
+                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 2 }) }}>+2%</a>
+                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 5 }) }}>+5%</a>
+                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 10 }) }}>+10%</a>
+                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 15 }) }}>+15%</a>
+                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 20 }) }}>+20%</a>
+                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 30 }) }}>+30%</a>
+                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 40 }) }}>+40%</a>
+                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 50 }) }}>+50%</a>
+                                    <a href="#"
+                                       class="btn btn-sm btn-outline-primary rounded-pill"
+                                            {{ stimulus_action('price-percent', 'reset', 'click', { price: engagement.budget }) }}>
+                                        {{ 'reset'|trans }}
+                                    </a>
+                                </div>
+                            </div>
+
+
+                            {{ form_row(quoteForm.includesMaterials) }}
+                            {{ form_row(quoteForm.warrantyMonths) }}
+                            {{ form_row(quoteForm.validUntil) }}
+                            {{ form_row(quoteForm.message) }}
+                        </div>
+                        <div class="card-footer text-end">
+                            <button class="btn btn-primary" type="submit">{{ 'submit'|trans }}</button>
+                        </div>
+                        {{ form_end(quoteForm) }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}

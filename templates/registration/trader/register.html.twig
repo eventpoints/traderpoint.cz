@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card my-3">
+                    {{ form_start(traderForm) }}
+                    <div class="card-header">
+                        <h1 class="h3 mb-3 font-weight-normal">{{ 'trader-register'|trans|title }}</h1>
+                    </div>
+                    <div class="card-body vstack gap-3">
+                        {{ form_row(traderForm.firstName) }}
+                        {{ form_row(traderForm.lastName) }}
+                        {{ form_row(traderForm.email) }}
+                        {{ form_row(traderForm.skills) }}
+                        <div class="input-group mb-3" {{ stimulus_controller('password-visibility') }}>
+                            {{ form_widget(traderForm.plainPassword, {
+                                attr: {
+                                    'data-password-visibility-target': 'input'
+                                }
+                            }) }}
+                            <button data-action="password-visibility#toggle" class="btn btn-secondary" type="button"
+                                    id="button-addon2">
+                                <span data-password-visibility-target="icon" class="bi bi-eye"></span>
+                                <span data-password-visibility-target="icon" class="hidden bi bi-eye-slash"></span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <div class="card-footer vstack gap-2 text-center">
+                        <button type="submit" class="btn btn-primary">{{ 'register'|trans }}</button>
+                        <a href="{{ path('app_login') }}" type="button" class="link-dark">{{ 'login'|trans }}</a>
+                    </div>
+
+                    <div class="text-center">
+                        {#                            <a class="link-dark" href="{{ path('app_terms') }}">{{ 'terms-and-conditions'|trans }}</a> #}
+                    </div>
+                    {{ form_end(traderForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

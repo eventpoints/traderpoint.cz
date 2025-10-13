@@ -1,9 +1,173 @@
 
+.card-img-overlay{position:absolute}
+.card-img-overlay::before{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(
+            to top,
+            rgba(0,0,0,.72) 0%,
+            rgba(0,0,0,.55) 40%,
+            rgba(0,0,0,.20) 75%,
+            rgba(0,0,0,0) 100%
+    );
+    z-index:0; pointer-events:none;
+}
+.card-img-overlay > *{position:relative; z-index:1}
 
-/*body {*/
-/*    background-color: rebeccapurple !important;*/
-/*}*/
+.card-img-overlay-filter {filter:brightness(.70) contrast(1.07)}
+
+
+.ts-control {
+    padding: .785rem 0.75rem !important;
+}
 
 .hidden {
     display: none;
+}
+
+.avatar-50{
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid #eee;
+}
+
+
+/* Bigger switch */
+.form-switch-lg .form-check-input {
+    font-size: 1.5rem;
+    background-size: contain; /* keep the knob crisp when scaled */
+}
+
+/* Smaller switch (optional) */
+.form-switch-sm .form-check-input {
+    width: 1.75rem;
+    height: 0.9rem;
+    background-size: contain;
+}
+
+/* Optional: adjust label spacing/size */
+.form-switch-lg .form-check-label { margin-left: .25rem; font-size: 1.05rem; }
+.form-switch-sm .form-check-label { margin-left: .25rem; font-size: .95rem; }
+
+.read-more-content {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--read-more-line-clamp, 5);
+}
+
+.hover-pointer:hover{
+    cursor: pointer !important;
+}
+
+/* ========= Size variables (tweak these) ========= */
+.form-range.range--xl{
+    --range-track-h: 14px;         /* desktop track height */
+    --range-thumb:   32px;         /* desktop thumb size */
+    --range-color:   var(--bs-primary, #0d6efd);
+    --range-track-bg:#e9ecef;
+    --range-focus:   rgba(13,110,253,.25); /* focus halo */
+    --range-padding: 14px;          /* vertical padding (hit area) */
+}
+
+/* Mobile: even bigger thumb/track */
+@media (max-width: 576px){
+    .form-range.range--xl{
+        --range-track-h: 16px;
+        --range-thumb:   36px;
+        --range-padding: 18px;
+    }
+}
+
+/* ======== Base reset / hit area ======== */
+input[type="range"].form-range.range--xl{
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    padding: var(--range-padding) 0; /* bigger touch target */
+    width: 100%;
+}
+
+/* ======== WebKit/Blink (Chrome/Safari/Edge) ======== */
+input[type="range"].form-range.range--xl::-webkit-slider-runnable-track{
+    height: var(--range-track-h) !important;
+    background: var(--range-track-bg);
+    border-radius: 999px;
+}
+
+input[type="range"].form-range.range--xl::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: var(--range-thumb) !important;
+    height: var(--range-thumb) !important;
+    border-radius: 50%;
+    background: var(--range-color);
+    border: 0;
+    /* center thumb on thicker track */
+    margin-top: calc((var(--range-track-h) - var(--range-thumb)) / 2);
+    cursor: pointer;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.08);
+    transition: transform .05s ease-in-out, box-shadow .15s ease;
+}
+
+input[type="range"].form-range.range--xl:active::-webkit-slider-thumb{
+    transform: scale(1.05);
+}
+
+/* ======== Firefox ======== */
+input[type="range"].form-range.range--xl::-moz-range-track{
+    height: var(--range-track-h) !important;
+    background: var(--range-track-bg);
+    border: 0;
+    border-radius: 999px;
+}
+input[type="range"].form-range.range--xl::-moz-range-thumb{
+    width: var(--range-thumb) !important;
+    height: var(--range-thumb) !important;
+    border-radius: 50%;
+    background: var(--range-color);
+    border: 0;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.08);
+    transition: transform .05s ease-in-out, box-shadow .15s ease;
+}
+input[type="range"].form-range.range--xl:active::-moz-range-thumb{
+    transform: scale(1.05);
+}
+
+/* ======== Legacy IE/Edge ======== */
+input[type="range"].form-range.range--xl::-ms-track{
+    height: var(--range-track-h);
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+}
+input[type="range"].form-range.range--xl::-ms-fill-lower,
+input[type="range"].form-range.range--xl::-ms-fill-upper{
+    background: var(--range-track-bg);
+    border-radius: 999px;
+}
+input[type="range"].form-range.range--xl::-ms-thumb{
+    width: var(--range-thumb);
+    height: var(--range-thumb);
+    border-radius: 50%;
+    background: var(--range-color);
+    border: 0;
+}
+
+/* ======== Focus / disabled ======== */
+input[type="range"].form-range.range--xl:focus{
+    outline: none;
+}
+input[type="range"].form-range.range--xl:focus-visible{
+    box-shadow: 0 0 0 .35rem var(--range-focus);
+    border-radius: 999px; /* so halo follows the track shape */
+}
+input[type="range"].form-range.range--xl:disabled{
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.strikethrough{
+    text-decoration: line-through !important;
 }

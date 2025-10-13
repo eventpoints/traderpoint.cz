@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use App\Enum\UserRoleEnum;
 use App\Repository\UserRepository;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -21,17 +23,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
+    #[ORM\Column(type: 'uuid', unique: true)]
+    private Uuid $token;
+
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
     private null|Uuid $id = null;
-
-    #[ORM\Column(nullable: true)]
-    private null|string $phoneNumber = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private null|string $description = null;
 
     /**
      * @var list<string> The user roles
@@ -45,57 +45,49 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private string $password;
 
-    /**
-     * @var Collection<int, Review>
-     */
-    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'reviewee', cascade: ['persist', 'remove'])]
-    private Collection $receivedReviews;
+    #[ORM\OneToOne(targetEntity: TraderProfile::class, mappedBy: 'owner', cascade: ['persist','remove'])]
+    private ?TraderProfile $traderProfile = null;
 
     /**
      * @var Collection<int, Review>
      */
-    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'reviewer', cascade: ['persist', 'remove'])]
-    private Collection $authoredReviews;
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    private Collection $reviews;
+
+    #[ORM\OneToOne(targetEntity: PhoneNumber::class)]
+    #[ORM\JoinColumn(name: 'phone_number_id', referencedColumnName: 'id')]
+    private PhoneNumber|null $phoneNumber = null;
 
     /**
-     * @var Collection<int, Skill>
+     * @var Collection<int, ConversationParticipant>
      */
-    #[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'users', cascade: ['persist'])]
-    private Collection $skills;
-
-    /**
-     * @var Collection<int, Image> $images
-     */
-    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
-    private Collection $images;
+    #[ORM\OneToMany(targetEntity: ConversationParticipant::class, mappedBy: 'owner')]
+    private Collection $conversationParticipates;
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private string $firstName;
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private string $lastName;
+    #[ORM\Column(length: 180)]
+    #[Assert\Email]
+    private string $email;
+    #[ORM\Column(type: Types::TEXT)]
+    private string $avatar;
+    #[ORM\Column]
+    private bool $isVerified = false;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private CarbonImmutable|null $updatedAt = null;
+    private CarbonImmutable $createdAt;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private CarbonImmutable|null $createdAt;
-
-    public function __construct(
-        #[ORM\Column(length: 255, type: Types::STRING)]
-        private string $name,
-        #[ORM\Column(length: 180)]
-        #[Assert\Email]
-        private string $email,
-        #[ORM\Column(type: Types::TEXT)]
-        private string $avatar,
-        #[ORM\Column]
-        private bool $isVerified = false
-    )
+    public function __construct()
     {
-        $this->receivedReviews = new ArrayCollection();
-        $this->authoredReviews = new ArrayCollection();
-        $this->skills = new ArrayCollection();
-        $this->images = new ArrayCollection();
-        $this->updatedAt = new CarbonImmutable();
+        $this->token = Uuid::v7();
+        $this->reviews = new ArrayCollection();
+        $this->conversationParticipates = new ArrayCollection();
         $this->createdAt = new CarbonImmutable();
     }
 
-    public function getId(): Uuid
+    public
+    function getId(): Uuid
     {
         return $this->id;
     }
@@ -129,10 +121,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
+        $roles[] = UserRoleEnum::ROLE_USER->name;
+        return array_values(array_unique($roles));
     }
 
     /**
@@ -161,88 +151,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @see UserInterface
-     */
-    public function eraseCredentials(): void
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
-    }
-
-    /**
      * @return Collection<int, Review>
      */
-    public function getReceivedReviews(): Collection
+    public function getReviews(): Collection
     {
-        return $this->receivedReviews;
+        return $this->reviews;
     }
 
-    public function addReceivedReview(Review $review): static
+    public function addReview(Review $review): static
     {
-        if (! $this->receivedReviews->contains($review)) {
-            $this->receivedReviews->add($review);
-            $review->setReviewee($this);
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setOwner($this);
         }
 
         return $this;
     }
 
-    public function removeReceivedReview(Review $review): static
+    public function removeReview(Review $review): static
     {
-        if ($this->receivedReviews->removeElement($review) && $review->getReviewee() === $this) {
-            $review->setReviewee(null);
+        if ($this->reviews->removeElement($review) && $review->getOwner() === $this) {
+            $review->setOwner(null);
         }
 
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Review>
-     */
-    public function getAuthoredReviews(): Collection
-    {
-        return $this->authoredReviews;
-    }
-
-    public function addAuthoredReview(Review $review): static
-    {
-        if (! $this->authoredReviews->contains($review)) {
-            $this->authoredReviews->add($review);
-            $review->setReviewer($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAuthoredReview(Review $review): static
-    {
-        if ($this->authoredReviews->removeElement($review) && $review->getReviewer() === $this) {
-            $review->setReviewer(null);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Skill>
-     */
-    public function getSkills(): Collection
-    {
-        return $this->skills;
-    }
-
-    public function addSkill(Skill $skill): static
-    {
-        if (! $this->skills->contains($skill)) {
-            $this->skills->add($skill);
-        }
-
-        return $this;
-    }
-
-    public function removeSkill(Skill $skill): static
-    {
-        $this->skills->removeElement($skill);
         return $this;
     }
 
@@ -258,14 +189,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getName(): string
+    public function getFirstName(): string
     {
-        return $this->name;
+        return $this->firstName;
     }
 
-    public function setName(string $name): void
+    public function setFirstName(string $firstName): void
     {
-        $this->name = $name;
+        $this->firstName = $firstName;
+    }
+
+    public function getLastName(): string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(string $lastName): void
+    {
+        $this->lastName = $lastName;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->firstName . ' ' . $this->lastName;
     }
 
     public function getAvatar(): string
@@ -278,80 +224,82 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->avatar = $avatar;
     }
 
-    public function getAverageRating(): float
+    public function eraseCredentials(): void
     {
-        if ($this->receivedReviews->isEmpty()) {
-            return 0.0;
-        }
-
-        $totalRating = $this->receivedReviews->reduce(fn(float $carry, Review $review): float => $carry + (float) $review->getOverallRating(), 0.0);
-
-        return round($totalRating / $this->receivedReviews->count(), 2);
     }
 
-    public function getDescription(): ?string
+    public function getToken(): Uuid
     {
-        return $this->description;
+        return $this->token;
     }
 
-    public function setDescription(?string $description): void
+    public function setToken(Uuid $token): void
     {
-        $this->description = $description;
+        $this->token = $token;
     }
 
-    public function getPhoneNumber(): ?string
+    public function getPhoneNumber(): ?PhoneNumber
     {
         return $this->phoneNumber;
     }
 
-    public function setPhoneNumber(?string $phoneNumber): void
+    public function setPhoneNumber(?PhoneNumber $phoneNumber): void
     {
         $this->phoneNumber = $phoneNumber;
     }
 
     /**
-     * @return Collection<int, Image>
+     * @return Collection<int, ConversationParticipant>
      */
-    public function getImages(): Collection
+    public function getConversationParticipates(): Collection
     {
-        return $this->images;
+        return $this->conversationParticipates;
     }
 
-    public function addImage(Image $image): static
+    public function addConversationParticipate(ConversationParticipant $conversationParticipate): static
     {
-        if (! $this->images->contains($image)) {
-            $this->images->add($image);
-            $image->setOwner($this);
+        if (!$this->conversationParticipates->contains($conversationParticipate)) {
+            $this->conversationParticipates->add($conversationParticipate);
+            $conversationParticipate->setOwner($this);
         }
 
         return $this;
     }
 
-    public function removeImage(Image $image): static
+    public function removeConversationParticipate(ConversationParticipant $conversationParticipate): static
     {
-        $this->images->removeElement($image);
-
+        $this->conversationParticipates->removeElement($conversationParticipate);
         return $this;
     }
 
-    public function getUpdatedAt(): ?CarbonImmutable
-    {
-        return $this->updatedAt;
+    public function isTrader(): bool {
+        return in_array(UserRoleEnum::ROLE_TRADER->value, $this->getRoles(), true);
     }
 
-    public function setUpdatedAt(?CarbonImmutable $updatedAt): void
+    public function getTraderProfile(): ?TraderProfile
     {
-        $this->updatedAt = $updatedAt;
+        return $this->traderProfile;
     }
 
-    public function getCreatedAt(): ?CarbonImmutable
+    public function setTraderProfile(?TraderProfile $traderProfile): void
+    {
+        $this->traderProfile = $traderProfile;
+    }
+
+    public function getCreatedAt(): CarbonImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?CarbonImmutable $createdAt): void
+    public function setCreatedAt(CarbonImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
+
+    public function __toString(): string
+    {
+        return $this->getFullName();
+    }
+
 }
 

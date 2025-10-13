@@ -57,12 +57,12 @@ class ReviewRepository extends ServiceEntityRepository
     /**
      * @return array<int, Review>|Query
      */
-    public function findByReviewee(Uuid $userId, bool $isQuery = false): array|Query
+    public function findByTrader(Uuid $traderId, bool $isQuery = false): array|Query
     {
         $qb = $this->createQueryBuilder('review');
         $qb->andWhere(
-            $qb->expr()->eq('review.reviewee', ':revieweeId')
-        )->setParameter('revieweeId', $userId, 'uuid');
+            $qb->expr()->eq('review.trader', ':traderId')
+        )->setParameter('traderId', $traderId, 'uuid');
 
         $qb->orderBy('review.createdAt', Order::Descending->value);
 

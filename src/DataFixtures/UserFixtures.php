@@ -2,7 +2,12 @@
 
 namespace App\DataFixtures;
 
+use App\DataFixtures\Data\SkillData;
+use App\Entity\Skill;
+use App\Entity\TraderProfile;
 use App\Entity\User;
+use App\Enum\TraderStatusEnum;
+use App\Enum\UserRoleEnum;
 use App\Service\AvatarService\AvatarService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -10,29 +15,71 @@ use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserFixtures extends Fixture implements DependentFixtureInterface
-
+final class UserFixtures extends Fixture implements DependentFixtureInterface
 {
     private const FAKE_USER_PASSWORD = '12345678';
 
     public function __construct(
-        private readonly UserPasswordHasherInterface $userPasswordHasher,
+        private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly AvatarService $avatarService,
-    )
-    {
-    }
+    ) {}
 
     public function load(ObjectManager $manager): void
     {
-        $faker = Factory::create();
-        for ($userCount = 0; $userCount < 50; $userCount++) {
-            $email = $faker->email;
-            $avatar = $this->avatarService->generate(hashString: $email);
-            $user = new User(name: $faker->name, email: $email, avatar: $avatar, isVerified: true);
-            $password = $this->userPasswordHasher->hashPassword(user: $user, plainPassword: self::FAKE_USER_PASSWORD);
-            $user->setPassword($password);
+        $faker = Factory::create('cs_CZ');
 
-            $this->addReference(name: "user_$userCount", object: $user);
+        for ($i = 0; $i < 25; $i++) {
+            $email  = $faker->unique()->safeEmail();
+            $avatar = $this->avatarService->generate(hashString: $email);
+
+            $user = new User();
+            $user->setFirstName($faker->firstName());
+            $user->setLastName($faker->lastName());
+            $user->setEmail($email);
+            $user->setAvatar($avatar);
+            $user->setVerified(true);
+            $user->setPassword($this->passwordHasher->hashPassword($user, self::FAKE_USER_PASSWORD));
+
+            // 20% traders, 80% clients
+            $isTrader = $faker->boolean(20);
+
+            if ($isTrader) {
+                // Collect existing Skill references
+                $skillPool = [];
+                foreach (SkillData::getSkills() as $group => $skills) {
+                    foreach ($skills as $skillRef) {
+                        if ($this->hasReference($skillRef)) {
+                            /** @var Skill $skill */
+                            $skill = $this->getReference($skillRef);
+                            $skillPool[] = $skill;
+                        }
+                    }
+                }
+
+                $profile = new TraderProfile();
+                $profile->setOwner($user);        // owning side
+                $profile->setTitle($faker->jobTitle());
+                $profile->setAvatar($avatar);
+                $profile->setStatus(TraderStatusEnum::ACTIVE);
+
+                if (!empty($skillPool)) {
+                    $toAdd = $faker->randomElements(
+                        $skillPool,
+                        $faker->numberBetween(1, min(3, \count($skillPool)))
+                    );
+                    foreach ($toAdd as $skill) {
+                        $profile->addSkill($skill);
+                    }
+                }
+
+                $user->setTraderProfile($profile); // inverse side kept in sync
+                $user->setRoles([UserRoleEnum::ROLE_TRADER->value]);
+            } else {
+                // client-only; leave roles empty, getRoles() will add ROLE_USER
+                $user->setRoles([]);
+            }
+
+            $this->addReference("user_{$i}", $user);
             $manager->persist($user);
         }
 

@@ -1,0 +1,12 @@
+{# Map your flash keys to Bootstrap alert classes #}
+{# Loop all flash groups; this also clears them from the bag #}
+{% for label, messages in app.flashes %}
+    {% set bs = type_map[label]|default(label) %}
+    {% for message in messages %}
+        <div class="alert border-primary bg-primary-subtle alert-dismissible fade show my-3" role="alert">
+            {{ message|trans|raw }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'Close'|trans }}"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+

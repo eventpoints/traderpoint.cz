@@ -37,10 +37,8 @@ class Review
         private ?string $workQualityRating = null,
         #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: 1)]
         private ?string $valueForMoneyRating = null,
-        #[ORM\ManyToOne(inversedBy: 'authoredReviews')]
-        private ?User $reviewer = null,
-        #[ORM\ManyToOne(inversedBy: 'receivedReviews')]
-        private ?User $reviewee = null
+        #[ORM\ManyToOne(inversedBy: 'reviews')]
+        private ?User   $owner = null,
     )
     {
         $this->createdAt = new CarbonImmutable();
@@ -144,24 +142,13 @@ class Review
     {
         $this->createdAt = $createdAt;
     }
-
-    public function getReviewee(): ?User
+    public function getOwner(): ?User
     {
-        return $this->reviewee;
+        return $this->owner;
     }
 
-    public function setReviewee(?User $reviewee): void
+    public function setOwner(?User $owner): void
     {
-        $this->reviewee = $reviewee;
-    }
-
-    public function getReviewer(): ?User
-    {
-        return $this->reviewer;
-    }
-
-    public function setReviewer(?User $reviewer): void
-    {
-        $this->reviewer = $reviewer;
+        $this->owner = $owner;
     }
 }

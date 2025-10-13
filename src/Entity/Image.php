@@ -2,36 +2,46 @@
 
 namespace App\Entity;
 
-use App\Repository\ImageRepository;
 use Carbon\CarbonImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Stringable;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Uid\Uuid;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-#[ORM\Entity(repositoryClass: ImageRepository::class)]
-class Image implements Stringable
+#[ORM\Entity]
+#[Vich\Uploadable]
+class Image
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
-    private Uuid $id;
+    private ?Uuid $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Engagement::class, inversedBy: 'images')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    private null|Engagement $product = null;
+
+    #[Vich\UploadableField(mapping: 'images', fileNameProperty: 'filename')]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $filename = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $caption = null;
+
+    #[ORM\Column(type: Types::INTEGER)]
+    private int $position = 0;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private CarbonImmutable $createdAt;
+    private CarbonImmutable $updatedAt;
 
-    public function __construct(
-        #[ORM\ManyToOne(inversedBy: 'images')]
-        private User $owner,
-        #[ORM\Column(type: Types::TEXT)]
-        private ?string $base64,
-        #[ORM\Column(length: 255)]
-        private ?string $oldFilename
-    )
+    public function __construct()
     {
-        $this->createdAt = new CarbonImmutable();
+        $this->updatedAt = new CarbonImmutable();
     }
 
     public function getId(): ?Uuid
@@ -39,50 +49,72 @@ class Image implements Stringable
         return $this->id;
     }
 
-    public function getOldFilename(): ?string
+    public function setImageFile(?File $file): self
     {
-        return $this->oldFilename;
-    }
+        $this->imageFile = $file;
 
-    public function setOldFilename(string $oldFilename): static
-    {
-        $this->oldFilename = $oldFilename;
+        if ($file instanceof \Symfony\Component\HttpFoundation\File\File) {
+            $this->updatedAt = new CarbonImmutable();
+        }
 
         return $this;
     }
 
-    public function getCreatedAt(): CarbonImmutable
+    public function getImageFile(): ?File
     {
-        return $this->createdAt;
+        return $this->imageFile;
     }
 
-    public function setCreatedAt(CarbonImmutable $createdAt): void
+    public function setFilename(?string $name): self
     {
-        $this->createdAt = $createdAt;
+        $this->filename = $name;
+        return $this;
     }
 
-    public function getOwner(): User
+    public function getFilename(): ?string
     {
-        return $this->owner;
+        return $this->filename;
     }
 
-    public function setOwner(User $owner): void
+    public function setCaption(?string $cap): self
     {
-        $this->owner = $owner;
+        $this->caption = $cap;
+        return $this;
     }
 
-    public function getBase64(): ?string
+    public function getCaption(): ?string
     {
-        return $this->base64;
+        return $this->caption;
     }
 
-    public function setBase64(?string $base64): void
+    public function setPosition(int $pos): self
     {
-        $this->base64 = $base64;
+        $this->position = $pos;
+        return $this;
     }
 
-    public function __toString(): string
+    public function getPosition(): int
     {
-        return (string) $this->getBase64();
+        return $this->position;
+    }
+
+    public function getUpdatedAt(): CarbonImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(CarbonImmutable $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): void
+    {
+        $this->product = $product;
     }
 }

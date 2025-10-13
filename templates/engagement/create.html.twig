@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {# Leaflet CSS is imported by JS, but this helps if you prefer CSS via link #}
+{% endblock %}
+
+{% block body %}
+    <div class="container min-vh-100">
+        <div class="row justify-content-center g-3 my-3">
+            <div class="col-12 col-md-6">
+                <div class="card mb-5">
+                    {{ form_start(engagementForm,   attr: {
+                        'data-turbo': 'false'
+                    }) }}
+                    <div class="card-header fs-4 fw-bold">{{ 'advertise-job'|trans }}</div>
+                    {{ form_row(engagementForm.location) }}
+                    <div class="card-body vstack gap-3">
+                        {{ form_row(engagementForm.title) }}
+                        {{ form_row(engagementForm.description) }}
+                        {{ form_row(engagementForm.skills) }}
+                        {{ form_row(engagementForm.timelinePreferenceEnum) }}
+                        {{ form_row(engagementForm.budget) }}
+                        <div class="d-grid">
+                            <button data-turbo="false" class="btn btn-lg btn-primary">{{ 'contiune-to-payment'|trans }}</button>
+                        </div>
+                    </div>
+                    {{ form_end(engagementForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

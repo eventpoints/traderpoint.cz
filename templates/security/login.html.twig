@@ -3,12 +3,25 @@
 {% block title %}Login{% endblock %}
 
 {% block body %}
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            background: url('{{ asset('images/digger.jpg') }}') center / cover no-repeat fixed;
+            /* If you don’t want it fixed-on-scroll, drop the “fixed” keyword */
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+    </style>
     <div class="container">
-        <div class="row justify-content-center g-0 mt-3">
+        <div class="row justify-content-center g-0 my-5">
             <div class="col-md-4">
                 <div class="card h-100 shadow">
                     <div class="card-header">
-                        <div class="fs-3 fw-bold text-uppercase">{{ 'login'|trans|title }}</div>
+                        <div class="fs-3 fw-bold">{{ 'login'|trans|title }}</div>
                     </div>
                     <form method="post">
                         <div class="card-body vstack gap-3">

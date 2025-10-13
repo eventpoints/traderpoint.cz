@@ -34,6 +34,12 @@ class Skill
     #[ORM\JoinColumn(name: 'trade_id', referencedColumnName: 'id')]
     private Skill|null $trade = null;
 
+    /**
+     * @var Collection<int, Engagement>
+     */
+    #[ORM\ManyToMany(targetEntity: Engagement::class, mappedBy: 'skills')]
+    private Collection $engagements;
+
     public function __construct(
         #[ORM\Column(length: 255)]
         private string $name
@@ -41,6 +47,7 @@ class Skill
     {
         $this->users = new ArrayCollection();
         $this->skills = new ArrayCollection();
+        $this->engagements = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -114,5 +121,37 @@ class Skill
     {
         $this->skills->removeElement($skill);
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Engagement>
+     */
+    public function getEngagements(): Collection
+    {
+        return $this->engagements;
+    }
+
+    public function addEngagement(Engagement $engagement): static
+    {
+        if (!$this->engagements->contains($engagement)) {
+            $this->engagements->add($engagement);
+            $engagement->addSkill($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEngagement(Engagement $engagement): static
+    {
+        if ($this->engagements->removeElement($engagement)) {
+            $engagement->removeSkill($this);
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }

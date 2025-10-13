@@ -40,7 +40,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 ],
             ],
         ],
-        'access_control' => null,
+        'access_control' => [
+
+        ],
     ]);
     if ($containerConfigurator->env() === 'test') {
         $containerConfigurator->extension('security', [

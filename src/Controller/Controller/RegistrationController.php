@@ -1,101 +1,156 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Controller;
 
+use App\DataTransferObject\UserTraderDto;
+use App\Entity\TraderProfile;
 use App\Entity\User;
+use App\Enum\FlashEnum;
+use App\Enum\UserRoleEnum;
 use App\Form\Form\RegistrationFormType;
+use App\Form\Form\TraderRegisterFormType;
 use App\Repository\UserRepository;
-use App\Security\EmailVerifier;
+use App\Security\AppCustomAuthenticator;
+use App\Service\AvatarService\AvatarService;
+use App\Service\MailerFacade\MailerFacade;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Address;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
     public function __construct(
-        private readonly EmailVerifier $emailVerifier
+        private readonly TranslatorInterface         $translator,
+        private readonly EntityManagerInterface      $entityManager,
+        private readonly UserRepository              $userRepository,
+        private readonly AvatarService               $avatarService,
+        private readonly UserPasswordHasherInterface $userPasswordHasher,
+        private readonly MailerFacade                $mailerFacade,
     )
     {
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     #[Route('/register', name: 'app_register')]
-    public function register_dwo_dowjao_dwoaj(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
+    public function register(
+        Request                    $request,
+        UserAuthenticatorInterface $userAuthenticator,
+        AppCustomAuthenticator     $authenticator,
+        #[CurrentUser] null|User   $currentUser
+    ): ?Response
     {
-        $form = $this->createForm(RegistrationFormType::class);
+        if ($currentUser instanceof User) {
+            if ($currentUser->isTrader()) {
+                return $this->redirectToRoute('trader_dashboard');
+            }
+            return $this->redirectToRoute('client_dashboard');
+        }
+
+        $user = new User();
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $avatar = $this->avatarService->generate($user->getEmail());
+            $user->setAvatar($avatar);
+
+            $password = $this->userPasswordHasher->hashPassword(user: $user, plainPassword: $form->get('plainPassword')->getData());
+            $user->setPassword($password);
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+
+//            $this->mailerFacade->sendWelcomeEmail(user: $user);
+
+            return $userAuthenticator->authenticateUser($user, $authenticator, $request);
+        }
+
+        return $this->render('registration/register.html.twig', [
+            'registrationForm' => $form->createView(),
+        ]);
+    }
+
+    #[Route('trader/register', name: 'trader_register')]
+    public function traderRegister(
+        Request                    $request,
+        UserAuthenticatorInterface $userAuthenticator,
+        AppCustomAuthenticator     $authenticator,
+        #[CurrentUser] null|User   $currentUser,
+    ): ?Response
+    {
+        if ($currentUser instanceof User) {
+            if ($currentUser->isTrader()) {
+                return $this->redirectToRoute('trader_dashboard');
+            }
+            return $this->redirectToRoute('client_dashboard');
+        }
+
+        $userTraderDto = new UserTraderDto();
+        $form = $this->createForm(TraderRegisterFormType::class, $userTraderDto);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            /**
-             * @var User $user
-             */
-            $user = $form->getData();
+            $user = $this->userRepository->findOneBy(['email' => $userTraderDto->getEmail()]);
+            if ($user) {
+                return $this->redirectToRoute('trader_register');
+            }
 
-            /** @var string $plainPassword */
-            $plainPassword = $form->get('plainPassword')->getData();
+            $avatar = $this->avatarService->generate($userTraderDto->getEmail());
 
-            // encode the plain password
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+            $user = new User();
+            $user->setRoles([UserRoleEnum::ROLE_TRADER->value]);
+            $user->setAvatar($avatar);
+            $user->setFirstName($userTraderDto->getFirstName());
+            $user->setLastName($userTraderDto->getLastName());
+            $user->setEmail($userTraderDto->getEmail());
+            $user->setEmail($userTraderDto->getEmail());
+            $password = $this->userPasswordHasher->hashPassword(user: $user, plainPassword: $form->get('plainPassword')->getData());
+            $user->setPassword($password);
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $traderProfile = new TraderProfile();
+            foreach ($userTraderDto->getSkills() as $skill) {
+                $traderProfile->addSkill($skill);
+            }
+            $traderProfile->setOwner($user);
+            $user->setTraderProfile($traderProfile);
 
-            // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation(
-                'app_verify_email',
-                $user,
-                (new TemplatedEmail())
-                    ->from(new Address('info@traderpoint.cz', 'Traderpoint Notifications'))
-                    ->to((string) $user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
 
-            // do anything else you need here, like send an email
-
-            return $security->login($user, 'form_login', 'main');
+            return $userAuthenticator->authenticateUser($user, $authenticator, $request);
         }
 
-        return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form,
+        return $this->render('registration/trader/register.html.twig', [
+            'traderForm' => $form->createView(),
         ]);
     }
 
-    #[Route('/verify/email', name: 'app_verify_email')]
-    public function verifyUserEmail(Request $request, TranslatorInterface $translator, UserRepository $userRepository): Response
+    #[Route('/confirm/{token}', name: 'confirm_account')]
+    public function confirmAccount(null|User $user): Response
     {
-        $id = $request->query->get('id');
-
-        if (null === $id) {
-            return $this->redirectToRoute('app_register');
+        if (!$user instanceof User) {
+            return $this->redirectToRoute('app_login');
         }
 
-        $user = $userRepository->find($id);
+        $user->setVerified(isVerified: true);
+        $user->setToken(Uuid::v4());
+        $this->userRepository->save($user, true);
 
-        if (null === $user) {
-            return $this->redirectToRoute('app_register');
-        }
+        $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans('account-confirmed'));
 
-        // validate email confirmation link, sets User::isVerified=true and persists
-        try {
-            $this->emailVerifier->handleEmailConfirmation($request, $user);
-        } catch (VerifyEmailExceptionInterface $exception) {
-            $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
-
-            return $this->redirectToRoute('app_register');
-        }
-
-        // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'Your email address has been verified.');
-
-        return $this->redirectToRoute('app_register');
+        return $this->redirectToRoute('properties');
     }
 }

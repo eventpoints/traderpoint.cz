@@ -3,6 +3,7 @@
 namespace App\Controller\Controller;
 
 use App\Entity\Review;
+use App\Entity\Trader;
 use App\Entity\User;
 use App\Enum\FlashEnum;
 use App\Form\Form\ReviewFormType;
@@ -27,9 +28,9 @@ class ReviewController extends AbstractController
     }
 
     #[Route(path: '/create/{id}', name: 'create_review')]
-    public function create(User $reviewee, #[CurrentUser] User $currentUser, Request $request): Response
+    public function create(Trader $trader, #[CurrentUser] User $currentUser, Request $request): Response
     {
-        $review = new Review(reviewer: $currentUser, reviewee: $reviewee);
+        $review = new Review(owner: $currentUser, trader: $trader);
         $reviewForm = $this->createForm(type: ReviewFormType::class, data: $review);
         $reviewForm->handleRequest($request);
 
@@ -38,8 +39,8 @@ class ReviewController extends AbstractController
             $review->setOverallRating($overallRating);
             $this->reviewRepository->save(entity: $review, flush: true);
             $this->addFlash(type: FlashEnum::SUCCESS->value, message: $this->translator->trans('flash.review-successful'));
-            return $this->redirectToRoute(route: 'show_service', parameters: [
-                'id' => $reviewee->getId(),
+            return $this->redirectToRoute(route: 'show_trader', parameters: [
+                'id' => $trader->getId(),
             ]);
         }
 

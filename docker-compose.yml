@@ -45,15 +45,17 @@ services:
         protocol: udp
 
   database:
-    image: postgres
-    ports:
-      - "5432:5432"
+    image: postgres:16
+    platform: linux/arm64
     environment:
       POSTGRES_DB: traderpoint
-      POSTGRES_PASSWORD: traderpoint
       POSTGRES_USER: root
+      POSTGRES_PASSWORD: traderpoint
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - ./docker/db/data:/var/lib/postgresql/data:rw
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   adminer:
     image: adminer:4.8.0
@@ -68,3 +70,4 @@ volumes:
   php_socket:
   caddy_data:
   caddy_config:
+  db-data:

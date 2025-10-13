@@ -11,24 +11,38 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationFormType extends AbstractType
 {
+    public function __construct(
+        private readonly TranslatorInterface $translator
+    )
+    {
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [
+            ->add('firstName', TextType::class, [
+                'label' => $this->translator->trans('first-name'),
+                'row_attr' => [
+                    'class' => 'form-floating',
+                ],
+            ])
+            ->add('lastName', TextType::class, [
+                'label' => $this->translator->trans('last-name'),
                 'row_attr' => [
                     'class' => 'form-floating',
                 ],
             ])
             ->add('email', EmailType::class, [
+                'label' => $this->translator->trans('email-address'),
                 'row_attr' => [
                     'class' => 'form-floating',
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
-                'label' => 'password',
+                'label' => $this->translator->trans('password'),
                 'row_attr' => [
                     'class' => 'form-floating',
                 ],

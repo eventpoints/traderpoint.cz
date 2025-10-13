@@ -1,0 +1,23 @@
+{% block smart_range_row %}
+    <div>
+        <div class="bg-white rounded-3 p-3">
+            <div class="mb-2 d-flex justify-content-between">
+                {{ form_label(form) }}
+                <div class="fs-5" id="{{ form.vars.smart_range_output_id }}"></div>
+            </div>
+            {{ form_widget(form) }}
+            {{ form_errors(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block smart_range_widget %}
+    {% set type = 'range' %}
+    {% set attr = attr|merge({
+        class: (attr.class|default('') ~ ' form-range range--xl')|trim
+    }) %}
+    {{- block('form_widget_simple') -}}
+    <div class="mt-2 small text-muted">
+        <span id="{{ smart_range_output_id }}"></span>
+    </div>
+{% endblock %}

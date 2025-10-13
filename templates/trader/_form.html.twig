@@ -1,0 +1,19 @@
+
+{{ form_start(traderForm) }}
+<div class="card-header fs-4">
+    {{ 'trader'|trans }}
+</div>
+<div class="card-body vstack gap-3">
+    {{ form_row(traderForm.name) }}
+    {{ form_row(traderForm.servicePhotos) }}
+    {{ form_row(traderForm.description) }}
+    <div class="row justify-content-between g-2">
+        <div class="col-4">{{ form_row(traderForm.phoneNumber.prefix) }}</div>
+        <div class="col-8">{{ form_row(traderForm.phoneNumber.number) }}</div>
+    </div>
+    {{ form_row(traderForm.skills) }}
+</div>
+<div class="card-footer text-end">
+    <button type="submit" class="btn btn-primary">{{ 'save'|trans }}</button>
+</div>
+{{ form_end(traderForm) }}

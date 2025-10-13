@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center g-3 mt-3">
+
+            <div class="col-12 col-md-6">
+
+                <div class="vstack gap-3">
+                    <div class="card">
+                        {{ form_start(traderAccountForm) }}
+                        <div class="card-header">
+                            <div class="fs-4">{{ 'trader-settings'|trans }}</div>
+                        </div>
+                        <div class="col">{{ form_row(traderAccountForm.location) }}</div>
+                        <div class="card-body vstack gap-3">
+                            {{ form_row(traderAccountForm.title) }}
+                            {{ form_row(traderAccountForm.skills) }}
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">{{ 'save'|trans }}</button>
+                            </div>
+                        </div>
+                        {{ form_end(traderAccountForm) }}
+                    </div>
+
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="fs-4">{{ 'account-setting'|trans }}</div>
+                        </div>
+                        {{ form_start(accountForm) }}
+                        <div class="card-body vstack gap-3">
+                            <div class="row row-cols-1 row-cols-md-2 g-3">
+                                <div class="col">{{ form_row(accountForm.firstName) }}</div>
+                                <div class="col">{{ form_row(accountForm.lastName) }}</div>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">{{ 'save'|trans }}</button>
+                            </div>
+                        </div>
+                        {{ form_end(accountForm) }}
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    </div>
+{% endblock %}

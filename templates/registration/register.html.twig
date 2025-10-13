@@ -2,17 +2,32 @@
 
 {% block title %}Register{% endblock %}
 
+
 {% block body %}
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            background: url('{{ asset('images/grinder.jpg') }}') center / cover no-repeat fixed;
+            /* If you don’t want it fixed-on-scroll, drop the “fixed” keyword */
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+    </style>
+
     <div class="container">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center my-5">
             <div class="col-md-4">
                 <div class="card my-3">
                     {{ form_start(registrationForm) }}
                     <div class="card-header">
-                        <h1 class="h3 mb-3 font-weight-normal">{{ 'register'|trans|title }}</h1>
+                        <div class="fs-4 fw-bold">{{ 'register'|trans|title }}</div>
                     </div>
                     <div class="card-body vstack gap-3 text-center">
-                        {{ form_row(registrationForm.name) }}
+                        {{ form_row(registrationForm.firstName) }}
+                        {{ form_row(registrationForm.lastName) }}
                         {{ form_row(registrationForm.email) }}
                         <div class="input-group mb-3" {{ stimulus_controller('password-visibility') }}>
                             {{ form_widget(registrationForm.plainPassword, {
@@ -20,7 +35,7 @@
                                     'data-password-visibility-target': 'input'
                                 }
                             }) }}
-                            <button data-action="password-visibility#toggle" class="btn btn-light" type="button"
+                            <button data-action="password-visibility#toggle" class="btn btn-secondary" type="button"
                                     id="button-addon2">
                                 <span data-password-visibility-target="icon" class="bi bi-eye"></span>
                                 <span data-password-visibility-target="icon" class="hidden bi bi-eye-slash"></span>
@@ -35,7 +50,6 @@
                     </div>
 
                     <div class="text-center">
-                        {#                            <a class="link-dark" href="{{ path('app_terms') }}">{{ 'terms-and-conditions'|trans }}</a> #}
                     </div>
                     {{ form_end(registrationForm) }}
                 </div>
