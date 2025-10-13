@@ -17,23 +17,14 @@ class PhoneNumber
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
     private null|Uuid $id = null;
-    #[ORM\Column]
-    private int $prefix;
-
-    #[ORM\Column]
-    private int $number;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private null|CarbonImmutable $confirmedAt = null;
 
-    /**
-     * @param int $prefix
-     * @param int $number
-     */
-    public function __construct(int $prefix, int $number)
+    public function __construct(#[ORM\Column]
+    private int $prefix, #[ORM\Column]
+    private int $number)
     {
-        $this->prefix = $prefix;
-        $this->number = $number;
     }
 
     public function getId(): Uuid
@@ -70,5 +61,4 @@ class PhoneNumber
     {
         $this->confirmedAt = $confirmedAt;
     }
-
 }

@@ -17,7 +17,9 @@ use Faker\Factory;
 
 class EngagementFixtures extends Fixture implements DependentFixtureInterface
 {
-    /** Incrementing counter so we can add engagement_* references */
+    /**
+     * Incrementing counter so we can add engagement_* references
+     */
     private int $engCounter = 0;
 
     public function load(ObjectManager $manager): void
@@ -25,7 +27,7 @@ class EngagementFixtures extends Fixture implements DependentFixtureInterface
         // Czech locale for place names, addresses, etc.
         $faker = Factory::create('cs_CZ');
 
-        $contractCases = ContractType::cases();
+        ContractType::cases();
         $statusCases = EngagementStatusEnum::cases();
 
         // --- Collect ALL Skill references and re-attach them to the current EM ---
@@ -56,7 +58,7 @@ class EngagementFixtures extends Fixture implements DependentFixtureInterface
                 $engagement->setDescription($faker->text(150));
 
                 // --- Skills: 1–3 unique from the pool (if any) ---
-                if (!empty($availableSkills)) {
+                if (! empty($availableSkills)) {
                     $skillsToAdd = $faker->randomElements(
                         $availableSkills,
                         $faker->numberBetween(1, min(3, \count($availableSkills))),

@@ -3,14 +3,13 @@
 namespace App\Entity;
 
 use App\Enum\TraderStatusEnum;
-use App\Repository\EngagementRepository;
 use App\Repository\TraderProfileRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\Uuid;
-use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TraderProfileRepository::class)]
 class TraderProfile
@@ -72,7 +71,7 @@ class TraderProfile
 
     public function addSkill(Skill $skill): static
     {
-        if (!$this->skills->contains($skill)) {
+        if (! $this->skills->contains($skill)) {
             $this->skills->add($skill);
         }
 
@@ -164,5 +163,4 @@ class TraderProfile
     {
         $this->serviceRadius = $serviceRadius;
     }
-
 }

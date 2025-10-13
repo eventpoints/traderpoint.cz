@@ -4,23 +4,8 @@ namespace App\DataTransferObject;
 
 final class MapLocationDto
 {
-    private null|float $latitude = null;
-    private null|float $longitude = null;
-    private null|string $address = null;
-    private null|int $radiusKm = null;
-
-    /**
-     * @param float|null $latitude
-     * @param float|null $longitude
-     * @param string|null $address
-     * @param int|null $radiusKm
-     */
-    public function __construct(?float $latitude, ?float $longitude, ?string $address, ?int $radiusKm)
+    public function __construct(private null|float $latitude, private null|float $longitude, private null|string $address, private null|int $radiusKm)
     {
-        $this->latitude = $latitude;
-        $this->longitude = $longitude;
-        $this->address = $address;
-        $this->radiusKm = $radiusKm;
     }
 
     public function getLatitude(): ?float
@@ -62,5 +47,4 @@ final class MapLocationDto
     {
         $this->radiusKm = $radiusKm;
     }
-
 }

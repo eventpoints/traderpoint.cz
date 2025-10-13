@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Form\Form;
@@ -29,33 +30,35 @@ final class TraderAccountFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $currentUser = $this->security->getUser();
-        if (!$currentUser instanceof User) {
+        if (! $currentUser instanceof User) {
             throw new \RuntimeException('User not found');
         }
 
         $traderProfile = $currentUser->getTraderProfile();
-        if (!$traderProfile) {
+        if (!$traderProfile instanceof \App\Entity\TraderProfile) {
             throw new \RuntimeException('Trader profile missing');
         }
 
         $mapLocationDto = new MapLocationDto(
             (float) ($traderProfile->getLatitude() ?? 0),
             (float) ($traderProfile->getLongitude() ?? 0),
-            (string) ($traderProfile->getAddress() ?? ''),
+            $traderProfile->getAddress() ?? '',
             $traderProfile->getServiceRadius()
         );
 
         $builder
             ->add('title', TextType::class, [
                 'label' => $this->translator->trans('business-name'),
-                'row_attr' => ['class' => 'form-floating'],
+                'row_attr' => [
+                    'class' => 'form-floating',
+                ],
             ])
             ->add('skills', EntityType::class, [
                 'label' => 'Required skills',
                 'class' => Skill::class,
                 'choice_label' => 'name',
                 'choice_translation_domain' => 'skills',
-                'group_by' => fn(Skill $skill) => $this->translator->trans($skill->getTrade()->getName()),
+                'group_by' => fn(Skill $skill): string => $this->translator->trans($skill->getTrade()->getName()),
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
                     $qb = $er->createQueryBuilder('skill');
                     $qb->andWhere($qb->expr()->isNotNull('skill.trade'));
@@ -65,7 +68,9 @@ final class TraderAccountFormType extends AbstractType
                 'expanded' => false,
                 'required' => false,
                 'autocomplete' => true,
-                'row_attr' => ['class' => 'form-floating'],
+                'row_attr' => [
+                    'class' => 'form-floating',
+                ],
             ])
             ->add('location', MapLocationType::class, [
                 'mapped' => false,

@@ -10,7 +10,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use DomainException;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
-use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -22,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'ix_quote_status', columns: ['status'])]
 #[ORM\Index(name: 'ix_quote_decided_at', columns: ['decided_at'])]
 #[ORM\HasLifecycleCallbacks]
-class Quote
+class Quote implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -38,7 +37,9 @@ class Quote
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $owner;
 
-    #[ORM\Column(type: Types::INTEGER, options: ['default' => 1])]
+    #[ORM\Column(type: Types::INTEGER, options: [
+        'default' => 1,
+    ])]
     #[Assert\Positive]
     private int $version = 1;
 
@@ -52,7 +53,9 @@ class Quote
     #[ORM\Column(length: 3, enumType: CurrencyCodeEnum::class)]
     private CurrencyCodeEnum $currency = CurrencyCodeEnum::CZK;
 
-    #[ORM\Column(type: Types::INTEGER, options: ['unsigned' => true])]
+    #[ORM\Column(type: Types::INTEGER, options: [
+        'unsigned' => true,
+    ])]
     #[Assert\Range(min: 0, max: 10000)]
     private int $vatRateBps = 0;
 
@@ -78,7 +81,9 @@ class Quote
     #[Assert\Positive]
     private ?int $expectedDurationHours = null;
 
-    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[ORM\Column(type: Types::BOOLEAN, options: [
+        'default' => false,
+    ])]
     private bool $includesMaterials = false;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
@@ -100,7 +105,7 @@ class Quote
         $this->setPriceNetCents($priceNetCents);
         $this->setCurrency($currency);
         $this->setCreatedAt($now);
-        $this->setValidUntil($now->addDays(30)->endOfDay());;
+        $this->setValidUntil($now->addDays(30)->endOfDay()); ;
         $this->setStatus(QuoteStatusEnum::SUBMITTED);
     }
 
@@ -122,7 +127,7 @@ class Quote
 
     private function recalculateTotals(): void
     {
-        $vat = (int)round($this->priceNetCents * ($this->vatRateBps / 10000));
+        $vat = (int) round($this->priceNetCents * ($this->vatRateBps / 10000));
         $this->priceVatCents = $vat;
         $this->priceGrossCents = $this->priceNetCents + $vat;
     }
@@ -139,11 +144,12 @@ class Quote
 
     public function withdraw(): void
     {
-        if ($this->getStatus() !== QuoteStatusEnum::SUBMITTED) return;
+        if ($this->getStatus() !== QuoteStatusEnum::SUBMITTED) {
+            return;
+        }
         $this->setStatus(QuoteStatusEnum::WITHDRAWN);
         $this->setDecidedAt(CarbonImmutable::now());
     }
-
 
     public function reject(): void
     {
@@ -178,7 +184,7 @@ class Quote
 
     public function isOpen(): bool
     {
-        return $this->getStatus() === QuoteStatusEnum::SUBMITTED && !$this->isExpired();
+        return $this->getStatus() === QuoteStatusEnum::SUBMITTED && ! $this->isExpired();
     }
 
     public function isExpired(): bool
@@ -208,7 +214,7 @@ class Quote
 
     public function setOwner(User $owner): void
     {
-        if (!$owner->isTrader()) {
+        if (! $owner->isTrader()) {
             throw new DomainException('Only traders can submit quotes');
         }
         $this->owner = $owner;
@@ -376,7 +382,7 @@ class Quote
         return in_array($this->status, [QuoteStatusEnum::SUBMITTED, QuoteStatusEnum::EXPIRED]);
     }
 
-    public function getPrice() : int
+    public function getPrice(): int
     {
         return $this->getPriceNetCents() / 100;
     }
@@ -385,5 +391,4 @@ class Quote
     {
         return $this->getId() . '-' . $this->getPrice();
     }
-
 }

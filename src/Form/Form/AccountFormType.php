@@ -2,9 +2,7 @@
 
 namespace App\Form\Form;
 
-use App\Entity\Skill;
 use App\Entity\User;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -15,11 +13,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class AccountFormType extends AbstractType
 {
     public function __construct(
-        private readonly TranslatorInterface $translator,
-        private readonly Security $security
+        private readonly TranslatorInterface $translator
     )
     {
     }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

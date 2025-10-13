@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller\Controller;
@@ -17,8 +18,8 @@ final class StripeWebhookController extends AbstractController
 {
     public function __construct(
         private readonly PaymentRepository $payments,
-        private readonly LoggerInterface   $logger,
-        private readonly string            $webHookSecret,
+        private readonly LoggerInterface $logger,
+        private readonly string $webHookSecret,
     )
     {
     }
@@ -27,12 +28,14 @@ final class StripeWebhookController extends AbstractController
     public function __invoke(Request $request): Response
     {
         $payload = $request->getContent();
-        $sigHeader = (string)$request->headers->get('stripe-signature', '');
+        $sigHeader = (string) $request->headers->get('stripe-signature', '');
 
         try {
             $event = StripeWebhook::constructEvent($payload, $sigHeader, $this->webHookSecret);
         } catch (\Throwable $e) {
-            $this->logger->warning('Stripe webhook signature failed', ['error' => $e->getMessage()]);
+            $this->logger->warning('Stripe webhook signature failed', [
+                'error' => $e->getMessage(),
+            ]);
             return new Response('bad signature', 400);
         }
 
@@ -48,19 +51,19 @@ final class StripeWebhookController extends AbstractController
 
             'checkout.session.expired' =>
             function () use ($event): void {
-                $this->markStatus((string)$event->data->object->id, PaymentStatusEnum::EXPIRED);
+                $this->markStatus((string) $event->data->object->id, PaymentStatusEnum::EXPIRED);
             },
 
             'checkout.session.async_payment_failed' =>
             function () use ($event): void {
-                $this->markStatus((string)$event->data->object->id, PaymentStatusEnum::FAILED);
+                $this->markStatus((string) $event->data->object->id, PaymentStatusEnum::FAILED);
             },
 
             // Optional: also accept PI events as a belt-and-braces fallback
             'payment_intent.succeeded' =>
             function () use ($event): void {
-                $piId = (string)$event->data->object->id;
-                $this->markPaidByPaymentIntentId($piId);
+                $piId = (string) $event->data->object->id;
+                $this->markPaidByPaymentIntentId();
             },
 
             default =>
@@ -75,8 +78,10 @@ final class StripeWebhookController extends AbstractController
     private function markPaidBySessionId(string $sessionId, ?string $paymentIntentId): void
     {
         $payment = $this->payments->findOneByCheckoutId($sessionId);
-        if (!$payment) {
-            $this->logger->warning('Payment not found for session', ['session_id' => $sessionId]);
+        if (!$payment instanceof \App\Entity\Payment) {
+            $this->logger->warning('Payment not found for session', [
+                'session_id' => $sessionId,
+            ]);
             return;
         }
 
@@ -87,7 +92,7 @@ final class StripeWebhookController extends AbstractController
         $this->payments->save($payment, true);
     }
 
-    private function markPaidByPaymentIntentId(string $paymentIntentId): void
+    private function markPaidByPaymentIntentId(): void
     {
         // Implement this if you store PI ids (e.g., add a repository finder).
         // $payment = $this->payments->findOneByPaymentIntentId($paymentIntentId);
@@ -97,7 +102,7 @@ final class StripeWebhookController extends AbstractController
     private function markStatus(string $sessionId, PaymentStatusEnum $status): void
     {
         $payment = $this->payments->findOneByCheckoutId($sessionId);
-        if (!$payment) {
+        if (!$payment instanceof \App\Entity\Payment) {
             return;
         }
         $payment->setStatus($status);

@@ -9,7 +9,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         'notifier' => [
             'chatter_transports' => null,
             'texter_transports' => [
-                'forty-six-elks' => '%env(FORTY_SIX_ELKS_DSN)%'
+                'forty-six-elks' => '%env(FORTY_SIX_ELKS_DSN)%',
             ],
             'channel_policy' => [
                 'urgent' => [

@@ -2,7 +2,6 @@
 
 namespace App\Controller\Controller;
 
-use App\Entity\Engagement;
 use App\Entity\Quote;
 use App\Repository\EngagementRepository;
 use App\Repository\QuoteRepository;
@@ -17,7 +16,7 @@ class QuoteController extends AbstractController
 {
     public function __construct(
         private readonly EngagementRepository $engagementRepository,
-        private readonly QuoteRepository      $quoteRepository
+        private readonly QuoteRepository $quoteRepository
     )
     {
     }
@@ -31,7 +30,9 @@ class QuoteController extends AbstractController
         $quote->getEngagement()->accept($quote);
         $this->engagementRepository->save($quote->getEngagement(), true);
 
-        return $this->redirectToRoute('client_show_engagement', ['id' => $quote->getEngagement()->getId()]);
+        return $this->redirectToRoute('client_show_engagement', [
+            'id' => $quote->getEngagement()->getId(),
+        ]);
     }
 
     #[Route(path: 'reject/{id}', name: 'reject_quote')]
@@ -42,7 +43,8 @@ class QuoteController extends AbstractController
         $quote->reject();
         $this->quoteRepository->save($quote, true);
 
-        return $this->redirectToRoute('client_show_engagement', ['id' => $quote->getEngagement()->getId()]);
+        return $this->redirectToRoute('client_show_engagement', [
+            'id' => $quote->getEngagement()->getId(),
+        ]);
     }
-
 }

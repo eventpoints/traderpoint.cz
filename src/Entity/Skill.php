@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: SkillRepository::class)]
-class Skill
+class Skill implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -133,7 +133,7 @@ class Skill
 
     public function addEngagement(Engagement $engagement): static
     {
-        if (!$this->engagements->contains($engagement)) {
+        if (! $this->engagements->contains($engagement)) {
             $this->engagements->add($engagement);
             $engagement->addSkill($this);
         }

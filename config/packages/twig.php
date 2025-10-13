@@ -12,7 +12,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'form/fields/rating_range.html.twig',
             'form/switch.html.twig',
             'form/smart_range_theme.html.twig',
-            'form/map_location.html.twig'
+            'form/map_location.html.twig',
         ],
     ]);
     if ($containerConfigurator->env() === 'test') {

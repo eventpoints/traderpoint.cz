@@ -40,14 +40,13 @@ final class PaymentFixtures extends Fixture implements DependentFixtureInterface
         foreach ($engagementRefs as $eng) {
             // payer is the engagement owner (client)
             $owner = $eng->getOwner();
-            if (!$owner instanceof User) {
+            if (! $owner instanceof User) {
                 // if lazy, reattach via id
                 $owner = $manager->getReference(User::class, $eng->getOwner()?->getId());
             }
 
             // --- POSTING_FEE (always create exactly one per engagement) ---
             $posting = new Payment($owner, $eng, 9_900, CurrencyCodeEnum::CZK, PaymentTypeEnum::POSTING_FEE, PaymentStatusEnum::PENDING);
-
 
             // Status distribution: 65% paid, 20% pending, 10% failed, 5% expired
             $roll = $faker->numberBetween(1, 100);

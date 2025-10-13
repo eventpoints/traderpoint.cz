@@ -4,10 +4,9 @@ namespace App\Data;
 
 class PhonePrefixCodeData
 {
-
-    public static function getDialCodes() : array
+    public static function getDialCodes(): array
     {
-        return  [
+        return [
             '44' => 'UK (+44)',
             '1' => 'USA & Canada(+1)',
             '213' => 'Algeria (+213)',
@@ -103,7 +102,6 @@ class PhonePrefixCodeData
             '1876' => 'Jamaica (+1876)',
             '81' => 'Japan (+81)',
             '962' => 'Jordan (+962)',
-            '7' => 'Kazakhstan (+7)',
             '254' => 'Kenya (+254)',
             '686' => 'Kiribati (+686)',
             '850' => 'Korea North (+850)',
@@ -214,7 +212,6 @@ class PhonePrefixCodeData
             '967' => 'Yemen (South)(+967)',
             '260' => 'Zambia (+260)',
             '263' => 'Zimbabwe (+263)',
-            ];
+        ];
     }
-
 }

@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\CityRepository;
-use Carbon\CarbonImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,10 +24,14 @@ class City
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'cities')]
     private Collection $users;
 
-    public function __construct(#[ORM\Column(length: 255)]
-    private string $name, #[ORM\Column]
-    private float $latitude, #[ORM\Column]
-    private float $longitude)
+    public function __construct(
+        #[ORM\Column(length: 255)]
+        private string $name,
+        #[ORM\Column]
+        private float $latitude,
+        #[ORM\Column]
+        private float $longitude
+    )
     {
         $this->users = new ArrayCollection();
     }
@@ -78,7 +81,7 @@ class City
 
     public function addUser(User $user): static
     {
-        if (!$this->users->contains($user)) {
+        if (! $this->users->contains($user)) {
             $this->users->add($user);
             $user->addCity($this);
         }
@@ -94,5 +97,4 @@ class City
 
         return $this;
     }
-
 }

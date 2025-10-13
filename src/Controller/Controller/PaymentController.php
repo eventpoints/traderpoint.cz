@@ -15,11 +15,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PaymentController extends AbstractController
 {
-
-
     public function __construct(
-        private readonly StripeClient        $stripe,
-        private readonly PaymentRepository   $paymentRepository,
+        private readonly StripeClient $stripe,
+        private readonly PaymentRepository $paymentRepository,
         private readonly TranslatorInterface $translator,
     )
     {
@@ -27,12 +25,13 @@ class PaymentController extends AbstractController
 
     #[Route('/payment/check', name: 'check_payment', methods: ['GET'])]
     public function check(
-        Request              $request,
-        #[CurrentUser] ?User $user,
+        Request $request,
+        #[CurrentUser]
+        ?User $user,
     ): Response
     {
-        $sessionId = (string)$request->query->get('session_id', '');
-        $result = (string)$request->query->get('result', 'unknown');
+        $sessionId = (string) $request->query->get('session_id', '');
+        $result = (string) $request->query->get('result', 'unknown');
 
         if ($sessionId === '') {
             $this->addFlash('error', 'Can’t find that payment.');
@@ -40,25 +39,25 @@ class PaymentController extends AbstractController
         }
 
         $payment = $this->paymentRepository->findOneByCheckoutId($sessionId);
-        if (!$payment) {
+        if (!$payment instanceof \App\Entity\Payment) {
             $this->addFlash('error', 'Unknown or expired payment session.');
             return $this->redirectToRoute('app_login');
         }
 
-        if (!$user || $payment->getOwner()->getId() !== $user->getId()) {
+        if (! $user || $payment->getOwner()->getId() !== $user->getId()) {
             throw $this->createAccessDeniedException();
         }
 
         try {
             $session = $this->stripe->checkout->sessions->retrieve($sessionId, []);
-        } catch (\Throwable $throwable) {
+        } catch (\Throwable) {
             $this->addFlash('error', 'Could not verify payment status.');
             return $this->redirectToRoute($user->isTrader() ? 'trader_dashboard' : 'client_dashboard');
         }
 
         // Extra paranoia: ensure session ties back to the same Payment
         $metaPaymentId = $session->metadata['payment_id'] ?? null;
-        if ($metaPaymentId && (string)$payment->getId() !== (string)$metaPaymentId) {
+        if ($metaPaymentId && (string) $payment->getId() !== (string) $metaPaymentId) {
             $this->addFlash('error', 'Payment session mismatch.');
             return $this->redirectToRoute($user->isTrader() ? 'trader_dashboard' : 'client_dashboard');
         }
@@ -78,5 +77,4 @@ class PaymentController extends AbstractController
 
         return $this->redirectToRoute($user->isTrader() ? 'trader_dashboard' : 'client_dashboard');
     }
-
 }

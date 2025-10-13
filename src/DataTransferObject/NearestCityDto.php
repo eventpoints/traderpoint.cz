@@ -4,7 +4,6 @@ namespace App\DataTransferObject;
 
 class NearestCityDto
 {
-
     public function __construct(
         public string $cityName,
         public float $distance,
@@ -21,6 +20,4 @@ class NearestCityDto
     {
         return $this->distance;
     }
-
-
 }

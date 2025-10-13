@@ -38,18 +38,14 @@ class PaymentRepository extends ServiceEntityRepository
         }
     }
 
-    public function findOneByCheckoutId(string $sessionId) : null|Payment
+    public function findOneByCheckoutId(string $sessionId): null|Payment
     {
         $qb = $this->createQueryBuilder('payment');
 
            $qb->andWhere(
-              $qb->expr()->eq('payment.stripeCheckoutSessionId', ':sessionId')
-            )->setParameter('sessionId', $sessionId);
+               $qb->expr()->eq('payment.stripeCheckoutSessionId', ':sessionId')
+           )->setParameter('sessionId', $sessionId);
 
-           return  $qb->getQuery()->getOneOrNullResult();
+           return $qb->getQuery()->getOneOrNullResult();
     }
-
-
-
-
 }

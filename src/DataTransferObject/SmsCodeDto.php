@@ -5,10 +5,15 @@ namespace App\DataTransferObject;
 final class SmsCodeDto
 {
     private int $digit1;
+
     private int $digit2;
+
     private int $digit3;
+
     private int $digit4;
+
     private int $digit5;
+
     private int $digit6;
 
     public function getDigit1(): int
@@ -70,5 +75,4 @@ final class SmsCodeDto
     {
         $this->digit6 = $digit6;
     }
-
 }

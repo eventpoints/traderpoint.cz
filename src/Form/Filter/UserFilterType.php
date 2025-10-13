@@ -9,7 +9,6 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,9 +38,7 @@ class UserFilterType extends AbstractType
                     );
                     return $qb;
                 },
-                'choice_label' => function (Skill $skill): string {
-                    return $this->translator->trans($skill->getName());
-                },
+                'choice_label' => fn(Skill $skill): string => $this->translator->trans($skill->getName()),
                 'row_attr' => [
                     'class' => 'form-floating',
                 ],

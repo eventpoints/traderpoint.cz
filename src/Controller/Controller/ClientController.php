@@ -15,10 +15,10 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class ClientController extends AbstractController
 {
-
+    public $userRepository;
     public function __construct(
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaginatorInterface   $paginator
+        private readonly PaginatorInterface $paginator
     )
     {
     }
@@ -28,18 +28,16 @@ class ClientController extends AbstractController
     {
         $engagementsQuery = $this->engagementRepository->findByOwner($currentUser, true);
 
-        $page  = $request->query->getInt('page', 1);
+        $page = $request->query->getInt('page', 1);
         $limit = $request->query->getInt('limit', 5);
 
         /** @var PaginationInterface $pagination */
         $pagination = $this->paginator->paginate(target: $engagementsQuery, page: $page, limit: $limit);
 
-
         return $this->render('client/dashboard.html.twig', [
-            'pagination' => $pagination
+            'pagination' => $pagination,
         ]);
     }
-
 
     #[Route(path: '/account', name: 'user_account', methods: [Request::METHOD_GET, Request::METHOD_POST])]
     public function account(Request $request, #[CurrentUser] User $currentUser): Response
@@ -53,7 +51,7 @@ class ClientController extends AbstractController
         }
 
         return $this->render('client/account.html.twig', [
-            'accountForm' => $accountForm
+            'accountForm' => $accountForm,
         ]);
     }
 }

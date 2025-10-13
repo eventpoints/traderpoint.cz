@@ -24,8 +24,6 @@ class PhoneNumberFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
-
-
         $builder
             ->add('prefix', ChoiceType::class, [
                 'label' => false,
@@ -33,7 +31,7 @@ class PhoneNumberFormType extends AbstractType
                 'row_attr' => [
                     'class' => 'form-floating',
                 ],
-                'autocomplete' => true
+                'autocomplete' => true,
             ])
             ->add('number', TextType::class, [
                 'label' => $this->translator->trans('number'),

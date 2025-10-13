@@ -100,11 +100,9 @@ class ConversationParticipant
 
     public function removeMessage(Message $message): static
     {
-        if ($this->messages->removeElement($message)) {
-            // set the owning side to null (unless already changed)
-            if ($message->getParticipant() === $this) {
-                $message->setParticipant(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->messages->removeElement($message) && $message->getParticipant() === $this) {
+            $message->setParticipant(null);
         }
 
         return $this;

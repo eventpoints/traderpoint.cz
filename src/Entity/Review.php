@@ -38,7 +38,7 @@ class Review
         #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: 1)]
         private ?string $valueForMoneyRating = null,
         #[ORM\ManyToOne(inversedBy: 'reviews')]
-        private ?User   $owner = null,
+        private ?User $owner = null,
     )
     {
         $this->createdAt = new CarbonImmutable();
@@ -142,6 +142,7 @@ class Review
     {
         $this->createdAt = $createdAt;
     }
+
     public function getOwner(): ?User
     {
         return $this->owner;

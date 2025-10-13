@@ -4,28 +4,22 @@ namespace App\Form\Form;
 
 use App\Entity\Engagement;
 use App\Entity\Quote;
-use App\Enum\CurrencyCodeEnum;
 use App\Form\DataTransformer\CarbonImmutableTransformer;
 use App\Form\Type\SmartRangeType;
 use App\Form\Type\SwitchType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class QuoteFormType extends AbstractType
 {
     public function __construct(
-        private readonly TranslatorInterface        $translator,
+        private readonly TranslatorInterface $translator,
         private readonly CarbonImmutableTransformer $carbonTransformer
     )
     {
@@ -61,7 +55,7 @@ class QuoteFormType extends AbstractType
                 ],
                 'scale' => 100,
                 'decimals' => 0,
-                'currency' => $engagement->getCurrencyCodeEnum()->value
+                'currency' => $engagement->getCurrencyCodeEnum()->value,
             ])
             ->add('validUntil', DateTimeType::class, [
                 'label' => $this->translator->trans('valid-until'),
@@ -100,7 +94,7 @@ class QuoteFormType extends AbstractType
                 'attr' => [
                     'placeholder' => $this->translator->trans('expected-duration-hours'),
                     'class' => 'form-control',
-                    'data-duration-presets-target' => 'input'
+                    'data-duration-presets-target' => 'input',
                 ],
                 'row_attr' => [
                     'class' => 'form-floating',

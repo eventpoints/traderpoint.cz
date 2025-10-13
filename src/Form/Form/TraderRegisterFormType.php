@@ -4,23 +4,15 @@ namespace App\Form\Form;
 
 use App\DataTransferObject\UserTraderDto;
 use App\Entity\Skill;
-use App\Entity\Trader;
-use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\All;
-use Symfony\Component\Validator\Constraints\Count;
-use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -53,7 +45,7 @@ class TraderRegisterFormType extends AbstractType
                 'class' => Skill::class,
                 'choice_label' => 'name',
                 'choice_translation_domain' => 'skills',
-                'group_by' => fn(Skill $skill) => $this->translator->trans($skill->getTrade()->getName()),
+                'group_by' => fn(Skill $skill): string => $this->translator->trans($skill->getTrade()->getName()),
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
                     $qb = $er->createQueryBuilder('skill');
                     $qb->andWhere(
@@ -67,7 +59,7 @@ class TraderRegisterFormType extends AbstractType
                 'autocomplete' => true,
                 'row_attr' => [
                     'class' => 'form-floating',
-                ]
+                ],
             ])
             ->add('email', EmailType::class, [
                 'label' => $this->translator->trans('email-address'),

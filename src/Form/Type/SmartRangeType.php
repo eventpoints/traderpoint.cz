@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Form\Type;
@@ -19,12 +20,12 @@ final class SmartRangeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'scale'     => 1,
-            'currency'  => null,
-            'prefix'    => null,
-            'suffix'    => null,
-            'decimals'  => 0,
-            'locale'    => null,
+            'scale' => 1,
+            'currency' => null,
+            'prefix' => null,
+            'suffix' => null,
+            'decimals' => 0,
+            'locale' => null,
             // html input defaults
             'attr' => [
                 'class' => 'form-range',
@@ -43,10 +44,10 @@ final class SmartRangeType extends AbstractType
         // Put the controller on the INPUT
         $attr['data-controller'] = trim(($attr['data-controller'] ?? '') . ' smart-range');
 
-        $attr['data-smart-range-scale-value']    = (string) $options['scale'];
+        $attr['data-smart-range-scale-value'] = (string) $options['scale'];
         $attr['data-smart-range-currency-value'] = (string) ($options['currency'] ?? '');
-        $attr['data-smart-range-prefix-value']   = (string) ($options['prefix'] ?? '');
-        $attr['data-smart-range-suffix-value']   = (string) ($options['suffix'] ?? '');
+        $attr['data-smart-range-prefix-value'] = (string) ($options['prefix'] ?? '');
+        $attr['data-smart-range-suffix-value'] = (string) ($options['suffix'] ?? '');
         $attr['data-smart-range-decimals-value'] = (string) $options['decimals'];
         if ($options['locale']) {
             $attr['data-smart-range-locale-value'] = (string) $options['locale'];

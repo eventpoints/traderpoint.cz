@@ -29,7 +29,7 @@ final class UserFixtures extends Fixture implements DependentFixtureInterface
         $faker = Factory::create('cs_CZ');
 
         for ($i = 0; $i < 25; $i++) {
-            $email  = $faker->unique()->safeEmail();
+            $email = $faker->unique()->safeEmail();
             $avatar = $this->avatarService->generate(hashString: $email);
 
             $user = new User();
@@ -46,7 +46,7 @@ final class UserFixtures extends Fixture implements DependentFixtureInterface
             if ($isTrader) {
                 // Collect existing Skill references
                 $skillPool = [];
-                foreach (SkillData::getSkills() as $group => $skills) {
+                foreach (SkillData::getSkills() as $skills) {
                     foreach ($skills as $skillRef) {
                         if ($this->hasReference($skillRef)) {
                             /** @var Skill $skill */
@@ -62,7 +62,7 @@ final class UserFixtures extends Fixture implements DependentFixtureInterface
                 $profile->setAvatar($avatar);
                 $profile->setStatus(TraderStatusEnum::ACTIVE);
 
-                if (!empty($skillPool)) {
+                if ($skillPool !== []) {
                     $toAdd = $faker->randomElements(
                         $skillPool,
                         $faker->numberBetween(1, min(3, \count($skillPool)))

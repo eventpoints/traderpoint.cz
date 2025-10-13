@@ -4,9 +4,11 @@ namespace App\Service;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class ReverseGeocoder
+final readonly class ReverseGeocoder
 {
-    public function __construct(private HttpClientInterface $http) {}
+    public function __construct(
+        private HttpClientInterface $http
+    ) {}
 
     public function lookup(float $lat, float $lng): ?string
     {

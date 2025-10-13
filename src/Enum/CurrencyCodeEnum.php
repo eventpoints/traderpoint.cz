@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum CurrencyCodeEnum : string
+enum CurrencyCodeEnum: string
 {
     case EUR = 'EUR';
     case CZK = 'CZK';

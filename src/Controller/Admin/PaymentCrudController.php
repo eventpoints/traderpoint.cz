@@ -9,8 +9,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class PaymentCrudController extends AbstractCrudController
 {
@@ -26,7 +24,7 @@ class PaymentCrudController extends AbstractCrudController
             AssociationField::new('owner'),
             AssociationField::new('engagement'),
             MoneyField::new('amountMinor')->setStoredAsCents(true)->setCurrency(CurrencyCodeEnum::CZK->value),
-            DateTimeField::new('createdAt')
+            DateTimeField::new('createdAt'),
         ];
     }
 }

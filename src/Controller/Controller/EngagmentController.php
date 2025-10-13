@@ -30,18 +30,15 @@ use Symfony\UX\Map\Icon\Icon;
 use Symfony\UX\Map\Map;
 use Symfony\UX\Map\Marker;
 use Symfony\UX\Map\Point;
-use Symfony\UX\Map\Circle;
-
 
 class EngagmentController extends AbstractController
 {
-
     public function __construct(
-        private readonly TranslatorInterface  $translator,
-        private readonly QuoteRepository      $quoteRepository,
+        private readonly TranslatorInterface $translator,
+        private readonly QuoteRepository $quoteRepository,
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaymentRepository    $paymentRepository,
-        private readonly StripeClient         $stripe
+        private readonly PaymentRepository $paymentRepository,
+        private readonly StripeClient $stripe
     )
     {
     }
@@ -57,12 +54,17 @@ class EngagmentController extends AbstractController
             $map = (new Map('default'))
                 ->center($center)
                 ->zoom(20)
-                ->options((new LeafletOptions())
-                    ->tileLayer(new TileLayer(
-                        url: 'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=1IDdEWmfCtjKNlJ6Ij3W',
-                        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-                        options: ['maxZoom' => 25, 'tileSize' => 512, 'zoomOffset' => -1]
-                    ))
+                ->options(
+                    (new LeafletOptions())
+                        ->tileLayer(new TileLayer(
+                            url: 'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=1IDdEWmfCtjKNlJ6Ij3W',
+                            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                            options: [
+                                'maxZoom' => 25,
+                                'tileSize' => 512,
+                                'zoomOffset' => -1,
+                            ]
+                        ))
                 );
 
             $map->addMarker(new Marker(
@@ -77,13 +79,15 @@ class EngagmentController extends AbstractController
         if ($quoteForm->isSubmitted() && $quoteForm->isValid()) {
             $this->quoteRepository->save(entity: $quote, flush: true);
             $this->addFlash(type: FlashEnum::SUCCESS->value, message: $this->translator->trans('flash.quote-successful'));
-            return $this->redirectToRoute(route: 'trader_show_engagement', parameters: ['id' => $engagement->getId()]);
+            return $this->redirectToRoute(route: 'trader_show_engagement', parameters: [
+                'id' => $engagement->getId(),
+            ]);
         }
 
         return $this->render('engagement/trader/show.html.twig', [
             'quoteForm' => $quoteForm,
             'engagement' => $engagement,
-            'map' => $map
+            'map' => $map,
         ]);
     }
 
@@ -93,7 +97,7 @@ class EngagmentController extends AbstractController
         $quotes = $this->quoteRepository->findByEngagement($engagement);
         return $this->render('engagement/client/show.html.twig', [
             'engagement' => $engagement,
-            'quotes' => $quotes
+            'quotes' => $quotes,
         ]);
     }
 
@@ -105,20 +109,21 @@ class EngagmentController extends AbstractController
         $map = (new Map('default'))
             ->center(new Point(50.07897895366278, 14.430823454571573))
             ->zoom(11)
-            ->options((new LeafletOptions())
-                ->tileLayer(new TileLayer(
-                    url: 'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=1IDdEWmfCtjKNlJ6Ij3W',
-                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-                    options: [
-                        'maxZoom' => 25,
-                        'tileSize' => 512,
-                        'zoomOffset' => -1
-                    ]
-                ))
+            ->options(
+                (new LeafletOptions())
+                    ->tileLayer(new TileLayer(
+                        url: 'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=1IDdEWmfCtjKNlJ6Ij3W',
+                        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                        options: [
+                            'maxZoom' => 25,
+                            'tileSize' => 512,
+                            'zoomOffset' => -1,
+                        ]
+                    ))
             );
 
         $engagementForm = $this->createForm(EngagementFormType::class, $engagement, [
-            'map' => $map
+            'map' => $map,
         ]);
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
@@ -155,15 +160,17 @@ class EngagmentController extends AbstractController
                 'line_items' => [[
                     'price_data' => [
                         'currency' => 'czk',
-                        'product_data' => ['name' => 'Job posting fee'],
+                        'product_data' => [
+                            'name' => 'Job posting fee',
+                        ],
                         'unit_amount' => 9900,
                     ],
                     'quantity' => 1,
                 ]],
                 'metadata' => [
-                    'payment_id' => (string)$payment->getId(),
-                    'engagement_id' => (string)$engagement->getId(),
-                    'user_id' => (string)$currentUser->getId(),
+                    'payment_id' => (string) $payment->getId(),
+                    'engagement_id' => (string) $engagement->getId(),
+                    'user_id' => (string) $currentUser->getId(),
                 ],
                 'success_url' => $successUrl,
                 'cancel_url' => $cancelUrl,
@@ -179,9 +186,7 @@ class EngagmentController extends AbstractController
         return $this->render('engagement/create.html.twig', [
             'map' => $map,
             'engagementForm' => $engagementForm,
-            'engagement' => $engagement
+            'engagement' => $engagement,
         ]);
     }
-
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Twig\Extension;
@@ -9,12 +10,14 @@ use Twig\TwigFunction;
 
 final class ReverseGeocoderExtension extends AbstractExtension
 {
-    public function __construct(private ReverseGeocoder $geocoder) {}
+    public function __construct(
+        private readonly ReverseGeocoder $geocoder
+    ) {}
 
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('reverse_geocode', [$this, 'lookup']),
+            new TwigFunction('reverse_geocode', $this->lookup(...)),
         ];
     }
 

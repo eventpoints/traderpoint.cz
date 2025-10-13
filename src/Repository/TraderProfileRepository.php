@@ -2,8 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Payment;
-use App\Entity\Skill;
 use App\Entity\TraderProfile;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -39,5 +37,4 @@ class TraderProfileRepository extends ServiceEntityRepository
                 ->flush();
         }
     }
-
 }

@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Engagement;
 use App\Entity\Quote;
-use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -40,7 +39,7 @@ class QuoteRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByEngagement(Engagement $engagement) : array
+    public function findByEngagement(Engagement $engagement): array
     {
         $qb = $this->createQueryBuilder('quote');
 
@@ -52,5 +51,4 @@ class QuoteRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
-
 }

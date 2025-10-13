@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Enum\UserRoleEnum;
 use App\Repository\UserRepository;
 use Carbon\CarbonImmutable;
-use Carbon\CarbonInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -21,9 +20,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, \Stringable
 {
-
     #[ORM\Column(type: 'uuid', unique: true)]
     private Uuid $token;
 
@@ -45,7 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private string $password;
 
-    #[ORM\OneToOne(targetEntity: TraderProfile::class, mappedBy: 'owner', cascade: ['persist','remove'])]
+    #[ORM\OneToOne(targetEntity: TraderProfile::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?TraderProfile $traderProfile = null;
 
     /**
@@ -63,15 +61,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: ConversationParticipant::class, mappedBy: 'owner')]
     private Collection $conversationParticipates;
+
     #[ORM\Column(type: Types::STRING, length: 255)]
     private string $firstName;
+
     #[ORM\Column(type: Types::STRING, length: 255)]
     private string $lastName;
+
     #[ORM\Column(length: 180)]
     #[Assert\Email]
     private string $email;
+
     #[ORM\Column(type: Types::TEXT)]
     private string $avatar;
+
     #[ORM\Column]
     private bool $isVerified = false;
 
@@ -160,7 +163,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addReview(Review $review): static
     {
-        if (!$this->reviews->contains($review)) {
+        if (! $this->reviews->contains($review)) {
             $this->reviews->add($review);
             $review->setOwner($this);
         }
@@ -258,7 +261,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addConversationParticipate(ConversationParticipant $conversationParticipate): static
     {
-        if (!$this->conversationParticipates->contains($conversationParticipate)) {
+        if (! $this->conversationParticipates->contains($conversationParticipate)) {
             $this->conversationParticipates->add($conversationParticipate);
             $conversationParticipate->setOwner($this);
         }
@@ -300,6 +303,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->getFullName();
     }
-
 }
 

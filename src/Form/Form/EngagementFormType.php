@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Form\Form;
 
 use App\Entity\Engagement;
 use App\Entity\Skill;
-use App\Enum\ContractType;
 use App\Enum\CurrencyCodeEnum;
 use App\Enum\TimelinePreferenceEnum;
 use App\Form\DataTransformer\MoneyToMinorUnitsTransformer;
@@ -16,7 +16,6 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,7 +25,9 @@ use Symfony\UX\Map\Map;
 
 final class EngagementFormType extends AbstractType
 {
-    public function __construct(private readonly TranslatorInterface $translator)
+    public function __construct(
+        private readonly TranslatorInterface $translator
+    )
     {
     }
 
@@ -43,14 +44,16 @@ final class EngagementFormType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'label' => false,
-                'attr' => ['rows' => 4],
+                'attr' => [
+                    'rows' => 4,
+                ],
             ])
             ->add('skills', EntityType::class, [
                 'label' => 'Required skills',
                 'class' => Skill::class,
                 'choice_label' => 'name',
                 'choice_translation_domain' => 'skills',
-                'group_by' => fn(Skill $skill) => $this->translator->trans($skill->getTrade()->getName()),
+                'group_by' => fn(Skill $skill): string => $this->translator->trans($skill->getTrade()->getName()),
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
                     $qb = $er->createQueryBuilder('skill');
                     $qb->andWhere(
@@ -64,7 +67,7 @@ final class EngagementFormType extends AbstractType
                 'autocomplete' => true,
                 'row_attr' => [
                     'class' => 'form-floating',
-                ]
+                ],
             ])
             ->add('timelinePreferenceEnum', EnumType::class, [
                 'class' => TimelinePreferenceEnum::class,
@@ -76,7 +79,7 @@ final class EngagementFormType extends AbstractType
                     'class' => 'form-floating',
                 ],
             ])
-            ->add('location', MapLocationType::class,[
+            ->add('location', MapLocationType::class, [
                 'mapped' => false,
                 'map' => $options['map'],     // pass the Map instance down
                 'height' => '320px',
@@ -101,7 +104,7 @@ final class EngagementFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Engagement::class,
-            'map' => Map::class
+            'map' => Map::class,
         ]);
     }
 }

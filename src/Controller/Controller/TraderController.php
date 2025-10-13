@@ -3,14 +3,12 @@
 namespace App\Controller\Controller;
 
 use App\DataTransferObject\MapLocationDto;
-use App\Entity\Engagement;
 use App\Entity\User;
 use App\Form\Form\AccountFormType;
 use App\Form\Form\TraderAccountFormType;
 use App\Repository\EngagementRepository;
 use App\Repository\TraderProfileRepository;
 use App\Repository\UserRepository;
-use App\Service\MajorCityDistance;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,19 +18,17 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\UX\Map\Bridge\Leaflet\LeafletOptions;
 use Symfony\UX\Map\Bridge\Leaflet\Option\TileLayer;
-use Symfony\UX\Map\InfoWindow;
 use Symfony\UX\Map\Map;
-use Symfony\UX\Map\Marker;
 use Symfony\UX\Map\Point;
 
 #[Route(path: '/trader')]
 class TraderController extends AbstractController
 {
-
     public function __construct(
-        private readonly UserRepository       $userRepository,
+        private readonly UserRepository $userRepository,
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaginatorInterface   $paginator, private readonly TraderProfileRepository $traderProfileRepository,
+        private readonly PaginatorInterface $paginator,
+        private readonly TraderProfileRepository $traderProfileRepository,
     )
     {
     }
@@ -47,7 +43,7 @@ class TraderController extends AbstractController
     public function dashboard(#[CurrentUser] User $currentUser, Request $request): Response
     {
 
-        if (!$currentUser->isTrader()) {
+        if (! $currentUser->isTrader()) {
             return $this->redirectToRoute('client_dashboard');
         }
 
@@ -82,17 +78,18 @@ class TraderController extends AbstractController
         $map = (new Map('default'))
             ->center(new Point($latitude, $longitude))
             ->zoom(11)
-            ->options((new LeafletOptions())
-                ->tileLayer(new TileLayer(
-                    url: 'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=1IDdEWmfCtjKNlJ6Ij3W',
-                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-                    options: [
-                        'fitBounds' => 'true',
-                        'maxZoom' => 25,
-                        'tileSize' => 512,
-                        'zoomOffset' => -1
-                    ]
-                ))
+            ->options(
+                (new LeafletOptions())
+                    ->tileLayer(new TileLayer(
+                        url: 'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=1IDdEWmfCtjKNlJ6Ij3W',
+                        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                        options: [
+                            'fitBounds' => 'true',
+                            'maxZoom' => 25,
+                            'tileSize' => 512,
+                            'zoomOffset' => -1,
+                        ]
+                    ))
             );
 
         $traderAccountForm = $this->createForm(TraderAccountFormType::class, $currentUser->getTraderProfile(), [
@@ -100,7 +97,6 @@ class TraderController extends AbstractController
         ]);
         $traderAccountForm->handleRequest($request);
         if ($traderAccountForm->isSubmitted() && $traderAccountForm->isValid()) {
-            /** @var MapLocationDto $mapLocation */
             $location = $traderAccountForm->get('location')->getData();
             $currentUser->getTraderProfile()->setLatitude($location->getLatitude());
             $currentUser->getTraderProfile()->setLongitude($location->getLongitude());
@@ -120,7 +116,7 @@ class TraderController extends AbstractController
 
         return $this->render('trader/account.html.twig', [
             'accountForm' => $accountForm,
-            'traderAccountForm' => $traderAccountForm
+            'traderAccountForm' => $traderAccountForm,
         ]);
     }
 }

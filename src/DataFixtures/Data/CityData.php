@@ -4,7 +4,6 @@ namespace App\DataFixtures\Data;
 
 class CityData
 {
-
     /**
      * @return array<array<string, mixed>>
      */
@@ -111,5 +110,4 @@ class CityData
             ],
         ];
     }
-
 }

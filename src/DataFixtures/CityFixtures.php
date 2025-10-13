@@ -11,7 +11,6 @@ use Doctrine\Persistence\ObjectManager;
 
 class CityFixtures extends Fixture
 {
-
     public function load(ObjectManager $manager): void
     {
         $cities = CityData::getCzechCities();
@@ -22,5 +21,4 @@ class CityFixtures extends Fixture
         }
         $manager->flush();
     }
-
 }

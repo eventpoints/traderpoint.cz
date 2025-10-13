@@ -26,5 +26,4 @@ class CityDto
     {
         return $this->longitude;
     }
-
 }

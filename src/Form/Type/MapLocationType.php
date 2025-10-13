@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Form\Type;
@@ -25,13 +26,19 @@ final class MapLocationType extends AbstractType
     {
         $builder
             ->add('latitude', HiddenType::class, [
-                'attr' => ['data-pick-location-target' => 'lat'],
+                'attr' => [
+                    'data-pick-location-target' => 'lat',
+                ],
             ])
             ->add('longitude', HiddenType::class, [
-                'attr' => ['data-pick-location-target' => 'lng'],
+                'attr' => [
+                    'data-pick-location-target' => 'lng',
+                ],
             ])
             ->add('address', HiddenType::class, [
-                'attr' => ['data-pick-location-target' => 'address'],
+                'attr' => [
+                    'data-pick-location-target' => 'address',
+                ],
             ]);
 
         if ($options['with_radius']) {
@@ -58,21 +65,21 @@ final class MapLocationType extends AbstractType
             // This field produces/consumes a DTO, not the entity
             'data_class' => MapLocationDto::class,
             'mapped' => false,        // don’t touch the entity; you’ll copy values in controller
-            'label'  => false,
-            'map'    => null,         // Map instance passed from controller
+            'label' => false,
+            'map' => null,         // Map instance passed from controller
             'height' => '300px',
 
             // radius options
-            'with_radius'       => false,
-            'radius_label'      => 'Radius (km)',
+            'with_radius' => false,
+            'radius_label' => 'Radius (km)',
             'radius_default_km' => 5.0,
-            'radius_min'        => 0.5,
-            'radius_max'        => 100.0,
-            'radius_step'       => 0.5,
-            'radius_attr'       => [],
+            'radius_min' => 0.5,
+            'radius_max' => 100.0,
+            'radius_step' => 0.5,
+            'radius_attr' => [],
 
             // If no bound data, build a DTO from current child values
-            'empty_data' => function (FormInterface $form) {
+            'empty_data' => function (FormInterface $form): \App\DataTransferObject\MapLocationDto {
                 $lat = (float) ($form->get('latitude')->getData() ?? 0);
                 $lng = (float) ($form->get('longitude')->getData() ?? 0);
                 $addr = (string) ($form->get('address')->getData() ?? '');
@@ -87,17 +94,17 @@ final class MapLocationType extends AbstractType
         $resolver->setAllowedTypes('height', ['string']);
         $resolver->setAllowedTypes('with_radius', ['bool']);
         $resolver->setAllowedTypes('radius_label', ['string']);
-        $resolver->setAllowedTypes('radius_default_km', ['int','float']);
-        $resolver->setAllowedTypes('radius_min', ['int','float']);
-        $resolver->setAllowedTypes('radius_max', ['int','float']);
-        $resolver->setAllowedTypes('radius_step', ['int','float']);
+        $resolver->setAllowedTypes('radius_default_km', ['int', 'float']);
+        $resolver->setAllowedTypes('radius_min', ['int', 'float']);
+        $resolver->setAllowedTypes('radius_max', ['int', 'float']);
+        $resolver->setAllowedTypes('radius_step', ['int', 'float']);
         $resolver->setAllowedTypes('radius_attr', ['array']);
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        $view->vars['map']         = $options['map'];
-        $view->vars['height']      = $options['height'];
+        $view->vars['map'] = $options['map'];
+        $view->vars['height'] = $options['height'];
         $view->vars['with_radius'] = $options['with_radius'];
     }
 

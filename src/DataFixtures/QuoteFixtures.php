@@ -22,7 +22,7 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
         $faker = Factory::create('cs_CZ');
 
         // Use ONLY traders
-        $traderIds    = $this->collectTraderIdsByPrefix('user_');
+        $traderIds = $this->collectTraderIdsByPrefix('user_');
         $engagementIds = $this->collectIdsByPrefix('engagement_', Engagement::class);
 
         if ($traderIds === [] || $engagementIds === []) {
@@ -31,7 +31,7 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
 
         $versionMap = [];            // "E<engId>|U<userId>" -> version
         $acceptedChosenByEng = [];   // "<engId>" -> true once chosen
-        $persisted  = 0;
+        $persisted = 0;
 
         foreach ($engagementIds as $engId) {
             // Skip some engagements entirely
@@ -46,13 +46,13 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
             $ownerId = $engagement->getOwner()?->getId();
             $eligibleTraderIds = array_values(array_filter(
                 $traderIds,
-                static fn($tid) => (string)$tid !== (string)$ownerId
+                static fn($tid): bool => (string) $tid !== (string) $ownerId
             ));
             if ($eligibleTraderIds === []) {
                 continue;
             }
 
-            $engWillChoose = (bool) (random_int(0, 99) < 55);
+            $engWillChoose = random_int(0, 99) < 55;
 
             // Pick 2–5 distinct traders from eligible pool
             $traderCount = min(\count($eligibleTraderIds), $faker->numberBetween(2, 5));
@@ -66,12 +66,12 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
                 $versions = $faker->numberBetween(1, 2);
 
                 for ($v = 1; $v <= $versions; $v++) {
-                    $key = 'E' . (string)$engId . '|U' . (string)$userId;
+                    $key = 'E' . $engId . '|U' . $userId;
                     $currentVersion = ($versionMap[$key] ?? 0) + 1;
                     $versionMap[$key] = $currentVersion;
 
                     $netCents = $faker->numberBetween(5_000, 250_000);
-                    $vatBps   = $faker->randomElement([0, 1000, 1500, 2100]);
+                    $vatBps = $faker->randomElement([0, 1000, 1500, 2100]);
 
                     $quote = new Quote($engagement, $trader, $netCents, CurrencyCodeEnum::CZK);
                     $quote->setVersion($currentVersion);
@@ -100,32 +100,32 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
                         QuoteStatusEnum::EXPIRED,
                     ]);
 
-                    $engKey = (string)$engId;
-                    $alreadyChosen = !empty($acceptedChosenByEng[$engKey]);
+                    $engKey = (string) $engId;
+                    $alreadyChosen = ! empty($acceptedChosenByEng[$engKey]);
 
-                    if ($drawn === QuoteStatusEnum::ACCEPTED && (!$engWillChoose || $alreadyChosen)) {
+                    if ($drawn === QuoteStatusEnum::ACCEPTED && (! $engWillChoose || $alreadyChosen)) {
                         $drawn = QuoteStatusEnum::REJECTED;
                     }
 
                     match ($drawn) {
-                        QuoteStatusEnum::ACCEPTED => (function () use ($engagement, $quote, $createdAt, $faker, $engKey, &$acceptedChosenByEng) {
+                        QuoteStatusEnum::ACCEPTED => (function () use ($engagement, $quote, $createdAt, $faker, $engKey, &$acceptedChosenByEng): void {
                             // MUST be the chosen quote on the engagement
                             $engagement->accept($quote);
                             $quote->setDecidedAt($createdAt->addDays($faker->numberBetween(1, 14)));
                             $acceptedChosenByEng[$engKey] = true;
                         })(),
 
-                        QuoteStatusEnum::REJECTED => (function () use ($quote, $createdAt, $faker) {
+                        QuoteStatusEnum::REJECTED => (function () use ($quote, $createdAt, $faker): void {
                             $quote->setStatus(QuoteStatusEnum::REJECTED);
                             $quote->setDecidedAt($createdAt->addDays($faker->numberBetween(1, 14)));
                         })(),
 
-                        QuoteStatusEnum::WITHDRAWN => (function () use ($quote, $createdAt, $faker) {
+                        QuoteStatusEnum::WITHDRAWN => (function () use ($quote, $createdAt, $faker): void {
                             $quote->setStatus(QuoteStatusEnum::WITHDRAWN);
                             $quote->setDecidedAt($createdAt->addDays($faker->numberBetween(1, 14)));
                         })(),
 
-                        QuoteStatusEnum::EXPIRED => (function () use ($quote, $createdAt, $faker) {
+                        QuoteStatusEnum::EXPIRED => (function () use ($quote, $createdAt, $faker): void {
                             $vu = $quote->getValidUntil() ?? $createdAt->addDays($faker->numberBetween(7, 30));
                             if ($vu->isFuture()) {
                                 $vu = $createdAt->addDays(7);
@@ -135,7 +135,7 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
                             $quote->setDecidedAt($vu->addHours($faker->numberBetween(1, 72)));
                         })(),
 
-                        default => (function () use ($quote) {
+                        default => (function () use ($quote): void {
                             $quote->setStatus(QuoteStatusEnum::SUBMITTED);
                             $quote->setDecidedAt(null);
                         })(),
@@ -163,7 +163,7 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
     {
         $ids = [];
         foreach ($this->referenceRepository->getReferences() as $key => $obj) {
-            if (\str_starts_with((string)$key, $prefix) && $obj instanceof $class) {
+            if (\str_starts_with((string) $key, $prefix) && $obj instanceof $class) {
                 $ids[] = $obj->getId();
             }
         }
@@ -178,11 +178,9 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
     {
         $ids = [];
         foreach ($this->referenceRepository->getReferences() as $key => $obj) {
-            if (\str_starts_with((string)$key, $prefix) && $obj instanceof User) {
-                // relies on your User::isTrader() (checks ROLE_TRADER)
-                if ($obj->isTrader()) {
-                    $ids[] = $obj->getId();
-                }
+            // relies on your User::isTrader() (checks ROLE_TRADER)
+            if (\str_starts_with((string) $key, $prefix) && $obj instanceof User && $obj->isTrader()) {
+                $ids[] = $obj->getId();
             }
         }
         return $ids;

@@ -6,12 +6,13 @@ use App\Entity\Quote;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 final class QuoteVoter extends Voter
 {
     public const ACCEPT = 'ACCEPT';
+
     public const REJECT = 'REJECT';
+
     public const WITHDRAW = 'WITHDRAW';
 
     protected function supports(string $attribute, mixed $subject): bool
@@ -24,23 +25,23 @@ final class QuoteVoter extends Voter
     {
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             return false;
         }
 
         return match ($attribute) {
-            self::ACCEPT, self::REJECT =>  $this->canUserAcceptOrReject($subject, $user),
-            self::WITHDRAW =>  $this->canUserWithdraw($subject, $user),
+            self::ACCEPT, self::REJECT => $this->canUserAcceptOrReject($subject, $user),
+            self::WITHDRAW => $this->canUserWithdraw($subject, $user),
         };
 
     }
 
-    private function canUserAcceptOrReject(Quote $quote, User $user) : bool
+    private function canUserAcceptOrReject(Quote $quote, User $user): bool
     {
         return $quote->getEngagement()->getOwner() === $user;
     }
 
-    private function canUserWithdraw(Quote $quote, User $user) : bool
+    private function canUserWithdraw(Quote $quote, User $user): bool
     {
         return $quote->getOwner() === $user;
     }

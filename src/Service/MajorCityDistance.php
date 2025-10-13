@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -9,9 +10,11 @@ use App\DataTransferObject\NearestCityDto;
 use NumberFormatter;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class MajorCityDistance
+final readonly class MajorCityDistance
 {
-    /** @var array<string, CityDto> */
+    /**
+     * @var array<string, CityDto>
+     */
     private array $cities;
 
     public function __construct(

@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum ContractType : string
+enum ContractType: string
 {
     case FIXED_PRICE = 'contract.type.fixed-price';
 

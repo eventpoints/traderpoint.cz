@@ -30,12 +30,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class RegistrationController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface         $translator,
-        private readonly EntityManagerInterface      $entityManager,
-        private readonly UserRepository              $userRepository,
-        private readonly AvatarService               $avatarService,
+        private readonly TranslatorInterface $translator,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly UserRepository $userRepository,
+        private readonly AvatarService $avatarService,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
-        private readonly MailerFacade                $mailerFacade,
     )
     {
     }
@@ -45,10 +44,11 @@ class RegistrationController extends AbstractController
      */
     #[Route('/register', name: 'app_register')]
     public function register(
-        Request                    $request,
+        Request $request,
         UserAuthenticatorInterface $userAuthenticator,
-        AppCustomAuthenticator     $authenticator,
-        #[CurrentUser] null|User   $currentUser
+        AppCustomAuthenticator $authenticator,
+        #[CurrentUser]
+        null|User $currentUser
     ): ?Response
     {
         if ($currentUser instanceof User) {
@@ -84,10 +84,11 @@ class RegistrationController extends AbstractController
 
     #[Route('trader/register', name: 'trader_register')]
     public function traderRegister(
-        Request                    $request,
+        Request $request,
         UserAuthenticatorInterface $userAuthenticator,
-        AppCustomAuthenticator     $authenticator,
-        #[CurrentUser] null|User   $currentUser,
+        AppCustomAuthenticator $authenticator,
+        #[CurrentUser]
+        null|User $currentUser,
     ): ?Response
     {
         if ($currentUser instanceof User) {
@@ -103,8 +104,10 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $user = $this->userRepository->findOneBy(['email' => $userTraderDto->getEmail()]);
-            if ($user) {
+            $user = $this->userRepository->findOneBy([
+                'email' => $userTraderDto->getEmail(),
+            ]);
+            if ($user !== null) {
                 return $this->redirectToRoute('trader_register');
             }
 
@@ -141,7 +144,7 @@ class RegistrationController extends AbstractController
     #[Route('/confirm/{token}', name: 'confirm_account')]
     public function confirmAccount(null|User $user): Response
     {
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             return $this->redirectToRoute('app_login');
         }
 

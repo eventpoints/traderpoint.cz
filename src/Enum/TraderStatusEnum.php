@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum TraderStatusEnum : string
+enum TraderStatusEnum: string
 {
     case ACTIVE = 'active';
     case INACTIVE = 'inactive';

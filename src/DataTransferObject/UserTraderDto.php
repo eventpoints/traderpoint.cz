@@ -8,13 +8,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 final class UserTraderDto
 {
     private string $firstName;
+
     private string $lastName;
 
     /**
      * @return ArrayCollection<int, Skill>
      */
     private ArrayCollection $skills;
+
     private string $email;
+
     private string $plainPassword;
 
     public function getFirstName(): string
@@ -47,13 +50,11 @@ final class UserTraderDto
 
     /**
      * @param ArrayCollection<int, Skill> $skills
-     * @return void
      */
     public function setSkills(ArrayCollection $skills): void
     {
         $this->skills = $skills;
     }
-
 
     public function getEmail(): string
     {
@@ -74,5 +75,4 @@ final class UserTraderDto
     {
         $this->plainPassword = $plainPassword;
     }
-
 }

@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Engagement;
-use App\Entity\Quote;
 use App\Entity\Skill;
 use App\Entity\User;
 use App\Enum\EngagementStatusEnum;
@@ -26,19 +25,18 @@ class EngagementRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param bool $isQuery
      * @return array<int,Engagement>|Query
      */
     public function findUpcomingBySkills(User $user, bool $isQuery = false): array|Query
     {
         $profile = $user->getTraderProfile();
-        if (!$profile || $profile->getLatitude() === null || $profile->getLongitude() === null || !$profile->getServiceRadius()) {
+        if (! $profile || $profile->getLatitude() === null || $profile->getLongitude() === null || ! $profile->getServiceRadius()) {
             return $isQuery ? $this->createQueryBuilder('e')->where('1=0')->getQuery() : [];
         }
 
-        $lat = (float)$profile->getLatitude();
-        $lng = (float)$profile->getLongitude();
-        $radiusKm = (float)$profile->getServiceRadius();
+        $lat = $profile->getLatitude();
+        $lng = $profile->getLongitude();
+        $radiusKm = (float) $profile->getServiceRadius();
 
         // ---- radius filter via native SQL
         $radiusIds = $this->findEngagementIdsWithinRadius($lat, $lng, $radiusKm);
@@ -56,7 +54,7 @@ class EngagementRepository extends ServiceEntityRepository
             $qb->expr()->eq('engagement.status', ':status')
         )->setParameter('status', EngagementStatusEnum::PENDING);
 
-        $skillIds = $user->getTraderProfile()->getSkills()->map(fn(Skill $skill) => $skill->getId()->toRfc4122())->toArray();
+        $skillIds = $user->getTraderProfile()->getSkills()->map(fn(Skill $skill): string => $skill->getId()->toRfc4122())->toArray();
         $qb->andWhere(
             $qb->expr()->in('skill.id', ':skills')
         )->setParameter('skills', $skillIds);
@@ -165,7 +163,6 @@ SQL;
         ])->fetchAllAssociative();
 
         // Returns UUID strings (or ints) depending on your PK
-        return array_map(static fn(array $r) => $r['id'], $rows);
+        return array_map(static fn(array $r): mixed => $r['id'], $rows);
     }
-
 }

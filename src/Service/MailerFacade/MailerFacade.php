@@ -2,7 +2,6 @@
 
 namespace App\Service\MailerFacade;
 
-use App\Entity\PriceAlert;
 use App\Entity\User;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;

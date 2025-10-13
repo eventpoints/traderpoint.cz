@@ -23,5 +23,4 @@ final readonly class TraderFilterDto
     {
         return $this->city;
     }
-
 }

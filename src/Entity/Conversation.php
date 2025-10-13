@@ -81,11 +81,9 @@ class Conversation
 
     public function removeParticipant(ConversationParticipant $conversationParticipate): static
     {
-        if ($this->participants->removeElement($conversationParticipate)) {
-            // set the owning side to null (unless already changed)
-            if ($conversationParticipate->getConversation() === $this) {
-                $conversationParticipate->setConversation(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->participants->removeElement($conversationParticipate) && $conversationParticipate->getConversation() === $this) {
+            $conversationParticipate->setConversation(null);
         }
 
         return $this;
@@ -123,11 +121,9 @@ class Conversation
 
     public function removeMessage(Message $message): static
     {
-        if ($this->messages->removeElement($message)) {
-            // set the owning side to null (unless already changed)
-            if ($message->getConversation() === $this) {
-                $message->setConversation(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->messages->removeElement($message) && $message->getConversation() === $this) {
+            $message->setConversation(null);
         }
 
         return $this;

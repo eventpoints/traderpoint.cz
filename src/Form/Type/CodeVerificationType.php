@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class CodeVerificationType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         for ($i = 1; $i <= 6; $i++) {
             $builder->add("digit$i", TextType::class, [
@@ -38,14 +38,14 @@ class CodeVerificationType extends AbstractType
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'csrf_protection' => true,
         ]);
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
     }
