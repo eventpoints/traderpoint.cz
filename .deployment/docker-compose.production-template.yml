@@ -52,7 +52,7 @@ services:
       - internal
 
   database:
-    image: postgres:17
+    image: postgis/postgis:17-3.4
     restart: unless-stopped
     environment:
       POSTGRES_DB: "__TRADERPOINT_POSTGRES_DBNAME__"
