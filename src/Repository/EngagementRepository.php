@@ -114,12 +114,8 @@ class EngagementRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param float $lat
-     * @param float $lng
-     * @param int $meters
-     * @param int $limit
      * @return list<array{id: string, dist: numeric-string}>
- * @throws \Doctrine\DBAL\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
     private function findNearbyIdsOrdered(float $lat, float $lng, int $meters, int $limit = 500): array
     {
@@ -168,11 +164,9 @@ class EngagementRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param User $currentUser
-     * @param bool $isQuery
      * @return array<int, Engagement>|Query
      */
-    public function findByOwner(User $currentUser, bool $isQuery = false) : array|Query
+    public function findByOwner(User $currentUser, bool $isQuery = false): array|Query
     {
         $qb = $this->createQueryBuilder('engagement');
         $qb->leftJoin('engagement.payments', 'payment');

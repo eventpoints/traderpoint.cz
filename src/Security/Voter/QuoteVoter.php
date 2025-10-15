@@ -13,7 +13,9 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 final class QuoteVoter extends Voter
 {
     public const ACCEPT = 'ACCEPT';
+
     public const REJECT = 'REJECT';
+
     public const WITHDRAW = 'WITHDRAW';
 
     protected function supports(string $attribute, mixed $subject): bool

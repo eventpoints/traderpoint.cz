@@ -71,19 +71,12 @@ class Engagement implements Stringable
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $budget = null;
 
-    /**
-     * @var CarbonImmutable|null $createdAt
-     */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private null|CarbonImmutable $createdAt = null;
 
-    /** @var DateTimeImmutable|null */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $updatedAt = null;
 
-    /**
-     * @var CarbonImmutable|DateTimeInterface|null $dueAt
-     */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private null|CarbonImmutable|DateTimeInterface $dueAt = null;
 
@@ -251,7 +244,7 @@ class Engagement implements Stringable
 
     public function getUpdatedAt(): ?CarbonImmutable
     {
-        return $this->updatedAt ? CarbonImmutable::instance($this->updatedAt) : null;
+        return $this->updatedAt instanceof \DateTimeImmutable ? CarbonImmutable::instance($this->updatedAt) : null;
     }
 
     public function setUpdatedAt(null|CarbonImmutable|DateTimeInterface $updatedAt): void

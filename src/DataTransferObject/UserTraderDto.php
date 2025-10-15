@@ -12,7 +12,7 @@ final class UserTraderDto
     private string $lastName;
 
     /**
-     * @var ArrayCollection<int, Skill>  $skills
+     * @var ArrayCollection<int, Skill>
      */
     private ArrayCollection $skills;
 
@@ -24,7 +24,6 @@ final class UserTraderDto
     {
         $this->skills = new ArrayCollection();
     }
-
 
     public function getFirstName(): string
     {

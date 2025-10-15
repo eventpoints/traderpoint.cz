@@ -9,7 +9,6 @@ use App\Repository\EngagementRepository;
 use App\Repository\QuoteRepository;
 use App\Repository\TraderProfileRepository;
 use App\Repository\UserRepository;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Form\Form\AccountFormType;
 use App\Repository\EngagementRepository;
 use App\Repository\UserRepository;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
