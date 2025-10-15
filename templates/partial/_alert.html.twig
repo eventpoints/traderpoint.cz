@@ -4,8 +4,8 @@
     {% set bs = type_map[label]|default(label) %}
     {% for message in messages %}
         <div class="alert border-primary bg-primary-subtle alert-dismissible fade show my-3" role="alert">
-            {{ message|trans|raw }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'Close'|trans }}"></button>
+            {{ message|trans }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'close'|trans }}"></button>
         </div>
     {% endfor %}
 {% endfor %}

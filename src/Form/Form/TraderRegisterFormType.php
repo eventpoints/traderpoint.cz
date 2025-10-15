@@ -41,7 +41,7 @@ class TraderRegisterFormType extends AbstractType
                 ],
             ])
             ->add('skills', EntityType::class, [
-                'label' => 'Required skills',
+                'label' => $this->translator->trans('skills'),
                 'class' => Skill::class,
                 'choice_label' => 'name',
                 'choice_translation_domain' => 'skills',
@@ -75,7 +75,6 @@ class TraderRegisterFormType extends AbstractType
                 'mapped' => false,
                 'attr' => [
                     'autocomplete' => 'new-password',
-                    'placeholder' => 'password',
                 ],
                 'constraints' => [
                     new NotBlank([

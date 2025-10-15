@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller\Controller;
+namespace App\Controller\Stripe;
 
+use App\Entity\Payment;
 use App\Entity\User;
 use App\Enum\FlashEnum;
 use App\Repository\PaymentRepository;
@@ -13,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class PaymentController extends AbstractController
+class StripePaymentController extends AbstractController
 {
     public function __construct(
         private readonly StripeClient $stripe,
@@ -33,13 +34,14 @@ class PaymentController extends AbstractController
         $sessionId = (string) $request->query->get('session_id', '');
         $result = (string) $request->query->get('result', 'unknown');
 
-        if ($sessionId === '') {
+
+        if (empty($sessionId) ) {
             $this->addFlash('error', 'Can’t find that payment.');
             return $this->redirectToRoute('app_login');
         }
 
         $payment = $this->paymentRepository->findOneByCheckoutId($sessionId);
-        if (!$payment instanceof \App\Entity\Payment) {
+        if (!$payment instanceof Payment) {
             $this->addFlash('error', 'Unknown or expired payment session.');
             return $this->redirectToRoute('app_login');
         }

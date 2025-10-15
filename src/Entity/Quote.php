@@ -20,6 +20,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'ix_quote_trader', columns: ['owner_id'])]
 #[ORM\Index(name: 'ix_quote_status', columns: ['status'])]
 #[ORM\Index(name: 'ix_quote_decided_at', columns: ['decided_at'])]
+#[ORM\Index(name: 'ix_quote_owner_engagement', columns: ['owner_id', 'engagement_id'])]
+#[ORM\Index(
+    name: 'ix_quote_owner_engagement_submitted',
+    columns: ['owner_id', 'engagement_id'],
+    options: ['where' => "status = 'SUBMITTED'"]
+)]
 #[ORM\HasLifecycleCallbacks]
 class Quote implements \Stringable
 {

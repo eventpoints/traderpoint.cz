@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Controller;
+namespace App\Controller\Stripe;
 
 use App\Enum\PaymentStatusEnum;
 use App\Repository\PaymentRepository;

@@ -3,6 +3,7 @@
 namespace App\Form\Form;
 
 use App\Entity\User;
+use App\Form\Type\PasswordInputType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -42,16 +43,9 @@ class RegistrationFormType extends AbstractType
                     'class' => 'form-floating',
                 ],
             ])
-            ->add('plainPassword', PasswordType::class, [
-                'label' => $this->translator->trans('password'),
-                'row_attr' => [
-                    'class' => 'form-floating',
-                ],
+            ->add('plainPassword', PasswordInputType::class, [
+                'toggle' => true,
                 'mapped' => false,
-                'attr' => [
-                    'autocomplete' => 'new-password',
-                    'placeholder' => 'password',
-                ],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please enter a password',
@@ -59,7 +53,6 @@ class RegistrationFormType extends AbstractType
                     new Length([
                         'min' => 6,
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
                 ],

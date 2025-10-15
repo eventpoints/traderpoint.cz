@@ -3,9 +3,23 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            background: url('{{ asset('images/ai-ele-man.png') }}') top / cover no-repeat fixed;
+            /* If you don’t want it fixed-on-scroll, drop the “fixed” keyword */
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+    </style>
+
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-4">
+        <div class="row justify-content-center min-vh-50 align-items-center">
+            <div class="col-12 col-md-4">
                 <div class="card my-3">
                     {{ form_start(traderForm) }}
                     <div class="card-header">
@@ -16,19 +30,7 @@
                         {{ form_row(traderForm.lastName) }}
                         {{ form_row(traderForm.email) }}
                         {{ form_row(traderForm.skills) }}
-                        <div class="input-group mb-3" {{ stimulus_controller('password-visibility') }}>
-                            {{ form_widget(traderForm.plainPassword, {
-                                attr: {
-                                    'data-password-visibility-target': 'input'
-                                }
-                            }) }}
-                            <button data-action="password-visibility#toggle" class="btn btn-secondary" type="button"
-                                    id="button-addon2">
-                                <span data-password-visibility-target="icon" class="bi bi-eye"></span>
-                                <span data-password-visibility-target="icon" class="hidden bi bi-eye-slash"></span>
-                            </button>
-                        </div>
-
+                        {{ form_row(traderForm.plainPassword) }}
                     </div>
 
                     <div class="card-footer vstack gap-2 text-center">

@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="row justify-content-center g-3 my-5">
+            <div class="col-12 col-md-3">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <img src="{{ user.avatar }}" class="img-fluid rounded-circle" alt="">
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item fs-4 text-center"><div>{{ user.fullName }}</div></div>
+                        <div class="list-group-item fs-4 text-center"><div>{{ user.engagements.count }}</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-9"></div>
+        </div>
+    </div>
+{% endblock %}
+
+

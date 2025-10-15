@@ -145,6 +145,7 @@ return array (
   'Please enter a valid URL.' => 'Please enter a valid URL.',
   'Please enter a valid search term.' => 'Please enter a valid search term.',
   'Please provide a valid phone number.' => 'Please provide a valid phone number.',
+  'phone_number.already_registered' => 'This phone number is already registered.',
   'The checkbox has an invalid value.' => 'The checkbox has an invalid value.',
   'Please enter a valid email address.' => 'Please enter a valid email address.',
   'Please select a valid option.' => 'Please select a valid option.',

@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\Form\AccountFormType;
 use App\Form\Form\TraderAccountFormType;
 use App\Repository\EngagementRepository;
+use App\Repository\QuoteRepository;
 use App\Repository\TraderProfileRepository;
 use App\Repository\UserRepository;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -29,6 +30,7 @@ class TraderController extends AbstractController
         private readonly EngagementRepository $engagementRepository,
         private readonly PaginatorInterface $paginator,
         private readonly TraderProfileRepository $traderProfileRepository,
+        private readonly QuoteRepository $quoteRepository,
     )
     {
     }
@@ -36,7 +38,16 @@ class TraderController extends AbstractController
     #[Route(path: '/traders', name: 'trader_index')]
     public function index(Request $request): Response
     {
-        return $this->render('trader/index.html.twig');
+        return $this->render('trader/landing.html.twig');
+    }
+
+    #[Route(path: '/trader/quotes', name: 'trader_quotes')]
+    public function sent(Request $request, #[CurrentUser] User $currentUser): Response
+    {
+        $quotes = $this->quoteRepository->findBy(['owner' => $currentUser]);
+        return $this->render('trader/quotes.html.twig', [
+            'quotes' => $quotes
+        ]);
     }
 
     #[Route(path: '/dashboard', name: 'trader_dashboard')]
@@ -47,7 +58,7 @@ class TraderController extends AbstractController
             return $this->redirectToRoute('client_dashboard');
         }
 
-        $engagementsQuery = $this->engagementRepository->findUpcomingBySkills(
+        $engagementsQuery = $this->engagementRepository->findUpcomingBySkillsAndLocation(
             user: $currentUser,
             isQuery: true
         );
@@ -119,4 +130,13 @@ class TraderController extends AbstractController
             'traderAccountForm' => $traderAccountForm,
         ]);
     }
+
+    #[Route(path: '/trader/profile/{id}', name: 'trader_profile')]
+    public function profile(User $user, Request $request): Response
+    {
+        return $this->render('trader/profile.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
 }

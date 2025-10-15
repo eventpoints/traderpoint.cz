@@ -59,6 +59,18 @@
             "config/routes/easyadmin.yaml"
         ]
     },
+    "jsor/doctrine-postgis": {
+        "version": "2.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.7",
+            "ref": "211979f7917bf6edb8fc5006a17b2e84e8e84d50"
+        },
+        "files": [
+            "config/packages/jsor_doctrine_postgis.yaml"
+        ]
+    },
     "knplabs/knp-paginator-bundle": {
         "version": "v6.6.1"
     },
@@ -325,6 +337,9 @@
         "files": [
             "config/routes/ux_autocomplete.yaml"
         ]
+    },
+    "symfony/ux-dropzone": {
+        "version": "v2.30.0"
     },
     "symfony/ux-leaflet-map": {
         "version": "2.30",

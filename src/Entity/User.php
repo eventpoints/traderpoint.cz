@@ -52,7 +52,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private Collection $reviews;
 
-    #[ORM\OneToOne(targetEntity: PhoneNumber::class)]
+    /**
+     * @var Collection<int, Engagement>
+     */
+    #[ORM\OneToMany(targetEntity: Engagement::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    private Collection $engagements;
+
+    #[ORM\OneToOne(targetEntity: PhoneNumber::class,cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(name: 'phone_number_id', referencedColumnName: 'id')]
     private PhoneNumber|null $phoneNumber = null;
 
@@ -85,6 +91,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     {
         $this->token = Uuid::v7();
         $this->reviews = new ArrayCollection();
+        $this->engagements = new ArrayCollection();
         $this->conversationParticipates = new ArrayCollection();
         $this->createdAt = new CarbonImmutable();
     }
@@ -175,6 +182,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     {
         if ($this->reviews->removeElement($review) && $review->getOwner() === $this) {
             $review->setOwner(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Engagement>
+     */
+    public function getEngagements(): Collection
+    {
+        return $this->engagements;
+    }
+
+    public function addEngagement(Engagement $engagement): static
+    {
+        if (! $this->engagements->contains($engagement)) {
+            $this->engagements->add($engagement);
+            $engagement->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEngagement(Engagement $engagement): static
+    {
+        if ($this->engagements->removeElement($engagement) && $engagement->getOwner() === $this) {
+            $engagement->setOwner(null);
         }
 
         return $this;

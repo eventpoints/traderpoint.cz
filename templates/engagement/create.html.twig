@@ -18,11 +18,17 @@
                     <div class="card-body vstack gap-3">
                         {{ form_row(engagementForm.title) }}
                         {{ form_row(engagementForm.description) }}
+                        {{ form_row(engagementForm.images) }}
+                        {% if engagementForm.phoneNumber is defined %}
+                            {{ form_row(engagementForm.phoneNumber) }}
+                        {% endif %}
                         {{ form_row(engagementForm.skills) }}
                         {{ form_row(engagementForm.timelinePreferenceEnum) }}
                         {{ form_row(engagementForm.budget) }}
+
                         <div class="d-grid">
-                            <button data-turbo="false" class="btn btn-lg btn-primary">{{ 'contiune-to-payment'|trans }}</button>
+                            <button data-turbo="false"
+                                    class="btn btn-lg btn-primary">{{ 'contiune-to-payment'|trans }}</button>
                         </div>
                     </div>
                     {{ form_end(engagementForm) }}

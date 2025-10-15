@@ -1,19 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 
-.card-img-overlay{position:absolute}
-.card-img-overlay::before{
-    content:""; position:absolute; inset:0;
-    background:linear-gradient(
-            to top,
-            rgba(0,0,0,.72) 0%,
-            rgba(0,0,0,.55) 40%,
-            rgba(0,0,0,.20) 75%,
-            rgba(0,0,0,0) 100%
-    );
-    z-index:0; pointer-events:none;
+body {
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
-.card-img-overlay > *{position:relative; z-index:1}
 
-.card-img-overlay-filter {filter:brightness(.70) contrast(1.07)}
+.card-img-overlay {
+    position: absolute
+}
+
+.card-img-overlay::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, .72) 0%,
+            rgba(0, 0, 0, .55) 40%,
+            rgba(0, 0, 0, .20) 75%,
+            rgba(0, 0, 0, 0) 100%
+    );
+    z-index: 0;
+    pointer-events: none;
+}
+
+.card-img-overlay > * {
+    position: relative;
+    z-index: 1
+}
+
+.card-img-overlay-filter {
+    filter: brightness(.70) contrast(1.07)
+}
 
 
 .ts-control {
@@ -24,7 +43,7 @@
     display: none;
 }
 
-.avatar-50{
+.avatar-50 {
     height: 50px;
     width: 50px;
     object-fit: cover;
@@ -47,8 +66,15 @@
 }
 
 /* Optional: adjust label spacing/size */
-.form-switch-lg .form-check-label { margin-left: .25rem; font-size: 1.05rem; }
-.form-switch-sm .form-check-label { margin-left: .25rem; font-size: .95rem; }
+.form-switch-lg .form-check-label {
+    margin-left: .25rem;
+    font-size: 1.05rem;
+}
+
+.form-switch-sm .form-check-label {
+    margin-left: .25rem;
+    font-size: .95rem;
+}
 
 .read-more-content {
     overflow: hidden;
@@ -57,31 +83,31 @@
     -webkit-line-clamp: var(--read-more-line-clamp, 5);
 }
 
-.hover-pointer:hover{
+.hover-pointer:hover {
     cursor: pointer !important;
 }
 
 /* ========= Size variables (tweak these) ========= */
-.form-range.range--xl{
-    --range-track-h: 14px;         /* desktop track height */
-    --range-thumb:   32px;         /* desktop thumb size */
-    --range-color:   var(--bs-primary, #0d6efd);
-    --range-track-bg:#e9ecef;
-    --range-focus:   rgba(13,110,253,.25); /* focus halo */
-    --range-padding: 14px;          /* vertical padding (hit area) */
+.form-range.range--xl {
+    --range-track-h: 14px; /* desktop track height */
+    --range-thumb: 32px; /* desktop thumb size */
+    --range-color: var(--bs-primary, #0d6efd);
+    --range-track-bg: #e9ecef;
+    --range-focus: rgba(13, 110, 253, .25); /* focus halo */
+    --range-padding: 14px; /* vertical padding (hit area) */
 }
 
 /* Mobile: even bigger thumb/track */
-@media (max-width: 576px){
-    .form-range.range--xl{
+@media (max-width: 576px) {
+    .form-range.range--xl {
         --range-track-h: 16px;
-        --range-thumb:   36px;
+        --range-thumb: 36px;
         --range-padding: 18px;
     }
 }
 
 /* ======== Base reset / hit area ======== */
-input[type="range"].form-range.range--xl{
+input[type="range"].form-range.range--xl {
     -webkit-appearance: none;
     appearance: none;
     background: transparent;
@@ -90,13 +116,13 @@ input[type="range"].form-range.range--xl{
 }
 
 /* ======== WebKit/Blink (Chrome/Safari/Edge) ======== */
-input[type="range"].form-range.range--xl::-webkit-slider-runnable-track{
+input[type="range"].form-range.range--xl::-webkit-slider-runnable-track {
     height: var(--range-track-h) !important;
     background: var(--range-track-bg);
     border-radius: 999px;
 }
 
-input[type="range"].form-range.range--xl::-webkit-slider-thumb{
+input[type="range"].form-range.range--xl::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: var(--range-thumb) !important;
     height: var(--range-thumb) !important;
@@ -106,48 +132,52 @@ input[type="range"].form-range.range--xl::-webkit-slider-thumb{
     /* center thumb on thicker track */
     margin-top: calc((var(--range-track-h) - var(--range-thumb)) / 2);
     cursor: pointer;
-    box-shadow: 0 0 0 1px rgba(0,0,0,.08);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .08);
     transition: transform .05s ease-in-out, box-shadow .15s ease;
 }
 
-input[type="range"].form-range.range--xl:active::-webkit-slider-thumb{
+input[type="range"].form-range.range--xl:active::-webkit-slider-thumb {
     transform: scale(1.05);
 }
 
 /* ======== Firefox ======== */
-input[type="range"].form-range.range--xl::-moz-range-track{
+input[type="range"].form-range.range--xl::-moz-range-track {
     height: var(--range-track-h) !important;
     background: var(--range-track-bg);
     border: 0;
     border-radius: 999px;
 }
-input[type="range"].form-range.range--xl::-moz-range-thumb{
+
+input[type="range"].form-range.range--xl::-moz-range-thumb {
     width: var(--range-thumb) !important;
     height: var(--range-thumb) !important;
     border-radius: 50%;
     background: var(--range-color);
     border: 0;
     cursor: pointer;
-    box-shadow: 0 0 0 1px rgba(0,0,0,.08);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .08);
     transition: transform .05s ease-in-out, box-shadow .15s ease;
 }
-input[type="range"].form-range.range--xl:active::-moz-range-thumb{
+
+input[type="range"].form-range.range--xl:active::-moz-range-thumb {
     transform: scale(1.05);
 }
 
 /* ======== Legacy IE/Edge ======== */
-input[type="range"].form-range.range--xl::-ms-track{
+input[type="range"].form-range.range--xl::-ms-track {
     height: var(--range-track-h);
     background: transparent;
     border-color: transparent;
     color: transparent;
 }
+
 input[type="range"].form-range.range--xl::-ms-fill-lower,
-input[type="range"].form-range.range--xl::-ms-fill-upper{
+input[type="range"].form-range.range--xl::-ms-fill-upper {
     background: var(--range-track-bg);
     border-radius: 999px;
 }
-input[type="range"].form-range.range--xl::-ms-thumb{
+
+input[type="range"].form-range.range--xl::-ms-thumb {
     width: var(--range-thumb);
     height: var(--range-thumb);
     border-radius: 50%;
@@ -156,18 +186,50 @@ input[type="range"].form-range.range--xl::-ms-thumb{
 }
 
 /* ======== Focus / disabled ======== */
-input[type="range"].form-range.range--xl:focus{
+input[type="range"].form-range.range--xl:focus {
     outline: none;
 }
-input[type="range"].form-range.range--xl:focus-visible{
+
+input[type="range"].form-range.range--xl:focus-visible {
     box-shadow: 0 0 0 .35rem var(--range-focus);
     border-radius: 999px; /* so halo follows the track shape */
 }
-input[type="range"].form-range.range--xl:disabled{
+
+input[type="range"].form-range.range--xl:disabled {
     opacity: .6;
     cursor: not-allowed;
 }
 
-.strikethrough{
+.strikethrough {
     text-decoration: line-through !important;
+}
+
+.glass {
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.min-vh-80 {
+    min-height: 80vh !important;
+}
+.min-vh-50{
+    min-height: 50vh !important;
+}
+
+.w-30{
+    width: 30% !important;
+}
+
+
+.ts-control {
+    padding-bottom: 0.625rem !important;
+}
+
+.ts-wrapper.single .ts-control, .ts-wrapper.single .ts-control {
+    padding-top: 1.625rem !important;
 }

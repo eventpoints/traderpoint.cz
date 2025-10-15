@@ -16,11 +16,18 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use DomainException;
+use Jsor\Doctrine\PostGIS\Types\PostGISType;
+use Stringable;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: EngagementRepository::class)]
-class Engagement implements \Stringable
+#[ORM\Index(
+    fields: ['point'],
+    flags: ['spatial'],
+)]
+#[ORM\HasLifecycleCallbacks]
+class Engagement implements Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -39,6 +46,13 @@ class Engagement implements \Stringable
 
     #[ORM\Column]
     private ?float $longitude = null;
+
+    #[ORM\Column(
+        type: PostGISType::GEOMETRY,
+        nullable: true,
+        options: ['geometry_type' => 'POINT', 'srid' => 4326],
+    )]
+    public null|string $point = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
@@ -420,6 +434,11 @@ class Engagement implements \Stringable
        return $this->payments->findFirst(fn(int $key, Payment $payment): bool => $payment->getType() === PaymentTypeEnum::POSTING_FEE);
     }
 
+    public function isBoosted(): bool
+    {
+        return $this->payments->exists(fn(int $key, Payment $payment): bool => $payment->getType() === PaymentTypeEnum::FEATURED);
+    }
+
     public function expiresInDaysHuman(): string
     {
         $cutoff = $this->createdAt->addDays(30)->endOfDay();
@@ -435,8 +454,30 @@ class Engagement implements \Stringable
         return sprintf('%d day%s left', $daysLeft, $daysLeft === 1 ? '' : 's');
     }
 
+    public function getPoint(): ?string
+    {
+        return $this->point;
+    }
+
+    public function setPoint(?string $point): void
+    {
+        $this->point = $point;
+    }
+
     public function __toString(): string
     {
         return (string) $this->getTitle();
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function syncPointFromLatLng(): void
+    {
+        if (!empty($this->latitude) &&  !empty($this->longitude)) {
+            $point = sprintf('SRID=4326;POINT(%F %F)', $this->longitude, $this->latitude);
+            $this->setPoint($point);
+        }else{
+            $this->setPoint(null);
+        }
     }
 }

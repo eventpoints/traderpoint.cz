@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Entity\User;
-use App\Security\AppCustomAuthenticator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -28,22 +27,40 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'main' => [
                 'lazy' => true,
                 'provider' => 'app_user_provider',
-                'custom_authenticator' => AppCustomAuthenticator::class,
+                'form_login' => [
+                    'login_path'         => 'app_login',
+                    'check_path'         => 'app_login',
+                    'username_parameter' => 'login_form[email]',
+                    'password_parameter' => 'login_form[password]',
+                    'csrf_parameter'     => '_csrf_token',
+                    'csrf_token_id'      => 'authenticate',
+                ],
+
                 'logout' => [
                     'path' => 'app_logout',
                 ],
+
+                // ✅ Remember me hooked to your checkbox
                 'remember_me' => [
                     'secret' => '%kernel.secret%',
-                    'lifetime' => 604800,
+                    'lifetime' => 604800, // 7 days
                     'path' => '/',
-                    'always_remember_me' => true,
+                    'always_remember_me' => false,                  // respect checkbox
+                    'remember_me_parameter' => 'login_form[_remember_me]',
+                ],
+
+                // (Optional) basic throttling
+                'login_throttling' => [
+                    'max_attempts' => 5,
                 ],
             ],
         ],
         'access_control' => [
-
+            // e.g. allow anonymous to login
+            ['path' => '^/login', 'roles' => 'PUBLIC_ACCESS'],
         ],
     ]);
+
     if ($containerConfigurator->env() === 'test') {
         $containerConfigurator->extension('security', [
             'password_hashers' => [

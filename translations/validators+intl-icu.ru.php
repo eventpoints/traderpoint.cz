@@ -139,6 +139,8 @@ return array (
   'Please enter a valid URL.' => 'Пожалуйста, введите действительный URL.',
   'Please enter a valid search term.' => 'Пожалуйста, введите действительный поисковый запрос.',
   'Please provide a valid phone number.' => 'Пожалуйста, введите действительный номер телефона.',
+    'phone_number.already_registered' => 'Этот номер телефона уже зарегистрирован.',
+
   'The checkbox has an invalid value.' => 'Флажок имеет недопустимое значение.',
   'Please enter a valid email address.' => 'Пожалуйста, введите допустимый email адрес.',
   'Please select a valid option.' => 'Пожалуйста, выберите допустимый вариант.',

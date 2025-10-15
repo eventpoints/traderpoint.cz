@@ -5,100 +5,136 @@
 {% block body %}
 
     <div class="container">
-        <div class="row justify-content-center g-3 my-5">
+        {% if app.user.traderProfile.isLocationConfiured %}
+            <div class="row justify-content-center g-3 my-5">
 
-
-            <div class="col-12 col-md-6">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="fs-4 fw-bold">{{ 'trader-dashboard'|trans|title }}</div>
-                        <div class="">{{ 'jobs-for-you'|trans }}</div>
-                    </div>
-                </div>
-
-                <div class="row g-4 my-3">
-                    {% for job in pagination.items %}
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="fs-4 fw-bold text-dark">{{ job.title }}</div>
-                                    <div class="badge rounded-pill bg-primary">{{ 'quotes-received'|trans({count: job.quotes.count}) }}</div>
-                                </div>
-
-                                <div class="dropdown">
-                                    <button class="btn btn-light rounded-pill" type="button" data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                        <i class="bi bi-three-dots-vertical fs-4"></i>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Report</a></li>
-                                    </ul>
-                                </div>
+                <div class="col-12 col-md-6">
+                    <div class="vstack gap-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="fs-4 fw-bold">{{ 'trader-dashboard'|trans|title }}</div>
+                                <div class="">{{ 'jobs-for-you'|trans|capitalize }}</div>
                             </div>
-                            <div class="card-header">
-                                <div class="d-flex flex-wrap gap-2">
+                            <div>
+                                <a href="{{ path('trader_quotes') }}"
+                                   class="btn btn-outline-primary rounded-pill">{{ 'quotes-sent'|trans|title }}</a>
+                            </div>
+                        </div>
+                        <fieldset class="d-flex flex-wrap gap-2 align-items-center border rounded-3 p-3">
+                            <legend class="float-none w-auto px-2 mb-0 fs-6 text-muted bg-body">{{ 'filter'|trans|title }}</legend>
+                            <div class="fs-4">
+                                {% for skill in app.user.traderProfile.skills %}
+                                    <span class="badge rounded-pill text-bg-primary text-white">{{ skill.name|trans(domain='skills') }}</span>
+                                {% endfor %}
+                                <span class="badge rounded-pill text-bg-dark">{{ 'km.radius'|trans({distance: app.user.traderProfile.serviceRadius}) }}</span>
+                            </div>
+                            <div class="text-end w-100 mt-3">
+                                <a href="{{ path('trader_account') }}"
+                                   class="btn btn-outline-primary rounded-pill">
+                                    {{ 'change-settings'|trans|title }}
+                                </a>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="row g-4 my-3">
+                        {% for job in pagination.items %}
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fs-4 fw-bold text-dark">{{ job.title }}</div>
+                                        <div class="badge rounded-pill bg-primary">{{ 'quotes-received'|trans({count: job.quotes.count}) }}</div>
+                                    </div>
+
+                                    <div class="dropdown">
+                                        <button class="btn btn-light rounded-pill" type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical fs-4"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#">Report</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-header">
+                                    <div class="d-flex flex-wrap gap-2">
                                     <span data-bs-toggle="tooltip" data-bs-placement="top"
                                           data-bs-title="{{ 'budget'|trans }}"
                                           class="badge hover-pointer rounded-pill text-bg-dark">{{ (job.budget / 100)|format_currency(job.currencyCodeEnum.value, {}, 'en') }}</span>
-                                    {% for skill in job.skills %}
-                                        <span class="badge rounded-pill text-bg-primary">{{ skill.name|trans|title }}</span>
-                                    {% endfor %}
-                                    <span class="badge rounded-pill text-bg-dark">{{ 'starts: ' ~ job.dueAt|format_datetime }}</span>
-                                    <span class="badge rounded-pill text-bg-dark">{{ distance_from(job.latitude, job.longitude) }}</span>
-                                    <span class="badge rounded-pill text-bg-dark">{{ job.timelinePreferenceEnum.value|trans }}</span>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div data-controller="read-more"
-                                     data-read-more-more-text-value="{{ 'read-more'|trans }}"
-                                     data-read-more-less-text-value="{{ 'read-less'|trans }}">
-                                    <div class="read-more-content" data-read-more-target="content">
-                                        {{ job.description|nl2br }}
-                                    </div>
-                                    <div class="text-center text-muted my-3">
-                                        <a data-action="read-more#toggle">{{ 'read-more'|trans }}</a>
+                                        {% for skill in job.skills %}
+                                            <span class="badge rounded-pill text-bg-primary">{{ skill.name|trans|title }}</span>
+                                        {% endfor %}
+                                        <span class="badge rounded-pill text-bg-dark">{{ 'km.distance'|trans({distance: distance_km(job.latitude, job.longitude, app.user.traderProfile.latitude,app.user.traderProfile.longitude)}) }}</span>
+                                        <span class="badge rounded-pill text-bg-dark">{{ job.timelinePreferenceEnum.value|trans }}</span>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="list-group list-group-flush">
-                                <div class="list-group-item">
-                                    <div class="d-flex flex-wrap gap-2">
-                                        <div>
-                                            <img class="rounded-circle avatar-50" src="{{ job.owner.avatar }}">
+                                <div class="card-body">
+                                    <div data-controller="read-more"
+                                         data-read-more-more-text-value="{{ 'read-more'|trans }}"
+                                         data-read-more-less-text-value="{{ 'read-less'|trans }}">
+                                        <div class="read-more-content" data-read-more-target="content">
+                                            {{ job.description|nl2br }}
                                         </div>
-                                        <div>
-                                            <div>{{ job.owner.fullName|title }}</div>
-                                            <div>{{ job.createdAt.diffForHumans }}</div>
+                                        <div class="text-center text-muted my-3">
+                                            <a data-action="read-more#toggle">{{ 'read-more'|trans }}</a>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card-footer">
-                                <div class="d-flex gap-3 justify-content-end align-items-center">
-                                    <a class="btn btn-light text-primary rounded-pill"
-                                       href="{{ path('trader_show_engagement', {id: job.id}) }}">
-                                        <i class="bi bi-arrow-right-short fs-3"></i>
+                                <div class="list-group list-group-flush">
+                                    <a href="{{ path('client_profile', {id: job.owner.id}) }}"
+                                       class="list-group-item list-group-item-action">
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <div>
+                                                <img class="rounded-circle avatar-50" src="{{ job.owner.avatar }}">
+                                            </div>
+                                            <div>
+                                                <div>{{ job.owner.fullName|title }}</div>
+                                                <div>{{ job.createdAt.diffForHumans }}</div>
+                                            </div>
+                                        </div>
                                     </a>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="d-flex gap-3 justify-content-end align-items-center">
+                                        <a class="btn btn-light text-primary rounded-pill"
+                                           href="{{ path('trader_show_engagement', {id: job.id}) }}">
+                                            <i class="bi bi-arrow-right-short fs-3"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        {% else %}
+                        <!-- Content displayed if engagements is empty -->
+                        <div class="col-12">
+                            <div class="text-center text-muted">
+                                <p class="fw-bold mb-1 fs-4">{{ 'nothing-to-see-here'|trans }}</p>
+                                <p class="mb-0">{{ 'could-not-find-any-jobs'|trans }}</p>
+                            </div>
+                        </div>
                     </div>
-                    {% else %}
-                    <!-- Content displayed if engagements is empty -->
-                    <div class="col-12">
-                        <div class="text-center text-muted">
-                            <p class="fw-bold mb-1 fs-4">{{ 'nothing-to-see-here'|trans }}</p>
-                            <p class="mb-0">{{ 'no-jobs-posted'|trans }}</p>
+                    {% endfor %}
+
+                    {{ knp_pagination_render(pagination) }}
+
+                </div>
+            </div>
+        {% else %}
+            <div class="row justify-content-center g-3 my-5">
+                <div class="col-12 col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="fs-4">{{ 'get-started'|trans|title }}</div>
+                            <div class="mb-3">{{ 'set-your-service-radius'|trans }}</div>
+                            <a href="{{ path('trader_account') }}"
+                               class="btn btn-outline-primary rounded-pill my-3">{{ 'update-now'|trans }}</a>
                         </div>
                     </div>
                 </div>
-                {% endfor %}
-
-                {{ knp_pagination_render(pagination) }}
-
             </div>
-        </div>
+        {% endif %}
     </div>
 {% endblock %}
 

@@ -7,9 +7,20 @@ use Carbon\CarbonImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Component\Uid\Uuid;
 
+
 #[ORM\Entity(repositoryClass: PhoneNumberRepository::class)]
+#[ORM\Table(name: 'phone_number', uniqueConstraints: [
+    new ORM\UniqueConstraint(name: 'uniq_phone_prefix_number', columns: ['prefix', 'number'])
+])]
+#[UniqueEntity(
+    fields: ['prefix', 'number'],
+    message: new TranslatableMessage('phone_number.already_registered', [], 'validators'),
+    errorPath: 'number'
+)]
 class PhoneNumber
 {
     #[ORM\Id]
@@ -21,9 +32,12 @@ class PhoneNumber
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private null|CarbonImmutable $confirmedAt = null;
 
-    public function __construct(#[ORM\Column]
-    private int $prefix, #[ORM\Column]
-    private int $number)
+    public function __construct(
+        #[ORM\Column]
+        private null|int $prefix = null,
+        #[ORM\Column(length: 32, unique: true)]
+        private null|string $number = null
+    )
     {
     }
 
@@ -42,15 +56,16 @@ class PhoneNumber
         $this->prefix = $prefix;
     }
 
-    public function getNumber(): int
+    public function getNumber(): ?string
     {
         return $this->number;
     }
 
-    public function setNumber(int $number): void
+    public function setNumber(?string $number): void
     {
         $this->number = $number;
     }
+
 
     public function getConfirmedAt(): ?CarbonImmutable
     {

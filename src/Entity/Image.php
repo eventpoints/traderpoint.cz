@@ -22,7 +22,7 @@ class Image
 
     #[ORM\ManyToOne(targetEntity: Engagement::class, inversedBy: 'images')]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
-    private null|Engagement $product = null;
+    private null|Engagement $engagement = null;
 
     #[Vich\UploadableField(mapping: 'images', fileNameProperty: 'filename')]
     private ?File $imageFile = null;
@@ -108,13 +108,13 @@ class Image
         $this->updatedAt = $updatedAt;
     }
 
-    public function getProduct(): ?Product
+    public function getEngagement(): ?Engagement
     {
-        return $this->product;
+        return $this->engagement;
     }
 
-    public function setProduct(?Product $product): void
+    public function setEngagement(?Engagement $engagement): void
     {
-        $this->product = $product;
+        $this->engagement = $engagement;
     }
 }

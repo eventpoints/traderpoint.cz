@@ -8,10 +8,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Jsor\Doctrine\PostGIS\Types\PostGISType;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TraderProfileRepository::class)]
+#[ORM\Index(
+    fields: ['point'],
+    flags: ['spatial'],
+)]
+#[ORM\HasLifecycleCallbacks]
 class TraderProfile
 {
     #[ORM\Id]
@@ -37,6 +43,13 @@ class TraderProfile
 
     #[ORM\Column(nullable: true)]
     private ?float $longitude = null;
+
+    #[ORM\Column(
+        type: PostGISType::GEOMETRY,
+        nullable: true,
+        options: ['geometry_type' => 'POINT', 'srid' => 4326],
+    )]
+    public null|string $point = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
@@ -163,4 +176,32 @@ class TraderProfile
     {
         $this->serviceRadius = $serviceRadius;
     }
+
+    public function getPoint(): ?string
+    {
+        return $this->point;
+    }
+
+    public function setPoint(?string $point): void
+    {
+        $this->point = $point;
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function syncPointFromLatLng(): void
+    {
+        if (!empty($this->latitude) &&  !empty($this->longitude)) {
+            $point = sprintf('SRID=4326;POINT(%F %F)', $this->longitude, $this->latitude);
+            $this->setPoint($point);
+        }else{
+            $this->setPoint(null);
+        }
+    }
+
+    public function isLocationConfiured() : bool
+    {
+        return $this->skills->count() === 0 || !empty($this->serviceRadius) ||  !empty($this->getLatitude()) || !empty($this->getLongitude());
+    }
+
 }

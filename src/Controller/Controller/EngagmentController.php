@@ -4,6 +4,7 @@ namespace App\Controller\Controller;
 
 use App\DataTransferObject\MapLocationDto;
 use App\Entity\Engagement;
+use App\Entity\Image;
 use App\Entity\Payment;
 use App\Entity\Quote;
 use App\Entity\User;
@@ -16,8 +17,10 @@ use App\Form\Form\QuoteFormType;
 use App\Repository\EngagementRepository;
 use App\Repository\PaymentRepository;
 use App\Repository\QuoteRepository;
+use App\Repository\UserRepository;
 use Stripe\StripeClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -34,11 +37,11 @@ use Symfony\UX\Map\Point;
 class EngagmentController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface $translator,
-        private readonly QuoteRepository $quoteRepository,
+        private readonly TranslatorInterface  $translator,
+        private readonly QuoteRepository      $quoteRepository,
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaymentRepository $paymentRepository,
-        private readonly StripeClient $stripe
+        private readonly PaymentRepository    $paymentRepository,
+        private readonly StripeClient         $stripe, private readonly UserRepository $userRepository
     )
     {
     }
@@ -94,8 +97,32 @@ class EngagmentController extends AbstractController
     #[Route(path: 'client/engagement/{id}', name: 'client_show_engagement')]
     public function clientShow(Engagement $engagement, Request $request, #[CurrentUser] User $currentUser): Response
     {
+        $center = new Point($engagement->getLatitude(), $engagement->getLongitude());
+
+        $map = (new Map('default'))
+            ->center($center)
+            ->zoom(20)
+            ->options(
+                (new LeafletOptions())
+                    ->tileLayer(new TileLayer(
+                        url: 'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=1IDdEWmfCtjKNlJ6Ij3W',
+                        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                        options: [
+                            'maxZoom' => 25,
+                            'tileSize' => 512,
+                            'zoomOffset' => -1,
+                        ]
+                    ))
+            );
+
+        $map->addMarker(new Marker(
+            position: $center,
+            icon: Icon::svg('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="9" cy="9" r="7" fill="#EC4E20" stroke="white" stroke-width="2"/></svg>')
+        ));
+
         $quotes = $this->quoteRepository->findByEngagement($engagement);
         return $this->render('engagement/client/show.html.twig', [
+            'map' => $map,
             'engagement' => $engagement,
             'quotes' => $quotes,
         ]);
@@ -128,10 +155,29 @@ class EngagmentController extends AbstractController
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
 
+
+            if( $engagementForm->has('phoneNumber')){
+                $phoneNumber = $engagementForm->get('phoneNumber')->getData();
+                $currentUser->setPhoneNumber($phoneNumber);
+                $this->userRepository->save(entity: $currentUser, flush: true);
+            }
+
+            /** @var UploadedFile[] $files */
+            $files = $engagementForm->get('images')->getData() ?? [];
+
+            $positionBase = count($engagement->getImages());
+            foreach ($files as $idx => $file) {
+                $img = new Image();
+                $img->setImageFile($file);
+                $img->setEngagement($engagement);
+                $img->setPosition($positionBase + $idx + 1);
+                $engagement->addImage($img);
+            }
+
             /** @var MapLocationDto $mapLocationDto */
             $mapLocationDto = $engagementForm->get('location')->getData();
             $engagement->setLatitude($mapLocationDto->getLatitude());
-            $engagement->setLongitude($mapLocationDto->getLatitude());
+            $engagement->setLongitude($mapLocationDto->getLongitude());
             $engagement->setAddress($mapLocationDto->getAddress());
 
             $this->engagementRepository->save(entity: $engagement, flush: true);
@@ -171,6 +217,7 @@ class EngagmentController extends AbstractController
                     'payment_id' => (string) $payment->getId(),
                     'engagement_id' => (string) $engagement->getId(),
                     'user_id' => (string) $currentUser->getId(),
+                    'locale' => $request->getLocale(),
                 ],
                 'success_url' => $successUrl,
                 'cancel_url' => $cancelUrl,

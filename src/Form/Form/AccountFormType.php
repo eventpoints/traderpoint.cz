@@ -33,7 +33,9 @@ class AccountFormType extends AbstractType
                     'class' => 'form-floating',
                 ],
             ])
-        ;
+            ->add('phoneNumber', PhoneNumberFormType::class, [
+                'label' => false,
+            ]);
 
     }
 

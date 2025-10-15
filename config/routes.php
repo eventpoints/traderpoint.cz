@@ -26,6 +26,11 @@ return static function (RoutingConfigurator $routingConfigurator): void {
         ]);
 
     $routingConfigurator->import([
+        'path' => __DIR__ . '/../src/Controller/Stripe',
+        'namespace' => 'App\Controller\Stripe',
+    ], 'attribute');
+
+    $routingConfigurator->import([
         'path' => __DIR__ . '/../src/Controller/Admin',
         'namespace' => 'App\Controller\Admin',
     ], 'attribute');

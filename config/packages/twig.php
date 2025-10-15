@@ -13,6 +13,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'form/switch.html.twig',
             'form/smart_range_theme.html.twig',
             'form/map_location.html.twig',
+            'form/password_input.html.twig',
+            'form/phone_number.html.twig'
         ],
     ]);
     if ($containerConfigurator->env() === 'test') {

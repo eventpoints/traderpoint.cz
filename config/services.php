@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Controller\Controller\StripeWebhookController;
+use App\Controller\Stripe\StripeWebhookController;
+use Jsor\Doctrine\PostGIS\Driver\Middleware;
+use Jsor\Doctrine\PostGIS\Event\ORMSchemaEventListener;
 use Stripe\StripeClient;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
@@ -26,6 +28,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services->set(StripeClient::class)
         ->args([[
-            'api_key' => param(name:'env(STRIPE_PRIVATE_KEY)'),
+            'api_key' => param(name: 'env(STRIPE_PRIVATE_KEY)'),
         ]]);
+
 };

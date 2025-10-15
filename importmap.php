@@ -79,7 +79,7 @@ return [
         'type' => 'css',
     ],
     'lightgallery/css/lightgallery.css' => [
-        'version' => '2.7.2',
+        'version' => '2.9.0',
         'type' => 'css',
     ],
     'leaflet' => [
@@ -94,6 +94,10 @@ return [
     ],
     'leaflet/dist/leaflet.css' => [
         'version' => '1.9.4',
+        'type' => 'css',
+    ],
+    '@symfony/ux-dropzone/dist/style.min.css' => [
+        'version' => '2.30.0',
         'type' => 'css',
     ],
 ];

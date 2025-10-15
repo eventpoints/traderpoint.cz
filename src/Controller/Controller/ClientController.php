@@ -5,6 +5,7 @@ namespace App\Controller\Controller;
 use App\Entity\User;
 use App\Form\Form\AccountFormType;
 use App\Repository\EngagementRepository;
+use App\Repository\UserRepository;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,8 +16,8 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class ClientController extends AbstractController
 {
-    public $userRepository;
     public function __construct(
+        private readonly UserRepository $userRepository,
         private readonly EngagementRepository $engagementRepository,
         private readonly PaginatorInterface $paginator
     )
@@ -36,6 +37,15 @@ class ClientController extends AbstractController
 
         return $this->render('client/dashboard.html.twig', [
             'pagination' => $pagination,
+        ]);
+    }
+
+
+    #[Route(path: '/client/profile/{id}', name: 'client_profile')]
+    public function profile(User $user, Request $request): Response
+    {
+        return $this->render('client/profile.html.twig', [
+            'user' => $user,
         ]);
     }
 

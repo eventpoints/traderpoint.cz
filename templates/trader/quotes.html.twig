@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'quotes'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row g-3 justify-content-center">
+            <div class="col-12 col-md-8">
+                <div class="list-group list-group-flush mt-5">
+                    {% for quote in quotes %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="fs-4">{{ quote.price|format_currency(quote.currency.value) }}</div>
+                                    <div class="text-muted">{{ quote.createdAt|format_datetime }}</div>
+                                </div>
+                                <div>
+                                    <a class="btn btn-outline-primary rounded-pill" href="{{ path('trader_show_engagement', {id: quote.engagement.id}) }}">
+                                        <i class="bi bi-arrow-right-short fs-4"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="list-group-item text-center text-muted">{{ 'no-quotes-sent'|trans }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

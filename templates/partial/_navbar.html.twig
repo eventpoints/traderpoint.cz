@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light">
+<nav class="navbar navbar-expand-lg glass rounded-0 border-0" data-bs-theme="light">
     <div class="container">
         <a class="navbar-brand" href="{{ path('landing') }}">
             <span class="fs-2"><span class="fw-bold text-primary">Trader</span><span>Point</span></span>
@@ -29,7 +29,7 @@
                 <a class="nav-link fw-bold" type="button" data-bs-toggle="offcanvas"
                    data-bs-target="#language-menu-offcanvas" aria-controls="language-menu-offcanvas"
                    aria-label="Language menu">
-                    {{ app.locale|upper }}
+                    {{ app.locale|language_name|title }}
                 </a>
             </li>
         </ul>
@@ -82,7 +82,7 @@
     </div>
     <div class="list-group list-group-flush">
         <a class="list-group-item list-group-item-action {{ app.locale == 'cs' ? 'active' }}"
-           href="{{ path('landing', {_locale: 'cz'}) }}">{{ 'cs'|locale_name|title }}</a>
+           href="{{ path('landing', {_locale: 'cs'}) }}">{{ 'cs'|locale_name|title }}</a>
         <a class="list-group-item list-group-item-action {{ app.locale == 'en' ? 'active' }}"
            href="{{ path('landing', {_locale: 'en'}) }}">{{ 'en'|locale_name|title }}</a>
         <a class="list-group-item list-group-item-action {{ app.locale == 'ru' ? 'active' }}"

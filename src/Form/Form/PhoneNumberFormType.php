@@ -15,36 +15,32 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PhoneNumberFormType extends AbstractType
 {
-    public function __construct(
-        private readonly TranslatorInterface $translator
-    )
-    {
-    }
+    public function __construct(private readonly TranslatorInterface $translator) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
         $builder
             ->add('prefix', ChoiceType::class, [
-                'label' => false,
+                'label' => $this->translator->trans('country-code'),
                 'choices' => array_flip(PhonePrefixCodeData::getDialCodes()),
-                'row_attr' => [
-                    'class' => 'form-floating',
-                ],
-                'autocomplete' => true,
+                'row_attr' => ['class' => 'form-floating'],
+                'autocomplete'=> true
             ])
             ->add('number', TextType::class, [
                 'label' => $this->translator->trans('number'),
-                'row_attr' => [
-                    'class' => 'form-floating',
-                ],
+                'row_attr' => ['class' => 'form-floating'],
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => PhoneNumber::class,
+            'data_class'  => PhoneNumber::class,
         ]);
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return 'phone_number';
     }
 }

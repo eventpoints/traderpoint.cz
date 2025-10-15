@@ -45,8 +45,8 @@ services:
         protocol: udp
 
   database:
-    image: postgres:16
-    platform: linux/arm64
+    image: postgis/postgis:16-3.4
+    platform: linux/amd64
     environment:
       POSTGRES_DB: traderpoint
       POSTGRES_USER: root
