@@ -28,12 +28,12 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 'lazy' => true,
                 'provider' => 'app_user_provider',
                 'form_login' => [
-                    'login_path'         => 'app_login',
-                    'check_path'         => 'app_login',
+                    'login_path' => 'app_login',
+                    'check_path' => 'app_login',
                     'username_parameter' => 'login_form[email]',
                     'password_parameter' => 'login_form[password]',
-                    'csrf_parameter'     => '_csrf_token',
-                    'csrf_token_id'      => 'authenticate',
+                    'csrf_parameter' => '_csrf_token',
+                    'csrf_token_id' => 'authenticate',
                 ],
 
                 'logout' => [
@@ -57,7 +57,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ],
         'access_control' => [
             // e.g. allow anonymous to login
-            ['path' => '^/login', 'roles' => 'PUBLIC_ACCESS'],
+            [
+                'path' => '^/login',
+                'roles' => 'PUBLIC_ACCESS',
+            ],
         ],
     ]);
 

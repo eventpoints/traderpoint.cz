@@ -31,7 +31,9 @@ class LoginFormType extends AbstractType
                 'attr' => [
                     'autocomplete' => 'email',
                 ],
-                'row_attr' => ['class' => 'form-floating'],
+                'row_attr' => [
+                    'class' => 'form-floating',
+                ],
                 'constraints' => [
                     new NotBlank(message: 'Please enter your email.'),
                     new EmailC(message: 'Please enter a valid email address.'),

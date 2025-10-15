@@ -10,6 +10,9 @@ use DateTimeInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use UnexpectedValueException;
 
+/**
+ * @implements DataTransformerInterface<CarbonImmutable|null, DateTimeInterface|string|null>
+ */
 final class CarbonImmutableTransformer implements DataTransformerInterface
 {
     /**

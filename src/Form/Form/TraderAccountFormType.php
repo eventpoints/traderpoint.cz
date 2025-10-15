@@ -35,7 +35,7 @@ final class TraderAccountFormType extends AbstractType
         }
 
         $traderProfile = $currentUser->getTraderProfile();
-        if (!$traderProfile instanceof \App\Entity\TraderProfile) {
+        if (! $traderProfile instanceof \App\Entity\TraderProfile) {
             throw new \RuntimeException('Trader profile missing');
         }
 

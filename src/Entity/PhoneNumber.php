@@ -11,10 +11,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Component\Uid\Uuid;
 
-
 #[ORM\Entity(repositoryClass: PhoneNumberRepository::class)]
 #[ORM\Table(name: 'phone_number', uniqueConstraints: [
-    new ORM\UniqueConstraint(name: 'uniq_phone_prefix_number', columns: ['prefix', 'number'])
+    new ORM\UniqueConstraint(name: 'uniq_phone_prefix_number', columns: ['prefix', 'number']),
 ])]
 #[UniqueEntity(
     fields: ['prefix', 'number'],
@@ -65,7 +64,6 @@ class PhoneNumber
     {
         $this->number = $number;
     }
-
 
     public function getConfirmedAt(): ?CarbonImmutable
     {

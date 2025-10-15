@@ -34,14 +34,13 @@ class StripePaymentController extends AbstractController
         $sessionId = (string) $request->query->get('session_id', '');
         $result = (string) $request->query->get('result', 'unknown');
 
-
-        if (empty($sessionId) ) {
+        if ($sessionId === '' || $sessionId === '0' ) {
             $this->addFlash('error', 'Can’t find that payment.');
             return $this->redirectToRoute('app_login');
         }
 
         $payment = $this->paymentRepository->findOneByCheckoutId($sessionId);
-        if (!$payment instanceof Payment) {
+        if (! $payment instanceof Payment) {
             $this->addFlash('error', 'Unknown or expired payment session.');
             return $this->redirectToRoute('app_login');
         }

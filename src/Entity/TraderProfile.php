@@ -47,7 +47,10 @@ class TraderProfile
     #[ORM\Column(
         type: PostGISType::GEOMETRY,
         nullable: true,
-        options: ['geometry_type' => 'POINT', 'srid' => 4326],
+        options: [
+            'geometry_type' => 'POINT',
+            'srid' => 4326,
+        ],
     )]
     public null|string $point = null;
 
@@ -191,7 +194,7 @@ class TraderProfile
     #[ORM\PreUpdate]
     public function syncPointFromLatLng(): void
     {
-        if (!empty($this->latitude) &&  !empty($this->longitude)) {
+        if (! empty($this->latitude) && ! empty($this->longitude)) {
             $point = sprintf('SRID=4326;POINT(%F %F)', $this->longitude, $this->latitude);
             $this->setPoint($point);
         }else{
@@ -199,9 +202,8 @@ class TraderProfile
         }
     }
 
-    public function isLocationConfiured() : bool
+    public function isLocationConfiured(): bool
     {
-        return $this->skills->count() === 0 || !empty($this->serviceRadius) ||  !empty($this->getLatitude()) || !empty($this->getLongitude());
+        return $this->skills->count() === 0 || $this->serviceRadius !== null && $this->serviceRadius !== 0 || ! empty($this->getLatitude()) || ! empty($this->getLongitude());
     }
-
 }

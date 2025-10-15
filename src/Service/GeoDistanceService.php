@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -34,8 +35,8 @@ final class GeoDistanceService
 
         $lat1Rad = deg2rad($lat1);
         $lat2Rad = deg2rad($lat2);
-        $dLat    = deg2rad($lat2 - $lat1);
-        $dLng    = deg2rad($lng2 - $lng1);
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLng = deg2rad($lng2 - $lng1);
 
         $a = sin($dLat / 2) ** 2
             + cos($lat1Rad) * cos($lat2Rad) * sin($dLng / 2) ** 2;

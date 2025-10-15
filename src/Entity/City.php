@@ -18,12 +18,6 @@ class City
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
     private Uuid $id;
 
-    /**
-     * @var Collection<int, User>
-     */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'cities')]
-    private Collection $users;
-
     public function __construct(
         #[ORM\Column(length: 255)]
         private string $name,
@@ -32,9 +26,7 @@ class City
         #[ORM\Column]
         private float $longitude
     )
-    {
-        $this->users = new ArrayCollection();
-    }
+    {}
 
     public function getId(): Uuid
     {
@@ -71,30 +63,4 @@ class City
         $this->longitude = $longitude;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
-    public function addUser(User $user): static
-    {
-        if (! $this->users->contains($user)) {
-            $this->users->add($user);
-            $user->addCity($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): static
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removeCity($this);
-        }
-
-        return $this;
-    }
 }

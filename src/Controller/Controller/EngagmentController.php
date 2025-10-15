@@ -37,11 +37,12 @@ use Symfony\UX\Map\Point;
 class EngagmentController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface  $translator,
-        private readonly QuoteRepository      $quoteRepository,
+        private readonly TranslatorInterface $translator,
+        private readonly QuoteRepository $quoteRepository,
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaymentRepository    $paymentRepository,
-        private readonly StripeClient         $stripe, private readonly UserRepository $userRepository
+        private readonly PaymentRepository $paymentRepository,
+        private readonly StripeClient $stripe,
+        private readonly UserRepository $userRepository
     )
     {
     }
@@ -154,7 +155,6 @@ class EngagmentController extends AbstractController
         ]);
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
-
 
             if( $engagementForm->has('phoneNumber')){
                 $phoneNumber = $engagementForm->get('phoneNumber')->getData();

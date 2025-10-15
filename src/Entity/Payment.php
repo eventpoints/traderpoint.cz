@@ -154,7 +154,7 @@ class Payment implements \Stringable
         return $this->getId()->toRfc4122();
     }
 
-    public function getPrice() : int
+    public function getPrice(): int
     {
         return $this->amountMinor / 100;
     }

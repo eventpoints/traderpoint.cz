@@ -4,16 +4,14 @@ namespace App\DataTransferObject;
 
 final class LoginFormDto
 {
-    private null|string $email = null;
     private null|string $password = null;
+
     private bool $isRememberMe = false;
 
-    /**
-     * @param string|null $email
-     */
-    public function __construct(?string $email)
+    public function __construct(
+        private null|string $email
+    )
     {
-        $this->email = $email;
     }
 
     public function getEmail(): ?string
@@ -45,5 +43,4 @@ final class LoginFormDto
     {
         $this->isRememberMe = $isRememberMe;
     }
-
 }

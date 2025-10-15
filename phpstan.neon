@@ -4,6 +4,10 @@ parameters:
 		- ./src
 		- ./config
 		- ./tests
+	excludePaths:
+	    analyse:
+	         - ./src/DataFixtures/*
 	ignoreErrors:
 	    - '#\$id is never written, only read#'
 	reportUnmatchedIgnoredErrors: false
+	treatPhpDocTypesAsCertain: false

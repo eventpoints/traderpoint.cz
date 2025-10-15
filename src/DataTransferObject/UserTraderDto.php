@@ -12,13 +12,19 @@ final class UserTraderDto
     private string $lastName;
 
     /**
-     * @return ArrayCollection<int, Skill>
+     * @var ArrayCollection<int, Skill>  $skills
      */
     private ArrayCollection $skills;
 
     private string $email;
 
     private string $plainPassword;
+
+    public function __construct()
+    {
+        $this->skills = new ArrayCollection();
+    }
+
 
     public function getFirstName(): string
     {

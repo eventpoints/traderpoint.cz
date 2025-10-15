@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Jsor\Doctrine\PostGIS\Event\ORMSchemaEventListener;
-use Jsor\Doctrine\PostGIS\Event\ORMSchemaEventSubscriber;
 use Jsor\Doctrine\PostGIS\Functions\ST_AsGeoJSON;
 use Jsor\Doctrine\PostGIS\Functions\ST_GeomFromGeoJSON;
 use Jsor\Doctrine\PostGIS\Types\GeometryType;
@@ -14,8 +13,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services->set(ORMSchemaEventListener::class)
         ->tag('doctrine.event_subscriber', [
-        'connection' => 'default',
-    ]);
+            'connection' => 'default',
+        ]);
 
     $containerConfigurator->extension('doctrine', [
         'dbal' => [

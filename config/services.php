@@ -3,8 +3,6 @@
 declare(strict_types=1);
 
 use App\Controller\Stripe\StripeWebhookController;
-use Jsor\Doctrine\PostGIS\Driver\Middleware;
-use Jsor\Doctrine\PostGIS\Event\ORMSchemaEventListener;
 use Stripe\StripeClient;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;

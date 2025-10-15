@@ -78,7 +78,7 @@ final class StripeWebhookController extends AbstractController
     private function markPaidBySessionId(string $sessionId, ?string $paymentIntentId): void
     {
         $payment = $this->payments->findOneByCheckoutId($sessionId);
-        if (!$payment instanceof \App\Entity\Payment) {
+        if (! $payment instanceof \App\Entity\Payment) {
             $this->logger->warning('Payment not found for session', [
                 'session_id' => $sessionId,
             ]);
@@ -102,7 +102,7 @@ final class StripeWebhookController extends AbstractController
     private function markStatus(string $sessionId, PaymentStatusEnum $status): void
     {
         $payment = $this->payments->findOneByCheckoutId($sessionId);
-        if (!$payment instanceof \App\Entity\Payment) {
+        if (! $payment instanceof \App\Entity\Payment) {
             return;
         }
         $payment->setStatus($status);

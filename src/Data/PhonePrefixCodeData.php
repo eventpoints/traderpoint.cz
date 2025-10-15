@@ -4,6 +4,9 @@ namespace App\Data;
 
 class PhonePrefixCodeData
 {
+    /**
+     * @return array<int, string>
+     */
     public static function getDialCodes(): array
     {
         return [

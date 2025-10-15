@@ -5,8 +5,6 @@ declare(strict_types=1);
 use Carbon\Doctrine\DateTimeImmutableType;
 use Carbon\Doctrine\DateTimeType;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
-use Jsor\Doctrine\PostGIS\Functions\ST_Distance;
-use Jsor\Doctrine\PostGIS\Functions\ST_Within;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
@@ -41,7 +39,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             ],
             'controller_resolver' => [
                 'auto_mapping' => false,
-            ]
+            ],
         ],
     ]);
     if ($containerConfigurator->env() === 'test') {

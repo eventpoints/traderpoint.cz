@@ -7,6 +7,8 @@ namespace App\Form\DataTransformer;
 use Symfony\Component\Form\DataTransformerInterface;
 
 /**
+ * @implements DataTransformerInterface<string|null, int|null>
+ * /
  * Transforms between a float/decimal major-unit value (e.g. 1234.56 CZK)
  * and an integer minor-unit value (e.g. 123456 haléř/cents).
  *

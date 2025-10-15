@@ -6,6 +6,9 @@ use App\DataTransferObject\CityDto;
 
 class MajorCzechCities
 {
+    /**
+     * @return CityDto[]
+     */
     public static function get(): array
     {
         return [

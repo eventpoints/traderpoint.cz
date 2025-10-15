@@ -16,7 +16,6 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -33,7 +32,7 @@ final class EngagementFormType extends AbstractType
 {
     public function __construct(
         private readonly TranslatorInterface $translator,
-        private readonly Security            $security
+        private readonly Security $security
     )
     {
     }
@@ -54,7 +53,9 @@ final class EngagementFormType extends AbstractType
                 'attr' => [
                     'rows' => 4,
                 ],
-                'row_attr' => ['class' => 'm-0']
+                'row_attr' => [
+                    'class' => 'm-0',
+                ],
             ])
             ->add('skills', EntityType::class, [
                 'label' => 'Required skills',
@@ -77,7 +78,7 @@ final class EngagementFormType extends AbstractType
                     'class' => 'form-floating',
                 ],
             ])
-            ->add('images', DropzoneType::class,[
+            ->add('images', DropzoneType::class, [
                 'label' => false,
                 'multiple' => true,
                 'mapped' => false,
@@ -89,9 +90,9 @@ final class EngagementFormType extends AbstractType
                     new All([
                         new Image([
                             'maxSize' => '8M',
-                            'mimeTypes' => ['image/jpeg','image/png','image/webp','image/gif'],
-                        ])
-                    ])
+                            'mimeTypes' => ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+                        ]),
+                    ]),
                 ],
             ])
             ->add('timelinePreferenceEnum', EnumType::class, [
@@ -103,7 +104,7 @@ final class EngagementFormType extends AbstractType
                 'row_attr' => [
                     'class' => 'form-floating',
                 ],
-                'autocomplete' => true
+                'autocomplete' => true,
             ])
             ->add('location', MapLocationType::class, [
                 'mapped' => false,
@@ -123,7 +124,7 @@ final class EngagementFormType extends AbstractType
             ]);
 
         $currentUser = $this->security->getUser();
-        if ($currentUser instanceof User && empty($currentUser->getPhoneNumber())) {
+        if ($currentUser instanceof User && ! $currentUser->getPhoneNumber() instanceof \App\Entity\PhoneNumber) {
             $builder->add('phoneNumber', PhoneNumberFormType::class, [
                 'mapped' => false,
                 'label' => false,

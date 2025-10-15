@@ -39,6 +39,10 @@ class QuoteRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param Engagement $engagement
+     * @return array<int, Quote>
+     */
     public function findByEngagement(Engagement $engagement): array
     {
         $qb = $this->createQueryBuilder('quote');

@@ -2,7 +2,6 @@
 
 namespace App\Controller\Controller;
 
-use App\DataTransferObject\MapLocationDto;
 use App\Entity\User;
 use App\Form\Form\AccountFormType;
 use App\Form\Form\TraderAccountFormType;
@@ -44,9 +43,11 @@ class TraderController extends AbstractController
     #[Route(path: '/trader/quotes', name: 'trader_quotes')]
     public function sent(Request $request, #[CurrentUser] User $currentUser): Response
     {
-        $quotes = $this->quoteRepository->findBy(['owner' => $currentUser]);
+        $quotes = $this->quoteRepository->findBy([
+            'owner' => $currentUser,
+        ]);
         return $this->render('trader/quotes.html.twig', [
-            'quotes' => $quotes
+            'quotes' => $quotes,
         ]);
     }
 
@@ -66,7 +67,6 @@ class TraderController extends AbstractController
         $page = $request->query->getInt('page', 1);
         $limit = $request->query->getInt('limit', 5);
 
-        /** @var PaginationInterface $pagination */
         $pagination = $this->paginator->paginate(target: $engagementsQuery, page: $page, limit: $limit);
 
         return $this->render('trader/dashboard.html.twig', [
@@ -138,5 +138,4 @@ class TraderController extends AbstractController
             'user' => $user,
         ]);
     }
-
 }

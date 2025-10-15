@@ -9,10 +9,12 @@ use App\Enum\QuoteStatusEnum;
 use App\Enum\TimelinePreferenceEnum;
 use App\Repository\EngagementRepository;
 use Carbon\CarbonImmutable;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Selectable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use DomainException;
@@ -50,7 +52,10 @@ class Engagement implements Stringable
     #[ORM\Column(
         type: PostGISType::GEOMETRY,
         nullable: true,
-        options: ['geometry_type' => 'POINT', 'srid' => 4326],
+        options: [
+            'geometry_type' => 'POINT',
+            'srid' => 4326,
+        ],
     )]
     public null|string $point = null;
 
@@ -66,12 +71,19 @@ class Engagement implements Stringable
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $budget = null;
 
+    /**
+     * @var CarbonImmutable|null $createdAt
+     */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private null|CarbonImmutable $createdAt = null;
 
+    /** @var DateTimeImmutable|null */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private null|CarbonImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
+    /**
+     * @var CarbonImmutable|DateTimeInterface|null $dueAt
+     */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private null|CarbonImmutable|DateTimeInterface $dueAt = null;
 
@@ -85,7 +97,7 @@ class Engagement implements Stringable
     private Collection $skills;
 
     /**
-     * @var Collection<int, Quote>
+     * @var Collection<int, Quote>&Selectable<int, Quote>
      */
     #[ORM\OneToMany(
         targetEntity: Quote::class,
@@ -124,8 +136,10 @@ class Engagement implements Stringable
     #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'engagement', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $payments;
 
-    public function __construct(#[ORM\ManyToOne(inversedBy: 'engagements')]
-    private ?User $owner = null)
+    public function __construct(
+        #[ORM\ManyToOne(inversedBy: 'engagements')]
+        private ?User $owner = null
+    )
     {
         $this->payments = new ArrayCollection();
         $this->images = new ArrayCollection();
@@ -237,10 +251,10 @@ class Engagement implements Stringable
 
     public function getUpdatedAt(): ?CarbonImmutable
     {
-        return $this->updatedAt;
+        return $this->updatedAt ? CarbonImmutable::instance($this->updatedAt) : null;
     }
 
-    public function setUpdatedAt(?CarbonImmutable $updatedAt): void
+    public function setUpdatedAt(null|CarbonImmutable|DateTimeInterface $updatedAt): void
     {
         if ($updatedAt instanceof DateTimeInterface) {
             $updatedAt = CarbonImmutable::createFromInterface($updatedAt);
@@ -322,6 +336,9 @@ class Engagement implements Stringable
         }
     }
 
+    /**
+     * @return ArrayCollection<int, Quote>
+     */
     public function getPendingQuotes(): ArrayCollection
     {
         return $this->quotes->filter(fn(Quote $quote): bool => $quote->getStatus() === QuoteStatusEnum::SUBMITTED);
@@ -410,6 +427,9 @@ class Engagement implements Stringable
         $this->timelinePreferenceEnum = $timelinePreferenceEnum;
     }
 
+    /**
+     * @return Collection<int, Payment>
+     */
     public function getPayments(): Collection
     {
         return $this->payments;
@@ -473,7 +493,7 @@ class Engagement implements Stringable
     #[ORM\PreUpdate]
     public function syncPointFromLatLng(): void
     {
-        if (!empty($this->latitude) &&  !empty($this->longitude)) {
+        if (! empty($this->latitude) && ! empty($this->longitude)) {
             $point = sprintf('SRID=4326;POINT(%F %F)', $this->longitude, $this->latitude);
             $this->setPoint($point);
         }else{

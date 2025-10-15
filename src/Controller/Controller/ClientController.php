@@ -31,15 +31,12 @@ class ClientController extends AbstractController
 
         $page = $request->query->getInt('page', 1);
         $limit = $request->query->getInt('limit', 5);
-
-        /** @var PaginationInterface $pagination */
         $pagination = $this->paginator->paginate(target: $engagementsQuery, page: $page, limit: $limit);
 
         return $this->render('client/dashboard.html.twig', [
             'pagination' => $pagination,
         ]);
     }
-
 
     #[Route(path: '/client/profile/{id}', name: 'client_profile')]
     public function profile(User $user, Request $request): Response

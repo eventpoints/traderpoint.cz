@@ -9,10 +9,8 @@ use App\Entity\User;
 use App\Enum\EngagementStatusEnum;
 use App\Enum\PaymentStatusEnum;
 use Carbon\CarbonImmutable;
-use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Order;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Uid\Uuid;
@@ -33,14 +31,14 @@ class EngagementRepository extends ServiceEntityRepository
     public function findUpcomingBySkillsAndLocation(User $user, bool $isQuery = false): array|Query
     {
         $profile = $user->getTraderProfile();
-        if (!$profile || $profile->getLatitude() === null || $profile->getLongitude() === null || !$profile->getServiceRadius()) {
+        if (! $profile || $profile->getLatitude() === null || $profile->getLongitude() === null || ! $profile->getServiceRadius()) {
             return $isQuery ? $this->createQueryBuilder('e')->where('1=0')->getQuery() : [];
         }
 
-        $lat = (float)$profile->getLatitude();
-        $lng = (float)$profile->getLongitude();
-        $radiusKm = (float)$profile->getServiceRadius();
-        $meters = (int)round($radiusKm * 1000);
+        $lat = $profile->getLatitude();
+        $lng = $profile->getLongitude();
+        $radiusKm = (float) $profile->getServiceRadius();
+        $meters = (int) round($radiusKm * 1000);
 
         // --- PostGIS helper returns ordered IDs by distance (each row: ['id' => '...', 'dist' => ...])
         $rows = $this->findNearbyIdsOrdered($lat, $lng, $meters);
@@ -67,13 +65,11 @@ class EngagementRepository extends ServiceEntityRepository
             )
         )->setParameter('user', $user);
 
-
         $now = CarbonImmutable::now();
 
         $qb->andWhere(
             $qb->expr()->eq('engagement.status', ':status')
         )->setParameter('status', EngagementStatusEnum::PENDING);
-
 
         $skillIds = $user->getTraderProfile()->getSkills()
             ->map(fn(Skill $skill): string => $skill->getId()->toRfc4122())
@@ -117,6 +113,14 @@ class EngagementRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @param float $lat
+     * @param float $lng
+     * @param int $meters
+     * @param int $limit
+     * @return list<array{id: string, dist: numeric-string}>
+ * @throws \Doctrine\DBAL\Exception
+     */
     private function findNearbyIdsOrdered(float $lat, float $lng, int $meters, int $limit = 500): array
     {
         $conn = $this->getEntityManager()->getConnection();
@@ -163,7 +167,12 @@ class EngagementRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByOwner(User $currentUser, bool $isQuery = false)
+    /**
+     * @param User $currentUser
+     * @param bool $isQuery
+     * @return array<int, Engagement>|Query
+     */
+    public function findByOwner(User $currentUser, bool $isQuery = false) : array|Query
     {
         $qb = $this->createQueryBuilder('engagement');
         $qb->leftJoin('engagement.payments', 'payment');
@@ -184,6 +193,4 @@ class EngagementRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
-
-
 }

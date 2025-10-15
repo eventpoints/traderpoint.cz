@@ -58,7 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[ORM\OneToMany(targetEntity: Engagement::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private Collection $engagements;
 
-    #[ORM\OneToOne(targetEntity: PhoneNumber::class,cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: PhoneNumber::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(name: 'phone_number_id', referencedColumnName: 'id')]
     private PhoneNumber|null $phoneNumber = null;
 

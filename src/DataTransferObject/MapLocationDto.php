@@ -4,7 +4,12 @@ namespace App\DataTransferObject;
 
 final class MapLocationDto
 {
-    public function __construct(private null|float $latitude, private null|float $longitude, private null|string $address, private null|int $radiusKm)
+    public function __construct(
+        private null|float $latitude,
+        private null|float $longitude,
+        private null|string $address,
+        private null|int $radiusKm
+    )
     {
     }
 

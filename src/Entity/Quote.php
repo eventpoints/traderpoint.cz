@@ -24,7 +24,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(
     name: 'ix_quote_owner_engagement_submitted',
     columns: ['owner_id', 'engagement_id'],
-    options: ['where' => "status = 'SUBMITTED'"]
+    options: [
+        'where' => "status = 'SUBMITTED'",
+    ]
 )]
 #[ORM\HasLifecycleCallbacks]
 class Quote implements \Stringable
@@ -118,9 +120,8 @@ class Quote implements \Stringable
     #[ORM\PrePersist]
     public function onPrePersist(): void
     {
-        $this->setCreatedAt($this->getCreatedAt() ?? CarbonImmutable::now());
-        $this->setCurrency($this->getCurrency()); // normalize uppercase
-        // totals ensured via setters, but recalc as a safety net
+        $this->setCreatedAt($this->getCreatedAt());
+        $this->setCurrency($this->getCurrency());
         $this->recalculateTotals();
     }
 
@@ -144,7 +145,7 @@ class Quote implements \Stringable
             return;
         }
         $this->setStatus(QuoteStatusEnum::SUBMITTED);
-        $this->setCreatedAt($this->getCreatedAt() ?? CarbonImmutable::now());
+        $this->setCreatedAt($this->getCreatedAt());
         $this->setValidUntil($validUntil);
     }
 
