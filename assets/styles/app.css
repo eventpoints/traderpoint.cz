@@ -257,3 +257,24 @@ input[type="range"].form-range.range--xl:disabled {
 .flip-horizontal {
     transform: scaleX(-1);
 }
+
+/* Desktop/tablet: keep your old 80vh look */
+@media (min-width: 768px) {
+    .hero-img { height: 80vh; }
+}
+
+/* Mobile: make the image fill the *real* viewport height */
+@media (max-width: 767.98px) {
+    .hero-img {
+        height: 100vh;
+        height: 100svh;
+        height: 100dvh;
+    }
+
+    .hero-overlay {
+        min-height: 100vh;
+        min-height: 100svh;
+        min-height: 100dvh;
+        overflow-y: auto;
+    }
+}
