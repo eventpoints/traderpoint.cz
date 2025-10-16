@@ -12,9 +12,10 @@ use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: PhoneNumberRepository::class)]
-#[ORM\Table(name: 'phone_number', uniqueConstraints: [
-    new ORM\UniqueConstraint(name: 'uniq_phone_prefix_number', columns: ['prefix', 'number']),
-])]
+#[ORM\UniqueConstraint(
+    name: 'uniq_phone_prefix_number',
+    columns: ['prefix', 'number']
+)]
 #[UniqueEntity(
     fields: ['prefix', 'number'],
     message: new TranslatableMessage('phone_number.already_registered', [], 'validators'),

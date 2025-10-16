@@ -3,7 +3,8 @@ services:
     image: ghcr.io/eventpoints/traderpoint.cz-php:main
     volumes:
       - php_socket:/var/run/php
-      - ./php/php.ini:/usr/local/etc/php/php.ini
+      - ./php/php.ini:/usr/local/etc/php/php.ini:ro
+      - var_cache:/app/var
     healthcheck:
       interval: 10s
       timeout: 3s
