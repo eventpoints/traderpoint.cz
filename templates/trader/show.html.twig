@@ -21,7 +21,7 @@
                     <div class="card-header bg-white">
                         <div class=" hstack gap-1 flex-wrap">
                             {% for skill in trader.skills %}
-                                <span class="badge text-bg-secondary">{{ skill.name|trans }}</span>
+                                <span class="badge text-bg-secondary">{{ skill.name(domain='skills')|trans }}</span>
                             {% endfor %}
                         </div>
                     </div>

@@ -64,7 +64,7 @@
                                           data-bs-title="{{ 'budget'|trans }}"
                                           class="badge hover-pointer rounded-pill text-bg-dark">{{ (job.budget / 100)|format_currency(job.currencyCodeEnum.value, {}, 'en') }}</span>
                                         {% for skill in job.skills %}
-                                            <span class="badge rounded-pill text-bg-primary">{{ skill.name|trans|title }}</span>
+                                            <span class="badge rounded-pill text-bg-primary">{{ skill.name|trans(domain='skills')|title }}</span>
                                         {% endfor %}
                                         <span class="badge rounded-pill text-bg-dark">{{ 'km.distance'|trans({distance: distance_km(job.latitude, job.longitude, app.user.traderProfile.latitude,app.user.traderProfile.longitude)}) }}</span>
                                         <span class="badge rounded-pill text-bg-dark">{{ job.timelinePreferenceEnum.value|trans }}</span>
@@ -77,9 +77,11 @@
                                         <div class="read-more-content" data-read-more-target="content">
                                             {{ job.description|nl2br }}
                                         </div>
-                                        <div class="text-center text-muted my-3">
-                                            <a data-action="read-more#toggle">{{ 'read-more'|trans }}</a>
-                                        </div>
+                                        {% if job.description|length > 200 %}
+                                            <div class="text-center text-muted my-3">
+                                                <a data-action="read-more#toggle">{{ 'read-more'|trans }}</a>
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="list-group list-group-flush">

@@ -38,7 +38,7 @@
                                           data-bs-title="{{ 'budget'|trans }}"
                                           class="badge hover-pointer rounded-pill text-bg-dark">{{ (engagement.budget / 100)|format_currency(engagement.currencyCodeEnum.value, {}, 'en') }}</span>
                             {% for skill in engagement.skills %}
-                                <span class="badge rounded-pill text-bg-primary">{{ skill.name|trans|title }}</span>
+                                <span class="badge rounded-pill text-bg-primary">{{ skill.name|trans(domain='skills')|title }}</span>
                             {% endfor %}
                             <span class="badge rounded-pill text-bg-dark">{{ 'km.distance'|trans({distance: distance_km(engagement.latitude, engagement.longitude, app.user.traderProfile.latitude,app.user.traderProfile.longitude)}) }}</span>
                             <span class="badge rounded-pill text-bg-dark">{{ engagement.timelinePreferenceEnum.value|trans }}</span>
