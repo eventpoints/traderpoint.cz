@@ -33,12 +33,6 @@ class TraderController extends AbstractController
     {
     }
 
-    #[Route(path: '/traders', name: 'trader_index')]
-    public function index(Request $request): Response
-    {
-        return $this->render('trader/landing.html.twig');
-    }
-
     #[Route(path: '/trader/quotes', name: 'trader_quotes')]
     public function sent(Request $request, #[CurrentUser] User $currentUser): Response
     {

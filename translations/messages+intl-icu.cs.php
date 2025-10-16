@@ -19,7 +19,7 @@ return [
     'join-tagline' => 'Registrace zdarma • Žádné spamové poptávky • Zrušení kdykoli',
     'join-as-trader' => 'Přidejte se jako řemeslník',
     'sign-in' => 'přihlásit se',
-    'landing-explainer-short' => 'Instalatéři, elektrikáři, stavitelé a další — propojení s reálnými zákazníky, kteří předem sdílejí rozpočet a termín.',
+    'trader-tagline-explainer-short' => 'Propojení s reálnými zákazníky, kteří předem sdílejí rozpočet a termín.',
     'get-jobs-you-want-fast' => 'Získejte zakázky, které chcete. Rychle.',
     'qualified-jobs-not-noise' => 'Kvalitní zakázky, žádný balast',
     'no-time-wasting-explainer' => 'Zobrazujeme rozpočet, polohu, termín a požadované dovednosti předem — ať neztrácíte čas.',
@@ -144,4 +144,8 @@ return [
     'review' => 'recenze',
     'no-messages-found' => 'žádné zprávy nenalezeny',
     'send' => 'odeslat',
+    'tradesmen-register' => 'Registrace živnosti',
+    'how-our-service-works' => 'Jak naše služba funguje',
+    'looking-to-hire' => 'Chci najmout',
+
 ];

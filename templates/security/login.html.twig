@@ -11,14 +11,14 @@
         }
 
         body {
-            background: url('{{ asset('images/digger.jpg') }}') center / cover no-repeat fixed;
+            background: url('{{ asset('images/3.jpg') }}') center / cover no-repeat fixed;
             /* If you don’t want it fixed-on-scroll, drop the “fixed” keyword */
             min-height: 100vh;
             min-height: 100dvh;
         }
     </style>
     <div class="container">
-        <div class="row justify-content-center align-items-center g-0 my-5 min-vh-80">
+        <div class="row justify-content-center align-items-center g-0 my-5 min-vh-50">
             <div class="col-md-4">
                 {{ form_start(form, { action: path('app_login') }) }}
                 <div class="card">
@@ -39,7 +39,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary">{{ 'continue'|trans }}</button>
+                            <button type="submit" class="btn btn-lg btn-primary">{{ 'continue'|trans }}</button>
                         </div>
                     </div>
                 </div>

@@ -13,17 +13,19 @@
                     </a>
                 </li>
             {% else %}
-                <li class="nav-item">
-                    <a href="{{ path('trader_index') }}" class="nav-link" type="button">
-                        {{ 'for-traders'|trans }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_login') }}">{{ 'login'|trans }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_register') }}">{{ 'register'|trans }}</a>
-                </li>
+                {% if app.current_route == 'trader_register' %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-secondary fw-bold" href="{{ path('landing') }}" type="button">
+                            {{ 'looking-to-hire'|trans }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-primary fw-bold" href="{{ path('trader_register') }}" type="button">
+                            {{ 'tradesmen-register'|trans }}
+                        </a>
+                    </li>
+                {% endif %}
             {% endif %}
             <li class="nav-item">
                 <a class="nav-link" type="button" data-bs-toggle="offcanvas"
@@ -62,8 +64,8 @@
             <a class="list-group-item list-group-item-action {{ app.locale == 'user_conversations' ? 'active' }}"
                href="{{ path('user_conversations') }}">{{ 'messages'|title }}</a>
             {% if app.user.isTrader %}
-            <a class="list-group-item list-group-item-action {{ app.locale == 'trader_account' ? 'active' }}"
-               href="{{ path('trader_account') }}">{{ 'account'|title }}</a>
+                <a class="list-group-item list-group-item-action {{ app.locale == 'trader_account' ? 'active' }}"
+                   href="{{ path('trader_account') }}">{{ 'account'|title }}</a>
             {% else %}
                 <a class="list-group-item list-group-item-action {{ app.locale == 'user_account' ? 'active' }}"
                    href="{{ path('user_account') }}">{{ 'account'|title }}</a>

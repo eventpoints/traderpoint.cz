@@ -217,11 +217,12 @@ input[type="range"].form-range.range--xl:disabled {
 .min-vh-80 {
     min-height: 80vh !important;
 }
-.min-vh-50{
+
+.min-vh-50 {
     min-height: 50vh !important;
 }
 
-.w-30{
+.w-30 {
     width: 30% !important;
 }
 
@@ -232,4 +233,23 @@ input[type="range"].form-range.range--xl:disabled {
 
 .ts-wrapper.single .ts-control, .ts-wrapper.single .ts-control {
     padding-top: 1.625rem !important;
+}
+
+
+.short-underline-heading {
+    position: relative;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.short-underline-heading::after {
+    content: "";
+    display: block;
+    height: 4px;
+    background-color: #EC4E20;
+    position: absolute;
+    bottom: 0;
+    width: 80px;
+    left: 50%;
+    transform: translateX(-50%);
 }

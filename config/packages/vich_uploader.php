@@ -8,13 +8,7 @@ use Vich\UploaderBundle\Naming\SmartUniqueNamer;
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->extension('vich_uploader', [
         'db_driver' => 'orm',
-        'storage' => 'filesystem',
-        'metadata' => [
-            'cache' => 'file',
-            'file_cache' => [
-                'dir' => '%env(default:/tmp:VICH_MD_CACHE_DIR)%/vich_uploader',
-            ],
-        ],
+        'storage' => 'file_system',
         'mappings' => [
             'images' => [
                 'uri_prefix' => '/uploads/images',
