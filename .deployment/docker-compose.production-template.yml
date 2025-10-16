@@ -52,7 +52,7 @@ services:
       - internal
 
   database:
-    image: postgis/postgis:17-3.4
+    image: postgis/postgis:16-3.4
     restart: unless-stopped
     environment:
       POSTGRES_DB: "__TRADERPOINT_POSTGRES_DBNAME__"
@@ -68,13 +68,16 @@ services:
     restart: unless-stopped
     environment:
       ADMINER_DEFAULT_SERVER: database
-    expose:
-      - "8080"
+    ports:
+      - "8081:8080"   # host:container for direct access
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traderpoint-adminer.rule=Host(`adminer.traderpoint.io`)"
-      - "traefik.http.routers.traderpoint-adminer.tls=true"
-      - "traefik.http.routers.traderpoint-adminer.tls.certresolver=le"
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      - traefik.http.routers.traderpoint-adminer.rule=Host(`adminer.traderpoint.io`)
+      - traefik.http.routers.traderpoint-adminer.entrypoints=websecure
+      - traefik.http.routers.traderpoint-adminer.tls=true
+      - traefik.http.routers.traderpoint-adminer.tls.certresolver=le
+      - traefik.http.services.traderpoint-adminer.loadbalancer.server.port=8080   # 👈 key
     networks:
       - internal
       - traefik
