@@ -1,9 +1,6 @@
 services:
   php:
     image: ghcr.io/eventpoints/traderpoint.cz-php:main
-    depends_on:
-      database:
-        condition: service_healthy
     volumes:
       - php_socket:/var/run/php
       - ./php/php.ini:/usr/local/etc/php/php.ini
