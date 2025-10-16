@@ -18,8 +18,10 @@ COPY . .
 
 RUN composer dump-autoload --classmap-authoritative
 RUN composer symfony:dump-env prod
-# (optional if you use AssetMapper)
-# RUN php bin/console asset-map:compile --no-interaction
+
+RUN php bin/console importmap:install --no-interaction
+RUN php bin/console asset-map:compile --no-interaction
+
 RUN chmod -R 777 var
 
 FROM ghcr.io/eventpoints/caddy:sha-fc43d4e AS caddy
