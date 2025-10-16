@@ -67,13 +67,13 @@ class StripePaymentController extends AbstractController
         $paymentStatus = ($session->payment_status ?? '');
 
         if ($paymentStatus === 'paid') {
-            $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans('payment.success'));
+            $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans(id: 'flash.payment.success', domain: 'flash'));
         } elseif ($status === 'expired') {
-            $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('payment.expired'));
+            $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans(id: 'flash.payment.expired', domain: 'flash'));
         } elseif ($result === 'cancel') {
-            $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('payment.failed'));
+            $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans(id: 'flash.payment.failed', domain: 'flash'));
         } else {
-            $this->addFlash(FlashEnum::WARNING->value, $this->translator->trans('payment.pending'));
+            $this->addFlash(FlashEnum::WARNING->value, $this->translator->trans(id: 'flash.payment.pending', domain: 'flash'));
         }
 
         return $this->redirectToRoute($user->isTrader() ? 'trader_dashboard' : 'client_dashboard');

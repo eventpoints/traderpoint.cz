@@ -43,7 +43,7 @@
                                           data-bs-title="{{ 'budget'|trans }}"
                                           class="badge hover-pointer rounded-pill text-bg-dark">{{ (job.budget / 100)|format_currency(job.currencyCodeEnum.value, {}, 'en') }}</span>
                                     {% for skill in job.skills %}
-                                        <span class="badge rounded-pill text-bg-primary">{{ skill.name|trans|title }}</span>
+                                        <span class="badge rounded-pill text-bg-primary">{{ skill.name|trans(domain='skills')|title }}</span>
                                     {% endfor %}
                                     <span class="badge rounded-pill text-bg-dark">{{ 'starts: ' ~ job.dueAt|format_datetime }}</span>
                                     <span class="badge rounded-pill text-bg-dark">{{ job.timelinePreferenceEnum.value|trans }}</span>

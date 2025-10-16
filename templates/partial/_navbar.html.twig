@@ -6,7 +6,7 @@
         <ul class="navbar-nav flex-row gap-3">
             {% if app.user %}
                 <li class="nav-item">
-                    <a class="nav-link" type="button" data-bs-toggle="offcanvas"
+                    <a class="nav-link fw-bold" type="button" data-bs-toggle="offcanvas"
                        data-bs-target="#user-menu-offcanvas" aria-controls="user-menu-offcanvas"
                        aria-label="Toggle navigation">
                         {{ app.user.firstName }}
@@ -26,7 +26,7 @@
                 </li>
             {% endif %}
             <li class="nav-item">
-                <a class="nav-link fw-bold" type="button" data-bs-toggle="offcanvas"
+                <a class="nav-link" type="button" data-bs-toggle="offcanvas"
                    data-bs-target="#language-menu-offcanvas" aria-controls="language-menu-offcanvas"
                    aria-label="Language menu">
                     {{ app.locale|language_name|title }}

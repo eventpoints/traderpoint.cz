@@ -82,7 +82,7 @@ class EngagmentController extends AbstractController
         $quoteForm->handleRequest($request);
         if ($quoteForm->isSubmitted() && $quoteForm->isValid()) {
             $this->quoteRepository->save(entity: $quote, flush: true);
-            $this->addFlash(type: FlashEnum::SUCCESS->value, message: $this->translator->trans('flash.quote-successful'));
+            $this->addFlash(type: FlashEnum::SUCCESS->value, message: $this->translator->trans(id: 'flash.quote-sent-successful',domain: 'flash'));
             return $this->redirectToRoute(route: 'trader_show_engagement', parameters: [
                 'id' => $engagement->getId(),
             ]);
