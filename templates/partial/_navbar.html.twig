@@ -1,7 +1,14 @@
 <nav class="navbar navbar-expand-lg glass rounded-0 border-0" data-bs-theme="light">
     <div class="container">
         <a class="navbar-brand" href="{{ path('landing') }}">
-            <span class="fs-2"><span class="fw-bold text-primary">Trader</span><span>Point</span></span>
+            <div class="d-flex justify-content-start align-items-center gap-2">
+                <img height="60" src="{{ asset('images/tp-logo.png') }}">
+                <div class="fs-4 border-start border-3 ps-2">
+                    <div class="lh-1">Trader</div>
+                    <div class="lh-1">Point</div>
+                </div>
+            </div>
+
         </a>
         <ul class="navbar-nav flex-row gap-3">
             {% if app.user %}

@@ -253,3 +253,7 @@ input[type="range"].form-range.range--xl:disabled {
     left: 50%;
     transform: translateX(-50%);
 }
+
+.flip-horizontal {
+    transform: scaleX(-1);
+}
