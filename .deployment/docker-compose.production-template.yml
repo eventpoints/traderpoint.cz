@@ -1,6 +1,9 @@
 services:
   php:
     image: ghcr.io/eventpoints/traderpoint.cz-php:main
+    depends_on:
+      database:
+        condition: service_healthy
     volumes:
       - php_socket:/var/run/php
       - ./php/php.ini:/usr/local/etc/php/php.ini
@@ -53,15 +56,19 @@ services:
 
   database:
     image: postgis/postgis:16-3.4
-    restart: unless-stopped
     environment:
       POSTGRES_DB: "__TRADERPOINT_POSTGRES_DBNAME__"
       POSTGRES_PASSWORD: "__TRADERPOINT_POSTGRES_PASSWORD__"
       POSTGRES_USER: "__TRADERPOINT_POSTGRES_USER__"
     volumes:
       - ./db-data:/var/lib/postgresql/data:rw
-    networks:
-      - internal
+      - ./db-init:/docker-entrypoint-initdb.d  # optional, see #3
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [ internal ]
 
   adminer:
     image: adminer:4.8.0
@@ -69,7 +76,7 @@ services:
     environment:
       ADMINER_DEFAULT_SERVER: database
     ports:
-      - "8081:8080"   # host:container for direct access
+      - "8081:8080"
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik
@@ -81,7 +88,6 @@ services:
     networks:
       - internal
       - traefik
-
 networks:
   traefik:
     external: true
