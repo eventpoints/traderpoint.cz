@@ -11,6 +11,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->extension('doctrine', [
         'dbal' => [
             'url' => '%env(resolve:DATABASE_URL)%',
+            'server_version' => '16',
             'profiling_collect_backtrace' => '%kernel.debug%',
             'use_savepoints' => true,
             'types' => [
