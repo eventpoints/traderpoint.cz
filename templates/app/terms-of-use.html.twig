@@ -1,0 +1,56 @@
+{# templates/legal/terms.html.twig #}
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'terms' %}
+
+{% block title %}{{ 'terms-of-use'|trans|title }}{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        {% set sections = [
+            { id: 'acceptance-of-agreement',             title: 'acceptance-of-agreement'|trans,             content: 'acceptance-of-agreement-content'|trans },
+            { id: 'advice',                               title: 'advice'|trans,                               content: 'advice-content'|trans },
+            { id: 'changes-to-software-and-services',     title: 'changes-to-software-and-services'|trans,     content: 'changes-to-software-and-services-content'|trans },
+            { id: 'links-to-third-party-websites',        title: 'links-to-third-party-websites'|trans,        content: 'links-to-third-party-websites-content'|trans },
+            { id: 'copyright',                            title: 'copyright'|trans,                            content: 'copyright-content'|trans },
+            { id: 'limitation-of-liability',              title: 'limitation-of-liability'|trans,              content: 'limitation-of-liability-content'|trans },
+            { id: 'indemnity',                            title: 'indemnity'|trans,                            content: 'indemnity-content'|trans },
+            { id: 'severability',                         title: 'severability'|trans,                         content: 'severability-content'|trans },
+            { id: 'applicable-law-and-dispute',           title: 'applicable-law-and-dispute'|trans,           content: 'applicable-law-and-dispute-content'|trans },
+            { id: 'headings',                             title: 'headings'|trans,                             content: 'headings-content'|trans },
+            { id: 'entire-agreement',                     title: 'entire-agreement'|trans,                     content: 'entire-agreement-content'|trans },
+            { id: 'company-privacy-policy',               title: 'company-privacy-policy'|trans,               content: 'company-privacy-policy-content'|trans },
+            { id: 'data-collected',                       title: 'data-collected'|trans,                       content: 'data-collected-content'|trans },
+            { id: 'how-do-we-collect-your-data',          title: 'how-do-we-collect-your-data'|trans,          content: 'how-do-we-collect-your-data-content'|trans },
+            { id: 'how-will-we-use-your-data',            title: 'how-will-we-use-your-data'|trans,            content: 'how-will-we-use-your-data-content'|trans }
+        ] %}
+
+        <div class="row gx-4">
+            {# TOC column ---------------------------------------------------------- #}
+            <aside class="col-12 col-lg-4">
+                <div class="card sticky-top" style="top: 1rem;">
+                    <div class="card-body">
+                        <h2 class="h5 mb-3">{{ 'terms-of-use'|trans|title }}</h2>
+                        <nav id="toc" class="nav nav-pills flex-column">
+                            {% for s in sections %}
+                                <a class="nav-link" href="#{{ s.id }}">{{ s.title }}</a>
+                            {% endfor %}
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+
+            {# Content column ------------------------------------------------------ #}
+            <main class="col-12 col-lg-8">
+                <h1 class="mb-4">{{ 'terms-of-use'|trans|title }}</h1>
+
+                {% for s in sections %}
+                    <section id="{{ s.id }}" class="pt-2 pb-4 mb-4 border-bottom">
+                        <h3 class="h4">{{ s.title }}</h3>
+                        <p class="mb-0">{{ s.content }}</p>
+                    </section>
+                {% endfor %}
+
+            </main>
+        </div>
+    </div>
+{% endblock %}

@@ -23,4 +23,10 @@ class AppController extends AbstractController
 
         return $this->render('app/landing.html.twig');
     }
+
+    #[Route(path: '/terms-of-use', name: 'terms_of_use')]
+    public function termsOfUse(): Response
+    {
+        return $this->render('app/terms-of-use.html.twig');
+    }
 }
