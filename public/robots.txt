@@ -1,0 +1,12 @@
+User-agent: *
+Disallow: /
+Allow: /en/
+Allow: /cs/
+Allow: /ru/
+Allow: /en/login
+Allow: /cs/login
+Allow: /ru/login
+Allow: /en/trader/register
+Allow: /cs/trader/register
+Allow: /ru/trader/register
+Allow: /sitemap.xml

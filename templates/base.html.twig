@@ -2,9 +2,68 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Welcome!{% endblock %}</title>
+    <title>{% block title %}Traderpoint{% endblock %}</title>
     <link rel="icon" href="{{ asset('images/logo.ico') }}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% set site_name = 'TraderPoint' %}
+    {% set locale = app.request.locale|default('en') %}
+    {% set is_cs = locale starts with 'cs' %}
+    {% set is_ru = locale starts with 'ru' %}
+
+    {# Defaults (override via blocks per page) #}
+    {% set title = block('meta_title') is defined
+        ? block('meta_title')
+        : (is_cs
+        ? 'TraderPoint — Najděte spolehlivé řemeslníky a zakázky ve vašem okolí'
+        : (is_ru
+        ? 'TraderPoint — Наймите проверенных мастеров и найдите локальные заказы'
+        : 'TraderPoint — Hire trusted tradespeople & find local jobs')) %}
+
+    {% set desc = block('meta_description') is defined
+        ? block('meta_description')
+        : (is_cs
+        ? 'Propojujeme zákazníky a řemeslníky podle dovedností, oblasti a rozpočtu. Vyberete si, na které zakázky dáte nabídku.'
+        : (is_ru
+        ? 'Мы соединяем заказчиков и мастеров по навыкам, региону и бюджету. Вы сами выбираете, на какие заказы отвечать.'
+        : 'We match customers and tradespeople by skills, area and budget. You choose which jobs to quote.')) %}
+
+    {% set url = block('meta_url') is defined ? block('meta_url') : absolute_url(app.request.uri) %}
+    {% set image = block('meta_image') is defined ? block('meta_image') : absolute_url(asset('images/og/traderpoint-og.png')) %}
+    {% set og_locale = is_cs ? 'cs_CZ' : (is_ru ? 'ru_RU' : 'en_GB') %}
+
+    <title>{{ title }}</title>
+    <meta name="description" content="{{ desc }}">
+    <link rel="canonical" href="{{ url }}">
+
+    {# Hreflang alternates #}
+    {% if app.request.attributes.get('_route') %}
+        {% set params = app.request.attributes.get('_route_params')|default({}) %}
+        <link rel="alternate" href="{{ absolute_url(path(app.request.attributes.get('_route'), params|merge({'_locale': 'en'}))) }}" hreflang="en">
+        <link rel="alternate" href="{{ absolute_url(path(app.request.attributes.get('_route'), params|merge({'_locale': 'cs'}))) }}" hreflang="cs-CZ">
+        <link rel="alternate" href="{{ absolute_url(path(app.request.attributes.get('_route'), params|merge({'_locale': 'ru'}))) }}" hreflang="ru-RU">
+        <link rel="alternate" href="{{ url }}" hreflang="x-default">
+    {% endif %}
+
+    {# Open Graph #}
+    <meta property="og:site_name" content="{{ site_name }}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:description" content="{{ desc }}">
+    <meta property="og:url" content="{{ url }}">
+    <meta property="og:image" content="{{ image }}">
+    <meta property="og:locale" content="{{ og_locale }}">
+    <meta property="og:locale:alternate" content="en_GB">
+    <meta property="og:locale:alternate" content="cs_CZ">
+    <meta property="og:locale:alternate" content="ru_RU">
+
+    {# Twitter #}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ title }}">
+    <meta name="twitter:description" content="{{ desc }}">
+    <meta name="twitter:image" content="{{ image }}">
+
+
     {% block stylesheets %}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     {% endblock %}
