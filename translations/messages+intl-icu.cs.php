@@ -148,4 +148,8 @@ return [
     'how-our-service-works' => 'Jak naše služba funguje',
     'looking-to-hire' => 'Chci najmout',
 
+    'leave-review-for' => 'napsat recenzi na {title}',
+    'review-client-explainer' => 'Recenze jsou dostupné po uplynutí odhadované doby trvání uvedené obchodníkem. Recenzi můžete zanechat dne {date}',
+    'job-count' => '{count} dokončených zakázek',
+
 ];

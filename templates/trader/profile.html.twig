@@ -10,17 +10,106 @@
                 <div class="card">
                     <div class="card-header text-center">
                         <div class="fs-4 text-end">
-                            <div class="badge text-bg-primary rounded-pill text-white">{{ 'trader'|trans|title }}</div>
+                            <div class="badge text-bg-dark rounded-pill text-white">{{ 'trader'|trans|title }}</div>
                         </div>
                         <img src="{{ user.avatar }}" class="img-fluid rounded-circle" alt="">
                     </div>
                     <div class="list-group list-group-flush">
-                        <div class="list-group-item fs-4 text-center"><div>{{ user.fullName }}</div></div>
-                        <div class="list-group-item fs-4 text-center"><div>{{ user.engagements.count }}</div></div>
+                        <div class="list-group-item fs-4 text-center">
+                            <div>{{ user.fullName }}</div>
+                        </div>
+                        <div class="list-group-item fs-4">
+                            {% for skill in user.traderProfile.skills %}
+                                <span class="badge rounded-pill text-bg-primary">{{ skill.name|trans(domain='skills')|title }}</span>
+                            {% endfor %}
+                                <span class="badge rounded-pill text-bg-primary">{{ 'job-count'|trans({count: user.engagements.count|compact_notation}) }}</span>
+                        </div>
+                        <div class="list-group-item fs-4 d-flex justify-content-between align-items-center">
+                            <div>
+                                {% set rating = user.traderProfile.averageRating ?? 0 %}
+                                {% if rating < 0 %}{% set rating = 0 %}{% endif %}
+                                {% if rating > 5 %}{% set rating = 5 %}{% endif %}
+                                {% set r = (rating * 2)|round / 2 %}
+
+                                <div class="d-inline-flex align-items-center gap-1 fs-2"
+                                     aria-label="{{ '%.1f'|format(rating) }} / 5">
+                                    {% for i in 1..5 %}
+                                        {% if r >= i %}
+                                            <i class="bi bi-star-fill"></i>
+                                        {% elseif r >= i - 0.5 %}
+                                            <i class="bi bi-star-half"></i>
+                                        {% else %}
+                                            <i class="bi bi-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="visually-hidden">{{ '%.1f'|format(rating) }} / 5</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="badge text-bg-dark rounded-pill">{{ user.traderProfile.getAverageRating }} / {{ user.traderProfile.reviews.count }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-9"></div>
+            <div class="col-12 col-md-6">
+                {% for review in user.traderProfile.reviews %}
+                    {% set parts = [] %}
+                    {% if review.overallRating is not null %}
+                        {% set rating = review.overallRating %}
+                    {% else %}
+                        {% if review.responseRating is not null %}{% set parts = parts|merge([review.responseRating]) %}{% endif %}
+                        {% if review.customerServicesRating is not null %}{% set parts = parts|merge([review.customerServicesRating]) %}{% endif %}
+                        {% if review.workQualityRating is not null %}{% set parts = parts|merge([review.workQualityRating]) %}{% endif %}
+                        {% if review.valueForMoneyRating is not null %}{% set parts = parts|merge([review.valueForMoneyRating]) %}{% endif %}
+                        {% set total = 0 %}
+                        {% for p in parts %}{% set total = total + p %}{% endfor %}
+                        {% set rating = parts ? (total / (parts|length)) : 0 %}
+                    {% endif %}
+
+                    {# clamp and round to nearest 0.5 for star display #}
+                    {% if rating < 0 %}{% set rating = 0 %}{% endif %}
+                    {% if rating > 5 %}{% set rating = 5 %}{% endif %}
+                    {% set r = (rating * 2)|round / 2 %}
+
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div class="d-inline-flex align-items-center gap-1 text-warning" role="img"
+                                 aria-label="{{ '%.1f'|format(rating) }} / 5">
+                                {% for i in 1..5 %}
+                                    {% if r >= i %}
+                                        <i class="bi bi-star-fill"></i>
+                                    {% elseif r >= i - 0.5 %}
+                                        <i class="bi bi-star-half"></i>
+                                    {% else %}
+                                        <i class="bi bi-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="badge text-bg-dark rounded-pill">{{ '%.1f'|format(rating) }}</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title mb-2">{{ review.title }}</h5>
+                            <p class="card-text mb-0">{{ review.content }}</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between align-items-center small text-muted">
+                            <div>
+                                {% if review.owner %}
+                                    {{ 'by'|trans }} <strong>{{ review.owner.fullName ?? review.owner.email }}</strong>
+                                {% endif %}
+                            </div>
+                            <div>
+                                {{ review.createdAt ? review.createdAt|date('j M Y, H:i') : '' }}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center my-3">
+                        <div></div>
+                        <div class="text-muted">{{ 'no-reviews-yet'|trans }}</div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}

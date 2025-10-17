@@ -398,4 +398,26 @@ class Quote implements \Stringable
     {
         return $this->getId() . '-' . $this->getPrice();
     }
+
+    public function isAfterEstimateDuration(): bool
+    {
+        $decidedAt = $this->getDecidedAt();
+        $hours = $this->getExpectedDurationHours();
+
+        if (!$decidedAt || $hours === null) {
+            return false;
+        }
+
+        $deadline = $decidedAt->addMinutes((int) round($hours * 60));
+
+        // Use the same timezone as $decidedAt and include equality if desired
+        return CarbonImmutable::now($decidedAt->getTimezone())
+            ->greaterThanOrEqualTo($deadline);
+    }
+
+    public function estimateDuration(): CarbonImmutable
+    {
+        return $this->getDecidedAt()->addMinutes((int) round($this->getExpectedDurationHours() * 60));
+    }
+
 }

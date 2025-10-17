@@ -157,4 +157,5 @@ return [
     'Please enter your email.' => 'Zadejte prosím svůj e-mail.',
     'This field is required.' => 'Toto pole je povinné.',
     'Each input must be a single digit.' => 'Každý vstup musí být jedna číslice.',
+    'rating.ensure_limits' => 'Hodnocení musí být mezi {{ min }} a {{ max }}.'
 ];

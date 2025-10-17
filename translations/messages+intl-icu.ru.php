@@ -147,4 +147,8 @@ return [
     'tradesmen-register' => 'Регистрация для мастеров',
     'how-our-service-works' => 'Как работает наш сервис',
     'looking-to-hire' => 'Хочу нанять',
+    'leave-review-for' => 'оставить отзыв о {title}',
+    'review-client-explainer' => 'Отзывы открываются после истечения предполагаемого срока, указанного продавцом. Оставить отзыв можно {date}',
+    'job-count' => 'выполнено {count} заданий',
+
 ];

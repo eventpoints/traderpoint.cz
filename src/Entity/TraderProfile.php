@@ -38,6 +38,12 @@ class TraderProfile
     #[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'users', cascade: ['persist'])]
     private Collection $skills;
 
+    /**
+     * @var Collection<int, Review>
+     */
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'target', cascade: ['persist'])]
+    private Collection $reviews;
+
     #[ORM\Column(nullable: true)]
     private ?float $latitude = null;
 
@@ -70,6 +76,7 @@ class TraderProfile
     public function __construct()
     {
         $this->skills = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -97,6 +104,30 @@ class TraderProfile
     public function removeSkill(Skill $skill): static
     {
         $this->skills->removeElement($skill);
+        return $this;
+    }
+
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (! $this->reviews->contains($review)) {
+            $this->reviews->add($review);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        $this->reviews->removeElement($review);
         return $this;
     }
 
@@ -206,4 +237,40 @@ class TraderProfile
     {
         return $this->skills->count() === 0 || $this->serviceRadius !== null && $this->serviceRadius !== 0 || ! empty($this->getLatitude()) || ! empty($this->getLongitude());
     }
+
+
+    /**
+     * Average rating across all reviews (0–5, rounded to 1 decimal).
+     * Uses overallRating if present; else average of available sub-ratings.
+     */
+    public function getAverageRating(): ?float
+    {
+        $sum = 0.0;
+        $count = 0;
+
+        foreach ($this->reviews as $r) {
+            $val = $r->getOverallRating();
+
+            if ($val === null) {
+                $parts = array_filter([
+                    $r->getResponseRating(),
+                    $r->getCustomerServicesRating(),
+                    $r->getWorkQualityRating(),
+                    $r->getValueForMoneyRating(),
+                ], static fn($v) => $v !== null);
+
+                if ($parts) {
+                    $val = (string) (array_sum(array_map('floatval', $parts)) / count($parts));
+                }
+            }
+
+            if ($val !== null) {
+                $sum += (float) $val;
+                $count++;
+            }
+        }
+
+        return $count ? round($sum / $count, 1) : 0;
+    }
+
 }
