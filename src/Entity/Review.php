@@ -107,9 +107,9 @@ class Review
             $this->customerServicesRating,
             $this->workQualityRating,
             $this->valueForMoneyRating,
-        ], static fn($v) => $v !== null);
+        ], static fn($v): bool => $v !== null);
 
-        if ($parts) {
+        if ($parts !== []) {
             $avg = array_sum(array_map('floatval', $parts)) / count($parts);
             $this->overallRating = number_format($avg, 1, '.', '');
         }
@@ -192,5 +192,4 @@ class Review
     {
         $this->target = $target;
     }
-
 }

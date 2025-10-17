@@ -26,17 +26,17 @@ final class ReviewFixtures extends Fixture implements DependentFixtureInterface
         }
 
         // Split into traders (with TraderProfile) and clients (without)
-        $traders = array_values(array_filter($allUsers, static fn (User $u) => $u->getTraderProfile() instanceof TraderProfile));
-        $clients = array_values(array_filter($allUsers, static fn (User $u) => !($u->getTraderProfile() instanceof TraderProfile)));
+        $traders = array_values(array_filter($allUsers, static fn (User $u): bool => $u->getTraderProfile() instanceof TraderProfile));
+        $clients = array_values(array_filter($allUsers, static fn (User $u): bool => ! ($u->getTraderProfile() instanceof TraderProfile)));
 
-        if (!$traders) {
+        if ($traders === []) {
             return;
         }
 
-        foreach ($traders as $tIndex => $traderUser) {
+        foreach ($traders as $traderUser) {
 
             $profile = $traderUser->getTraderProfile();
-            if (!$profile) {
+            if (! $profile) {
                 continue;
             }
 
@@ -47,12 +47,12 @@ final class ReviewFixtures extends Fixture implements DependentFixtureInterface
                 $owner = $this->pickAuthor($clients, $allUsers, $traderUser);
 
                 // Generate 4 sub-ratings (biased towards 3.5–5.0), strings for DECIMAL columns
-                $response   = $this->rating($faker);
-                $service    = $this->rating($faker);
-                $quality    = $this->rating($faker);
-                $value      = $this->rating($faker);
+                $response = $this->rating($faker);
+                $service = $this->rating($faker);
+                $quality = $this->rating($faker);
+                $value = $this->rating($faker);
 
-                $title   = ucfirst($faker->words($faker->numberBetween(2, 5), true));
+                $title = ucfirst($faker->words($faker->numberBetween(2, 5), true));
                 $content = $faker->paragraphs($faker->numberBetween(2, 4), true); // ~120–400 chars
 
                 $review = new Review(
@@ -105,7 +105,7 @@ final class ReviewFixtures extends Fixture implements DependentFixtureInterface
      */
     private function pickAuthor(array $clients, array $allUsers, User $traderUser): User
     {
-        if ($clients) {
+        if ($clients !== []) {
             return $clients[array_rand($clients)];
         }
 

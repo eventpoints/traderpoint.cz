@@ -3,8 +3,6 @@
 namespace App\Form\Form;
 
 use App\Entity\Review;
-use App\Enum\CurrencyCodeEnum;
-use App\Form\Type\RatingRangeType;
 use App\Form\Type\SmartRangeType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;

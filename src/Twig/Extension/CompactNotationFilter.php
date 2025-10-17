@@ -24,6 +24,6 @@ class CompactNotationFilter extends AbstractExtension
         $nf->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 0);
         $nf->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 1);
 
-        return (string)$nf->format($number);
+        return (string) $nf->format($number);
     }
 }

@@ -58,7 +58,7 @@
                             <div class="card-header d-flex justify-content-between align-items-start">
                                 <div>
                                     <div class="fs-4">{{ engagement.quote.priceNetCents|format_currency(engagement.quote.currency.value) }}</div>
-                                    <div>{{ engagement.quote.startAt.diffForHumans }}</div>
+                                    <div>{{ engagement.quote.startAt ? engagement.quote.startAt.diffForHumans }}</div>
                                 </div>
                                 <div class="fs-4">
                                     <div class="badge text-bg-success rounded-pill">{{ engagement.quote.status.value|trans|capitalize }}</div>

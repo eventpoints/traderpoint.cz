@@ -107,7 +107,6 @@ class TraderProfile
         return $this;
     }
 
-
     /**
      * @return Collection<int, Review>
      */
@@ -238,7 +237,6 @@ class TraderProfile
         return $this->skills->count() === 0 || $this->serviceRadius !== null && $this->serviceRadius !== 0 || ! empty($this->getLatitude()) || ! empty($this->getLongitude());
     }
 
-
     /**
      * Average rating across all reviews (0–5, rounded to 1 decimal).
      * Uses overallRating if present; else average of available sub-ratings.
@@ -257,9 +255,9 @@ class TraderProfile
                     $r->getCustomerServicesRating(),
                     $r->getWorkQualityRating(),
                     $r->getValueForMoneyRating(),
-                ], static fn($v) => $v !== null);
+                ], static fn($v): bool => $v !== null);
 
-                if ($parts) {
+                if ($parts !== []) {
                     $val = (string) (array_sum(array_map('floatval', $parts)) / count($parts));
                 }
             }
@@ -270,7 +268,6 @@ class TraderProfile
             }
         }
 
-        return $count ? round($sum / $count, 1) : 0;
+        return $count !== 0 ? round($sum / $count, 1) : 0;
     }
-
 }

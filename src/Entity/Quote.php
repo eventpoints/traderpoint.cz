@@ -386,7 +386,7 @@ class Quote implements \Stringable
 
     public function isUnanswered(): bool
     {
-        return in_array($this->status, [QuoteStatusEnum::SUBMITTED, QuoteStatusEnum::EXPIRED]);
+        return $this->status == QuoteStatusEnum::SUBMITTED;
     }
 
     public function getPrice(): int
@@ -404,7 +404,7 @@ class Quote implements \Stringable
         $decidedAt = $this->getDecidedAt();
         $hours = $this->getExpectedDurationHours();
 
-        if (!$decidedAt || $hours === null) {
+        if (! $decidedAt || $hours === null) {
             return false;
         }
 
@@ -419,5 +419,4 @@ class Quote implements \Stringable
     {
         return $this->getDecidedAt()->addMinutes((int) round($this->getExpectedDurationHours() * 60));
     }
-
 }
