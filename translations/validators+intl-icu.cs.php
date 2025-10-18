@@ -1,161 +1,240 @@
 <?php
 
-return [
-    'This value should be false.' => 'Tato hodnota by měla být false.',
-    'This value should be true.' => 'Tato hodnota by měla být true.',
-    'This value should be of type {{ type }}.' => 'Tato hodnota by měla být typu {{ type }}.',
-    'This value should be blank.' => 'Tato hodnota by měla být prázdná.',
-    'The value you selected is not a valid choice.' => 'Vybraná hodnota není platná volba.',
-    'You must select at least {{ limit }} choice.|You must select at least {{ limit }} choices.' => 'Musíte vybrat alespoň {{ limit }} možnost.|Musíte vybrat alespoň {{ limit }} možnosti.',
-    'You must select at most {{ limit }} choice.|You must select at most {{ limit }} choices.' => 'Můžete vybrat nanejvýš {{ limit }} možnost.|Můžete vybrat nanejvýš {{ limit }} možnosti.',
-    'One or more of the given values is invalid.' => 'Jedna nebo více zadaných hodnot je neplatná.',
-    'This field was not expected.' => 'Toto pole nebylo očekáváno.',
-    'This field is missing.' => 'Toto pole chybí.',
-    'This value is not a valid date.' => 'Tato hodnota není platné datum.',
-    'This value is not a valid datetime.' => 'Tato hodnota není platné datum a čas.',
-    'This value is not a valid email address.' => 'Tato hodnota není platná e-mailová adresa.',
-    'The file could not be found.' => 'Soubor se nepodařilo najít.',
-    'The file is not readable.' => 'Soubor není čitelný.',
-    'The file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}.' => 'Soubor je příliš velký ({{ size }} {{ suffix }}). Maximální povolená velikost je {{ limit }} {{ suffix }}.',
-    'The mime type of the file is invalid ({{ type }}). Allowed mime types are {{ types }}.' => 'Neplatný MIME typ souboru ({{ type }}). Povolené MIME typy jsou {{ types }}.',
-    'This value should be {{ limit }} or less.' => 'Tato hodnota by měla být {{ limit }} nebo méně.',
-    'This value is too long. It should have {{ limit }} character or less.|This value is too long. It should have {{ limit }} characters or less.' => 'Tato hodnota je příliš dlouhá. Měla by mít {{ limit }} znak nebo méně.|Tato hodnota je příliš dlouhá. Měla by mít {{ limit }} znaků nebo méně.',
-    'This value should be {{ limit }} or more.' => 'Tato hodnota by měla být {{ limit }} nebo více.',
-    'This value is too short. It should have {{ limit }} character or more.|This value is too short. It should have {{ limit }} characters or more.' => 'Tato hodnota je příliš krátká. Měla by mít {{ limit }} znak nebo více.|Tato hodnota je příliš krátká. Měla by mít {{ limit }} znaků nebo více.',
-    'This value should not be blank.' => 'Tato hodnota by neměla být prázdná.',
-    'This value should not be null.' => 'Tato hodnota by neměla být null.',
-    'This value should be null.' => 'Tato hodnota by měla být null.',
-    'This value is not valid.' => 'Tato hodnota není platná.',
-    'This value is not a valid time.' => 'Tato hodnota není platný čas.',
-    'This value is not a valid URL.' => 'Tato hodnota není platná adresa URL.',
-    'The two values should be equal.' => 'Obě hodnoty by měly být stejné.',
-    'The file is too large. Allowed maximum size is {{ limit }} {{ suffix }}.' => 'Soubor je příliš velký. Maximální povolená velikost je {{ limit }} {{ suffix }}.',
-    'The file is too large.' => 'Soubor je příliš velký.',
-    'The file could not be uploaded.' => 'Soubor se nepodařilo nahrát.',
-    'This value should be a valid number.' => 'Tato hodnota by měla být platné číslo.',
-    'This file is not a valid image.' => 'Tento soubor není platný obrázek.',
-    'This is not a valid IP address.' => 'Toto není platná IP adresa.',
-    'This value is not a valid language.' => 'Tato hodnota není platný jazyk.',
-    'This value is not a valid locale.' => 'Tato hodnota není platná locale.',
-    'This value is not a valid country.' => 'Tato hodnota není platná země.',
-    'This value is already used.' => 'Tato hodnota je již použita.',
-    'The size of the image could not be detected.' => 'Velikost obrázku se nepodařilo zjistit.',
-    'The image width is too big ({{ width }}px). Allowed maximum width is {{ max_width }}px.' => 'Šířka obrázku je příliš velká ({{ width }} px). Maximální povolená šířka je {{ max_width }} px.',
-    'The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.' => 'Šířka obrázku je příliš malá ({{ width }} px). Minimální požadovaná šířka je {{ min_width }} px.',
-    'The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.' => 'Výška obrázku je příliš velká ({{ height }} px). Maximální povolená výška je {{ max_height }} px.',
-    'The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.' => 'Výška obrázku je příliš malá ({{ height }} px). Minimální požadovaná výška je {{ min_height }} px.',
-    'This value should be the user\'s current password.' => 'Tato hodnota by měla odpovídat aktuálnímu heslu uživatele.',
-    'This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.' => 'Tato hodnota by měla mít přesně {{ limit }} znak.|Tato hodnota by měla mít přesně {{ limit }} znaků.',
-    'The file was only partially uploaded.' => 'Soubor byl nahrán pouze částečně.',
-    'No file was uploaded.' => 'Nebyl nahrán žádný soubor.',
-    'No temporary folder was configured in php.ini.' => 'V php.ini není nakonfigurována dočasná složka, nebo neexistuje.',
-    'Cannot write temporary file to disk.' => 'Nelze zapsat dočasný soubor na disk.',
-    'A PHP extension caused the upload to fail.' => 'Nahrávání selhalo kvůli rozšíření PHP.',
-    'This collection should contain {{ limit }} element or more.|This collection should contain {{ limit }} elements or more.' => 'Tato kolekce by měla obsahovat {{ limit }} prvek nebo více.|Tato kolekce by měla obsahovat {{ limit }} prvků nebo více.',
-    'This collection should contain {{ limit }} element or less.|This collection should contain {{ limit }} elements or less.' => 'Tato kolekce by měla obsahovat {{ limit }} prvek nebo méně.|Tato kolekce by měla obsahovat {{ limit }} prvků nebo méně.',
-    'This collection should contain exactly {{ limit }} element.|This collection should contain exactly {{ limit }} elements.' => 'Tato kolekce by měla obsahovat přesně {{ limit }} prvek.|Tato kolekce by měla obsahovat přesně {{ limit }} prvků.',
-    'Invalid card number.' => 'Neplatné číslo karty.',
-    'Unsupported card type or invalid card number.' => 'Nepodporovaný typ karty nebo neplatné číslo karty.',
-    'This is not a valid International Bank Account Number (IBAN).' => 'Tato hodnota není platné číslo účtu IBAN.',
-    'This value is not a valid ISBN-10.' => 'Tato hodnota není platné ISBN-10.',
-    'This value is not a valid ISBN-13.' => 'Tato hodnota není platné ISBN-13.',
-    'This value is neither a valid ISBN-10 nor a valid ISBN-13.' => 'Tato hodnota není platné ISBN-10 ani ISBN-13.',
-    'This value is not a valid ISSN.' => 'Tato hodnota není platné ISSN.',
-    'This value is not a valid currency.' => 'Tato hodnota není platná měna.',
-    'This value should be equal to {{ compared_value }}.' => 'Tato hodnota by měla být rovna {{ compared_value }}.',
-    'This value should be greater than {{ compared_value }}.' => 'Tato hodnota by měla být větší než {{ compared_value }}.',
-    'This value should be greater than or equal to {{ compared_value }}.' => 'Tato hodnota by měla být větší nebo rovna {{ compared_value }}.',
-    'This value should be identical to {{ compared_value_type }} {{ compared_value }}.' => 'Tato hodnota by měla být totožná s {{ compared_value_type }} {{ compared_value }}.',
-    'This value should be less than {{ compared_value }}.' => 'Tato hodnota by měla být menší než {{ compared_value }}.',
-    'This value should be less than or equal to {{ compared_value }}.' => 'Tato hodnota by měla být menší nebo rovna {{ compared_value }}.',
-    'This value should not be equal to {{ compared_value }}.' => 'Tato hodnota by neměla být rovna {{ compared_value }}.',
-    'This value should not be identical to {{ compared_value_type }} {{ compared_value }}.' => 'Tato hodnota by neměla být totožná s {{ compared_value_type }} {{ compared_value }}.',
-    'The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.' => 'Poměr stran obrázku je příliš velký ({{ ratio }}). Maximální povolený poměr je {{ max_ratio }}.',
-    'The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.' => 'Poměr stran obrázku je příliš malý ({{ ratio }}). Minimální požadovaný poměr je {{ min_ratio }}.',
-    'The image is square ({{ width }}x{{ height }}px). Square images are not allowed.' => 'Obrázek je čtvercový ({{ width }}×{{ height }} px). Čtvercové obrázky nejsou povoleny.',
-    'The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.' => 'Obrázek je na šířku ({{ width }}×{{ height }} px). Obrázky na šířku nejsou povoleny.',
-    'The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.' => 'Obrázek je na výšku ({{ width }}×{{ height }} px). Obrázky na výšku nejsou povoleny.',
-    'An empty file is not allowed.' => 'Prázdný soubor není povolen.',
-    'The host could not be resolved.' => 'Název hostitele nelze přeložit.',
-    'This value does not match the expected {{ charset }} charset.' => 'Tato hodnota neodpovídá očekávané znakové sadě {{ charset }}.',
-    'This is not a valid Business Identifier Code (BIC).' => 'Tato hodnota není platný kód BIC.',
-    'Error' => 'Chyba',
-    'This is not a valid UUID.' => 'Tato hodnota není platné UUID.',
-    'This value should be a multiple of {{ compared_value }}.' => 'Tato hodnota by měla být násobkem {{ compared_value }}.',
-    'This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.' => 'Tento kód BIC není přiřazen k IBAN {{ iban }}.',
-    'This value should be valid JSON.' => 'Tato hodnota by měla být platné JSON.',
-    'This collection should contain only unique elements.' => 'Tato kolekce by měla obsahovat pouze jedinečné prvky.',
-    'This value should be positive.' => 'Tato hodnota by měla být kladná.',
-    'This value should be either positive or zero.' => 'Tato hodnota by měla být kladná nebo nula.',
-    'This value should be negative.' => 'Tato hodnota by měla být záporná.',
-    'This value should be either negative or zero.' => 'Tato hodnota by měla být záporná nebo nula.',
-    'This value is not a valid timezone.' => 'Tato hodnota není platné časové pásmo.',
-    'This password has been leaked in a data breach, it must not be used. Please use another password.' => 'Toto heslo uniklo při narušení dat a nesmí být používáno. Použijte prosím jiné heslo.',
-    'This value should be between {{ min }} and {{ max }}.' => 'Tato hodnota by měla být mezi {{ min }} a {{ max }}.',
-    'This value is not a valid hostname.' => 'Tato hodnota není platný název hostitele.',
-    'The number of elements in this collection should be a multiple of {{ compared_value }}.' => 'Počet prvků v této kolekci by měl být násobkem {{ compared_value }}.',
-    'This value should satisfy at least one of the following constraints:' => 'Tato hodnota by měla splňovat alespoň jedno z následujících omezení:',
-    'Each element of this collection should satisfy its own set of constraints.' => 'Každý prvek této kolekce by měl splňovat vlastní sadu omezení.',
-    'This value is not a valid International Securities Identification Number (ISIN).' => 'Tato hodnota není platné číslo ISIN.',
-    'This value should be a valid expression.' => 'Tato hodnota by měla být platný výraz.',
-    'This value is not a valid CSS color.' => 'Tato hodnota není platná barva CSS.',
-    'This value is not a valid CIDR notation.' => 'Tato hodnota není platný zápis CIDR.',
-    'The value of the netmask should be between {{ min }} and {{ max }}.' => 'Hodnota síťové masky by měla být mezi {{ min }} a {{ max }}.',
-    'The filename is too long. It should have {{ filename_max_length }} character or less.|The filename is too long. It should have {{ filename_max_length }} characters or less.' => 'Název souboru je příliš dlouhý. Měl by mít {{ filename_max_length }} znak nebo méně.|Název souboru je příliš dlouhý. Měl by mít {{ filename_max_length }} znaků nebo méně.',
-    'The password strength is too low. Please use a stronger password.' => 'Síla hesla je příliš nízká. Použijte prosím silnější heslo.',
-    'This value contains characters that are not allowed by the current restriction-level.' => 'Tato hodnota obsahuje znaky, které nejsou povoleny při aktuální úrovni omezení.',
-    'Using invisible characters is not allowed.' => 'Používání neviditelných znaků není povoleno.',
-    'Mixing numbers from different scripts is not allowed.' => 'Mísení číslic z různých písem není povoleno.',
-    'Using hidden overlay characters is not allowed.' => 'Používání skrytých překryvných znaků není povoleno.',
-    'The extension of the file is invalid ({{ extension }}). Allowed extensions are {{ extensions }}.' => 'Přípona souboru je neplatná ({{ extension }}). Povolené přípony jsou {{ extensions }}.',
-    'The detected character encoding is invalid ({{ detected }}). Allowed encodings are {{ encodings }}.' => 'Zjištěné kódování znaků je neplatné ({{ detected }}). Povolená kódování jsou {{ encodings }}.',
-    'This value is not a valid MAC address.' => 'Tato hodnota není platná MAC adresa.',
-    'This URL is missing a top-level domain.' => 'V této adrese URL chybí doména nejvyšší úrovně.',
-    'This value is too short. It should contain at least one word.|This value is too short. It should contain at least {{ min }} words.' => 'Tato hodnota je příliš krátká. Měla by obsahovat alespoň jedno slovo.|Tato hodnota je příliš krátká. Měla by obsahovat alespoň {{ min }} slov.',
-    'This value is too long. It should contain one word.|This value is too long. It should contain {{ max }} words or less.' => 'Tato hodnota je příliš dlouhá. Měla by obsahovat jedno slovo.|Tato hodnota je příliš dlouhá. Měla by obsahovat nejvýše {{ max }} slov.',
-    'This value does not represent a valid week in the ISO 8601 format.' => 'Tato hodnota nepředstavuje platný týden ve formátu ISO 8601.',
-    'This value is not a valid week.' => 'Tato hodnota není platný týden.',
-    'This value should not be before week "{{ min }}".' => 'Tato hodnota by neměla být před týdnem „{{ min }}“.',
-    'This value should not be after week "{{ max }}".' => 'Tato hodnota by neměla být po týdnu „{{ max }}“.',
-    'This form should not contain extra fields.' => 'Tento formulář by neměl obsahovat další pole.',
-    'The uploaded file was too large. Please try to upload a smaller file.' => 'Nahraný soubor byl příliš velký. Zkuste nahrát menší soubor.',
-    'The CSRF token is invalid. Please try to resubmit the form.' => 'Token CSRF je neplatný. Zkuste formulář odeslat znovu.',
-    'This value is not a valid HTML5 color.' => 'Tato hodnota není platná barva HTML5.',
-    'Please enter a valid birthdate.' => 'Zadejte prosím platné datum narození.',
-    'The selected choice is invalid.' => 'Vybraná možnost je neplatná.',
-    'The collection is invalid.' => 'Kolekce je neplatná.',
-    'Please select a valid color.' => 'Vyberte prosím platnou barvu.',
-    'Please select a valid country.' => 'Vyberte prosím platnou zemi.',
-    'Please select a valid currency.' => 'Vyberte prosím platnou měnu.',
-    'Please choose a valid date interval.' => 'Zvolte prosím platný datumový interval.',
-    'Please enter a valid date and time.' => 'Zadejte prosím platné datum a čas.',
-    'Please enter a valid date.' => 'Zadejte prosím platné datum.',
-    'Please select a valid file.' => 'Vyberte prosím platný soubor.',
-    'The hidden field is invalid.' => 'Skryté pole je neplatné.',
-    'Please enter an integer.' => 'Zadejte prosím celé číslo.',
-    'Please select a valid language.' => 'Vyberte prosím platný jazyk.',
-    'Please select a valid locale.' => 'Vyberte prosím platné locale.',
-    'Please enter a valid money amount.' => 'Zadejte prosím platnou peněžní částku.',
-    'Please enter a number.' => 'Zadejte prosím číslo.',
-    'The password is invalid.' => 'Heslo je neplatné.',
-    'Please enter a percentage value.' => 'Zadejte prosím hodnotu v procentech.',
-    'The values do not match.' => 'Hodnoty se neshodují.',
-    'Please enter a valid time.' => 'Zadejte prosím platný čas.',
-    'Please select a valid timezone.' => 'Vyberte prosím platné časové pásmo.',
-    'Please enter a valid URL.' => 'Zadejte prosím platnou adresu URL.',
-    'Please enter a valid search term.' => 'Zadejte prosím platný vyhledávací dotaz.',
-    'Please provide a valid phone number.' => 'Uveďte prosím platné telefonní číslo.',
-    'phone_number.already_registered' => 'Toto telefonní číslo je již zaregistrováno.',
-    'The checkbox has an invalid value.' => 'Zaškrtávací políčko má neplatnou hodnotu.',
-    'Please enter a valid email address.' => 'Zadejte prosím platnou e-mailovou adresu.',
-    'Please select a valid option.' => 'Vyberte prosím platnou možnost.',
-    'Please select a valid range.' => 'Vyberte prosím platný rozsah.',
-    'Please enter a valid week.' => 'Zadejte prosím platný týden.',
-    'Please enter a password' => 'Zadejte prosím heslo',
-    'Your password should be at least {{ limit }} characters' => 'Vaše heslo by mělo mít alespoň {{ limit }} znaků',
-    'There is already an account with this email' => 'S tímto e-mailem již existuje účet',
-    'Please enter your email.' => 'Zadejte prosím svůj e-mail.',
-    'This field is required.' => 'Toto pole je povinné.',
-    'Each input must be a single digit.' => 'Každý vstup musí být jedna číslice.',
-    'rating.ensure_limits' => 'Hodnocení musí být mezi {{ min }} a {{ max }}.'
-];
+return array (
+    'This value should be false.' => 'This value should be false.',
+    'This value should be true.' => 'This value should be true.',
+    'This value should be of type {{ type }}.' => 'This value should be of type {type}.',
+    'This value should be blank.' => 'This value should be blank.',
+    'The value you selected is not a valid choice.' => 'The value you selected is not a valid choice.',
+
+    'You must select at least {{ limit }} choice.|You must select at least {{ limit }} choices.' =>
+        '{limit, plural, one {You must select at least # choice.} other {You must select at least # choices.}}',
+
+    'You must select at most {{ limit }} choice.|You must select at most {{ limit }} choices.' =>
+        '{limit, plural, one {You must select at most # choice.} other {You must select at most # choices.}}',
+
+    'One or more of the given values is invalid.' => 'One or more of the given values is invalid.',
+    'This field was not expected.' => 'This field was not expected.',
+    'This field is missing.' => 'This field is missing.',
+    'This value is not a valid date.' => 'This value is not a valid date.',
+    'This value is not a valid datetime.' => 'This value is not a valid datetime.',
+    'This value is not a valid email address.' => 'This value is not a valid email address.',
+    'The file could not be found.' => 'The file could not be found.',
+    'The file is not readable.' => 'The file is not readable.',
+
+    'The file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}.' =>
+        'The file is too large ({size} {suffix}). Allowed maximum size is {limit} {suffix}.',
+
+    'The mime type of the file is invalid ({{ type }}). Allowed mime types are {{ types }}.' =>
+        'The mime type of the file is invalid ({type}). Allowed mime types are {types}.',
+
+    'This value should be {{ limit }} or less.' => 'This value should be {limit} or less.',
+
+    'This value is too long. It should have {{ limit }} character or less.|This value is too long. It should have {{ limit }} characters or less.' =>
+        '{limit, plural, one {This value is too long. It should have # character or less.} other {This value is too long. It should have # characters or less.}}',
+
+    'This value should be {{ limit }} or more.' => 'This value should be {limit} or more.',
+
+    'This value is too short. It should have {{ limit }} character or more.|This value is too short. It should have {{ limit }} characters or more.' =>
+        '{limit, plural, one {This value is too short. It should have # character or more.} other {This value is too short. It should have # characters or more.}}',
+
+    'This value should not be blank.' => 'This value should not be blank.',
+    'This value should not be null.' => 'This value should not be null.',
+    'This value should be null.' => 'This value should be null.',
+    'This value is not valid.' => 'This value is not valid.',
+    'This value is not a valid time.' => 'This value is not a valid time.',
+    'This value is not a valid URL.' => 'This value is not a valid URL.',
+    'The two values should be equal.' => 'The two values should be equal.',
+
+    'The file is too large. Allowed maximum size is {{ limit }} {{ suffix }}.' =>
+        'The file is too large. Allowed maximum size is {limit} {suffix}.',
+
+    'The file is too large.' => 'The file is too large.',
+    'The file could not be uploaded.' => 'The file could not be uploaded.',
+    'This value should be a valid number.' => 'This value should be a valid number.',
+    'This file is not a valid image.' => 'This file is not a valid image.',
+
+    'This is not a valid IP address.' => 'This is not a valid IP address.',
+
+    'This value is not a valid language.' => 'This value is not a valid language.',
+    'This value is not a valid locale.' => 'This value is not a valid locale.',
+    'This value is not a valid country.' => 'This value is not a valid country.',
+    'This value is already used.' => 'This value is already used.',
+    'The size of the image could not be detected.' => 'The size of the image could not be detected.',
+
+    'The image width is too big ({{ width }}px). Allowed maximum width is {{ max_width }}px.' =>
+        'The image width is too big ({width}px). Allowed maximum width is {max_width}px.',
+
+    'The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.' =>
+        'The image width is too small ({width}px). Minimum width expected is {min_width}px.',
+
+    'The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.' =>
+        'The image height is too big ({height}px). Allowed maximum height is {max_height}px.',
+
+    'The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.' =>
+        'The image height is too small ({height}px). Minimum height expected is {min_height}px.',
+
+    'This value should be the user\'s current password.' => 'This value should be the user\'s current password.',
+
+    'This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.' =>
+        '{limit, plural, one {This value should have exactly # character.} other {This value should have exactly # characters.}}',
+
+    'The file was only partially uploaded.' => 'The file was only partially uploaded.',
+    'No file was uploaded.' => 'No file was uploaded.',
+    'No temporary folder was configured in php.ini.' => 'No temporary folder was configured in php.ini, or the configured folder does not exist.',
+    'Cannot write temporary file to disk.' => 'Cannot write temporary file to disk.',
+    'A PHP extension caused the upload to fail.' => 'A PHP extension caused the upload to fail.',
+
+    'This collection should contain {{ limit }} element or more.|This collection should contain {{ limit }} elements or more.' =>
+        '{limit, plural, one {This collection should contain # element or more.} other {This collection should contain # elements or more.}}',
+
+    'This collection should contain {{ limit }} element or less.|This collection should contain {{ limit }} elements or less.' =>
+        '{limit, plural, one {This collection should contain # element or less.} other {This collection should contain # elements or less.}}',
+
+    'This collection should contain exactly {{ limit }} element.|This collection should contain exactly {{ limit }} elements.' =>
+        '{limit, plural, one {This collection should contain exactly # element.} other {This collection should contain exactly # elements.}}',
+
+    'Invalid card number.' => 'Invalid card number.',
+    'Unsupported card type or invalid card number.' => 'Unsupported card type or invalid card number.',
+    'This is not a valid International Bank Account Number (IBAN).' => 'This is not a valid International Bank Account Number (IBAN).',
+    'This value is not a valid ISBN-10.' => 'This value is not a valid ISBN-10.',
+    'This value is not a valid ISBN-13.' => 'This value is not a valid ISBN-13.',
+    'This value is neither a valid ISBN-10 nor a valid ISBN-13.' => 'This value is neither a valid ISBN-10 nor a valid ISBN-13.',
+    'This value is not a valid ISSN.' => 'This value is not a valid ISSN.',
+    'This value is not a valid currency.' => 'This value is not a valid currency.',
+
+    'This value should be equal to {{ compared_value }}.' => 'This value should be equal to {compared_value}.',
+    'This value should be greater than {{ compared_value }}.' => 'This value should be greater than {compared_value}.',
+    'This value should be greater than or equal to {{ compared_value }}.' => 'This value should be greater than or equal to {compared_value}.',
+    'This value should be identical to {{ compared_value_type }} {{ compared_value }}.' => 'This value should be identical to {compared_value_type} {compared_value}.',
+    'This value should be less than {{ compared_value }}.' => 'This value should be less than {compared_value}.',
+    'This value should be less than or equal to {{ compared_value }}.' => 'This value should be less than or equal to {compared_value}.',
+    'This value should not be equal to {{ compared_value }}.' => 'This value should not be equal to {compared_value}.',
+    'This value should not be identical to {{ compared_value_type }} {{ compared_value }}.' => 'This value should not be identical to {compared_value_type} {compared_value}.',
+
+    'The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.' =>
+        'The image ratio is too big ({ratio}). Allowed maximum ratio is {max_ratio}.',
+
+    'The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.' =>
+        'The image ratio is too small ({ratio}). Minimum ratio expected is {min_ratio}.',
+
+    'The image is square ({{ width }}x{{ height }}px). Square images are not allowed.' =>
+        'The image is square ({width}x{height}px). Square images are not allowed.',
+
+    'The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.' =>
+        'The image is landscape oriented ({width}x{height}px). Landscape oriented images are not allowed.',
+
+    'The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.' =>
+        'The image is portrait oriented ({width}x{height}px). Portrait oriented images are not allowed.',
+
+    'An empty file is not allowed.' => 'An empty file is not allowed.',
+    'The host could not be resolved.' => 'The host could not be resolved.',
+    'This value does not match the expected {{ charset }} charset.' => 'This value does not match the expected {charset} charset.',
+    'This is not a valid Business Identifier Code (BIC).' => 'This is not a valid Business Identifier Code (BIC).',
+
+    'Error' => 'Error',
+    'This is not a valid UUID.' => 'This is not a valid UUID.',
+
+    'This value should be a multiple of {{ compared_value }}.' => 'This value should be a multiple of {compared_value}.',
+
+    'This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.' =>
+        'This Business Identifier Code (BIC) is not associated with IBAN {iban}.',
+
+    'This value should be valid JSON.' => 'This value should be valid JSON.',
+    'This collection should contain only unique elements.' => 'This collection should contain only unique elements.',
+    'This value should be positive.' => 'This value should be positive.',
+    'This value should be either positive or zero.' => 'This value should be either positive or zero.',
+    'This value should be negative.' => 'This value should be negative.',
+    'This value should be either negative or zero.' => 'This value should be either negative or zero.',
+    'This value is not a valid timezone.' => 'This value is not a valid timezone.',
+    'This password has been leaked in a data breach, it must not be used. Please use another password.' => 'This password has been leaked in a data breach, it must not be used. Please use another password.',
+
+    'This value should be between {{ min }} and {{ max }}.' => 'This value should be between {min} and {max}.',
+    'This value is not a valid hostname.' => 'This value is not a valid hostname.',
+
+    'The number of elements in this collection should be a multiple of {{ compared_value }}.' =>
+        'The number of elements in this collection should be a multiple of {compared_value}.',
+
+    'This value should satisfy at least one of the following constraints:' => 'This value should satisfy at least one of the following constraints:',
+    'Each element of this collection should satisfy its own set of constraints.' => 'Each element of this collection should satisfy its own set of constraints.',
+    'This value is not a valid International Securities Identification Number (ISIN).' => 'This value is not a valid International Securities Identification Number (ISIN).',
+    'This value should be a valid expression.' => 'This value should be a valid expression.',
+    'This value is not a valid CSS color.' => 'This value is not a valid CSS color.',
+    'This value is not a valid CIDR notation.' => 'This value is not a valid CIDR notation.',
+
+    'The value of the netmask should be between {{ min }} and {{ max }}.' => 'The value of the netmask should be between {min} and {max}.',
+
+    'The filename is too long. It should have {{ filename_max_length }} character or less.|The filename is too long. It should have {{ filename_max_length }} characters or less.' =>
+        '{filename_max_length, plural, one {The filename is too long. It should have # character or less.} other {The filename is too long. It should have # characters or less.}}',
+
+    'The password strength is too low. Please use a stronger password.' => 'The password strength is too low. Please use a stronger password.',
+    'This value contains characters that are not allowed by the current restriction-level.' => 'This value contains characters that are not allowed by the current restriction-level.',
+    'Using invisible characters is not allowed.' => 'Using invisible characters is not allowed.',
+    'Mixing numbers from different scripts is not allowed.' => 'Mixing numbers from different scripts is not allowed.',
+    'Using hidden overlay characters is not allowed.' => 'Using hidden overlay characters is not allowed.',
+
+    'The extension of the file is invalid ({{ extension }}). Allowed extensions are {{ extensions }}.' =>
+        'The extension of the file is invalid ({extension}). Allowed extensions are {extensions}.',
+
+    'The detected character encoding is invalid ({{ detected }}). Allowed encodings are {{ encodings }}.' =>
+        'The detected character encoding is invalid ({detected}). Allowed encodings are {encodings}.',
+
+    'This value is not a valid MAC address.' => 'This value is not a valid MAC address.',
+    'This URL is missing a top-level domain.' => 'This URL is missing a top-level domain.',
+
+    'This value is too short. It should contain at least one word.|This value is too short. It should contain at least {{ min }} words.' =>
+        '{min, plural, one {This value is too short. It should contain at least one word.} other {This value is too short. It should contain at least # words.}}',
+
+    'This value is too long. It should contain one word.|This value is too long. It should contain {{ max }} words or less.' =>
+        '{max, plural, one {This value is too long. It should contain one word.} other {This value is too long. It should contain # words or less.}}',
+
+    'This value does not represent a valid week in the ISO 8601 format.' => 'This value does not represent a valid week in the ISO 8601 format.',
+    'This value is not a valid week.' => 'This value is not a valid week.',
+    'This value should not be before week "{{ min }}".' => 'This value should not be before week "{min}".',
+    'This value should not be after week "{{ max }}".' => 'This value should not be after week "{max}".',
+
+    'This form should not contain extra fields.' => 'This form should not contain extra fields.',
+    'The uploaded file was too large. Please try to upload a smaller file.' => 'The uploaded file was too large. Please try to upload a smaller file.',
+    'The CSRF token is invalid. Please try to resubmit the form.' => 'The CSRF token is invalid. Please try to resubmit the form.',
+    'This value is not a valid HTML5 color.' => 'This value is not a valid HTML5 color.',
+    'Please enter a valid birthdate.' => 'Please enter a valid birthdate.',
+    'The selected choice is invalid.' => 'The selected choice is invalid.',
+    'The collection is invalid.' => 'The collection is invalid.',
+    'Please select a valid color.' => 'Please select a valid color.',
+    'Please select a valid country.' => 'Please select a valid country.',
+    'Please select a valid currency.' => 'Please select a valid currency.',
+    'Please choose a valid date interval.' => 'Please choose a valid date interval.',
+    'Please enter a valid date and time.' => 'Please enter a valid date and time.',
+    'Please enter a valid date.' => 'Please enter a valid date.',
+    'Please select a valid file.' => 'Please select a valid file.',
+    'The hidden field is invalid.' => 'The hidden field is invalid.',
+    'Please enter an integer.' => 'Please enter an integer.',
+    'Please select a valid language.' => 'Please select a valid language.',
+    'Please select a valid locale.' => 'Please select a valid locale.',
+    'Please enter a valid money amount.' => 'Please enter a valid money amount.',
+    'Please enter a number.' => 'Please enter a number.',
+    'The password is invalid.' => 'The password is invalid.',
+    'Please enter a percentage value.' => 'Please enter a percentage value.',
+    'The values do not match.' => 'The values do not match.',
+    'Please enter a valid time.' => 'Please enter a valid time.',
+    'Please select a valid timezone.' => 'Please select a valid timezone.',
+    'Please enter a valid URL.' => 'Please enter a valid URL.',
+    'Please enter a valid search term.' => 'Please enter a valid search term.',
+    'Please provide a valid phone number.' => 'Please provide a valid phone number.',
+    'phone_number.already_registered' => 'This phone number is already registered.',
+    'The checkbox has an invalid value.' => 'The checkbox has an invalid value.',
+    'Please enter a valid email address.' => 'Please enter a valid email address.',
+    'Please select a valid option.' => 'Please select a valid option.',
+    'Please select a valid range.' => 'Please select a valid range.',
+    'Please enter a valid week.' => 'Please enter a valid week.',
+
+    // Your custom UI strings (kept as-is, not validator messages)
+    'Please enter a password' => '__Please enter a password',
+    'Your password should be at least {{ limit }} characters' => '__Your password should be at least {limit} characters',
+    'There is already an account with this email' => '__There is already an account with this email',
+    'Please enter your email.' => '__Please enter your email.',
+    'This field is required.' => '__This field is required.',
+    'Each input must be a single digit.' => '__Each input must be a single digit.',
+
+    'rating.ensure_limits' => 'Rating must be between {min} and {max}.',
+);

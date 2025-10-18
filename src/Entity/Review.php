@@ -49,6 +49,8 @@ class Review
         private ?TraderProfile $target = null,
         #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reviews')]
         private ?User $owner = null,
+        #[ORM\OneToOne(targetEntity: Engagement::class)]
+        private ?Engagement $engagement = null,
     )
     {
         $this->createdAt = new CarbonImmutable();
@@ -192,4 +194,15 @@ class Review
     {
         $this->target = $target;
     }
+
+    public function getEngagement(): ?Engagement
+    {
+        return $this->engagement;
+    }
+
+    public function setEngagement(?Engagement $engagement): void
+    {
+        $this->engagement = $engagement;
+    }
+
 }

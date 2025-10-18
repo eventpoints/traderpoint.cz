@@ -150,7 +150,13 @@ return array(
     'leave-review-for' => 'leave review for {title}',
     'review-client-explainer' => 'Reviews open after the trader’s estimated duration. You can leave a review on {date}',
     'job-count' => '{count} jobs completed',
+
     'something-went-wrong' => 'Sorry, something went wrong.',
     'cant-find-that-page' => 'Hmmm, cant find that page.',
     'not-allowed-here' => 'Sorry, you do not have permission to access this page.',
+    'engagement.title' => 'What job do you want doing?',
+    'engagement.image.upload' => 'click or drag & drop images',
+    'engagement.image.upload.help' => 'Upload a maximum of 3 images',
+    'engagement.description' => 'job details',
+    'engagement.skills' => 'required skills',
 );

@@ -147,9 +147,17 @@ return [
     'tradesmen-register' => 'Registrace živnosti',
     'how-our-service-works' => 'Jak naše služba funguje',
     'looking-to-hire' => 'Chci najmout',
-
     'leave-review-for' => 'napsat recenzi na {title}',
     'review-client-explainer' => 'Recenze jsou dostupné po uplynutí odhadované doby trvání uvedené obchodníkem. Recenzi můžete zanechat dne {date}',
     'job-count' => '{count} dokončených zakázek',
+    'something-went-wrong' => 'Omlouváme se, něco se pokazilo.',
+    'cant-find-that-page' => 'Hmm, tu stránku se nedaří najít.',
+    'not-allowed-here' => 'Je nám líto, nemáte oprávnění k přístupu na tuto stránku.',
+    'engagement.title' => 'Jakou práci potřebujete udělat?',
+    'engagement.image.upload' => 'klikněte nebo přetáhněte obrázky sem',
+    'engagement.image.upload.help' => 'Nahrajte maximálně 3 obrázky',
+    'engagement.description' => 'popis práce',
+    'engagement.skills' => 'požadované dovednosti',
+    'review.created' => 'recenze odeslána',
 
 ];

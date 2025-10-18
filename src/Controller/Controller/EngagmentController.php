@@ -18,6 +18,7 @@ use App\Repository\EngagementRepository;
 use App\Repository\PaymentRepository;
 use App\Repository\QuoteRepository;
 use App\Repository\UserRepository;
+use App\Service\ImageOptimizer;
 use Stripe\StripeClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -42,7 +43,8 @@ class EngagmentController extends AbstractController
         private readonly EngagementRepository $engagementRepository,
         private readonly PaymentRepository $paymentRepository,
         private readonly StripeClient $stripe,
-        private readonly UserRepository $userRepository
+        private readonly UserRepository $userRepository,
+        private readonly ImageOptimizer $imageOptimizer
     )
     {
     }
@@ -167,8 +169,9 @@ class EngagmentController extends AbstractController
 
             $positionBase = count($engagement->getImages());
             foreach ($files as $idx => $file) {
+                $optimisedFile = $this->imageOptimizer->getOptimizedFile($file);
                 $img = new Image();
-                $img->setImageFile($file);
+                $img->setImageFile($optimisedFile);
                 $img->setEngagement($engagement);
                 $img->setPosition($positionBase + $idx + 1);
                 $engagement->addImage($img);

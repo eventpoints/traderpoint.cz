@@ -399,24 +399,86 @@ class Quote implements \Stringable
         return $this->getId() . '-' . $this->getPrice();
     }
 
+    private function addWorkingHours(
+        CarbonImmutable $start,
+        float|int $hours,
+        int $workdayStartHour = 9,
+        int $workdayEndHour = 17,
+        array $workdays = [1, 2, 3, 4, 5] // 1=Mon .. 5=Fri (Carbon: 0=Sun)
+    ): CarbonImmutable {
+        $remaining = (int) round(((float) $hours) * 3600);
+        if ($remaining <= 0) {
+            return $start;
+        }
+
+        $current = $start;
+
+        $isWorkday = fn (CarbonImmutable $d) => in_array($d->dayOfWeek, $workdays, true);
+        $dayStart  = fn (CarbonImmutable $d) => $d->setTime($workdayStartHour, 0, 0);
+        $dayEnd    = fn (CarbonImmutable $d) => $d->setTime($workdayEndHour, 0, 0);
+
+        $nextWorkStart = function (CarbonImmutable $d) use ($isWorkday, $dayStart): CarbonImmutable {
+            $d = $d->addDay();
+            while (!$isWorkday($d)) {
+                $d = $d->addDay();
+            }
+            return $dayStart($d);
+        };
+
+        // Normalize $current into a work window
+        if (!$isWorkday($current) || $current >= $dayEnd($current)) {
+            $current = $nextWorkStart($current);
+        } elseif ($current < $dayStart($current)) {
+            $current = $dayStart($current);
+        }
+
+        // Consume time across work windows
+        while ($remaining > 0) {
+            $endOfWindow = $dayEnd($current);
+            $available   = $current->diffInSeconds($endOfWindow, false);
+
+            if ($available <= 0) {
+                $current = $nextWorkStart($current);
+                continue;
+            }
+
+            $use        = min($available, $remaining);
+            $current    = $current->addSeconds($use);
+            $remaining -= $use;
+
+            if ($remaining > 0) {
+                $current = $nextWorkStart($current);
+            }
+        }
+
+        return $current;
+    }
+
+
     public function isAfterEstimateDuration(): bool
     {
-        $decidedAt = $this->getDecidedAt();
-        $hours = $this->getExpectedDurationHours();
+        $startAt = $this->getStartAt();
+        $hours     = $this->getExpectedDurationHours();
 
-        if (! $decidedAt || $hours === null) {
+        if (!$startAt || $hours === null) {
             return false;
         }
 
-        $deadline = $decidedAt->addMinutes((int) round($hours * 60));
+        $deadline = $this->addWorkingHours($startAt, (float) $hours, 9, 17, [1,2,3,4,5]);
 
-        // Use the same timezone as $decidedAt and include equality if desired
-        return CarbonImmutable::now($decidedAt->getTimezone())
+        return CarbonImmutable::now($startAt->getTimezone())
             ->greaterThanOrEqualTo($deadline);
     }
 
-    public function estimateDuration(): CarbonImmutable
+    public function estimateDuration(): null|CarbonImmutable
     {
-        return $this->getDecidedAt()->addMinutes((int) round($this->getExpectedDurationHours() * 60));
+        $startAt = $this->getStartAt();
+        $hours     = $this->getExpectedDurationHours();
+
+        if (!$startAt || $hours === null) {
+            return null;
+        }
+
+        return $this->addWorkingHours($startAt, (float) $hours, 9, 17, [1,2,3,4,5]);
     }
 }

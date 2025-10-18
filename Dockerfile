@@ -1,4 +1,4 @@
-FROM ghcr.io/eventpoints/php:sha-ea6c165 AS composer
+FROM ghcr.io/eventpoints/php:main AS composer
 ENV APP_ENV=prod APP_DEBUG=0 PHP_OPCACHE_PRELOAD="/app/config/preload.php" PHP_EXPOSE_PHP=off PHP_OPCACHE_VALIDATE_TIMESTAMPS=0
 WORKDIR /app
 RUN rm -f /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini

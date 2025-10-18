@@ -6,4 +6,5 @@ return array(
     'flash.payment.failed' => 'Payment failed',
     'flash.payment.pending' => 'Payment pending',
     'flash.quote-sent-successful' => 'Quote sent successful',
+    'flash.review.created' => 'review sent',
 );

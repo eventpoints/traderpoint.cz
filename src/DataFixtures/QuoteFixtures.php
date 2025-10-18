@@ -77,7 +77,7 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
                     $quote->setVersion($currentVersion);
                     $quote->setVatRateBps($vatBps);
 
-                    $createdAt = CarbonImmutable::instance($faker->dateTimeBetween('-6 months', 'now'));
+                    $createdAt = CarbonImmutable::instance($faker->dateTimeBetween('-30 days', 'now'));
                     $quote->setCreatedAt($createdAt);
 
                     if ($faker->boolean(70)) {

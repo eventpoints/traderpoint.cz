@@ -6,5 +6,5 @@ return [
     'flash.payment.failed'  => 'Платеж не прошел',
     'flash.payment.pending' => 'Платеж в ожидании',
     'flash.quote-sent-successful' => 'Смета отправлена',
-
+    'flash.review.created' => 'отзыв отправлен',
 ];

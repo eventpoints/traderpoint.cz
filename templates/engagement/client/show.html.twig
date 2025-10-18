@@ -57,7 +57,7 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-start">
                                 <div>
-                                    <div class="fs-4">{{ engagement.quote.priceNetCents|format_currency(engagement.quote.currency.value) }}</div>
+                                    <div class="fs-4">{{ engagement.quote.price|format_currency(engagement.quote.currency.value) }}</div>
                                     <div>{{ engagement.quote.startAt ? engagement.quote.startAt.diffForHumans }}</div>
                                 </div>
                                 <div class="fs-4">
@@ -89,7 +89,7 @@
                             {% if engagement.quote.isAfterEstimateDuration %}
                                 <div class="card-footer text-end ">
                                     <a class="btn btn-primary rounded-pill btn-lg"
-                                       href="{{ path('trader_review_create', {id: engagement.quote.owner.id}) }}">{{ 'leave-review'|trans }}</a>
+                                       href="{{ path('trader_review_create', {id: engagement.quote.owner.id, engagement: engagement.id}) }}">{{ 'leave-review'|trans }}</a>
                                 </div>
                             {% else %}
                                 <div class="card-footer text-center text-muted ">
@@ -102,7 +102,7 @@
                         {% for quote in quotes %}
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-start">
-                                    <div class="fs-4 {{ quote.isRjectedExpiredOrwithdrawn ? 'strikethrough text-muted' }}">{{ quote.priceNetCents|format_currency(quote.currency.value) }}</div>
+                                    <div class="fs-4 {{ quote.isRjectedExpiredOrwithdrawn ? 'strikethrough text-muted' }}">{{ quote.price|format_currency(quote.currency.value) }}</div>
                                     <div class="fs-4">
                                         <span class="badge text-bg-primary rounded-pill">{{ quote.status.value|trans }}</span>
                                     </div>
@@ -142,7 +142,7 @@
                                 {% endif %}
                             </div>
                         {% else %}
-                            <div class="text-center text-muted">{{ 'no-quotes-received'|trans }}</div>
+                            <div class="text-center text-muted mt-5">{{ 'no-quotes-received'|trans }}</div>
                         {% endfor %}
                     {% endif %}
                 </div>

@@ -22,17 +22,16 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\All;
-use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Dropzone\Form\DropzoneType;
 use Symfony\UX\Map\Map;
+use Symfony\Component\Validator\Constraints as Assert;
 
 final class EngagementFormType extends AbstractType
 {
     public function __construct(
         private readonly TranslatorInterface $translator,
-        private readonly Security $security
+        private readonly Security            $security
     )
     {
     }
@@ -43,22 +42,23 @@ final class EngagementFormType extends AbstractType
 
         $builder
             ->add('title', TextType::class, [
-                'label' => 'Title',
+                'label' => $this->translator->trans('engagement.title'),
                 'row_attr' => [
                     'class' => 'form-floating',
                 ],
             ])
             ->add('description', TextareaType::class, [
-                'label' => false,
+                'label' => $this->translator->trans('engagement.description'),
                 'attr' => [
+                    'data-controller' => 'textarea-autogrow',
                     'rows' => 4,
                 ],
                 'row_attr' => [
-                    'class' => 'm-0',
+                    'class' => 'm-0 form-floating',
                 ],
             ])
             ->add('skills', EntityType::class, [
-                'label' => 'Required skills',
+                'label' => $this->translator->trans('engagement.skills'),
                 'class' => Skill::class,
                 'choice_label' => 'name',
                 'choice_translation_domain' => 'skills',
@@ -83,14 +83,19 @@ final class EngagementFormType extends AbstractType
                 'multiple' => true,
                 'mapped' => false,
                 'required' => false,
+                'help' => $this->translator->trans('engagement.image.upload.help'),
                 'attr' => [
-                    'accept' => 'image/*',
+                    'placeholder' => $this->translator->trans('engagement.image.upload'),
                 ],
                 'constraints' => [
-                    new All([
-                        new Image([
-                            'maxSize' => '8M',
-                            'mimeTypes' => ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+                    new Assert\Count([
+                        'max' => 4,
+                        'maxMessage' => 'You can upload at most {limit} images.',
+                    ]),
+                    new Assert\All([
+                        new Assert\Image([
+                            'maxSize' => '15M',
+                            'mimeTypes' => ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
                         ]),
                     ]),
                 ],
@@ -100,7 +105,6 @@ final class EngagementFormType extends AbstractType
                 'choice_label' => 'value',
                 'label' => $this->translator->trans('timeline-preference'),
                 'required' => false,
-                'help' => 'When you want the work completed.',
                 'row_attr' => [
                     'class' => 'form-floating',
                 ],
@@ -124,7 +128,7 @@ final class EngagementFormType extends AbstractType
             ]);
 
         $currentUser = $this->security->getUser();
-        if ($currentUser instanceof User && ! $currentUser->getPhoneNumber() instanceof \App\Entity\PhoneNumber) {
+        if ($currentUser instanceof User && !$currentUser->getPhoneNumber() instanceof \App\Entity\PhoneNumber) {
             $builder->add('phoneNumber', PhoneNumberFormType::class, [
                 'mapped' => false,
                 'label' => false,

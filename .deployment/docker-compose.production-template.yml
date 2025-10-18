@@ -40,6 +40,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./php.ini:/usr/local/etc/php/php.ini
     expose:
       - "80"
     labels:
