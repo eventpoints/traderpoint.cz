@@ -155,7 +155,7 @@ return [
     'not-allowed-here' => 'Je nám líto, nemáte oprávnění k přístupu na tuto stránku.',
     'engagement.title' => 'Jakou práci potřebujete udělat?',
     'engagement.image.upload' => 'klikněte nebo přetáhněte obrázky sem',
-    'engagement.image.upload.help' => 'Nahrajte maximálně 3 obrázky',
+    'engagement.image.upload.help' => 'Nahrajte maximálně {limit} obrázky',
     'engagement.description' => 'popis práce',
     'engagement.skills' => 'požadované dovednosti',
     'review.created' => 'recenze odeslána',

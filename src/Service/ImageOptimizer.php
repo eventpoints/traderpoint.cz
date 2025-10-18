@@ -11,33 +11,35 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 final readonly class ImageOptimizer
 {
     public function __construct(
-        private ImageManager $images,
+        private ImageManager                                                         $images,
         #[Autowire('%kernel.project_dir%/public/images/tp-logo.png')] private string $watermarkPath
-    ) {}
+    )
+    {
+    }
 
     public function getOptimizedFile(UploadedFile $file, int $targetBytes = 2_000_000): UploadedFile
     {
         $sourcePath = $file->getPathname();
-        $driver     = $this->images->driver();
+        $driver = $this->images->driver();
 
         $supportsAvif = $driver->supports('avif');
         $supportsWebp = $driver->supports('webp');
 
-        $maxDim   = 1920;
-        $minDim   = 640;
-        $quality  = $supportsAvif ? 50 : ($supportsWebp ? 70 : 75);
-        $minQ     = $supportsAvif ? 28 : ($supportsWebp ? 50 : 55);
+        $maxDim = 1920;
+        $minDim = 640;
+        $quality = $supportsAvif ? 50 : ($supportsWebp ? 70 : 75);
+        $minQ = $supportsAvif ? 28 : ($supportsWebp ? 50 : 55);
 
-        $ext  = $supportsAvif ? 'avif' : ($supportsWebp ? 'webp' : 'jpg');
+        $ext = $supportsAvif ? 'avif' : ($supportsWebp ? 'webp' : 'jpg');
         $mime = $ext === 'jpg' ? 'image/jpeg' : "image/{$ext}";
 
         $tmpBase = tempnam(sys_get_temp_dir(), 'img_');
         @unlink($tmpBase);
-        $dest = $tmpBase.'.'.$ext;
+        $dest = $tmpBase . '.' . $ext;
 
         while (true) {
             $img = $this->images->read($sourcePath)->scaleDown(width: $maxDim, height: $maxDim);
-            $img = $this->applyTiledWatermark($img, $this->watermarkPath, opacity: 15, angle: 45, tileWidth: 280, gap: 120);
+            $img = $this->applyTiledWatermark($img, $this->watermarkPath);
 
             if ($ext === 'avif') {
                 $encoded = $img->toAvif(quality: $quality, strip: true);
@@ -57,14 +59,14 @@ final readonly class ImageOptimizer
             if ($quality > $minQ) {
                 $quality -= 5;
             } elseif ($maxDim > $minDim) {
-                $maxDim = max((int) floor($maxDim * 0.9), $minDim);
+                $maxDim = max((int)floor($maxDim * 0.9), $minDim);
             } else {
                 break;
             }
         }
 
         $base = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $clientName = $base.'.'.$ext;
+        $clientName = $base . '.' . $ext;
 
         return new UploadedFile($dest, $clientName, $mime, null, true);
     }
@@ -72,33 +74,41 @@ final readonly class ImageOptimizer
     private function applyTiledWatermark(
         ImageInterface $img,
         string $watermarkPath,
-        int $opacity = 15,
-        int $angle = 45,
-        int $tileWidth = 300,
-        int $gap = 100
+        int $opacity = 25,
+        int $angle = 35,
+        ?int $tileWidth = 60,
+        ?int $gap = 240
     ): ImageInterface {
+        $imgW = $img->width();
+        $imgH = $img->height();
+
+        $tileWidth ??= max(160, (int) round(min($imgW, $imgH) * 0.22));
+        $gap       ??= (int) round($tileWidth * 0.35);
+
         $wm = $this->images->read($watermarkPath)
             ->scaleDown(width: $tileWidth, height: $tileWidth)
             ->rotate($angle, 'transparent');
 
+        $wmTmpBase = tempnam(sys_get_temp_dir(), 'wm_');
+        $wmTmp = $wmTmpBase . '.png';
+        @unlink($wmTmpBase);
+        $wm->toPng()->save($wmTmp);
+
         $wmW = $wm->width();
         $wmH = $wm->height();
-        $imgW = $img->width();
-        $imgH = $img->height();
 
-        $startX = -max($wmW, $wmH);
-        $startY = -max($wmW, $wmH);
-        $stepX  = $wmW + $gap;
-        $stepY  = $wmH + $gap;
-
-        for ($y = $startY; $y < $imgH + $wmH; $y += $stepY) {
-            for ($x = $startX; $x < $imgW + $wmW; $x += $stepX) {
-                $img = $img->place($wm, 'top-left', (int) $x, (int) $y, $opacity);
+        for ($y = 0; $y < $imgH; $y += ($wmH + $gap)) {
+            for ($x = 0; $x < $imgW; $x += ($wmW + $gap)) {
+                $img->place($wmTmp, 'top-left', $x, $y, $opacity);
             }
         }
 
+        @unlink($wmTmp);
+
         return $img;
     }
+
+
 
 }
 

@@ -156,7 +156,7 @@ return array(
     'not-allowed-here' => 'Sorry, you do not have permission to access this page.',
     'engagement.title' => 'What job do you want doing?',
     'engagement.image.upload' => 'click or drag & drop images',
-    'engagement.image.upload.help' => 'Upload a maximum of 3 images',
+    'engagement.image.upload.help' => 'Upload a maximum of {limit} images',
     'engagement.description' => 'job details',
     'engagement.skills' => 'required skills',
 );

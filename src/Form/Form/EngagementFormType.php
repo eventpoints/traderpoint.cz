@@ -83,7 +83,7 @@ final class EngagementFormType extends AbstractType
                 'multiple' => true,
                 'mapped' => false,
                 'required' => false,
-                'help' => $this->translator->trans('engagement.image.upload.help'),
+                'help' => $this->translator->trans('engagement.image.upload.help', ['limit' => 4]),
                 'attr' => [
                     'placeholder' => $this->translator->trans('engagement.image.upload'),
                 ],

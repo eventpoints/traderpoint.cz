@@ -156,8 +156,7 @@ return [
     'not-allowed-here' => 'Извините, у вас нет прав доступа к этой странице.',
     'engagement.title' => 'Какую работу нужно выполнить?',
     'engagement.image.upload' => 'нажмите или перетащите изображения',
-    'engagement.image.upload.help' => 'Загрузите не более 3 изображений',
+    'engagement.image.upload.help' => 'Загрузите не более {limit} изображений',
     'engagement.description' => 'описание задания',
     'engagement.skills' => 'требуемые навыки',
-
 ];
