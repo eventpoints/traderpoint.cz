@@ -8,9 +8,7 @@ use App\Repository\EngagementRepository;
 use App\Repository\UserRepository;
 use App\Service\ImageOptimizer;
 use Knp\Component\Pager\PaginatorInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -22,8 +20,7 @@ class ClientController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly EngagementRepository $engagementRepository,
         private readonly PaginatorInterface $paginator,
-        private readonly ImageOptimizer $imageOptimizer,
-        private readonly LoggerInterface $logger
+        private readonly ImageOptimizer $imageOptimizer
     )
     {
     }
@@ -59,21 +56,6 @@ class ClientController extends AbstractController
         if ($accountForm->isSubmitted() && $accountForm->isValid()) {
 
             $avatarFile = $accountForm->get('avatar')->getData() ?? null;
-
-            if ($avatarFile instanceof UploadedFile) {
-                $this->logger->info('avatar-upload', [
-                    'original' => $avatarFile->getClientOriginalName(),
-                    'size' => $avatarFile->getSize(),
-                    'mime' => $avatarFile->getClientMimeType(),
-                    'error' => $avatarFile->getError(),
-                    'error_msg' => $avatarFile->getErrorMessage(),
-                    'tmp_name' => $avatarFile->getPathname(),
-                ]);
-            } else {
-                $this->logger->info('avatar-upload', [
-                    'file' => 'null (no file on server side)',
-                ]);
-            }
 
             if (! empty($avatarFile)) {
                 $optimisedFile = $this->imageOptimizer->getOptimizedAvatarFile($avatarFile);
