@@ -4,10 +4,13 @@ namespace App\Form\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\LanguageType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\UX\Dropzone\Form\DropzoneType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class AccountFormType extends AbstractType
 {
@@ -34,6 +37,37 @@ class AccountFormType extends AbstractType
             ])
             ->add('phoneNumber', PhoneNumberFormType::class, [
                 'label' => false,
+                'required' => false,
+            ])
+            ->add('preferredLanguage', LanguageType::class, [
+                'label' => $this->translator->trans('preferred-language'),
+                'row_attr' => [
+                    'class' => 'form-floating',
+                ],
+                'autocomplete' => true
+            ])
+            ->add('languages', LanguageType::class, [
+                'label' => $this->translator->trans('languages'),
+                'multiple' => true,
+                'row_attr' => [
+                    'class' => 'form-floating',
+                ],
+                'autocomplete' => true
+            ])
+            ->add('avatar', DropzoneType::class, [
+                'label' => false,
+                'multiple' => false,
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'placeholder' => $this->translator->trans('avatar.image.upload'),
+                ],
+                'constraints' => [
+                    new Assert\Image([
+                        'maxSize' => '15M',
+                        'mimeTypes' => ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
+                    ]),
+                ],
             ]);
 
     }

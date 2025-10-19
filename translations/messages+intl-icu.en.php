@@ -159,4 +159,7 @@ return array(
     'engagement.image.upload.help' => 'Upload a maximum of {limit} images',
     'engagement.description' => 'job details',
     'engagement.skills' => 'required skills',
+    'review.created' => 'review created',
+    'decline' => 'decline',
+    'accept' => 'accept',
 );

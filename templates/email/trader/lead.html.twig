@@ -1,0 +1,23 @@
+{% extends 'email/base.html.twig' %}
+{% trans_default_domain 'email' %}
+
+{% block subject %}
+    {{ 'trader-job-match'|trans({title: engagement.title}) }}
+{% endblock %}
+
+{% block content %}
+    <p>{{ 'trader-job-match-content'|trans({
+            budget: engagement.price|format_currency(engagement.currency.value),
+            distance: distance_km(trader.latitude, trader.longitude, engagement.latitude, engagement.longitude)
+        }) }}</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center" style="padding:16px 0;">
+                <a class="btn" href="{{ absolute_url(path('trader_show_engagement', { id: engagement.id })) }}"
+                   style="display:inline-block;">
+                    {{ 'view-job'|trans }}
+                </a>
+            </td>
+        </tr>
+    </table>
+{% endblock %}

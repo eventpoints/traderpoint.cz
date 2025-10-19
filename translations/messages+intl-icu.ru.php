@@ -159,4 +159,7 @@ return [
     'engagement.image.upload.help' => 'Загрузите не более {limit} изображений',
     'engagement.description' => 'описание задания',
     'engagement.skills' => 'требуемые навыки',
+    'review.created' => 'обзор создан',
+    'decline' => 'отклонить',
+    'accept' => 'принимать',
 ];

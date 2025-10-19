@@ -14,6 +14,9 @@ use App\Form\Form\TraderRegisterFormType;
 use App\Repository\UserRepository;
 use App\Security\AppCustomAuthenticator;
 use App\Service\AvatarService\AvatarService;
+use App\Service\EmailService\ClientEmailService;
+use App\Service\EmailService\EmailService;
+use App\Service\EmailService\TraderEmailService;
 use App\Service\MailerFacade\MailerFacade;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,17 +27,19 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Component\Translation\LocaleSwitcher;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface $translator,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly UserRepository $userRepository,
-        private readonly AvatarService $avatarService,
+        private readonly TranslatorInterface         $translator,
+        private readonly EntityManagerInterface      $entityManager,
+        private readonly UserRepository              $userRepository,
+        private readonly AvatarService               $avatarService,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
+        private readonly EmailService                $emailService
     )
     {
     }
@@ -44,11 +49,11 @@ class RegistrationController extends AbstractController
      */
     #[Route('/register', name: 'app_register')]
     public function register(
-        Request $request,
+        Request                    $request,
         UserAuthenticatorInterface $userAuthenticator,
-        AppCustomAuthenticator $authenticator,
+        AppCustomAuthenticator     $authenticator,
         #[CurrentUser]
-        null|User $currentUser
+        null|User                  $currentUser
     ): ?Response
     {
         if ($currentUser instanceof User) {
@@ -65,6 +70,7 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $avatar = $this->avatarService->generate($user->getEmail());
             $user->setAvatar($avatar);
+            $user->setPreferredLanguage($request->getLocale());
 
             $password = $this->userPasswordHasher->hashPassword(user: $user, plainPassword: $form->get('plainPassword')->getData());
             $user->setPassword($password);
@@ -72,7 +78,17 @@ class RegistrationController extends AbstractController
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-//            $this->mailerFacade->sendWelcomeEmail(user: $user);
+            if ($user->isTrader()) {
+                $this->emailService->sendTraderWelcomeEmail(user: $user, locale: $request->getLocale(), context: [
+                    'user' => $user,
+                    'token' => $user->getToken()
+                ]);
+            } else {
+                $this->emailService->sendClientWelcomeEmail(user: $user, locale: $request->getLocale(), context: [
+                    'user' => $user,
+                    'token' => $user->getToken()
+                ]);
+            }
 
             return $userAuthenticator->authenticateUser($user, $authenticator, $request);
         }
@@ -84,11 +100,11 @@ class RegistrationController extends AbstractController
 
     #[Route('trader/register', name: 'trader_register')]
     public function traderRegister(
-        Request $request,
+        Request                    $request,
         UserAuthenticatorInterface $userAuthenticator,
-        AppCustomAuthenticator $authenticator,
+        AppCustomAuthenticator     $authenticator,
         #[CurrentUser]
-        null|User $currentUser,
+        null|User                  $currentUser,
     ): ?Response
     {
         if ($currentUser instanceof User) {
@@ -144,7 +160,7 @@ class RegistrationController extends AbstractController
     #[Route('/confirm/{token}', name: 'confirm_account')]
     public function confirmAccount(null|User $user): Response
     {
-        if (! $user instanceof User) {
+        if (!$user instanceof User) {
             return $this->redirectToRoute('app_login');
         }
 

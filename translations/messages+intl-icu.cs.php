@@ -159,5 +159,6 @@ return [
     'engagement.description' => 'popis práce',
     'engagement.skills' => 'požadované dovednosti',
     'review.created' => 'recenze odeslána',
-
+    'decline' => 'pokles',
+    'accept' => 'přijmout',
 ];

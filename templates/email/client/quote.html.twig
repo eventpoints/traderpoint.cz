@@ -1,0 +1,29 @@
+{% trans_default_domain 'email' %}
+
+{% extends 'email/base.html.twig' %}
+
+{% block subject %}
+    {{ 'quote-received'|trans({name: user.firstName}) }}
+{% endblock %}
+
+{% block content %}
+    <div>{{ 'quote-received'|trans }}</div>
+    <p>{{ 'quotation-received-content'|trans({
+            title: engagement.title,
+            amount: quote.price|format_currency(quote.currency.value),
+            owner: quote.owner.fullName
+        }) }}</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center" style="padding:16px 0;">
+                <a class="btn" href="{{ url('client_show_engagement', {
+                    id: engagement.id,
+                    q: quote.id
+                }) }}"
+                   style="display:inline-block;">
+                    {{ 'view-quote'|trans }}
+                </a>
+            </td>
+        </tr>
+    </table>
+{% endblock %}

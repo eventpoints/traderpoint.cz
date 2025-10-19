@@ -74,6 +74,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[ORM\Column(type: Types::STRING, length: 255)]
     private string $lastName;
 
+    #[ORM\Column(type: Types::STRING, length: 15, nullable: true)]
+    private null|string $preferredLanguage = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Assert\All([
+        new Assert\Language(message: 'Invalid language code.'),
+    ])]
+    #[Assert\Count(max: 10)]
+    private array $languages = [];
+
     #[ORM\Column(length: 180)]
     #[Assert\Email]
     private string $email;
@@ -81,8 +91,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[ORM\Column(type: Types::TEXT)]
     private string $avatar;
 
-    #[ORM\Column]
-    private bool $isVerified = false;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private null|CarbonImmutable $verifiedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private CarbonImmutable $createdAt;
@@ -170,7 +180,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addReview(Review $review): static
     {
-        if (! $this->reviews->contains($review)) {
+        if (!$this->reviews->contains($review)) {
             $this->reviews->add($review);
             $review->setOwner($this);
         }
@@ -197,7 +207,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addEngagement(Engagement $engagement): static
     {
-        if (! $this->engagements->contains($engagement)) {
+        if (!$this->engagements->contains($engagement)) {
             $this->engagements->add($engagement);
             $engagement->setOwner($this);
         }
@@ -214,16 +224,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         return $this;
     }
 
-    public function isVerified(): bool
+    public function getVerifiedAt(): ?CarbonImmutable
     {
-        return $this->isVerified;
+        return $this->verifiedAt;
     }
 
-    public function setVerified(bool $isVerified): static
+    public function setVerifiedAt(?CarbonImmutable $verifiedAt): void
     {
-        $this->isVerified = $isVerified;
-
-        return $this;
+        $this->verifiedAt = $verifiedAt;
     }
 
     public function getFirstName(): string
@@ -295,7 +303,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addConversationParticipate(ConversationParticipant $conversationParticipate): static
     {
-        if (! $this->conversationParticipates->contains($conversationParticipate)) {
+        if (!$this->conversationParticipates->contains($conversationParticipate)) {
             $this->conversationParticipates->add($conversationParticipate);
             $conversationParticipate->setOwner($this);
         }
@@ -309,7 +317,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         return $this;
     }
 
-    public function isTrader(): bool {
+    public function isTrader(): bool
+    {
         return in_array(UserRoleEnum::ROLE_TRADER->value, $this->getRoles(), true);
     }
 
@@ -337,5 +346,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     {
         return $this->getFullName();
     }
+
+    public function getPreferredLanguage(): ?string
+    {
+        return $this->preferredLanguage;
+    }
+
+    public function setPreferredLanguage(?string $preferredLanguage): void
+    {
+        $this->preferredLanguage = $preferredLanguage;
+    }
+
+    /** @return string[] */
+    public function getLanguages(): array
+    {
+        return $this->languages;
+    }
+
+    public function setLanguages(array $langs): self
+    {
+        $langs = array_map(
+            static fn ($l) => strtolower(str_replace('-', '_', trim($l))),
+            $langs
+        );
+        $this->languages = array_values(array_unique($langs));
+        return $this;
+    }
+
+    public function addLanguage(string $lang): self
+    {
+        $lang = strtolower(str_replace('-', '_', trim($lang)));
+        if (!in_array($lang, $this->languages, true)) {
+            $this->languages[] = $lang;
+        }
+        return $this;
+    }
+
 }
 

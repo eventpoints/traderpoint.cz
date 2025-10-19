@@ -30,9 +30,15 @@
                         </div>
                         {{ form_start(accountForm) }}
                         <div class="card-body vstack gap-3">
+                            <div class="my-3 text-center">
+                                <img class="img-fluid avatar-120" src="{{ app.user.avatar }}"/>
+                            </div>
+                            {{ form_row(accountForm.avatar) }}
                             <div class="row row-cols-1 row-cols-md-2 g-3">
                                 <div class="col">{{ form_row(accountForm.firstName) }}</div>
                                 <div class="col">{{ form_row(accountForm.lastName) }}</div>
+                                <div class="col">{{ form_row(accountForm.preferredLanguage) }}</div>
+                                <div class="col">{{ form_row(accountForm.languages) }}</div>
                             </div>
                             {{ form_row(accountForm.phoneNumber) }}
                             <div class="text-end">

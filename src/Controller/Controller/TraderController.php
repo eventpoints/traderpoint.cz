@@ -2,6 +2,7 @@
 
 namespace App\Controller\Controller;
 
+use App\Entity\Image;
 use App\Entity\User;
 use App\Form\Form\AccountFormType;
 use App\Form\Form\TraderAccountFormType;
@@ -9,10 +10,13 @@ use App\Repository\EngagementRepository;
 use App\Repository\QuoteRepository;
 use App\Repository\TraderProfileRepository;
 use App\Repository\UserRepository;
+use App\Service\ImageOptimizer;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Encoder\Base64Encoder;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\UX\Map\Bridge\Leaflet\LeafletOptions;
@@ -24,11 +28,12 @@ use Symfony\UX\Map\Point;
 class TraderController extends AbstractController
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly EngagementRepository $engagementRepository,
-        private readonly PaginatorInterface $paginator,
+        private readonly UserRepository          $userRepository,
+        private readonly EngagementRepository    $engagementRepository,
+        private readonly PaginatorInterface      $paginator,
         private readonly TraderProfileRepository $traderProfileRepository,
-        private readonly QuoteRepository $quoteRepository,
+        private readonly QuoteRepository         $quoteRepository,
+        private readonly ImageOptimizer          $imageOptimizer
     )
     {
     }
@@ -48,7 +53,7 @@ class TraderController extends AbstractController
     public function dashboard(#[CurrentUser] User $currentUser, Request $request): Response
     {
 
-        if (! $currentUser->isTrader()) {
+        if (!$currentUser->isTrader()) {
             return $this->redirectToRoute('client_dashboard');
         }
 
@@ -114,8 +119,19 @@ class TraderController extends AbstractController
 
         $accountForm->handleRequest($request);
         if ($accountForm->isSubmitted() && $accountForm->isValid()) {
+
+            /** @var UploadedFile[] $files */
+            $avatarFile = $accountForm->get('avatar')->getData() ?? null;
+
+            if (!empty($avatarFile)) {
+                $optimisedFile = $this->imageOptimizer->getOptimizedAvatarFile($avatarFile);
+                $base64Image = $this->imageOptimizer->toBase64($optimisedFile);
+                $currentUser->setAvatar($base64Image);
+                $this->userRepository->save(entity: $currentUser, flush: true);
+            }
+
             $this->userRepository->save(entity: $currentUser, flush: true);
-            return $this->redirectToRoute('user_account');
+            return $this->redirectToRoute('trader_account');
         }
 
         return $this->render('trader/account.html.twig', [

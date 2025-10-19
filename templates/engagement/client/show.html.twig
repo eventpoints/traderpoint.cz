@@ -100,7 +100,7 @@
 
                     {% else %}
                         {% for quote in quotes %}
-                            <div class="card">
+                            <div class="card {{ app.request.get('q') == quote.id ? 'shadow-lg border border-2 border-black' }}">
                                 <div class="card-header d-flex justify-content-between align-items-start">
                                     <div class="fs-4 {{ quote.isRjectedExpiredOrwithdrawn ? 'strikethrough text-muted' }}">{{ quote.price|format_currency(quote.currency.value) }}</div>
                                     <div class="fs-4">
@@ -131,12 +131,12 @@
                                 {% if quote.isUnanswered %}
                                     <div class="card-footer d-flex gap-3 justify-content-end align-items-center">
                                         <a href="{{ path('reject_quote', {id: quote.id}) }}"
-                                           class="btn btn-outline-danger rounded-pill">
-                                            <i class="bi bi-x-lg fs-4"></i>
+                                           class="btn btn-lg btn-outline-danger fw-bold border-2 rounded-pill">
+                                            {{ 'decline'|trans|title }}
                                         </a>
                                         <a href="{{ path('accept_quote', {id: quote.id}) }}"
-                                           class="btn btn-outline-success rounded-pill">
-                                            <i class="bi bi-check-lg fs-4"></i>
+                                           class="btn btn-lg btn-outline-success fw-bold border-2 rounded-pill">
+                                            {{ 'accept'|trans|title }}
                                         </a>
                                     </div>
                                 {% endif %}

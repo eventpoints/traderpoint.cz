@@ -18,6 +18,8 @@ use App\Repository\EngagementRepository;
 use App\Repository\PaymentRepository;
 use App\Repository\QuoteRepository;
 use App\Repository\UserRepository;
+use App\Service\EmailService\EmailService;
+use App\Service\EmailService\TraderEmailService;
 use App\Service\ImageOptimizer;
 use Stripe\StripeClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,13 +40,13 @@ use Symfony\UX\Map\Point;
 class EngagmentController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface $translator,
-        private readonly QuoteRepository $quoteRepository,
+        private readonly TranslatorInterface  $translator,
+        private readonly QuoteRepository      $quoteRepository,
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaymentRepository $paymentRepository,
-        private readonly StripeClient $stripe,
-        private readonly UserRepository $userRepository,
-        private readonly ImageOptimizer $imageOptimizer
+        private readonly PaymentRepository    $paymentRepository,
+        private readonly StripeClient         $stripe,
+        private readonly UserRepository       $userRepository,
+        private readonly ImageOptimizer       $imageOptimizer, private readonly EmailService $emailService,
     )
     {
     }
@@ -83,6 +85,12 @@ class EngagmentController extends AbstractController
         $quoteForm = $this->createForm(QuoteFormType::class, $quote);
         $quoteForm->handleRequest($request);
         if ($quoteForm->isSubmitted() && $quoteForm->isValid()) {
+            $locale = $engagement->getOwner()->getPreferredLanguage() ?? 'cs';
+            $this->emailService->sendQuoteMadeEmail($engagement->getOwner(), $locale, [
+                'quote' => $quote,
+                'engagement' => $engagement,
+                'user' => $engagement->getOwner(),
+            ]);
             $this->quoteRepository->save(entity: $quote, flush: true);
             $this->addFlash(type: FlashEnum::SUCCESS->value, message: $this->translator->trans(id: 'flash.quote-sent-successful', domain: 'flash'));
             return $this->redirectToRoute(route: 'trader_show_engagement', parameters: [
@@ -158,7 +166,7 @@ class EngagmentController extends AbstractController
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
 
-            if( $engagementForm->has('phoneNumber')){
+            if ($engagementForm->has('phoneNumber')) {
                 $phoneNumber = $engagementForm->get('phoneNumber')->getData();
                 $currentUser->setPhoneNumber($phoneNumber);
                 $this->userRepository->save(entity: $currentUser, flush: true);
@@ -217,9 +225,9 @@ class EngagmentController extends AbstractController
                     'quantity' => 1,
                 ]],
                 'metadata' => [
-                    'payment_id' => (string) $payment->getId(),
-                    'engagement_id' => (string) $engagement->getId(),
-                    'user_id' => (string) $currentUser->getId(),
+                    'payment_id' => (string)$payment->getId(),
+                    'engagement_id' => (string)$engagement->getId(),
+                    'user_id' => (string)$currentUser->getId(),
                     'locale' => $request->getLocale(),
                 ],
                 'success_url' => $successUrl,

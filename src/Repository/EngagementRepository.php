@@ -9,10 +9,13 @@ use App\Entity\User;
 use App\Enum\EngagementStatusEnum;
 use App\Enum\PaymentStatusEnum;
 use Carbon\CarbonImmutable;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Order;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
+use Generator;
 use Symfony\Component\Uid\Uuid;
 
 /**
@@ -31,14 +34,14 @@ class EngagementRepository extends ServiceEntityRepository
     public function findUpcomingBySkillsAndLocation(User $user, bool $isQuery = false): array|Query
     {
         $profile = $user->getTraderProfile();
-        if (! $profile || $profile->getLatitude() === null || $profile->getLongitude() === null || ! $profile->getServiceRadius()) {
+        if (!$profile || $profile->getLatitude() === null || $profile->getLongitude() === null || !$profile->getServiceRadius()) {
             return $isQuery ? $this->createQueryBuilder('e')->where('1=0')->getQuery() : [];
         }
 
         $lat = $profile->getLatitude();
         $lng = $profile->getLongitude();
-        $radiusKm = (float) $profile->getServiceRadius();
-        $meters = (int) round($radiusKm * 1000);
+        $radiusKm = (float)$profile->getServiceRadius();
+        $meters = (int)round($radiusKm * 1000);
 
         // --- PostGIS helper returns ordered IDs by distance (each row: ['id' => '...', 'dist' => ...])
         $rows = $this->findNearbyIdsOrdered($lat, $lng, $meters);
@@ -65,8 +68,6 @@ class EngagementRepository extends ServiceEntityRepository
             )
         )->setParameter('user', $user);
 
-        $now = CarbonImmutable::now();
-
         $qb->andWhere(
             $qb->expr()->eq('engagement.status', ':status')
         )->setParameter('status', EngagementStatusEnum::PENDING);
@@ -77,18 +78,21 @@ class EngagementRepository extends ServiceEntityRepository
 
         $qb->andWhere(
             $qb->expr()->in('skill.id', ':skills')
-        )->setParameter('skills', $skillIds);
+        )
+            ->setParameter('skills', $skillIds)
+            ->distinct('engagement.id');
 
         $qb->andWhere(
             $qb->expr()->eq('payment.status', ':paid')
         )->setParameter('paid', PaymentStatusEnum::PAID);
 
-        $cutoff = $now->addDays(30);
+        $now = CarbonImmutable::now();
         $qb->andWhere(
-            $qb->expr()->lte('engagement.createdAt', ':cutoff')
-        )->setParameter('cutoff', $cutoff->toDateTimeImmutable(), \Doctrine\DBAL\Types\Types::DATETIME_IMMUTABLE);
+            $qb->expr()->gte('engagement.createdAt', ':thirtyDaysAgo')
+        )->setParameter('thirtyDaysAgo', $now->subMonth()->startOfDay()->toDateTimeImmutable(), Types::DATETIME_IMMUTABLE);
 
         // --- restrict to nearby IDs
+
         $qb->andWhere(
             $qb->expr()->in('engagement.id', ':ids')
         )->setParameter('ids', $orderedUuids);
@@ -187,4 +191,6 @@ class EngagementRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+    
+
 }

@@ -52,6 +52,14 @@ body {
 }
 
 
+.avatar-120 {
+    height: 120px;
+    width: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid #eee;
+}
+
 /* Bigger switch */
 .form-switch-lg .form-check-input {
     font-size: 1.5rem;

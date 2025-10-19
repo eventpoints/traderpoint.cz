@@ -23,6 +23,8 @@ class PhoneNumberFormType extends AbstractType
     {
         $builder
             ->add('prefix', ChoiceType::class, [
+                'required' => false,
+                'empty_data' => null,
                 'label' => $this->translator->trans('country-code'),
                 'choices' => array_flip(PhonePrefixCodeData::getDialCodes()),
                 'row_attr' => [
@@ -31,6 +33,8 @@ class PhoneNumberFormType extends AbstractType
                 'autocomplete' => true,
             ])
             ->add('number', TextType::class, [
+                'required' => false,
+                'empty_data' => null,
                 'label' => $this->translator->trans('number'),
                 'row_attr' => [
                     'class' => 'form-floating',

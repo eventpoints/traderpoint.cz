@@ -61,8 +61,9 @@
                     <div class="card-body">
                         <div class="row g-2 justify-content-start" {{ stimulus_controller('lightbox') }}>
                             {% for image in engagement.images %}
-                                <div  href="{{ asset('uploads/images/' ~ image.filename) }}" class="col-6">
-                                    <img src="{{ asset('uploads/images/' ~ image.filename) }}" class="img-fluid rounded-3 hover-pointer"/>
+                                <div href="{{ asset('uploads/images/' ~ image.filename) }}" class="col-6">
+                                    <img src="{{ asset('uploads/images/' ~ image.filename) }}"
+                                         class="img-fluid rounded-3 hover-pointer"/>
                                 </div>
                             {% endfor %}
                         </div>
@@ -136,7 +137,7 @@
                             </div>
                             <div class="bg-white p-3 rounded-3" {{ stimulus_controller('price-percent', { roundTo: 100 }) }}>
                                 {{ form_row(quoteForm.priceNetCents) }}
-                                <div class="d-flex gap-2">
+                                <div class="d-flex flex-wrap gap-2">
                                     <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
                                             {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 2 }) }}>+2%</a>
                                     <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"

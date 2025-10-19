@@ -7,4 +7,6 @@ return array(
     'flash.payment.pending' => 'Payment pending',
     'flash.quote-sent-successful' => 'Quote sent successful',
     'flash.review.created' => 'review sent',
+    'flash.sceptical-issue' => 'Hmmm, something went wrong',
+    'flash.email-address-confirmed' => 'Email address confirmed',
 );
