@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -12,8 +13,9 @@ use Symfony\Component\Mime\Encoder\Base64Encoder;
 final readonly class ImageOptimizer
 {
     public function __construct(
-        private ImageManager                                                         $images,
-        #[Autowire('%kernel.project_dir%/public/images/tp-logo.png')] private string $watermarkPath
+        private ImageManager $images,
+        #[Autowire('%kernel.project_dir%/public/images/tp-logo.png')]
+        private string $watermarkPath
     )
     {
     }
@@ -60,7 +62,7 @@ final readonly class ImageOptimizer
             if ($quality > $minQ) {
                 $quality -= 5;
             } elseif ($maxDim > $minDim) {
-                $maxDim = max((int)floor($maxDim * 0.9), $minDim);
+                $maxDim = max((int) floor($maxDim * 0.9), $minDim);
             } else {
                 break;
             }
@@ -87,9 +89,9 @@ final readonly class ImageOptimizer
 
         // Prefer modern formats (keep alpha support if you later decide to mask to circle via CSS)
         $quality = $supportsAvif ? 45 : ($supportsWebp ? 70 : 80);
-        $minQ    = $supportsAvif ? 28 : ($supportsWebp ? 50 : 60);
+        $minQ = $supportsAvif ? 28 : ($supportsWebp ? 50 : 60);
 
-        $ext  = $supportsAvif ? 'avif' : ($supportsWebp ? 'webp' : 'jpg');
+        $ext = $supportsAvif ? 'avif' : ($supportsWebp ? 'webp' : 'jpg');
         $mime = $ext === 'jpg' ? 'image/jpeg' : "image/{$ext}";
 
         $tmpBase = tempnam(sys_get_temp_dir(), 'ava_');
@@ -156,7 +158,7 @@ final readonly class ImageOptimizer
         $imgH = $img->height();
 
         $tileWidth ??= max(160, (int) round(min($imgW, $imgH) * 0.22));
-        $gap       ??= (int) round($tileWidth * 0.35);
+        $gap ??= (int) round($tileWidth * 0.35);
 
         $wm = $this->images->read($watermarkPath)
             ->scaleDown(width: $tileWidth, height: $tileWidth)
@@ -181,12 +183,10 @@ final readonly class ImageOptimizer
         return $img;
     }
 
-    public function toBase64(UploadedFile $file) : string
+    public function toBase64(UploadedFile $file): string
     {
         $encodedImage = (new Base64Encoder())->encodeString($file->getContent());
         return 'data:image/png;base64,' . $encodedImage;
     }
-
 }
-
 

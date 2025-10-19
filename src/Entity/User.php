@@ -77,6 +77,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[ORM\Column(type: Types::STRING, length: 15, nullable: true)]
     private null|string $preferredLanguage = null;
 
+    /**
+     * @var string[] $languages
+     */
     #[ORM\Column(type: Types::JSON, nullable: true)]
     #[Assert\All([
         new Assert\Language(message: 'Invalid language code.'),
@@ -180,7 +183,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addReview(Review $review): static
     {
-        if (!$this->reviews->contains($review)) {
+        if (! $this->reviews->contains($review)) {
             $this->reviews->add($review);
             $review->setOwner($this);
         }
@@ -207,7 +210,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addEngagement(Engagement $engagement): static
     {
-        if (!$this->engagements->contains($engagement)) {
+        if (! $this->engagements->contains($engagement)) {
             $this->engagements->add($engagement);
             $engagement->setOwner($this);
         }
@@ -303,7 +306,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addConversationParticipate(ConversationParticipant $conversationParticipate): static
     {
-        if (!$this->conversationParticipates->contains($conversationParticipate)) {
+        if (! $this->conversationParticipates->contains($conversationParticipate)) {
             $this->conversationParticipates->add($conversationParticipate);
             $conversationParticipate->setOwner($this);
         }
@@ -357,12 +360,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         $this->preferredLanguage = $preferredLanguage;
     }
 
-    /** @return string[] */
+    /**
+     * @return string[]
+     */
     public function getLanguages(): array
     {
         return $this->languages;
     }
 
+    /**
+     * @param array<string> $langs
+     * @return $this
+     */
     public function setLanguages(array $langs): self
     {
         $langs = array_map(
@@ -376,11 +385,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     public function addLanguage(string $lang): self
     {
         $lang = strtolower(str_replace('-', '_', trim($lang)));
-        if (!in_array($lang, $this->languages, true)) {
+        if (! in_array($lang, $this->languages, true)) {
             $this->languages[] = $lang;
         }
         return $this;
     }
-
 }
 

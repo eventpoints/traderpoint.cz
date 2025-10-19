@@ -8,9 +8,9 @@ use Symfony\Component\Form\Extension\Core\Type\LanguageType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Dropzone\Form\DropzoneType;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class AccountFormType extends AbstractType
 {
@@ -44,7 +44,7 @@ class AccountFormType extends AbstractType
                 'row_attr' => [
                     'class' => 'form-floating',
                 ],
-                'autocomplete' => true
+                'autocomplete' => true,
             ])
             ->add('languages', LanguageType::class, [
                 'label' => $this->translator->trans('languages'),
@@ -52,7 +52,7 @@ class AccountFormType extends AbstractType
                 'row_attr' => [
                     'class' => 'form-floating',
                 ],
-                'autocomplete' => true
+                'autocomplete' => true,
             ])
             ->add('avatar', DropzoneType::class, [
                 'label' => false,

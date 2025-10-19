@@ -7,17 +7,13 @@ namespace App\Controller\Controller;
 use App\DataTransferObject\UserTraderDto;
 use App\Entity\TraderProfile;
 use App\Entity\User;
-use App\Enum\FlashEnum;
 use App\Enum\UserRoleEnum;
 use App\Form\Form\RegistrationFormType;
 use App\Form\Form\TraderRegisterFormType;
 use App\Repository\UserRepository;
 use App\Security\AppCustomAuthenticator;
 use App\Service\AvatarService\AvatarService;
-use App\Service\EmailService\ClientEmailService;
 use App\Service\EmailService\EmailService;
-use App\Service\EmailService\TraderEmailService;
-use App\Service\MailerFacade\MailerFacade;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,19 +23,15 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
-use Symfony\Component\Translation\LocaleSwitcher;
-use Symfony\Component\Uid\Uuid;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface         $translator,
-        private readonly EntityManagerInterface      $entityManager,
-        private readonly UserRepository              $userRepository,
-        private readonly AvatarService               $avatarService,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly UserRepository $userRepository,
+        private readonly AvatarService $avatarService,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
-        private readonly EmailService                $emailService
+        private readonly EmailService $emailService
     )
     {
     }
@@ -49,11 +41,11 @@ class RegistrationController extends AbstractController
      */
     #[Route('/register', name: 'app_register')]
     public function register(
-        Request                    $request,
+        Request $request,
         UserAuthenticatorInterface $userAuthenticator,
-        AppCustomAuthenticator     $authenticator,
+        AppCustomAuthenticator $authenticator,
         #[CurrentUser]
-        null|User                  $currentUser
+        null|User $currentUser
     ): ?Response
     {
         if ($currentUser instanceof User) {
@@ -81,12 +73,12 @@ class RegistrationController extends AbstractController
             if ($user->isTrader()) {
                 $this->emailService->sendTraderWelcomeEmail(user: $user, locale: $request->getLocale(), context: [
                     'user' => $user,
-                    'token' => $user->getToken()
+                    'token' => $user->getToken(),
                 ]);
             } else {
                 $this->emailService->sendClientWelcomeEmail(user: $user, locale: $request->getLocale(), context: [
                     'user' => $user,
-                    'token' => $user->getToken()
+                    'token' => $user->getToken(),
                 ]);
             }
 
@@ -100,11 +92,11 @@ class RegistrationController extends AbstractController
 
     #[Route('trader/register', name: 'trader_register')]
     public function traderRegister(
-        Request                    $request,
+        Request $request,
         UserAuthenticatorInterface $userAuthenticator,
-        AppCustomAuthenticator     $authenticator,
+        AppCustomAuthenticator $authenticator,
         #[CurrentUser]
-        null|User                  $currentUser,
+        null|User $currentUser,
     ): ?Response
     {
         if ($currentUser instanceof User) {
@@ -155,21 +147,5 @@ class RegistrationController extends AbstractController
         return $this->render('registration/trader/register.html.twig', [
             'traderForm' => $form->createView(),
         ]);
-    }
-
-    #[Route('/confirm/{token}', name: 'confirm_account')]
-    public function confirmAccount(null|User $user): Response
-    {
-        if (!$user instanceof User) {
-            return $this->redirectToRoute('app_login');
-        }
-
-        $user->setVerified(isVerified: true);
-        $user->setToken(Uuid::v4());
-        $this->userRepository->save($user, true);
-
-        $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans('account-confirmed'));
-
-        return $this->redirectToRoute('properties');
     }
 }

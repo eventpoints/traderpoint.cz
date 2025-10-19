@@ -41,13 +41,12 @@ class TraderProfileRepository extends ServiceEntityRepository
         }
     }
 
-
     /**
      * @return Generator<TraderProfile>
      */
     public function iterateTradersForEngagement(Engagement $engagement, bool $requireAllSkills = false): Generator
     {
-        $em  = $this->getEntityManager();
+        $em = $this->getEntityManager();
         $eid = $engagement->getId()->toRfc4122();
 
         $sqlAny = <<<SQL
@@ -128,5 +127,4 @@ SQL;
             // static $i=0; if ((++$i % 200) === 0) { $em->clear(TraderProfile::class); }
         }
     }
-
 }

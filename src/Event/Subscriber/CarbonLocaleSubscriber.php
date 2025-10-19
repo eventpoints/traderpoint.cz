@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Event\Subscriber;
@@ -13,7 +14,9 @@ final class CarbonLocaleSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
-        return [KernelEvents::REQUEST => 'onKernelRequest'];
+        return [
+            KernelEvents::REQUEST => 'onKernelRequest',
+        ];
     }
 
     public function onKernelRequest(RequestEvent $event): void

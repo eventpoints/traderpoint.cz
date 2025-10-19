@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\EmailService;
 
-use App\Entity\Engagement;
-use App\Entity\TraderProfile;
 use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -18,7 +16,7 @@ final readonly class EmailService
     private const SENDER_EMAIL_ADDRESS = 'notifications@traderpoint.cz';
 
     public function __construct(
-        private MailerInterface     $mailer,
+        private MailerInterface $mailer,
         private TranslatorInterface $translator
     )
     {
@@ -31,7 +29,9 @@ final readonly class EmailService
     public function sendTraderWelcomeEmail(User $user, string $locale = 'en', array $context = []): void
     {
         $this->send(
-            subject: $this->translator->trans(id: 'email.trader.subject.welcome', parameters: ['firstName' => $user->getFirstName()], domain: 'email'),
+            subject: $this->translator->trans(id: 'email.trader.subject.welcome', parameters: [
+                'firstName' => $user->getFirstName(),
+            ], domain: 'email'),
             template: '/email/trader/welcome.html.twig',
             emailAddress: $user->getEmail(),
             context: $context,
@@ -46,7 +46,9 @@ final readonly class EmailService
     public function sendClientWelcomeEmail(User $user, string $locale = 'en', array $context = []): void
     {
         $this->send(
-            subject: $this->translator->trans(id: 'email.client.subject.welcome', parameters: ['firstName' => $user->getFirstName()], domain: 'email'),
+            subject: $this->translator->trans(id: 'email.client.subject.welcome', parameters: [
+                'firstName' => $user->getFirstName(),
+            ], domain: 'email'),
             template: '/email/client/welcome.html.twig',
             emailAddress: $user->getEmail(),
             context: $context,
@@ -54,10 +56,16 @@ final readonly class EmailService
         );
     }
 
+    /**
+     * @param array<mixed> $context
+     * @throws TransportExceptionInterface
+     */
     public function sendEngagementMatchAlertEmail(User $user, string $locale = 'en', array $context = []): void
     {
         $this->send(
-            subject: $this->translator->trans(id: 'email.trader.engagment.match', parameters: ['firstName' => $user->getFirstName()], domain: 'email'),
+            subject: $this->translator->trans(id: 'email.trader.engagment.match', parameters: [
+                'firstName' => $user->getFirstName(),
+            ], domain: 'email'),
             template: '/email/trader/lead.html.twig',
             emailAddress: $user->getEmail(),
             context: $context,
@@ -65,10 +73,16 @@ final readonly class EmailService
         );
     }
 
+    /**
+     * @param array<mixed> $context
+     * @throws TransportExceptionInterface
+     */
     public function sendQuoteMadeEmail(User $user, string $locale = 'en', array $context = []): void
     {
         $this->send(
-            subject: $this->translator->trans(id: 'quote-received', parameters: ['firstName' => $user->getFirstName()], domain: 'email'),
+            subject: $this->translator->trans(id: 'quote-received', parameters: [
+                'firstName' => $user->getFirstName(),
+            ], domain: 'email'),
             template: '/email/client/quote.html.twig',
             emailAddress: $user->getEmail(),
             context: $context,
@@ -83,7 +97,7 @@ final readonly class EmailService
         string $subject,
         string $template,
         string $emailAddress,
-        array  $context,
+        array $context,
         string $locale = 'en'
     ): TemplatedEmail
     {
@@ -105,7 +119,7 @@ final readonly class EmailService
         string $subject,
         string $template,
         string $emailAddress,
-        array  $context,
+        array $context,
         string $locale,
     ): void
     {

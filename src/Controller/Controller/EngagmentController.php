@@ -19,7 +19,6 @@ use App\Repository\PaymentRepository;
 use App\Repository\QuoteRepository;
 use App\Repository\UserRepository;
 use App\Service\EmailService\EmailService;
-use App\Service\EmailService\TraderEmailService;
 use App\Service\ImageOptimizer;
 use Stripe\StripeClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,13 +39,14 @@ use Symfony\UX\Map\Point;
 class EngagmentController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface  $translator,
-        private readonly QuoteRepository      $quoteRepository,
+        private readonly TranslatorInterface $translator,
+        private readonly QuoteRepository $quoteRepository,
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaymentRepository    $paymentRepository,
-        private readonly StripeClient         $stripe,
-        private readonly UserRepository       $userRepository,
-        private readonly ImageOptimizer       $imageOptimizer, private readonly EmailService $emailService,
+        private readonly PaymentRepository $paymentRepository,
+        private readonly StripeClient $stripe,
+        private readonly UserRepository $userRepository,
+        private readonly ImageOptimizer $imageOptimizer,
+        private readonly EmailService $emailService,
     )
     {
     }
@@ -225,9 +225,9 @@ class EngagmentController extends AbstractController
                     'quantity' => 1,
                 ]],
                 'metadata' => [
-                    'payment_id' => (string)$payment->getId(),
-                    'engagement_id' => (string)$engagement->getId(),
-                    'user_id' => (string)$currentUser->getId(),
+                    'payment_id' => (string) $payment->getId(),
+                    'engagement_id' => (string) $engagement->getId(),
+                    'user_id' => (string) $currentUser->getId(),
                     'locale' => $request->getLocale(),
                 ],
                 'success_url' => $successUrl,

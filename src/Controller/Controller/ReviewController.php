@@ -20,7 +20,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ReviewController extends AbstractController
 {
     public function __construct(
-        private readonly UserRepository      $userRepository,
+        private readonly UserRepository $userRepository,
         private readonly TranslatorInterface $translator,
     )
     {
@@ -30,7 +30,7 @@ class ReviewController extends AbstractController
     #[isGranted('IS_AUTHENTICATED_FULLY')]
     public function createTraderReview(User $user, #[CurrentUser] User $currentUser, Engagement $engagement, Request $request): Response
     {
-        if (!$user->getTraderProfile() instanceof TraderProfile) {
+        if (! $user->getTraderProfile() instanceof TraderProfile) {
             $this->addFlash(FlashEnum::WARNING->value, $this->translator->trans('can-not-review-that-profile'));
             return $this->redirectToRoute('client_dashboard');
         }

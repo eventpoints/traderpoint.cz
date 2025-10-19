@@ -22,5 +22,4 @@ final readonly class EngagementTraderMatchAlert
     {
         return $this->traderProfileId;
     }
-
 }

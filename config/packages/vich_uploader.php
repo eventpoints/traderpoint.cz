@@ -9,7 +9,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->extension('vich_uploader', [
         'db_driver' => 'orm',
         'storage' => 'file_system',
-        'metadata' => ['type' => 'attribute'],
+        'metadata' => [
+            'type' => 'attribute',
+        ],
         'mappings' => [
             'images' => [
                 'uri_prefix' => '/uploads/images',

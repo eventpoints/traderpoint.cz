@@ -19,10 +19,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SecurityController extends AbstractController
 {
-
     public function __construct(
-        private TranslatorInterface $translator,
-        private UserRepository      $userRepository,
+        private readonly TranslatorInterface $translator,
+        private readonly UserRepository $userRepository,
     )
     {
     }
@@ -31,7 +30,7 @@ class SecurityController extends AbstractController
     public function login(
         AuthenticationUtils $authenticationUtils,
         #[CurrentUser]
-        null|User           $currentUser
+        null|User $currentUser
     ): Response
     {
         if ($currentUser instanceof User) {
@@ -61,11 +60,13 @@ class SecurityController extends AbstractController
 
     #[Route('/verify/email/{token}', name: 'verify_email')]
     public function verifyEmail(
-        #[MapEntity(mapping: ['token' => 'token'])]
+        #[MapEntity(mapping: [
+            'token' => 'token',
+        ])]
         null|User $user = null
     ): Response
     {
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             $this->addFlash(FlashEnum::WARNING->value, $this->translator->trans(id: 'flash.sceptical-issue', domain: 'flash'));
             return $this->redirectToRoute('app_login');
         }
@@ -81,5 +82,4 @@ class SecurityController extends AbstractController
 
         return $this->redirectToRoute('client_dashboard');
     }
-
 }

@@ -399,12 +399,15 @@ class Quote implements \Stringable
         return $this->getId() . '-' . $this->getPrice();
     }
 
+    /**
+     * @param array<int> $workdays
+     */
     private function addWorkingHours(
         CarbonImmutable $start,
         float|int $hours,
         int $workdayStartHour = 9,
         int $workdayEndHour = 17,
-        array $workdays = [1, 2, 3, 4, 5] // 1=Mon .. 5=Fri (Carbon: 0=Sun)
+        array $workdays = [1, 2, 3, 4, 5]
     ): CarbonImmutable {
         $remaining = (int) round(((float) $hours) * 3600);
         if ($remaining <= 0) {
@@ -413,20 +416,20 @@ class Quote implements \Stringable
 
         $current = $start;
 
-        $isWorkday = fn (CarbonImmutable $d) => in_array($d->dayOfWeek, $workdays, true);
-        $dayStart  = fn (CarbonImmutable $d) => $d->setTime($workdayStartHour, 0, 0);
-        $dayEnd    = fn (CarbonImmutable $d) => $d->setTime($workdayEndHour, 0, 0);
+        $isWorkday = fn (CarbonImmutable $d): bool => in_array($d->dayOfWeek, $workdays, true);
+        $dayStart = fn (CarbonImmutable $d) => $d->setTime($workdayStartHour, 0, 0);
+        $dayEnd = fn (CarbonImmutable $d) => $d->setTime($workdayEndHour, 0, 0);
 
         $nextWorkStart = function (CarbonImmutable $d) use ($isWorkday, $dayStart): CarbonImmutable {
             $d = $d->addDay();
-            while (!$isWorkday($d)) {
+            while (! $isWorkday($d)) {
                 $d = $d->addDay();
             }
             return $dayStart($d);
         };
 
         // Normalize $current into a work window
-        if (!$isWorkday($current) || $current >= $dayEnd($current)) {
+        if (! $isWorkday($current) || $current >= $dayEnd($current)) {
             $current = $nextWorkStart($current);
         } elseif ($current < $dayStart($current)) {
             $current = $dayStart($current);
@@ -435,15 +438,15 @@ class Quote implements \Stringable
         // Consume time across work windows
         while ($remaining > 0) {
             $endOfWindow = $dayEnd($current);
-            $available   = $current->diffInSeconds($endOfWindow, false);
+            $available = $current->diffInSeconds($endOfWindow, false);
 
             if ($available <= 0) {
                 $current = $nextWorkStart($current);
                 continue;
             }
 
-            $use        = min($available, $remaining);
-            $current    = $current->addSeconds($use);
+            $use = min($available, $remaining);
+            $current = $current->addSeconds($use);
             $remaining -= $use;
 
             if ($remaining > 0) {
@@ -454,17 +457,16 @@ class Quote implements \Stringable
         return $current;
     }
 
-
     public function isAfterEstimateDuration(): bool
     {
         $startAt = $this->getStartAt();
-        $hours     = $this->getExpectedDurationHours();
+        $hours = $this->getExpectedDurationHours();
 
-        if (!$startAt || $hours === null) {
+        if (! $startAt || $hours === null) {
             return false;
         }
 
-        $deadline = $this->addWorkingHours($startAt, (float) $hours, 9, 17, [1,2,3,4,5]);
+        $deadline = $this->addWorkingHours($startAt, (float) $hours, 9, 17, [1, 2, 3, 4, 5]);
 
         return CarbonImmutable::now($startAt->getTimezone())
             ->greaterThanOrEqualTo($deadline);
@@ -473,12 +475,12 @@ class Quote implements \Stringable
     public function estimateDuration(): null|CarbonImmutable
     {
         $startAt = $this->getStartAt();
-        $hours     = $this->getExpectedDurationHours();
+        $hours = $this->getExpectedDurationHours();
 
-        if (!$startAt || $hours === null) {
+        if (! $startAt || $hours === null) {
             return null;
         }
 
-        return $this->addWorkingHours($startAt, (float) $hours, 9, 17, [1,2,3,4,5]);
+        return $this->addWorkingHours($startAt, (float) $hours, 9, 17, [1, 2, 3, 4, 5]);
     }
 }

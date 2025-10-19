@@ -22,16 +22,16 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Dropzone\Form\DropzoneType;
 use Symfony\UX\Map\Map;
-use Symfony\Component\Validator\Constraints as Assert;
 
 final class EngagementFormType extends AbstractType
 {
     public function __construct(
         private readonly TranslatorInterface $translator,
-        private readonly Security            $security
+        private readonly Security $security
     )
     {
     }
@@ -83,7 +83,9 @@ final class EngagementFormType extends AbstractType
                 'multiple' => true,
                 'mapped' => false,
                 'required' => false,
-                'help' => $this->translator->trans('engagement.image.upload.help', ['limit' => 4]),
+                'help' => $this->translator->trans('engagement.image.upload.help', [
+                    'limit' => 4,
+                ]),
                 'attr' => [
                     'placeholder' => $this->translator->trans('engagement.image.upload'),
                 ],
@@ -128,7 +130,7 @@ final class EngagementFormType extends AbstractType
             ]);
 
         $currentUser = $this->security->getUser();
-        if ($currentUser instanceof User && !$currentUser->getPhoneNumber() instanceof \App\Entity\PhoneNumber) {
+        if ($currentUser instanceof User && ! $currentUser->getPhoneNumber() instanceof \App\Entity\PhoneNumber) {
             $builder->add('phoneNumber', PhoneNumberFormType::class, [
                 'mapped' => false,
                 'label' => false,

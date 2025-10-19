@@ -7,14 +7,11 @@ use App\Entity\User;
 use App\Enum\FlashEnum;
 use App\Message\Message\EngagementPostedMessage;
 use App\Repository\PaymentRepository;
-use App\Repository\TraderProfileRepository;
 use Stripe\StripeClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -22,11 +19,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class StripePaymentController extends AbstractController
 {
     public function __construct(
-        private readonly StripeClient            $stripe,
-        private readonly PaymentRepository       $paymentRepository,
-        private readonly TranslatorInterface     $translator,
-        private readonly TraderProfileRepository $traderProfileRepository,
-        private readonly EventDispatcherInterface         $dispatcher,
+        private readonly StripeClient $stripe,
+        private readonly PaymentRepository $paymentRepository,
+        private readonly TranslatorInterface $translator,
+        private readonly EventDispatcherInterface $dispatcher,
     )
     {
     }
@@ -35,11 +31,11 @@ class StripePaymentController extends AbstractController
     public function check(
         Request $request,
         #[CurrentUser]
-        ?User   $user,
+        ?User $user,
     ): Response
     {
-        $sessionId = (string)$request->query->get('session_id', '');
-        $result = (string)$request->query->get('result', 'unknown');
+        $sessionId = (string) $request->query->get('session_id', '');
+        $result = (string) $request->query->get('result', 'unknown');
 
         if ($sessionId === '' || $sessionId === '0') {
             $this->addFlash('error', 'Can’t find that payment.');
@@ -47,12 +43,12 @@ class StripePaymentController extends AbstractController
         }
 
         $payment = $this->paymentRepository->findOneByCheckoutId($sessionId);
-        if (!$payment instanceof Payment) {
+        if (! $payment instanceof Payment) {
             $this->addFlash('error', 'Unknown or expired payment session.');
             return $this->redirectToRoute('app_login');
         }
 
-        if (!$user || $payment->getOwner()->getId() !== $user->getId()) {
+        if (! $user || $payment->getOwner()->getId() !== $user->getId()) {
             throw $this->createAccessDeniedException();
         }
 
@@ -65,7 +61,7 @@ class StripePaymentController extends AbstractController
 
         // Extra paranoia: ensure session ties back to the same Payment
         $metaPaymentId = $session->metadata['payment_id'] ?? null;
-        if ($metaPaymentId && (string)$payment->getId() !== (string)$metaPaymentId) {
+        if ($metaPaymentId && (string) $payment->getId() !== (string) $metaPaymentId) {
             $this->addFlash('error', 'Payment session mismatch.');
             return $this->redirectToRoute($user->isTrader() ? 'trader_dashboard' : 'client_dashboard');
         }

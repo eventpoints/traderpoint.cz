@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Controller\Stripe\StripeWebhookController;
-use App\Service\ImageOptimizer;
 use Stripe\StripeClient;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
