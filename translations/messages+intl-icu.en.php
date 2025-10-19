@@ -162,4 +162,6 @@ return array(
     'review.created' => 'review created',
     'decline' => 'decline',
     'accept' => 'accept',
+    'job-created' => 'created {count} job ',
+    'nice-try' => 'Nice try! 😉',
 );

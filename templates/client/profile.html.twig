@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% endblock %}
+{% block title %}{{ 'client-profile'|trans|title }}{% endblock %}
 
 {% block body %}
 
@@ -9,15 +9,23 @@
             <div class="col-12 col-md-3">
                 <div class="card">
                     <div class="card-header text-center">
+                        <div class="fs-4 text-end">
+                            <div class="badge text-bg-dark rounded-pill text-white">{{ 'client'|trans|title }}</div>
+                        </div>
                         <img src="{{ user.avatar }}" class="img-fluid rounded-circle" alt="">
                     </div>
                     <div class="list-group list-group-flush">
-                        <div class="list-group-item fs-4 text-center"><div>{{ user.fullName }}</div></div>
-                        <div class="list-group-item fs-4 text-center"><div>{{ user.engagements.count }}</div></div>
+                        <div class="list-group-item fs-4 text-center">
+                            <div>{{ user.fullName }}</div>
+                        </div>
+                        <div class="list-group-item fs-4">
+                            <span class="badge rounded-pill text-bg-primary">{{ 'job-created'|trans({count: user.engagements.count|compact_notation}) }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-9"></div>
+            <div class="col-12 col-md-6">
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -18,6 +18,7 @@ use App\Repository\EngagementRepository;
 use App\Repository\PaymentRepository;
 use App\Repository\QuoteRepository;
 use App\Repository\UserRepository;
+use App\Security\Voter\EngagementVoter;
 use App\Service\EmailService\EmailService;
 use App\Service\ImageOptimizer;
 use Stripe\StripeClient;
@@ -54,6 +55,8 @@ class EngagmentController extends AbstractController
     #[Route(path: 'trader/engagement/{id}', name: 'trader_show_engagement')]
     public function traderShow(Engagement $engagement, Request $request, #[CurrentUser] User $currentUser): Response
     {
+        $this->denyAccessUnlessGranted(EngagementVoter::TRADER_VIEW, $engagement);
+
         $map = null;
 
         if ($engagement->getQuote() instanceof Quote) {
@@ -108,6 +111,15 @@ class EngagmentController extends AbstractController
     #[Route(path: 'client/engagement/{id}', name: 'client_show_engagement')]
     public function clientShow(Engagement $engagement, Request $request, #[CurrentUser] User $currentUser): Response
     {
+        if ($currentUser->isTrader()) {
+            $this->addFlash(FlashEnum::WARNING->value, $this->translator->trans('nice-try'));
+            return $this->redirectToRoute('trader_show_engagement', [
+                'id' => $engagement->getId(),
+            ]);
+        }
+
+        $this->denyAccessUnlessGranted(EngagementVoter::CLIENT_VIEW, $engagement);
+
         $center = new Point($engagement->getLatitude(), $engagement->getLongitude());
 
         $map = (new Map('default'))
