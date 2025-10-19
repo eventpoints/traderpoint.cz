@@ -16,7 +16,7 @@ WORKDIR /app
 COPY --from=js-builder /build .
 COPY . .
 
-RUN composer dump-autoload --classmap-authoritative
+RUN composer compose install --no-interaction
 RUN composer symfony:dump-env prod
 
 RUN php bin/console importmap:install --no-interaction
