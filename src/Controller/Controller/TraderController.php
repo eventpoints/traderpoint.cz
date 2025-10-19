@@ -118,7 +118,6 @@ class TraderController extends AbstractController
         if ($accountForm->isSubmitted() && $accountForm->isValid()) {
 
             $avatarFile = $accountForm->get('avatar')->getData() ?? null;
-
             if (! empty($avatarFile)) {
                 $optimisedFile = $this->imageOptimizer->getOptimizedAvatarFile($avatarFile);
                 $base64Image = $this->imageOptimizer->toBase64($optimisedFile);

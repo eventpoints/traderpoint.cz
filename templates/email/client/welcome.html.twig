@@ -12,7 +12,7 @@
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td align="center" style="padding:16px 0;">
-                <a class="btn" href="{{ absolute_url(path('verify_email', { token: token })) }}" style="display:inline-block;">
+                <a class="btn" href="{{ url('verify_email', { token: token }) }}" style="display:inline-block;">
                     {{ 'confirm-email'|trans }}
                 </a>
             </td>

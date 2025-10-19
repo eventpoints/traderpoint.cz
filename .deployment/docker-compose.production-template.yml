@@ -12,6 +12,7 @@ services:
       test: 50s
     restart: unless-stopped
     environment:
+      APP_URL: "https://traderpoint.cz"
       APP_ENV: "prod"
       MERCURE_PUBLIC_URL: "https://traderpoint.cz/.well-known/mercure"
       DATABASE_URL: "postgresql://__TRADERPOINT_POSTGRES_USER__:__TRADERPOINT_POSTGRES_PASSWORD__@database:5432/__TRADERPOINT_POSTGRES_DBNAME__?serverVersion=17&charset=utf8"
@@ -25,6 +26,34 @@ services:
       STRIPE_WEBHOOK_SECRET: "__TRADERPOINT_STRIPE_WEBHOOK_SECRET__"
       MAILTRAP_TOKEN: "__TRADERPOINT_MAILTRAP_TOKEN__"
       MAILTRAP_API_TOKEN: "__TRADERPOINT_MAILTRAP_API_TOKEN__"
+    networks:
+      - internal
+
+  worker:
+    image: ghcr.io/eventpoints/traderpoint.cz-php:main
+    command: >
+      php bin/console messenger:consume async -vv
+      --time-limit=3600 --memory-limit=256M --sleep=1
+    restart: unless-stopped
+    depends_on:
+      - database
+    environment:
+      APP_URL: "https://traderpoint.cz"
+      APP_ENV: "prod"
+      MERCURE_PUBLIC_URL: "https://traderpoint.cz/.well-known/mercure"
+      DATABASE_URL: "postgresql://__TRADERPOINT_POSTGRES_USER__:__TRADERPOINT_POSTGRES_PASSWORD__@database:5432/__TRADERPOINT_POSTGRES_DBNAME__?serverVersion=17&charset=utf8"
+      MERCURE_JWT_SECRET: "__TRADERPOINT_MERCURE_JWT_SECRET__"
+      APP_SECRET: "__TRADERPOINT_APP_SECRET__"
+      MAILER_DSN: "__TRADERPOINT_MAILER_DSN__"
+      MESSENGER_TRANSPORT_DSN: "__TRADERPOINT_MESSENGER_TRANSPORT_DSN__"
+      APP_TIMEZONE: "__TRADERPOINT_APP_TIMEZONE__"
+      STRIPE_PUBLIC_KEY: "__TRADERPOINT_STRIPE_PUBLIC_KEY__"
+      STRIPE_PRIVATE_KEY: "__TRADERPOINT_STRIPE_PRIVATE_KEY__"
+      STRIPE_WEBHOOK_SECRET: "__TRADERPOINT_STRIPE_WEBHOOK_SECRET__"
+      MAILTRAP_TOKEN: "__TRADERPOINT_MAILTRAP_TOKEN__"
+      MAILTRAP_API_TOKEN: "__TRADERPOINT_MAILTRAP_API_TOKEN__"
+    volumes:
+      - ./php/php.ini:/usr/local/etc/php/php.ini:ro  # keep CLI/php settings aligned with php service
     networks:
       - internal
 

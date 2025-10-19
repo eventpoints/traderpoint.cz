@@ -48,6 +48,7 @@ class AccountFormType extends AbstractType
             ])
             ->add('languages', LanguageType::class, [
                 'label' => $this->translator->trans('languages'),
+                'required' => false,
                 'multiple' => true,
                 'row_attr' => [
                     'class' => 'form-floating',
