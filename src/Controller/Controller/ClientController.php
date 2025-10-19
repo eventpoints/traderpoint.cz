@@ -12,16 +12,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class ClientController extends AbstractController
 {
     public function __construct(
-        private readonly UserRepository       $userRepository,
+        private readonly UserRepository $userRepository,
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaginatorInterface   $paginator,
-        private readonly ImageOptimizer       $imageOptimizer
+        private readonly PaginatorInterface $paginator,
+        private readonly ImageOptimizer $imageOptimizer
     )
     {
     }
@@ -57,7 +56,7 @@ class ClientController extends AbstractController
         if ($accountForm->isSubmitted() && $accountForm->isValid()) {
 
             $avatarFile = $accountForm->get('avatar')->getData() ?? null;
-            if (!empty($avatarFile)) {
+            if (! empty($avatarFile)) {
                 $optimisedFile = $this->imageOptimizer->getOptimizedAvatarFile($avatarFile);
                 $base64Image = $this->imageOptimizer->toBase64($optimisedFile);
                 $currentUser->setAvatar($base64Image);

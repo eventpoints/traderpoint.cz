@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->extension('framework', [
         'router' => [
-            'default_uri' => '%env(APP_URL)%'
+            'default_uri' => '%env(APP_URL)%',
         ],
         'secret' => '%env(APP_SECRET)%',
         'session' => true,
