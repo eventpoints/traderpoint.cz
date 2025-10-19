@@ -8,7 +8,6 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\ImageInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Mime\Encoder\Base64Encoder;
 
 final readonly class ImageOptimizer
 {
@@ -185,8 +184,10 @@ final readonly class ImageOptimizer
 
     public function toBase64(UploadedFile $file): string
     {
-        $encodedImage = (new Base64Encoder())->encodeString($file->getContent());
-        return 'data:image/png;base64,' . $encodedImage;
+        $mime = $file->getMimeType() ?? 'application/octet-stream';
+        $path = $file->getPathname();
+        $data = is_file($path) ? file_get_contents($path) : '';
+        return sprintf('data:%s;base64,%s', $mime, base64_encode($data));
     }
 }
 

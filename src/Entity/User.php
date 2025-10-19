@@ -91,7 +91,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[Assert\Email]
     private string $email;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, options: [
+        'comment' => 'Base64 data URL for avatar',
+    ], columnDefinition: 'MEDIUMTEXT')]
     private string $avatar;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
