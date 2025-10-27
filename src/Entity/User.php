@@ -38,10 +38,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var null|string The hashed password
      */
-    #[ORM\Column]
-    private string $password;
+    #[ORM\Column(nullable: true)]
+    private null|string $password = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private CarbonImmutable|null $passwordSetAt = null;
 
     #[ORM\OneToOne(targetEntity: TraderProfile::class, mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?TraderProfile $traderProfile = null;
@@ -102,6 +105,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private CarbonImmutable $createdAt;
 
+    #[ORM\OneToMany(targetEntity: ExternalIdentity::class, mappedBy: 'user', cascade: ['persist'], orphanRemoval: true)]
+    private Collection $externalIdentities;
+
     public function __construct()
     {
         $this->token = Uuid::v7();
@@ -109,6 +115,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         $this->engagements = new ArrayCollection();
         $this->conversationParticipates = new ArrayCollection();
         $this->createdAt = new CarbonImmutable();
+        $this->externalIdentities = new ArrayCollection();
     }
 
     public
@@ -163,12 +170,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): ?string
+    public function getPassword(): null|string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(null|string $password): static
     {
         $this->password = $password;
 
@@ -185,7 +192,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addReview(Review $review): static
     {
-        if (! $this->reviews->contains($review)) {
+        if (!$this->reviews->contains($review)) {
             $this->reviews->add($review);
             $review->setOwner($this);
         }
@@ -212,7 +219,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addEngagement(Engagement $engagement): static
     {
-        if (! $this->engagements->contains($engagement)) {
+        if (!$this->engagements->contains($engagement)) {
             $this->engagements->add($engagement);
             $engagement->setOwner($this);
         }
@@ -308,7 +315,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addConversationParticipate(ConversationParticipant $conversationParticipate): static
     {
-        if (! $this->conversationParticipates->contains($conversationParticipate)) {
+        if (!$this->conversationParticipates->contains($conversationParticipate)) {
             $this->conversationParticipates->add($conversationParticipate);
             $conversationParticipate->setOwner($this);
         }
@@ -377,7 +384,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     public function setLanguages(array $langs): self
     {
         $langs = array_map(
-            static fn ($l) => strtolower(str_replace('-', '_', trim($l))),
+            static fn($l) => strtolower(str_replace('-', '_', trim($l))),
             $langs
         );
         $this->languages = array_values(array_unique($langs));
@@ -387,10 +394,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     public function addLanguage(string $lang): self
     {
         $lang = strtolower(str_replace('-', '_', trim($lang)));
-        if (! in_array($lang, $this->languages, true)) {
+        if (!in_array($lang, $this->languages, true)) {
             $this->languages[] = $lang;
         }
         return $this;
     }
+
+
+    public function getExternalIdentities(): Collection
+    {
+        return $this->externalIdentities;
+    }
+
+    public function addExternalIdentity(ExternalIdentity $idn): self
+    {
+        if (!$this->externalIdentities->contains($idn)) {
+            $this->externalIdentities->add($idn);
+            $idn->setUser($this);
+        }
+        return $this;
+    }
+
+    public function getPasswordSetAt(): ?CarbonImmutable
+    {
+        return $this->passwordSetAt;
+    }
+
+    public function setPasswordSetAt(?CarbonImmutable $passwordSetAt): void
+    {
+        $this->passwordSetAt = $passwordSetAt;
+    }
+
+    public function hasPassword(): bool
+    {
+        return !empty($this->password);
+    }
+
 }
 

@@ -161,4 +161,5 @@ return [
     'review.created' => 'recenze odeslána',
     'decline' => 'pokles',
     'accept' => 'přijmout',
+    'continue-with' => 'pokračovat s {provider}',
 ];

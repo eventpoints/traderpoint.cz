@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 use App\Entity\User;
+use App\Enum\RolesEnum;
+use App\Security\Social\FacebookAuthenticator;
+use App\Security\Social\GoogleAuthenticator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -11,6 +14,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         'password_hashers' => [
             PasswordAuthenticatedUserInterface::class => 'auto',
         ],
+
         'providers' => [
             'app_user_provider' => [
                 'entity' => [
@@ -19,6 +23,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 ],
             ],
         ],
+
         'firewalls' => [
             'dev' => [
                 'pattern' => '^/(_(profiler|wdt)|css|images|js)/',
@@ -27,6 +32,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'main' => [
                 'lazy' => true,
                 'provider' => 'app_user_provider',
+                'stateless' => false,
                 'form_login' => [
                     'login_path' => 'app_login',
                     'check_path' => 'app_login',
@@ -36,31 +42,30 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                     'csrf_token_id' => 'authenticate',
                 ],
 
+                'custom_authenticators' => [
+                    GoogleAuthenticator::class,
+                    FacebookAuthenticator::class,
+                ],
+                'entry_point' => 'form_login',
                 'logout' => [
                     'path' => 'app_logout',
                 ],
-
-                // ✅ Remember me hooked to your checkbox
                 'remember_me' => [
                     'secret' => '%kernel.secret%',
-                    'lifetime' => 604800, // 7 days
+                    'lifetime' => 604800,
                     'path' => '/',
-                    'always_remember_me' => false,                  // respect checkbox
+                    'always_remember_me' => false,
                     'remember_me_parameter' => 'login_form[_remember_me]',
                 ],
-
-                // (Optional) basic throttling
                 'login_throttling' => [
                     'max_attempts' => 5,
                 ],
             ],
         ],
+
         'access_control' => [
-            // e.g. allow anonymous to login
-            [
-                'path' => '^/login',
-                'roles' => 'PUBLIC_ACCESS',
-            ],
+            ['path' => '^/login', 'roles' => RolesEnum::PUBLIC_ACCESS->value],
+            ['path' => '^/connect', 'roles' => RolesEnum::PUBLIC_ACCESS->value],
         ],
     ]);
 

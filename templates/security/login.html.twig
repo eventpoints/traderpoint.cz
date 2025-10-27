@@ -37,6 +37,12 @@
                             {{ form_row(form.isRememberMe) }}
                         </div>
                     </div>
+                    <div class="card-body text-center text-muted">
+                        {{ 'by-continuing-accept-terms'|trans(domain='terms') }} <a href="{{ path('terms_of_use') }}">{{ 'terms-of-use'|trans(domain='terms') }}</a>
+                    </div>
+                    <div class="card-footer text-center text-muted">
+                        {{ include('partial/_social_login.html.twig') }}
+                    </div>
                     <div class="card-footer">
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-lg btn-primary">{{ 'continue'|trans }}</button>

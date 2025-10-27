@@ -164,4 +164,5 @@ return array(
     'accept' => 'accept',
     'job-created' => 'created {count} job ',
     'nice-try' => 'Nice try! 😉',
+    'continue-with' => 'continue with {provider}',
 );

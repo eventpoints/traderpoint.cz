@@ -232,9 +232,13 @@ class TraderProfile
         }
     }
 
-    public function isLocationConfiured(): bool
+    public function isTraderAccountConfigured(): bool
     {
-        return $this->skills->count() === 0 || $this->serviceRadius !== null && $this->serviceRadius !== 0 || ! empty($this->getLatitude()) || ! empty($this->getLongitude());
+        $hasSkills = $this->skills->count() > 0;
+        $hasRadius = $this->serviceRadius !== null && $this->serviceRadius > 0;
+        $hasCoords = $this->getLatitude() !== null && $this->getLongitude() !== null;
+
+        return $hasSkills && ($hasRadius || $hasCoords);
     }
 
     /**

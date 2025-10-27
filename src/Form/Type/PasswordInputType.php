@@ -31,7 +31,7 @@ class PasswordInputType extends AbstractType
         $resolver->setDefaults([
             'label' => $this->translator->trans('password'),
             'toggle' => true,
-            'button_class' => 'btn btn-outline-secondary',
+            'button_class' => 'btn btn-link',
             'button_aria_label' => 'Show/hide password',
             'attr' => [
                 'data-password-visibility-target' => 'input',
@@ -46,14 +46,22 @@ class PasswordInputType extends AbstractType
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        // Expose options to Twig block
         $view->vars['toggle'] = $options['toggle'];
         $view->vars['button_class'] = $options['button_class'];
         $view->vars['button_aria_label'] = $options['button_aria_label'];
+
+        $view->vars['attr'] = array_replace($view->vars['attr'] ?? [], [
+            'autocomplete' => $options['attr']['autocomplete'] ?? 'new-password',
+        ]);
+
+        $view->vars['attr']['data-password-visibility-target'] = 'input';
+        $view->vars['type'] = 'password';
     }
 
     public function getBlockPrefix(): string
     {
         return 'password_input';
     }
+
+
 }

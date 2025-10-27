@@ -43,6 +43,9 @@
                     <div class="card-body text-center text-muted">
                         {{ 'by-continuing-accept-terms'|trans(domain='terms') }} <a href="{{ path('terms_of_use') }}">{{ 'terms-of-use'|trans(domain='terms') }}</a>
                     </div>
+                    <div class="card-body text-center text-muted">
+                        {{ include('partial/_social_register.html.twig') }}
+                    </div>
                     <div class="card-footer d-flex justify-content-end align-items-center gap-4 border-top">
                         <a href="{{ path('app_login') }}" type="button"
                            class="link-dark">{{ 'login'|trans }}</a>
