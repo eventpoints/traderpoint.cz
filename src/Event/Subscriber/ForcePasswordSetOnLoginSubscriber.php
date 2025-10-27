@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Event\Subscriber;
@@ -6,12 +7,14 @@ namespace App\Event\Subscriber;
 use App\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
-final class ForcePasswordSetOnLoginSubscriber implements EventSubscriberInterface
+final readonly class ForcePasswordSetOnLoginSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private RouterInterface $router) {}
+    public function __construct(
+        private RouterInterface $router
+    ) {}
 
     public static function getSubscribedEvents(): array
     {
@@ -23,7 +26,7 @@ final class ForcePasswordSetOnLoginSubscriber implements EventSubscriberInterfac
     public function onLoginSuccess(LoginSuccessEvent $event): void
     {
         $user = $event->getUser();
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             return;
         }
 

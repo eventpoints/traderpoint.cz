@@ -11,8 +11,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class OAuthController extends AbstractController
 {
-    // LOGIN (no role intent)
-    #[Route('/connect/start/{provider}', name: 'oauth_start', requirements: ['provider' => 'google|facebook'])]
+    #[Route('/connect/start/{provider}', name: 'oauth_start', requirements: [
+        'provider' => 'google|facebook',
+    ])]
     public function connect(Request $request, string $provider, ClientRegistry $clients): Response
     {
         $session = $request->getSession();
@@ -20,15 +21,15 @@ final class OAuthController extends AbstractController
         $session->set('oauth.intent.source', 'login');
 
         $scopes = $provider === OauthProviderEnum::FACEBOOK->value
-            ? ['public_profile','email']
-            : ['openid','profile','email'];
+            ? ['public_profile', 'email']
+            : ['openid', 'profile', 'email'];
 
-        return $clients->getClient($provider)->redirect($scopes);
+        return $clients->getClient($provider)->redirect($scopes, []);
     }
 
-    // REGISTER (with role intent)
     #[Route('/connect/start/{role}/{provider}', name: 'oauth_start_with_role', requirements: [
-        'role' => 'client|trader', 'provider' => 'google|facebook'
+        'role' => 'client|trader',
+        'provider' => 'google|facebook',
     ])]
     public function connectWithRole(Request $request, string $role, string $provider, ClientRegistry $clients): Response
     {
@@ -37,15 +38,9 @@ final class OAuthController extends AbstractController
         $session->set('oauth.intent.source', 'register');
 
         $scopes = $provider === OauthProviderEnum::FACEBOOK->value
-            ? ['public_profile','email']
-            : ['openid','profile','email'];
+            ? ['public_profile', 'email']
+            : ['openid', 'profile', 'email'];
 
-        return $clients->getClient($provider)->redirect($scopes);
+        return $clients->getClient($provider)->redirect($scopes, []);
     }
-
-    #[Route('/connect/google/check',   name: 'oauth_google_check')]
-    public function googleCheck(): void {}
-
-    #[Route('/connect/facebook/check', name: 'oauth_facebook_check')]
-    public function facebookCheck(): void {}
 }

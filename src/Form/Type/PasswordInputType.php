@@ -62,6 +62,4 @@ class PasswordInputType extends AbstractType
     {
         return 'password_input';
     }
-
-
 }

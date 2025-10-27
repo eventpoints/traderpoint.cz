@@ -105,6 +105,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private CarbonImmutable $createdAt;
 
+    /**
+     * @var ArrayCollection<int, ExternalIdentity>
+     */
     #[ORM\OneToMany(targetEntity: ExternalIdentity::class, mappedBy: 'user', cascade: ['persist'], orphanRemoval: true)]
     private Collection $externalIdentities;
 
@@ -192,7 +195,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addReview(Review $review): static
     {
-        if (!$this->reviews->contains($review)) {
+        if (! $this->reviews->contains($review)) {
             $this->reviews->add($review);
             $review->setOwner($this);
         }
@@ -219,7 +222,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addEngagement(Engagement $engagement): static
     {
-        if (!$this->engagements->contains($engagement)) {
+        if (! $this->engagements->contains($engagement)) {
             $this->engagements->add($engagement);
             $engagement->setOwner($this);
         }
@@ -315,7 +318,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addConversationParticipate(ConversationParticipant $conversationParticipate): static
     {
-        if (!$this->conversationParticipates->contains($conversationParticipate)) {
+        if (! $this->conversationParticipates->contains($conversationParticipate)) {
             $this->conversationParticipates->add($conversationParticipate);
             $conversationParticipate->setOwner($this);
         }
@@ -394,13 +397,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     public function addLanguage(string $lang): self
     {
         $lang = strtolower(str_replace('-', '_', trim($lang)));
-        if (!in_array($lang, $this->languages, true)) {
+        if (! in_array($lang, $this->languages, true)) {
             $this->languages[] = $lang;
         }
         return $this;
     }
 
-
+    /**
+     * @return ArrayCollection<int, ExternalIdentity>
+     */
     public function getExternalIdentities(): Collection
     {
         return $this->externalIdentities;
@@ -408,7 +413,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addExternalIdentity(ExternalIdentity $idn): self
     {
-        if (!$this->externalIdentities->contains($idn)) {
+        if (! $this->externalIdentities->contains($idn)) {
             $this->externalIdentities->add($idn);
             $idn->setUser($this);
         }
@@ -427,8 +432,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function hasPassword(): bool
     {
-        return !empty($this->password);
+        return $this->password !== null && $this->password !== '' && $this->password !== '0';
     }
-
 }
 

@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum RolesEnum : string
+enum RolesEnum: string
 {
     case PUBLIC_ACCESS = 'PUBLIC_ACCESS';
 }

@@ -64,8 +64,14 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ],
 
         'access_control' => [
-            ['path' => '^/login', 'roles' => RolesEnum::PUBLIC_ACCESS->value],
-            ['path' => '^/connect', 'roles' => RolesEnum::PUBLIC_ACCESS->value],
+            [
+                'path' => '^/login',
+                'roles' => RolesEnum::PUBLIC_ACCESS->value,
+            ],
+            [
+                'path' => '^/connect',
+                'roles' => RolesEnum::PUBLIC_ACCESS->value,
+            ],
         ],
     ]);
 

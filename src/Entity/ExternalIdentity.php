@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Entity;
@@ -23,32 +24,8 @@ class ExternalIdentity
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
     private ?Uuid $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'externalIdentities')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private User $user;
-
-    // If your Doctrine version doesn’t support enumType, change to: type: Types::STRING, length: 32
-    #[ORM\Column(type: Types::STRING, length: 32, enumType: OauthProviderEnum::class)]
-    private OauthProviderEnum $oauthProviderEnum;
-
-    /** Provider’s unique user id (e.g. Google “sub”, Facebook id) */
-    #[ORM\Column(type: Types::STRING, length: 191)]
-    private string $subject;
-
     #[ORM\Column(type: Types::STRING, length: 191, nullable: true)]
     private ?string $emailAtProvider = null;
-
-    #[ORM\Column(type: Types::BOOLEAN)]
-    private bool $emailVerified = false;
-
-    #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $grantedScopes = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    private ?string $displayName = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    private ?string $avatarUrl = null;
 
     // Optional token storage (only if you really need to call APIs)
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -66,25 +43,28 @@ class ExternalIdentity
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?CarbonImmutable $lastLoginAt = null;
 
+    /**
+     * @param string[] $grantedScopes
+     */
     public function __construct(
-        User $currentUser,
-        OauthProviderEnum $providerEnum,
-        string $subject,
-        bool $emailVerified,
-        string $displayName,
-        null|string $avatarUrl = null,
-        array $grantedScopes = []
+        #[ORM\ManyToOne(inversedBy: 'externalIdentities')]
+        #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+        private User $user,
+        #[ORM\Column(type: Types::STRING, length: 32, enumType: OauthProviderEnum::class)]
+        private OauthProviderEnum $oauthProviderEnum,
+        #[ORM\Column(type: Types::STRING, length: 191)]
+        private string $subject,
+        #[ORM\Column(type: Types::BOOLEAN)]
+        private bool $emailVerified,
+        #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+        private ?string $displayName,
+        #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+        private ?string $avatarUrl = null,
+        #[ORM\Column(type: Types::JSON, nullable: true)]
+        private ?array $grantedScopes = []
     )
     {
-        $this->user = $currentUser;
-        $this->oauthProviderEnum = $providerEnum;
-        $this->subject = $subject;
-        $this->emailVerified = $emailVerified;
-        $this->displayName = $displayName;
-        $this->avatarUrl = $avatarUrl;
-        $this->grantedScopes = $grantedScopes;
     }
-
 
     public function getId(): ?Uuid
     {
@@ -155,11 +135,17 @@ class ExternalIdentity
         $this->emailVerified = $emailVerified;
     }
 
+    /**
+     * @return string[]|null
+     */
     public function getGrantedScopes(): ?array
     {
         return $this->grantedScopes;
     }
 
+    /**
+     * @param null|string[] $grantedScopes
+     */
     public function setGrantedScopes(?array $grantedScopes): void
     {
         $this->grantedScopes = $grantedScopes;

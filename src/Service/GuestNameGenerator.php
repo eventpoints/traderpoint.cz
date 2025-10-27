@@ -9,7 +9,7 @@ final readonly class GuestNameGenerator
     public function generateFirstName(): string
     {
         $adjectives = $this->getHandleAdjectives();
-        return $adjectives[rand(0, count($adjectives) - 1)];
+        return $adjectives[random_int(0, count($adjectives) - 1)];
     }
 
     public function generateFullName(): string
@@ -20,7 +20,7 @@ final readonly class GuestNameGenerator
     public function generateLastName(): string
     {
         $nouns = $this->getHandleNouns();
-        return $nouns[rand(0, count($nouns) - 1)];
+        return $nouns[random_int(0, count($nouns) - 1)];
     }
 
     /**

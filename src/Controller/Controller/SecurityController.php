@@ -26,7 +26,7 @@ class SecurityController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly UserRepository      $userRepository,
+        private readonly UserRepository $userRepository,
     )
     {
     }
@@ -35,7 +35,7 @@ class SecurityController extends AbstractController
     public function login(
         AuthenticationUtils $authenticationUtils,
         #[CurrentUser]
-        null|User           $currentUser
+        null|User $currentUser
     ): Response
     {
         if ($currentUser instanceof User) {
@@ -71,7 +71,7 @@ class SecurityController extends AbstractController
         null|User $user = null
     ): Response
     {
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             $this->addFlash(FlashEnum::WARNING->value, $this->translator->trans(id: 'flash.sceptical-issue', domain: 'flash'));
             return $this->redirectToRoute('app_login');
         }
@@ -88,12 +88,12 @@ class SecurityController extends AbstractController
         return $this->redirectToRoute('client_dashboard');
     }
 
-
     #[Route('/user/set-password', name: 'user_set_password')]
     public function setPassword(
-        Request                     $request,
+        Request $request,
         UserPasswordHasherInterface $hasher,
-        #[CurrentUser] User $currentUser
+        #[CurrentUser]
+        User $currentUser
     ): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -102,7 +102,7 @@ class SecurityController extends AbstractController
         $passwordForm->handleRequest($request);
 
         if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
-            $plain = (string)$passwordForm->get('plainPassword')->getData();
+            $plain = (string) $passwordForm->get('plainPassword')->getData();
             $currentUser->setPassword($hasher->hashPassword($currentUser, $plain));
 
             if (method_exists($currentUser, 'setPasswordSetAt')) {
@@ -112,7 +112,7 @@ class SecurityController extends AbstractController
             $this->entityManager->flush();
             $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans(id: 'flash.password-changed', domain: 'flash'));
 
-            $target = $request->getSession()?->get('post_set_password_target') ?? '/';
+            $target = $request->getSession()->get('post_set_password_target') ?? '/';
             return $this->redirect($target);
         }
 
