@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class OAuthController extends AbstractController
+class OAuthController extends AbstractController
 {
     #[Route('/connect/start/{provider}', name: 'oauth_start', requirements: [
         'provider' => 'google|facebook',
@@ -43,4 +43,10 @@ final class OAuthController extends AbstractController
 
         return $clients->getClient($provider)->redirect($scopes, []);
     }
+
+    #[Route('/connect/google/check', name: 'oauth_google_check')]
+    public function googleCheck(): void {}
+
+    #[Route('/connect/facebook/check', name: 'oauth_facebook_check')]
+    public function facebookCheck(): void {}
 }
