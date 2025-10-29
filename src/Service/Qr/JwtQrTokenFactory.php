@@ -1,10 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service\Qr;
 
 use DateTimeImmutable;
-use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\Encoding\ChainedFormatter;
 use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -13,7 +13,7 @@ use Lcobucci\JWT\Token\Builder;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Uid\Uuid;
 
-final class JwtQrTokenFactory
+final readonly class JwtQrTokenFactory
 {
     public function __construct(
         #[Autowire('%kernel.project_dir%/config/jwt-qr/private.pem')]
@@ -28,26 +28,26 @@ final class JwtQrTokenFactory
 
     public function create(string $userUuid): string
     {
-        $now    = new DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $signer = new Sha256();
-        $key    = InMemory::file($this->privateKeyPath);
-        $clock  = SystemClock::fromSystemTimezone();
+        $key = InMemory::file($this->privateKeyPath);
 
         $builder = new Builder(new JoseEncoder(), ChainedFormatter::default());
 
-        $builder
+        $builder = $builder
             ->issuedBy($this->issuer)
             ->issuedAt($now)
-            ->canOnlyBeUsedAfter($now->modify('-30 seconds'))
+            ->canOnlyBeUsedAfter($now->modify('-30 seconds')) // clock skew tolerance
             ->expiresAt($now->modify(sprintf('+%d seconds', $this->ttlSeconds)))
             ->relatedTo($userUuid)
             ->identifiedBy(Uuid::v7()->toRfc4122());
 
         if ($this->audience) {
-            $builder->permittedFor($this->audience);
+            $builder = $builder->permittedFor($this->audience); // add aud
         }
+
         if ($this->kid) {
-            $builder->withHeader('kid', $this->kid);
+            $builder = $builder->withHeader('kid', $this->kid); // add kid header
         }
 
         return $builder->getToken($signer, $key)->toString();

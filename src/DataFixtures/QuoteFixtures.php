@@ -22,7 +22,7 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
         $faker = Factory::create('cs_CZ');
 
         // Use ONLY traders (by reference if present, else DB fallback)
-        $traderIds     = $this->collectTraderIdsByPrefix($manager, 'user_', User::class);
+        $traderIds = $this->collectTraderIdsByPrefix($manager, 'user_', User::class);
         $engagementIds = $this->collectIdsByPrefix($manager, 'engagement_', Engagement::class);
 
         if ($traderIds === [] || $engagementIds === []) {
@@ -55,7 +55,7 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
             $engWillChoose = $faker->boolean(55);
 
             // Pick 2–5 distinct traders from eligible pool
-            $traderCount     = min(\count($eligibleTraderIds), $faker->numberBetween(2, 5));
+            $traderCount = min(\count($eligibleTraderIds), $faker->numberBetween(2, 5));
             $pickedTraderIds = $faker->randomElements($eligibleTraderIds, $traderCount, false);
 
             foreach ($pickedTraderIds as $userId) {
@@ -71,7 +71,7 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
                     $versionMap[$key] = $currentVersion;
 
                     $netCents = $faker->numberBetween(5_000, 250_000);
-                    $vatBps   = $faker->randomElement([0, 1000, 1500, 2100]);
+                    $vatBps = $faker->randomElement([0, 1000, 1500, 2100]);
 
                     $quote = new Quote($engagement, $trader, $netCents, CurrencyCodeEnum::CZK);
                     $quote->setVersion($currentVersion);
@@ -101,10 +101,10 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
                     ]);
 
                     $engKey = (string) $engId;
-                    $alreadyChosen = !empty($acceptedByEng[$engKey]);
+                    $alreadyChosen = ! empty($acceptedByEng[$engKey]);
 
                     // Ensure only one ACCEPTED per engagement (if at all)
-                    if ($drawn === QuoteStatusEnum::ACCEPTED && (!$engWillChoose || $alreadyChosen)) {
+                    if ($drawn === QuoteStatusEnum::ACCEPTED && (! $engWillChoose || $alreadyChosen)) {
                         $drawn = QuoteStatusEnum::REJECTED;
                     }
 
@@ -194,8 +194,6 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
      * Falls back to DB when no references are present.
      *
      * @template T of object
-     * @param ObjectManager $manager
-     * @param string $prefix
      * @param class-string<T> $class
      * @return array<int, mixed>
      */

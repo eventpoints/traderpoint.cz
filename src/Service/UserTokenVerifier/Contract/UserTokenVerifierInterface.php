@@ -7,7 +7,9 @@ use RuntimeException;
 
 interface UserTokenVerifierInterface
 {
-    /** @throws RuntimeException on invalid token */
+    /**
+     * @throws RuntimeException on invalid token
+     */
     public function verify(string $token): UserTokenVerificationResult;
 }
 

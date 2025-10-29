@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Entity;
@@ -21,33 +22,56 @@ class Partner
     #[ORM\Column(type: 'uuid', unique: true)]
     private ?Uuid $id = null;
 
-    #[ORM\Column(length: 120)]
-    private string $name;
-
-    #[ORM\Column(length: 120, unique: true)]
-    private string $slug;
-
-    /** Default membership % for Traderpoint users across this partner’s stores (e.g. 15 or 20). */
-    #[ORM\Column(type: 'smallint')]
-    private int $memberPercent;
-
-    /** @var Collection<int, Store> */
+    /**
+     * @var Collection<int, Store>
+     */
     #[ORM\OneToMany(mappedBy: 'partner', targetEntity: Store::class)]
     private Collection $stores;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, updatable: false)]
     private CarbonImmutable $createdAt;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private CarbonImmutable $updatedAt;
 
-    public function __construct(string $name, string $slug, int $memberPercent)
+    public function __construct(
+        #[ORM\Column(length: 120)]
+        private string $name,
+        #[ORM\Column(length: 120, unique: true)]
+        private string $slug,
+        #[ORM\Column(type: 'smallint')]
+        private int $memberPercent
+    )
     {
-        $this->name = $name;
-        $this->slug = $slug;
-        $this->memberPercent = $memberPercent;
         $this->stores = new ArrayCollection();
         $this->createdAt = CarbonImmutable::now();
+        $this->updatedAt = CarbonImmutable::now();
+    }
+
+    public function getId(): ?Uuid { return $this->id; }
+
+    public function getName(): string { return $this->name; }
+
+    public function setName(string $name): self { $this->name = $name; return $this; }
+
+    public function getSlug(): string { return $this->slug; }
+
+    public function setSlug(string $slug): self { $this->slug = $slug; return $this; }
+
+    public function getMemberPercent(): int { return $this->memberPercent; }
+
+    public function setMemberPercent(int $p): self { $this->memberPercent = $p; return $this; }
+
+    /**
+     * @return Collection<int, Store>
+     */
+    public function getStores(): Collection { return $this->stores; }
+
+    #[ORM\PrePersist]
+    public function stampCreate(): void
+    {
+        // safety net if entity was proxied/hydrated without constructor
+        $this->createdAt ??= CarbonImmutable::now();
         $this->updatedAt = CarbonImmutable::now();
     }
 
@@ -57,14 +81,13 @@ class Partner
         $this->updatedAt = CarbonImmutable::now();
     }
 
-    public function getId(): ?Uuid { return $this->id; }
-    public function getName(): string { return $this->name; }
-    public function setName(string $name): self { $this->name = $name; return $this; }
-    public function getSlug(): string { return $this->slug; }
-    public function setSlug(string $slug): self { $this->slug = $slug; return $this; }
-    public function getMemberPercent(): int { return $this->memberPercent; }
-    public function setMemberPercent(int $p): self { $this->memberPercent = $p; return $this; }
+    public function getCreatedAt(): CarbonImmutable
+    {
+        return $this->createdAt;
+    }
 
-    /** @return Collection<int, Store> */
-    public function getStores(): Collection { return $this->stores; }
+    public function getUpdatedAt(): CarbonImmutable
+    {
+        return $this->updatedAt;
+    }
 }

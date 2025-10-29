@@ -3,10 +3,6 @@
 declare(strict_types=1);
 
 use App\Controller\Stripe\StripeWebhookController;
-use App\Service\Qr\JwtQrTokenFactory;
-use App\Service\UserTokenVerifier\Contract\UserTokenVerifierInterface;
-use App\Service\UserTokenVerifier\DevUserTokenVerifier;
-use App\Service\UserTokenVerifier\JwtUserTokenVerifier;
 use Stripe\StripeClient;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;

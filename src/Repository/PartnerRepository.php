@@ -16,4 +16,14 @@ class PartnerRepository extends ServiceEntityRepository
         parent::__construct($registry, Partner::class);
     }
 
+    public function findOneBySlug(string $slug): null|Partner
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        $qb->andWhere(
+            $qb->expr()->eq('p.slug', ':slug')
+        )->setParameter('slug', $slug);
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }

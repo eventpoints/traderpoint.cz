@@ -1,8 +1,11 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Controller\Api;
 
 use App\Entity\MembershipCardTransaction;
+use App\Entity\Partner;
 use App\Repository\PartnerRepository;
 use App\Repository\StoreRepository;
 use App\Service\PercentResolver\PercentResolverInterface;
@@ -18,32 +21,41 @@ final class MembershipCardTransactionController extends AbstractController
 {
     #[Route('/api/partners/{partnerSlug}/transactions', name: 'api_mct_create', methods: ['POST'])]
     public function create(
-        string                     $partnerSlug,
-        Request                    $request,
-        PartnerRepository          $partners,
-        StoreRepository            $stores,
+        string $partnerSlug,
+        Request $request,
+        PartnerRepository $partnerRepository,
+        StoreRepository $stores,
         UserTokenVerifierInterface $userTokens,
-        PercentResolverInterface   $percentResolver,
-        ReferenceGenerator         $refGen,
-        EntityManagerInterface     $em
+        PercentResolverInterface $percentResolver,
+        ReferenceGenerator $refGen,
+        EntityManagerInterface $em
     ): JsonResponse {
         $data = json_decode($request->getContent(), true) ?? [];
-        $userToken   = (string)($data['user_token'] ?? '');
-        $storeCode   = (string)($data['store_code'] ?? '');
-        $amountMinor = isset($data['order_amount_minor']) ? (int)$data['order_amount_minor'] : null;
+        $userToken = (string) ($data['user_token'] ?? '');
+        $storeCode = (string) ($data['store_code'] ?? '');
+        $amountMinor = isset($data['order_amount_minor']) ? (int) $data['order_amount_minor'] : null;
 
         if ($userToken === '' || $storeCode === '') {
-            return $this->json(['error' => 'user_token and store_code are required'], 400);
+            return $this->json([
+                'error' => 'user_token and store_code are required',
+            ], 400);
         }
 
-        $partner = $partners->findOneBySlug($partnerSlug);
-        if (!$partner) {
-            return $this->json(['error' => 'Unknown partner'], 404);
+        $partner = $partnerRepository->findOneBySlug($partnerSlug);
+        if (! $partner instanceof Partner) {
+            return $this->json([
+                'error' => 'Unknown partner',
+            ], 404);
         }
 
-        $store = $stores->findOneBy(['code' => $storeCode, 'partner' => $partner]);
-        if (!$store || !$store->isActive()) {
-            return $this->json(['error' => 'Unknown or inactive store'], 404);
+        $store = $stores->findOneBy([
+            'code' => $storeCode,
+            'partner' => $partner,
+        ]);
+        if (! $store || ! $store->isActive()) {
+            return $this->json([
+                'error' => 'Unknown or inactive store',
+            ], 404);
         }
 
         // 1) Verify/resolve the user from the QR token
@@ -69,11 +81,11 @@ final class MembershipCardTransactionController extends AbstractController
         $em->flush();
 
         return $this->json([
-            'status'          => 'ok',
-            'ref'             => $txn->getRef(),
+            'status' => 'ok',
+            'ref' => $txn->getRef(),
             'applied_percent' => $txn->getAppliedPercent(),
-            'store'           => $store->getName(),
-            'created_at'      => $txn->getCreatedAt()->toIso8601String(),
+            'store' => $store->getName(),
+            'created_at' => $txn->getCreatedAt()->toIso8601String(),
         ], 201);
     }
 }

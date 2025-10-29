@@ -4,10 +4,10 @@ namespace App\Service\UserTokenVerifier;
 
 use App\Entity\User;
 
-final class UserTokenVerificationResult
+final readonly class UserTokenVerificationResult
 {
     public function __construct(
-        private User    $user,
+        private User $user,
         private ?string $jti = null
     )
     {

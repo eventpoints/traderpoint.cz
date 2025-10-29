@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\DataFixtures;
@@ -41,7 +42,9 @@ final class PartnerStoreFixtures extends Fixture implements FixtureGroupInterfac
         $em->flush();
     }
 
-    /** Optional: run with --group=dev-data so you don’t nuke other fixtures */
+    /**
+     * Optional: run with --group=dev-data so you don’t nuke other fixtures
+     */
     public static function getGroups(): array
     {
         return ['dev-data'];

@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Partner;
 use App\Entity\Store;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,5 +15,4 @@ class StoreRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Store::class);
     }
-
 }

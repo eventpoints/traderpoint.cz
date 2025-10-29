@@ -47,7 +47,7 @@ final class PaymentFixtures extends Fixture implements DependentFixtureInterface
         foreach ($engagements as $eng) {
             // payer is the engagement owner (client)
             $owner = $eng->getOwner();
-            if (!$owner instanceof User) {
+            if (! $owner instanceof User) {
                 $owner = $manager->getReference(User::class, $eng->getOwner()?->getId());
             }
 

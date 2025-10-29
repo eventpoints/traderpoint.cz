@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Entity;
@@ -22,44 +23,41 @@ class MembershipCardTransaction
     #[ORM\Column(type: 'uuid', unique: true)]
     private ?Uuid $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private User $user;
-
-    #[ORM\ManyToOne(targetEntity: Partner::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private Partner $partner;
-
-    #[ORM\ManyToOne(targetEntity: Store::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private Store $store;
-
-    /** Human-friendly receipt/reference (e.g. MCT-9F3A2). */
-    #[ORM\Column(length: 24)]
-    private string $ref;
-
-    /** Snapshot of the % applied at checkout (store override or partner default). */
-    #[ORM\Column(type: 'smallint')]
-    private int $appliedPercent;
-
-    /** Optional basket total in minor units (e.g., haléře). */
+    /**
+     * Optional basket total in minor units (e.g., haléře).
+     */
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $orderAmountMinor = null;
 
-    /** If you rotate QR tokens, keep JTI for audit (optional). */
+    /**
+     * If you rotate QR tokens, keep JTI for audit (optional).
+     */
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $tokenJti = null;
 
     #[ORM\Column(type: 'datetime_immutable', name: 'created_at')]
     private CarbonImmutable $createdAt;
 
-    public function __construct(User $user, Partner $partner, Store $store, string $ref, int $appliedPercent)
+    public function __construct(
+        #[ORM\ManyToOne(targetEntity: User::class)]
+        #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+        private User $user,
+        #[ORM\ManyToOne(targetEntity: Partner::class)]
+        #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+        private Partner $partner,
+        #[ORM\ManyToOne(targetEntity: Store::class)]
+        #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+        private Store $store, /**
+     * Human-friendly receipt/reference (e.g. MCT-9F3A2).
+     */
+    #[ORM\Column(length: 24)]
+        private string $ref, /**
+     * Snapshot of the % applied at checkout (store override or partner default).
+     */
+    #[ORM\Column(type: 'smallint')]
+        private int $appliedPercent
+    )
     {
-        $this->user = $user;
-        $this->partner = $partner;
-        $this->store = $store;
-        $this->ref = $ref;
-        $this->appliedPercent = $appliedPercent;
         $this->createdAt = CarbonImmutable::now();
     }
 
