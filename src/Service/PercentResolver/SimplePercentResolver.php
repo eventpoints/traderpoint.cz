@@ -13,11 +13,8 @@ final readonly class SimplePercentResolver implements PercentResolverInterface
 
     public function resolve(Partner $partner, Store $store): int
     {
-        // Replace with your real logic:
-        // - if you add Store.percentOverride or Partner.memberPercent, use them here.
-        // - otherwise return a config default (e.g. 15).
         if (method_exists($store, 'getPercentOverride') && $store->getPercentOverride() !== null) {
-            return (int) $store->getPercentOverride();
+            return $store->getPercentOverride();
         }
         if (method_exists($partner, 'getMemberPercent')) {
             return $partner->getMemberPercent();
