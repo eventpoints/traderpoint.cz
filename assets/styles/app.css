@@ -51,6 +51,14 @@ body {
     border: 1px solid #eee;
 }
 
+.avatar-80 {
+    height: 80px;
+    width: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid #eee;
+}
+
 
 .avatar-120 {
     height: 120px;

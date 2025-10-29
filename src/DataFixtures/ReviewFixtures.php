@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Review;
 use App\Entity\TraderProfile;
 use App\Entity\User;
+use Carbon\CarbonImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -21,7 +22,7 @@ final class ReviewFixtures extends Fixture implements DependentFixtureInterface
         $allUsers = [];
         for ($i = 0; $i < 25; $i++) {
             /** @var User $u */
-            $u = $this->getReference("user_{$i}");
+            $u = $this->getReference("user_{$i}", User::class);
             $allUsers[] = $u;
         }
 
@@ -53,7 +54,7 @@ final class ReviewFixtures extends Fixture implements DependentFixtureInterface
                 $value = $this->rating($faker);
 
                 $title = ucfirst($faker->words($faker->numberBetween(2, 5), true));
-                $content = $faker->paragraphs($faker->numberBetween(2, 4), true); // ~120–400 chars
+                $content = $faker->words($faker->numberBetween(20, 50), true);
 
                 $review = new Review(
                     title: $title,
@@ -65,7 +66,7 @@ final class ReviewFixtures extends Fixture implements DependentFixtureInterface
                 );
 
                 // Date within last ~180 days
-                $createdAt = (new \Carbon\CarbonImmutable())
+                $createdAt = (new CarbonImmutable())
                     ->subDays($faker->numberBetween(0, 180))
                     ->subMinutes($faker->numberBetween(0, 1440));
                 $review->setCreatedAt($createdAt);

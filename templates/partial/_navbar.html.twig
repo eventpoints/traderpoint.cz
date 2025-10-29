@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg glass rounded-0 border-0" data-bs-theme="light">
-    <div class="container d-flex gap-3 justify-content-md-between justify-content-start align-items-start align-items-md-center flex-column flex-md-row">
+    <div class="container d-flex gap-3 justify-content-between align-items-center flex-row">
         <a class="navbar-brand" href="{{ path('landing') }}">
             <div class="d-flex justify-content-start align-items-center gap-2">
                 <img height="60" src="{{ asset('images/tp-logo.png') }}">
@@ -8,27 +8,28 @@
                     <div class="lh-1">Point</div>
                 </div>
             </div>
-
         </a>
-        <ul class="navbar-nav flex-row gap-3">
+        <ul class="navbar-nav align-items-center flex-row gap-3">
             {% if app.user %}
                 <li class="nav-item">
                     <a class="nav-link fw-bold" type="button" data-bs-toggle="offcanvas"
                        data-bs-target="#user-menu-offcanvas" aria-controls="user-menu-offcanvas"
                        aria-label="Toggle navigation">
-                        {{ app.user.firstName }}
+                        {{ ux_icon('mdi:user-circle-outline', {style: 'height: 2em;'}) }}
                     </a>
                 </li>
             {% else %}
                 {% if app.current_route == 'trader_register' %}
                     <li class="nav-item">
-                        <a class="btn btn-outline-secondary fw-bold text-primary" href="{{ path('landing') }}" type="button">
+                        <a class="btn btn-outline-secondary fw-bold text-primary" href="{{ path('landing') }}"
+                           type="button">
                             {{ 'looking-to-hire'|trans }}
                         </a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="btn btn-outline-primary fw-bold text-black" href="{{ path('trader_register') }}" type="button">
+                        <a class="btn btn-outline-primary fw-bold text-black" href="{{ path('trader_register') }}"
+                           type="button">
                             {{ 'tradesmen-register'|trans }}
                         </a>
                     </li>
@@ -38,7 +39,7 @@
                 <a class="nav-link" type="button" data-bs-toggle="offcanvas"
                    data-bs-target="#language-menu-offcanvas" aria-controls="language-menu-offcanvas"
                    aria-label="Language menu">
-                    {{ app.locale|language_name|title }}
+                    {{ ux_icon('mdi:web', {style: 'height: 2em;'}) }}
                 </a>
             </li>
         </ul>
@@ -48,19 +49,32 @@
 {% if app.user %}
     <div class="offcanvas offcanvas-end" tabindex="-1" id="user-menu-offcanvas"
          aria-labelledby="user-menu-offcanvas-label">
-        <div class="offcanvas-header">
-            <div class="hstack gap-3">
-                <div>
-                    <img class="avatar-50" src="{{ app.user.avatar }}"/>
-                </div>
-                <div>
-                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">{{ app.user.FullName }}</h5>
-                </div>
-
+        <div class="offcanvas-header d-flex flex-column">
+            <div class="text-end w-100">
+                <a data-bs-dismiss="offcanvas" type="button">
+                    {{ ux_icon('mdi:window-close', {style: 'height: 2em;'}) }}
+                </a>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            {% if app.user and app.user.isTrader %}
+                <div class="mb-4">
+                    <img
+                            class="p-0"
+                            alt="Membership QR"
+                            src="{{ membership_qr_data_uri(partnerSlug = null, size = 250) }}"
+                    />
+                </div>
+            {% endif %}
+            <div class="w-100 d-flex gap-3 justify-content-start align-items-start">
+                <div>
+                    <img class="avatar-80 border border-3" src="{{ app.user.avatar }}"/>
+                </div>
+                <div>
+                    <h5 class="offcanvas-title fs-4" id="offcanvasNavbarLabel">{{ app.user.FullName }}</h5>
+                    <div class="text-muted">{{ app.user.email }}</div>
+                </div>
+            </div>
         </div>
-        <div class="list-group list-group-flush">
+        <div class="list-group list-group-flush fs-5">
             {% if app.user.isTrader %}
                 <a class="list-group-item list-group-item-action {{ app.locale == 'trader_dashboard' ? 'active' }}"
                    href="{{ path('trader_dashboard') }}">{{ 'dashboard'|title }}</a>
@@ -86,10 +100,14 @@
 <div class="offcanvas offcanvas-end" tabindex="-1" id="language-menu-offcanvas"
      aria-labelledby="language-menu-offcanvas-label">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">{{ 'language'|trans }}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <h5 class="offcanvas-title fs-4" id="offcanvasNavbarLabel">{{ 'language'|trans|title }}</h5>
+        <div class="text-end w-100">
+            <a data-bs-dismiss="offcanvas" type="button">
+                {{ ux_icon('mdi:window-close', {style: 'height: 2em;'}) }}
+            </a>
+        </div>
     </div>
-    <div class="list-group list-group-flush">
+    <div class="list-group list-group-flush fs-5">
         <a class="list-group-item list-group-item-action {{ app.locale == 'cs' ? 'active' }}"
            href="{{ path('landing', {_locale: 'cs'}) }}">{{ 'cs'|locale_name|title }}</a>
         <a class="list-group-item list-group-item-action {{ app.locale == 'en' ? 'active' }}"

@@ -21,16 +21,16 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
     {
         $faker = Factory::create('cs_CZ');
 
-        // Use ONLY traders
-        $traderIds = $this->collectTraderIdsByPrefix('user_');
-        $engagementIds = $this->collectIdsByPrefix('engagement_', Engagement::class);
+        // Use ONLY traders (by reference if present, else DB fallback)
+        $traderIds     = $this->collectTraderIdsByPrefix($manager, 'user_', User::class);
+        $engagementIds = $this->collectIdsByPrefix($manager, 'engagement_', Engagement::class);
 
         if ($traderIds === [] || $engagementIds === []) {
             return;
         }
 
-        $versionMap = [];            // "E<engId>|U<userId>" -> version
-        $acceptedChosenByEng = [];   // "<engId>" -> true once chosen
+        $versionMap = [];          // "E<engId>|U<userId>" -> version
+        $acceptedByEng = [];       // "<engId>" -> true once chosen
         $persisted = 0;
 
         foreach ($engagementIds as $engId) {
@@ -52,10 +52,10 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
                 continue;
             }
 
-            $engWillChoose = random_int(0, 99) < 55;
+            $engWillChoose = $faker->boolean(55);
 
             // Pick 2–5 distinct traders from eligible pool
-            $traderCount = min(\count($eligibleTraderIds), $faker->numberBetween(2, 5));
+            $traderCount     = min(\count($eligibleTraderIds), $faker->numberBetween(2, 5));
             $pickedTraderIds = $faker->randomElements($eligibleTraderIds, $traderCount, false);
 
             foreach ($pickedTraderIds as $userId) {
@@ -71,7 +71,7 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
                     $versionMap[$key] = $currentVersion;
 
                     $netCents = $faker->numberBetween(5_000, 250_000);
-                    $vatBps = $faker->randomElement([0, 1000, 1500, 2100]);
+                    $vatBps   = $faker->randomElement([0, 1000, 1500, 2100]);
 
                     $quote = new Quote($engagement, $trader, $netCents, CurrencyCodeEnum::CZK);
                     $quote->setVersion($currentVersion);
@@ -101,18 +101,19 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
                     ]);
 
                     $engKey = (string) $engId;
-                    $alreadyChosen = ! empty($acceptedChosenByEng[$engKey]);
+                    $alreadyChosen = !empty($acceptedByEng[$engKey]);
 
-                    if ($drawn === QuoteStatusEnum::ACCEPTED && (! $engWillChoose || $alreadyChosen)) {
+                    // Ensure only one ACCEPTED per engagement (if at all)
+                    if ($drawn === QuoteStatusEnum::ACCEPTED && (!$engWillChoose || $alreadyChosen)) {
                         $drawn = QuoteStatusEnum::REJECTED;
                     }
 
                     match ($drawn) {
-                        QuoteStatusEnum::ACCEPTED => (function () use ($engagement, $quote, $createdAt, $faker, $engKey, &$acceptedChosenByEng): void {
+                        QuoteStatusEnum::ACCEPTED => (function () use ($engagement, $quote, $createdAt, $faker, $engKey, &$acceptedByEng): void {
                             // MUST be the chosen quote on the engagement
                             $engagement->accept($quote);
                             $quote->setDecidedAt($createdAt->addDays($faker->numberBetween(1, 14)));
-                            $acceptedChosenByEng[$engKey] = true;
+                            $acceptedByEng[$engKey] = true;
                         })(),
 
                         QuoteStatusEnum::REJECTED => (function () use ($quote, $createdAt, $faker): void {
@@ -153,44 +154,69 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
         $manager->clear(Quote::class);
     }
 
-    /**
-     * Keep native ID types for proxies.
-     * @template T of object
-     * @param class-string<T> $class
-     * @return array<int, mixed>
-     */
-    private function collectIdsByPrefix(string $prefix, string $class): array
-    {
-        $ids = [];
-        foreach ($this->referenceRepository->getReferences() as $key => $obj) {
-            if (\str_starts_with((string) $key, $prefix) && $obj instanceof $class) {
-                $ids[] = $obj->getId();
-            }
-        }
-        return $ids;
-    }
-
-    /**
-     * IDs of users who are TRADERS (has ROLE_TRADER / isTrader()).
-     * @return array<int, mixed>
-     */
-    private function collectTraderIdsByPrefix(string $prefix): array
-    {
-        $ids = [];
-        foreach ($this->referenceRepository->getReferences() as $key => $obj) {
-            // relies on your User::isTrader() (checks ROLE_TRADER)
-            if (\str_starts_with((string) $key, $prefix) && $obj instanceof User && $obj->isTrader()) {
-                $ids[] = $obj->getId();
-            }
-        }
-        return $ids;
-    }
-
     public function getDependencies(): array
     {
         return [
             EngagementFixtures::class,
             UserFixtures::class,
         ];
+    }
+
+    /**
+     * Enumerate refs user_0..N and return IDs of traders.
+     * Falls back to DB query (all users filtered by isTrader()) if no refs found.
+     *
+     * @return array<int, mixed>
+     */
+    private function collectTraderIdsByPrefix(ObjectManager $manager, string $prefix, string $fqcn): array
+    {
+        $ids = [];
+        for ($i = 0; $this->hasReference("{$prefix}{$i}", $fqcn); $i++) {
+            $ref = $this->getReference("{$prefix}{$i}", $fqcn);
+            if ($ref instanceof User && $ref->isTrader()) {
+                $ids[] = $ref->getId();
+            }
+        }
+        if ($ids === []) {
+            // Fallback: DB fetch & filter
+            $users = $manager->getRepository(User::class)->findAll();
+            foreach ($users as $u) {
+                if ($u instanceof User && $u->isTrader()) {
+                    $ids[] = $u->getId();
+                }
+            }
+        }
+        return $ids;
+    }
+
+    /**
+     * Enumerate refs engagement_0..N to collect IDs for the given class.
+     * Falls back to DB when no references are present.
+     *
+     * @template T of object
+     * @param ObjectManager $manager
+     * @param string $prefix
+     * @param class-string<T> $class
+     * @return array<int, mixed>
+     */
+    private function collectIdsByPrefix(ObjectManager $manager, string $prefix, string $class): array
+    {
+        $ids = [];
+        for ($i = 0; $this->hasReference("{$prefix}{$i}", $class); $i++) {
+            $ref = $this->getReference("{$prefix}{$i}", $class);
+            if ($ref instanceof $class) {
+                $ids[] = $ref->getId();
+            }
+        }
+        if ($ids === []) {
+            // Fallback: DB fetch (IDs only)
+            $entities = $manager->getRepository($class)->findAll();
+            foreach ($entities as $e) {
+                if ($e instanceof $class) {
+                    $ids[] = $e->getId();
+                }
+            }
+        }
+        return $ids;
     }
 }

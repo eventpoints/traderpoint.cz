@@ -59,6 +59,9 @@
             "config/routes/easyadmin.yaml"
         ]
     },
+    "endroid/qr-code-bundle": {
+        "version": "6.0.0"
+    },
     "intervention/image-symfony": {
         "version": "1.2",
         "recipe": {
@@ -175,6 +178,18 @@
             ".env"
         ]
     },
+    "symfony/form": {
+        "version": "7.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "7.2",
+            "ref": "7d86a6723f4a623f59e2bf966b6aad2fc461d36b"
+        },
+        "files": [
+            "config/packages/csrf.yaml"
+        ]
+    },
     "symfony/forty-six-elks-notifier": {
         "version": "7.1",
         "recipe": {
@@ -275,6 +290,18 @@
             "tests/bootstrap.php"
         ]
     },
+    "symfony/property-info": {
+        "version": "7.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "7.3",
+            "ref": "dae70df71978ae9226ae915ffd5fad817f5ca1f7"
+        },
+        "files": [
+            "config/packages/property_info.yaml"
+        ]
+    },
     "symfony/routing": {
         "version": "7.1",
         "recipe": {
@@ -364,6 +391,18 @@
     },
     "symfony/ux-dropzone": {
         "version": "v2.30.0"
+    },
+    "symfony/ux-icons": {
+        "version": "2.31",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.17",
+            "ref": "803a3bbd5893f9584969ab8670290cdfb6a0a5b5"
+        },
+        "files": [
+            "assets/icons/symfony.svg"
+        ]
     },
     "symfony/ux-leaflet-map": {
         "version": "2.30",

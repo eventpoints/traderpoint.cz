@@ -1,15 +1,6 @@
 services:
   php:
     image: ghcr.io/eventpoints/traderpoint.cz-php:main
-    volumes:
-      - php_socket:/var/run/php
-      - ./php/php.ini:/usr/local/etc/php/php.ini:ro
-    healthcheck:
-      interval: 10s
-      timeout: 3s
-      retries: 3
-      start_period: 30s
-      test: 50s
     restart: unless-stopped
     environment:
       APP_URL: "https://traderpoint.cz"
@@ -30,6 +21,15 @@ services:
       OAUTH_GOOGLE_CLIENT_SECRET: "__TRADERPOINT_OAUTH_GOOGLE_CLIENT_SECRET__"
       OAUTH_FACEBOOK_CLIENT_ID: "__TRADERPOINT_OAUTH_FACEBOOK_CLIENT_ID__"
       OAUTH_FACEBOOK_CLIENT_SECRET: "__TRADERPOINT_OAUTH_FACEBOOK_CLIENT_SECRET__"
+    volumes:
+      - ./php/php.ini:/usr/local/etc/php/php.ini:ro
+    healthcheck:
+      # keep it simple in prod; FPM process up == OK
+      test: ["CMD-SHELL", "php -v >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
     networks:
       - internal
 
@@ -61,32 +61,33 @@ services:
       OAUTH_FACEBOOK_CLIENT_ID: "__TRADERPOINT_OAUTH_FACEBOOK_CLIENT_ID__"
       OAUTH_FACEBOOK_CLIENT_SECRET: "__TRADERPOINT_OAUTH_FACEBOOK_CLIENT_SECRET__"
     volumes:
-      - ./php/php.ini:/usr/local/etc/php/php.ini:ro  # keep CLI/php settings aligned with php service
+      - ./php/php.ini:/usr/local/etc/php/php.ini:ro
     networks:
       - internal
 
   caddy:
     image: ghcr.io/eventpoints/traderpoint.cz-caddy:main
+    restart: unless-stopped
     depends_on:
       - php
-    restart: unless-stopped
     environment:
-      SERVER_NAME: ":80"
+      SERVER_NAME: ":80"                                  # Traefik terminates TLS
       MERCURE_PUBLISHER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
       MERCURE_SUBSCRIBER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
     volumes:
-      - php_socket:/var/run/php
+      - .:/app:ro                                         # ensure /app/public exists in caddy
       - caddy_data:/data
       - caddy_config:/config
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - ./php.ini:/usr/local/etc/php/php.ini
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
     expose:
       - "80"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traderpoint.rule=Host(`traderpoint.cz`, `www.traderpoint.cz`)"
+      - "traefik.http.routers.traderpoint.entrypoints=websecure"
       - "traefik.http.routers.traderpoint.tls=true"
       - "traefik.http.routers.traderpoint.tls.certresolver=le"
+      - "traefik.docker.network=traefik"
     networks:
       - traefik
       - internal
@@ -129,6 +130,5 @@ networks:
     external: false
 
 volumes:
-  php_socket:
   caddy_data:
   caddy_config:

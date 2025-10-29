@@ -24,29 +24,42 @@ final class PaymentFixtures extends Fixture implements DependentFixtureInterface
     {
         $faker = Factory::create('cs_CZ');
 
-        /** @var Engagement[] $engagementRefs */
-        $engagementRefs = [];
-        foreach ($this->referenceRepository->getReferences() as $key => $obj) {
-            if (\str_starts_with((string) $key, 'engagement_') && $obj instanceof Engagement) {
-                // re-attach to this EM
-                $engagementRefs[] = $manager->getReference(Engagement::class, $obj->getId());
-            }
+        /** @var list<Engagement> $engagements */
+        $engagements = [];
+
+        // Try to enumerate known references without touching private/protected APIs
+        for ($i = 0; $this->hasReference("engagement_$i", Engagement::class); $i++) {
+            /** @var Engagement $ref */
+            $ref = $this->getReference("engagement_$i", Engagement::class);
+            // Re-attach to this EM by id (safe across managers)
+            $engagements[] = $manager->getReference(Engagement::class, $ref->getId());
         }
 
-        if ($engagementRefs === []) {
+        // Fallback: if no references matched, just query the DB
+        if ($engagements === []) {
+            $engagements = $manager->getRepository(Engagement::class)->findAll();
+        }
+
+        if ($engagements === []) {
             return;
         }
 
-        foreach ($engagementRefs as $eng) {
+        foreach ($engagements as $eng) {
             // payer is the engagement owner (client)
             $owner = $eng->getOwner();
-            if (! $owner instanceof User) {
-                // if lazy, reattach via id
+            if (!$owner instanceof User) {
                 $owner = $manager->getReference(User::class, $eng->getOwner()?->getId());
             }
 
             // --- POSTING_FEE (always create exactly one per engagement) ---
-            $posting = new Payment($owner, $eng, 9_900, CurrencyCodeEnum::CZK, PaymentTypeEnum::POSTING_FEE, PaymentStatusEnum::PENDING);
+            $posting = new Payment(
+                $owner,
+                $eng,
+                9_900,
+                CurrencyCodeEnum::CZK,
+                PaymentTypeEnum::POSTING_FEE,
+                PaymentStatusEnum::PENDING
+            );
 
             // Status distribution: 65% paid, 20% pending, 10% failed, 5% expired
             $roll = $faker->numberBetween(1, 100);
@@ -71,9 +84,16 @@ final class PaymentFixtures extends Fixture implements DependentFixtureInterface
             $manager->persist($posting);
             $this->addReference('payment_' . $this->counter++ . '_posting', $posting);
 
-            // --- Optional: BOOST for some already-paid engagements (no duplicate active) ---
+            // --- Optional: FEATURED for some already-paid engagements ---
             if ($posting->getStatus() === PaymentStatusEnum::PAID && $faker->boolean(25)) {
-                $boost = new Payment($owner, $eng, 49_900, CurrencyCodeEnum::CZK, PaymentTypeEnum::FEATURED, PaymentStatusEnum::PENDING);
+                $boost = new Payment(
+                    $owner,
+                    $eng,
+                    49_900,
+                    CurrencyCodeEnum::CZK,
+                    PaymentTypeEnum::FEATURED,
+                    PaymentStatusEnum::PENDING
+                );
 
                 $boost->setStatus(PaymentStatusEnum::PAID);
                 $boost->setStripeCheckoutSessionId($this->fakeCheckoutId());
@@ -83,9 +103,16 @@ final class PaymentFixtures extends Fixture implements DependentFixtureInterface
                 $this->addReference('payment_' . $this->counter++ . '_boost', $boost);
             }
 
-            // --- Optional history: add a FAILED attempt for ~20% (doesn't violate "one active") ---
+            // --- Optional history: add a FAILED attempt for ~20% ---
             if ($faker->boolean(20)) {
-                $failed = new Payment($owner, $eng, 9_900, CurrencyCodeEnum::CZK, PaymentTypeEnum::POSTING_FEE, PaymentStatusEnum::PENDING);
+                $failed = new Payment(
+                    $owner,
+                    $eng,
+                    9_900,
+                    CurrencyCodeEnum::CZK,
+                    PaymentTypeEnum::POSTING_FEE,
+                    PaymentStatusEnum::PENDING
+                );
                 $failed->setStatus(PaymentStatusEnum::FAILED);
                 $failed->setStripeCheckoutSessionId($this->fakeCheckoutId());
                 $this->dateBump($failed, $faker->numberBetween(10, 60));
@@ -108,7 +135,6 @@ final class PaymentFixtures extends Fixture implements DependentFixtureInterface
     private function fakeCheckoutId(): string
     {
         return 'cs_test_' . bin2hex(random_bytes(12));
-        // looks like: cs_test_a1J7... (good enough for dev)
     }
 
     private function fakePaymentIntentId(): string

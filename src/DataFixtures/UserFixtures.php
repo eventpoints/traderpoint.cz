@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Enum\TraderStatusEnum;
 use App\Enum\UserRoleEnum;
 use App\Service\AvatarService\AvatarService;
+use Carbon\CarbonImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -37,7 +38,7 @@ final class UserFixtures extends Fixture implements DependentFixtureInterface
             $user->setLastName($faker->lastName());
             $user->setEmail($email);
             $user->setAvatar($avatar);
-            $user->setVerified(true);
+            $user->setVerifiedAt(CarbonImmutable::now());
             $user->setPassword($this->passwordHasher->hashPassword($user, self::FAKE_USER_PASSWORD));
 
             // 20% traders, 80% clients
@@ -48,9 +49,9 @@ final class UserFixtures extends Fixture implements DependentFixtureInterface
                 $skillPool = [];
                 foreach (SkillData::getSkills() as $skills) {
                     foreach ($skills as $skillRef) {
-                        if ($this->hasReference($skillRef)) {
+                        if ($this->hasReference($skillRef, Skill::class)) {
                             /** @var Skill $skill */
-                            $skill = $this->getReference($skillRef);
+                            $skill = $this->getReference($skillRef, Skill::class);
                             $skillPool[] = $skill;
                         }
                     }

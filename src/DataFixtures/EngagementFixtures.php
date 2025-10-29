@@ -24,48 +24,61 @@ class EngagementFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager): void
     {
-        // Czech locale for place names, addresses, etc.
         $faker = Factory::create('cs_CZ');
 
+        // touch enums so autoloaders don’t trim them (optional)
         ContractType::cases();
         $statusCases = EngagementStatusEnum::cases();
 
-        // --- Collect ALL Skill references and re-attach them to the current EM ---
-        /** @var Skill[] $availableSkills */
-        $availableSkills = [];
-        foreach ($this->referenceRepository->getReferences() as $ref) {
-            if ($ref instanceof Skill) {
-                // Re-attach to this ObjectManager to avoid "new entity through relationship" error
-                $availableSkills[] = $manager->getReference(Skill::class, $ref->getId());
-            }
+        // ---- Skills: pull from DB (no internal reference repo usage) ----
+        /** @var list<Skill> $availableSkills */
+        $availableSkills = $manager->getRepository(Skill::class)->findAll();
+
+        // ---- Owners: try references user_0.., else fallback to DB ----
+        /** @var list<User> $owners */
+        $owners = [];
+        for ($i = 0; $this->hasReference("user_{$i}", User::class); $i++) {
+            /** @var User $u */
+            $u = $this->getReference("user_{$i}", User::class);
+            // reattach by id to current EM to be safe
+            $owners[] = $manager->getReference(User::class, $u->getId());
+        }
+        if ($owners === []) {
+            // fallback: take up to 25 users from DB
+            $owners = $manager->getRepository(User::class)->findBy([], null, 25);
+        }
+        if ($owners === []) {
+            // nothing to do
+            return;
         }
 
-        // Users created by UserFixtures: user_0 .. user_49
-        for ($userIdx = 0; $userIdx < 25; $userIdx++) {
-            /** @var User $owner */
-            $owner = $this->getReference("user_{$userIdx}");
-
+        // For each owner, create a bunch of engagements
+        foreach ($owners as $owner) {
             $numEngagements = $faker->numberBetween(10, 25);
 
             for ($i = 0; $i < $numEngagements; $i++) {
                 $engagement = new Engagement();
 
-                $timelinePreferenceEnumOptions = $faker->randomElement(TimelinePreferenceEnum::cases());
-                $engagement->setTimelinePreferenceEnum($timelinePreferenceEnumOptions);
+                // --- Timeline preference ---
+                $engagement->setTimelinePreferenceEnum(
+                    $faker->randomElement(TimelinePreferenceEnum::cases())
+                );
 
                 // --- Basics ---
                 $engagement->setTitle($faker->sentence(4));
                 $engagement->setDescription($faker->text(150));
 
                 // --- Skills: 1–3 unique from the pool (if any) ---
-                if (! empty($availableSkills)) {
-                    $skillsToAdd = $faker->randomElements(
-                        $availableSkills,
-                        $faker->numberBetween(1, min(3, \count($availableSkills))),
-                        false
-                    );
+                if ($availableSkills !== []) {
+                    $count = $faker->numberBetween(1, min(3, \count($availableSkills)));
+                    /** @var list<Skill> $skillsToAdd */
+                    $skillsToAdd = $faker->randomElements($availableSkills, $count, false);
                     foreach ($skillsToAdd as $skill) {
-                        $engagement->addSkill($skill);
+                        // ensure it’s attached to this EM (getReference by id)
+                        $attached = $manager->contains($skill)
+                            ? $skill
+                            : $manager->getReference(Skill::class, $skill->getId());
+                        $engagement->addSkill($attached);
                     }
                 }
 
@@ -73,13 +86,11 @@ class EngagementFixtures extends Fixture implements DependentFixtureInterface
                 $engagement->setLatitude($faker->latitude(48.5, 51.0));
                 $engagement->setLongitude($faker->longitude(12.0, 18.0));
 
-                // --- Enums (limit currency to CZK/EUR) ---
-                $currency = $faker->randomElement([CurrencyCodeEnum::CZK]);
-                $status = $faker->randomElement($statusCases);
+                // --- Enums (limit currency to CZK) & status ---
+                $engagement->setCurrencyCodeEnum(CurrencyCodeEnum::CZK);
+                $engagement->setStatus($faker->randomElement($statusCases));
 
-                $engagement->setCurrencyCodeEnum($currency);
-                $engagement->setStatus($status);
-
+                // --- Budget (store in minor units if that’s your convention) ---
                 $factor = 100;
                 $labourMajor = $faker->numberBetween(1_000, 500_000);
                 $engagement->setBudget($labourMajor * $factor);
@@ -90,7 +101,7 @@ class EngagementFixtures extends Fixture implements DependentFixtureInterface
                     $faker->dateTimeBetween($createdAt->addWeek(), $createdAt->addMonths(3))
                 );
 
-                // If createdAt is handled in the entity constructor, no need to set it here.
+                // If your entity manages createdAt itself, just set what’s needed
                 $engagement->setUpdatedAt(null);
                 $engagement->setDueAt($dueAt);
 
