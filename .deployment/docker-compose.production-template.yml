@@ -21,8 +21,11 @@ services:
       OAUTH_GOOGLE_CLIENT_SECRET: "__TRADERPOINT_OAUTH_GOOGLE_CLIENT_SECRET__"
       OAUTH_FACEBOOK_CLIENT_ID: "__TRADERPOINT_OAUTH_FACEBOOK_CLIENT_ID__"
       OAUTH_FACEBOOK_CLIENT_SECRET: "__TRADERPOINT_OAUTH_FACEBOOK_CLIENT_SECRET__"
+      JWT_QR_PRIVATE_KEY_PATH: "/app/config/jwt-qr/private.pem"
+      JWT_QR_PUBLIC_KEY_PATH: "/app/config/jwt-qr/public.pem"
     volumes:
       - ./php/php.ini:/usr/local/etc/php/php.ini:ro
+      - ./config/jwt-qr:/app/config/jwt-qr:ro
     healthcheck:
       # keep it simple in prod; FPM process up == OK
       test: ["CMD-SHELL", "php -v >/dev/null 2>&1 || exit 1"]
@@ -60,6 +63,8 @@ services:
       OAUTH_GOOGLE_CLIENT_SECRET: "__TRADERPOINT_OAUTH_GOOGLE_CLIENT_SECRET__"
       OAUTH_FACEBOOK_CLIENT_ID: "__TRADERPOINT_OAUTH_FACEBOOK_CLIENT_ID__"
       OAUTH_FACEBOOK_CLIENT_SECRET: "__TRADERPOINT_OAUTH_FACEBOOK_CLIENT_SECRET__"
+      JWT_QR_PRIVATE_KEY_PATH: "/app/config/jwt-qr/private.pem"
+      JWT_QR_PUBLIC_KEY_PATH: "/app/config/jwt-qr/public.pem"
     volumes:
       - ./php/php.ini:/usr/local/etc/php/php.ini:ro
     networks:
