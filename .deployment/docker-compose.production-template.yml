@@ -75,7 +75,7 @@ services:
       MERCURE_PUBLISHER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
       MERCURE_SUBSCRIBER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
     volumes:
-      - .:/app:ro                                         # ensure /app/public exists in caddy
+      - ./public:/app/public:ro
       - caddy_data:/data
       - caddy_config:/config
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
