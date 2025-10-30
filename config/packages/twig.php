@@ -15,7 +15,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'form/map_location.html.twig',
             'form/password_input.html.twig',
             'form/phone_number.html.twig',
-            'form/_form_theme.html.twig'
+            'form/_form_theme.html.twig',
         ],
     ]);
     if ($containerConfigurator->env() === 'test') {

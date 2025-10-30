@@ -11,7 +11,6 @@ use App\Enum\CurrencyCodeEnum;
 use App\Enum\TimelinePreferenceEnum;
 use App\Form\DataTransformer\MoneyToMinorUnitsTransformer;
 use App\Form\Type\MapLocationType;
-use App\Form\Type\SmartRangeType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

@@ -6,7 +6,6 @@ use App\Entity\Engagement;
 use App\Entity\Quote;
 use App\Enum\CurrencyCodeEnum;
 use App\Form\DataTransformer\CarbonImmutableTransformer;
-use App\Form\Type\SmartRangeType;
 use App\Form\Type\SwitchType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;

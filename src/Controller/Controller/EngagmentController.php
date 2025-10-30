@@ -5,13 +5,9 @@ namespace App\Controller\Controller;
 use App\DataTransferObject\MapLocationDto;
 use App\Entity\Engagement;
 use App\Entity\Image;
-use App\Entity\Payment;
 use App\Entity\Quote;
 use App\Entity\User;
-use App\Enum\CurrencyCodeEnum;
 use App\Enum\FlashEnum;
-use App\Enum\PaymentStatusEnum;
-use App\Enum\PaymentTypeEnum;
 use App\Form\Form\EngagementFormType;
 use App\Form\Form\QuoteFormType;
 use App\Repository\EngagementRepository;
@@ -27,7 +23,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Map\Bridge\Leaflet\LeafletOptions;
@@ -43,8 +38,6 @@ class EngagmentController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly QuoteRepository $quoteRepository,
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaymentRepository $paymentRepository,
-        private readonly StripeClient $stripe,
         private readonly UserRepository $userRepository,
         private readonly ImageOptimizer $imageOptimizer,
         private readonly EmailService $emailService,
@@ -204,7 +197,9 @@ class EngagmentController extends AbstractController
             $engagement->setAddress($mapLocationDto->getAddress());
 
             $this->engagementRepository->save(entity: $engagement, flush: true);
-            return $this->redirectToRoute('client_show_engagement', ['id' => $engagement->getId()]);
+            return $this->redirectToRoute('client_show_engagement', [
+                'id' => $engagement->getId(),
+            ]);
         }
 
         return $this->render('engagement/create.html.twig', [
