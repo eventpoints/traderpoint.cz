@@ -135,32 +135,46 @@
                                 </div>
 
                             </div>
-                            <div class="bg-white p-3 rounded-3" {{ stimulus_controller('price-percent', { roundTo: 100 }) }}>
-                                {{ form_row(quoteForm.priceNetCents) }}
-                                <div class="d-flex flex-wrap gap-2">
-                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
-                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 2 }) }}>+2%</a>
-                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
-                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 5 }) }}>+5%</a>
-                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
-                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 10 }) }}>+10%</a>
-                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
-                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 15 }) }}>+15%</a>
-                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
-                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 20 }) }}>+20%</a>
-                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
-                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 30 }) }}>+30%</a>
-                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
-                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 40 }) }}>+40%</a>
-                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
-                                            {{ stimulus_action('price-percent', 'addPercentage', 'click', { pct: 50 }) }}>+50%</a>
-                                    <a href="#"
-                                       class="btn btn-sm btn-outline-primary rounded-pill"
-                                            {{ stimulus_action('price-percent', 'reset', 'click', { price: engagement.budget }) }}>
-                                        {{ 'reset'|trans }}
-                                    </a>
-                                </div>
-                            </div>
+                            <div class="bg-white p-3 rounded-3"
+     {{ stimulus_controller('price-percent') }}>
+  {# the MoneyType field now holds CZK (not cents) #}
+  {{ form_row(quoteForm.priceNetCents, {
+    attr: {
+      'data-money-input-locale-value': 'en-US',
+      'data-price-percent-target': 'input',   # ✅ target is correct
+      'data-money-input-decimals-value': 2    # or 0 if you want whole CZK
+    }
+  }) }}
+
+  <div class="d-flex flex-wrap gap-2 mt-2">
+    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+       {{ stimulus_action('price-percent','addPercentage','click', { pct: 2 }) }}>+2%</a>
+    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+       {{ stimulus_action('price-percent','addPercentage','click', { pct: 5 }) }}>+5%</a>
+    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+       {{ stimulus_action('price-percent','addPercentage','click', { pct: 10 }) }}>+10%</a>
+    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+       {{ stimulus_action('price-percent','addPercentage','click', { pct: 15 }) }}>+15%</a>
+    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+       {{ stimulus_action('price-percent','addPercentage','click', { pct: 20 }) }}>+20%</a>
+    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+       {{ stimulus_action('price-percent','addPercentage','click', { pct: 30 }) }}>+30%</a>
+    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+       {{ stimulus_action('price-percent','addPercentage','click', { pct: 40 }) }}>+40%</a>
+    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
+       {{ stimulus_action('price-percent','addPercentage','click', { pct: 50 }) }}>+50%</a>
+
+    {# IMPORTANT: budget is cents in your entity, convert to CZK for reset #}
+    <a href="#"
+       class="btn btn-sm btn-outline-primary rounded-pill"
+       {{ stimulus_action('price-percent','reset','click', {
+         price: (engagement.budget / 100)|number_format(2, '.', '')
+       }) }}>
+      {{ 'reset'|trans }}
+    </a>
+  </div>
+</div>
+
                             {{ form_row(quoteForm.includesMaterials) }}
                             {{ form_row(quoteForm.warrantyMonths) }}
                             {{ form_row(quoteForm.validUntil) }}

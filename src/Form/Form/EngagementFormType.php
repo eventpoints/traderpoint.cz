@@ -18,6 +18,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -117,16 +118,10 @@ final class EngagementFormType extends AbstractType
                 'map' => $options['map'],
                 'height' => '320px',
             ])
-            ->add('budget', SmartRangeType::class, [
+            ->add('budget', MoneyType::class, [
                 'currency' => CurrencyCodeEnum::CZK->value,
                 'label' => $this->translator->trans('estimated-budget'),
-                'data' => 0,
-                'attr' => [
-                    'min' => 0,
-                    'max' => 900000,
-                    'step' => 200,
-                ],
-                'required' => false,
+                'required' => true,
             ]);
 
         $currentUser = $this->security->getUser();

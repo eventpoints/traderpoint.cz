@@ -204,53 +204,7 @@ class EngagmentController extends AbstractController
             $engagement->setAddress($mapLocationDto->getAddress());
 
             $this->engagementRepository->save(entity: $engagement, flush: true);
-
-            $payment = new Payment(
-                owner: $currentUser,
-                engagement: $engagement,
-                amountMinor: 9900,
-                currency: CurrencyCodeEnum::CZK,
-                type: PaymentTypeEnum::POSTING_FEE,
-                status: PaymentStatusEnum::PENDING
-            );
-            $engagement->addPayment($payment);
-            $this->engagementRepository->save($engagement, true);
-
-            $base = $this->generateUrl('check_payment', [], UrlGeneratorInterface::ABSOLUTE_URL);
-
-            $successUrl = $base . '?result=success&session_id={CHECKOUT_SESSION_ID}';
-            $cancelUrl = $base . '?result=cancel&session_id={CHECKOUT_SESSION_ID}';
-
-            // 3) Create Stripe Checkout Session
-            $session = $this->stripe->checkout->sessions->create([
-                'mode' => 'payment',
-                'payment_method_types' => ['card'],
-                'customer_email' => $currentUser->getEmail(),
-                'line_items' => [[
-                    'price_data' => [
-                        'currency' => 'czk',
-                        'product_data' => [
-                            'name' => 'Job posting fee',
-                        ],
-                        'unit_amount' => 9900,
-                    ],
-                    'quantity' => 1,
-                ]],
-                'metadata' => [
-                    'payment_id' => (string) $payment->getId(),
-                    'engagement_id' => (string) $engagement->getId(),
-                    'user_id' => (string) $currentUser->getId(),
-                    'locale' => $request->getLocale(),
-                ],
-                'success_url' => $successUrl,
-                'cancel_url' => $cancelUrl,
-                'locale' => 'cs',
-            ]);
-
-            // 4) Store session ids on Payment
-            $payment->setStripeCheckoutSessionId($session->id);
-            $this->paymentRepository->save(entity: $payment, flush: true);
-            return $this->redirect($session->url, 303);
+            return $this->redirectToRoute('client_show_engagement', ['id' => $engagement->getId()]);
         }
 
         return $this->render('engagement/create.html.twig', [

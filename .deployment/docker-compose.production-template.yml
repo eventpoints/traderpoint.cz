@@ -67,7 +67,7 @@ services:
       JWT_QR_PUBLIC_KEY_PATH: "/app/config/jwt-qr/public.pem"
     volumes:
       - ./php/php.ini:/usr/local/etc/php/php.ini:ro
-      - ./config/jwt-qr:/app/config/jwt-qr:ro
+      - ./config/jwt-qr:./config/jwt-qr:ro
     networks:
       - internal
 

@@ -1,0 +1,39 @@
+{# form/_form_theme.html.twig #}
+{% block money_widget %}
+    {% set symbol = money_pattern|replace({'{{ widget }}': ''})|trim %}
+
+    {# Floating needs a placeholder; add Stimulus + inputmode for mobile #}
+    {% set attr = attr|merge({
+        class: (attr.class|default('') ~ ' form-control pe-5')|trim,
+        placeholder: attr.placeholder|default(' '),
+        'data-controller': (attr['data-controller']|default('') ~ ' money-input')|trim,
+        'data-money-input-locale-value': app.request.locale|default('en-US'),
+        'data-money-input-decimals-value': attr['data-money-input-decimals-value']|default(2),
+        'data-money-input-grouping-value': attr['data-money-input-grouping-value']|default(true),
+        'data-money-input-group-while-typing-value': true,
+        'data-action': ((attr['data-action']|default('') ~ ' input->money-input#onInput blur->money-input#onBlur focus->money-input#onFocus')|trim),
+        inputmode: attr.inputmode|default('decimal'),
+        autocomplete: attr.autocomplete|default('off')
+    }) %}
+
+    <div class="form-floating position-relative">
+        {{ block('form_widget_simple') }}
+        {{ form_label(form) }}
+        {% if symbol is not empty %}
+            <span class="position-absolute top-50 end-0 translate-middle-y me-3 text-body-secondary">
+                {{ symbol }}
+            </span>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block money_row %}
+    {% set _row_attr = row_attr|default({}) %}
+    {% set _row_attr = _row_attr|merge({
+        class: (_row_attr.class|default('')|replace({'form-floating':''})|trim)
+    }) %}
+    <div{% for k,v in _row_attr %} {{ k }}="{{ v }}"{% endfor %}>
+    {{ form_widget(form) }}   {# calls money_widget (label inside) #}
+    {{ form_errors(form) }}
+    </div>
+{% endblock %}

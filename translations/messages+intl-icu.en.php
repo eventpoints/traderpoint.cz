@@ -97,7 +97,7 @@ return array(
     'account-setting' => 'account settings',
     'sms-code' => 'sms code',
     'timeline-preference' => 'timeline preference',
-    'estimated-budget' => 'estimated budget',
+    'estimated-budget' => 'Estimated budget',
     'first-name' => 'first name',
     'last-name' => 'last name',
     'skills' => 'skills',

@@ -4,12 +4,15 @@ namespace App\Form\Form;
 
 use App\Entity\Engagement;
 use App\Entity\Quote;
+use App\Enum\CurrencyCodeEnum;
 use App\Form\DataTransformer\CarbonImmutableTransformer;
 use App\Form\Type\SmartRangeType;
 use App\Form\Type\SwitchType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -31,31 +34,29 @@ class QuoteFormType extends AbstractType
         $engagement = $options['data']->getEngagement();
 
         $builder
-            ->add('warrantyMonths', SmartRangeType::class, [
+            ->add('warrantyMonths', NumberType::class, [
                 'label' => $this->translator->trans('warranty-months'),
-                'data' => 24,
+                'row_attr' => [
+                    'class' => 'form-floating',
+                ],
                 'required' => true,
+                'data' => 24,
                 'attr' => [
                     'min' => 0,
                     'max' => 240,
                     'step' => 1,
                 ],
-                'scale' => 1,
-                'decimals' => 0,
             ])
-            ->add('priceNetCents', SmartRangeType::class, [
-                'label' => $this->translator->trans('priceNetCents'),
-                'data' => $engagement->getBudget(),
-                'required' => true,
+            ->add('priceNetCents', MoneyType::class, [
+                'currency' => CurrencyCodeEnum::CZK->value,
+                'label' => $this->translator->trans('estimated-budget'),
+                'data' => $engagement->getBudget() / 100,
                 'attr' => [
+                    'data-money-input-locale-value' => 'en-US',
                     'min' => 0,
-                    'max' => $engagement->getBudget() * 5,
-                    'step' => 100,
                     'data-price-percent-target' => 'input',
                 ],
-                'scale' => 100,
-                'decimals' => 0,
-                'currency' => $engagement->getCurrencyCodeEnum()->value,
+                'required' => true,
             ])
             ->add('validUntil', DateTimeType::class, [
                 'label' => $this->translator->trans('valid-until'),
