@@ -242,16 +242,6 @@ input[type="range"].form-range.range--xl:disabled {
     width: 30% !important;
 }
 
-
-.ts-control {
-    padding-bottom: 0.625rem !important;
-}
-
-.ts-wrapper.single .ts-control, .ts-wrapper.single .ts-control {
-    padding-top: 1.625rem !important;
-}
-
-
 .short-underline-heading {
     position: relative;
     padding-bottom: 10px;
@@ -294,3 +284,24 @@ input[type="range"].form-range.range--xl:disabled {
         overflow-y: auto;
     }
 }
+
+
+/* Make TomSelect play nice with .form-floating */
+.form-floating .ts-wrapper { display:block; }
+
+/* match Bootstrap floating input height/padding */
+.form-floating .ts-wrapper .ts-control {
+    min-height: calc(3.5rem + var(--bs-border-width)*2);
+    padding-top: 1.625rem;   /* space for the floating label */
+    padding-bottom: .625rem;
+}
+
+/* float the label when TomSelect has value or focus */
+.form-floating .ts-wrapper.has-items ~ label,
+.form-floating .ts-wrapper.focus ~ label {
+    opacity: .65;
+    transform: scale(.85) translateY(-.5rem) translateX(.15rem);
+}
+
+/* ensure label sits above the control */
+.form-floating > label { pointer-events:none; }

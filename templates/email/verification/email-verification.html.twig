@@ -1,0 +1,18 @@
+{% extends 'email/base.html.twig' %}
+{% trans_default_domain 'email' %}
+
+{% block subject %}
+    {{ 'verifiy-email'|trans({name: user.firstName}) }}
+{% endblock %}
+
+{% block content %}
+    <div>{{ 'verifiy-email'|trans({name: user.firstName}) }}</div>
+    <p>{{ 'verifiy-email-content'|trans }}</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center" style="padding:16px 0;background-color: #ecedee;color:#333333;">
+                <h1 style="letter-spacing: 3px">{{ code }}</h1>
+            </td>
+        </tr>
+    </table>
+{% endblock %}

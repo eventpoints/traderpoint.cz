@@ -11,6 +11,7 @@ use App\Enum\CurrencyCodeEnum;
 use App\Enum\TimelinePreferenceEnum;
 use App\Form\DataTransformer\MoneyToMinorUnitsTransformer;
 use App\Form\Type\MapLocationType;
+use App\Form\Type\PhoneNumberType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -125,7 +126,7 @@ final class EngagementFormType extends AbstractType
 
         $currentUser = $this->security->getUser();
         if ($currentUser instanceof User && ! $currentUser->getPhoneNumber() instanceof \App\Entity\PhoneNumber) {
-            $builder->add('phoneNumber', PhoneNumberFormType::class, [
+            $builder->add('phoneNumber', PhoneNumberType::class, [
                 'mapped' => false,
                 'label' => false,
             ]);

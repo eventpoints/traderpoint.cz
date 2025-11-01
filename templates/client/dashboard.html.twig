@@ -3,12 +3,11 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block body %}
-
     <div class="container">
         <div class="row justify-content-center g-3 my-5">
 
-
             <div class="col-12 col-md-6">
+
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="fs-4 fw-bold">{{ 'client-dashboard'|trans|title }}</div>
@@ -22,65 +21,78 @@
 
                 <div class="row g-4 my-3">
                     {% for job in pagination.items %}
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="w-100 d-flex justify-content-between align-items-start fs-4 flex-wrap">
-                                    <div class="fw-bold text-dark">{{ job.title }}</div>
-                                    <div>
-                                        <span class="badge rounded-pill bg-primary">{{ 'quotes-received'|trans({count: job.quotes.count}) }}</span>
-                                        {% if job.isBoosted %}
-                                            <span class="badge rounded-pill bg-primary"><i class="bi bi-rocket-takeoff-fill"></i></span>
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="w-100 d-flex justify-content-between align-items-start fs-4 flex-wrap">
+                                        <div class="fw-bold text-dark">{{ job.title }}</div>
+                                        <div>
+                    <span class="badge rounded-pill bg-primary">
+                      {{ 'quotes-received'|trans({count: job.quotes|length}) }}
+                    </span>
+                                            {% if job.isBoosted %}
+                                                <span class="badge rounded-pill bg-primary">
+                        <i class="bi bi-rocket-takeoff-fill"></i>
+                      </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-header">
+                                    <div class="d-flex flex-wrap fs-4 gap-1">
+                  <span class="badge hover-pointer rounded-pill text-bg-dark"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        data-bs-title="{{ 'budget'|trans }}">
+                    {{ (job.budget / 100)|format_currency(job.currencyCodeEnum.value, {}, 'en') }}
+                  </span>
+                                        {% for skill in job.skills %}
+                                            <span class="badge rounded-pill text-bg-primary">
+                      {{ skill.name|trans(domain='skills')|title }}
+                    </span>
+                                        {% endfor %}
+                                        <span class="badge rounded-pill text-bg-dark">{{ job.timelinePreferenceEnum.value|trans }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div data-controller="read-more"
+                                         data-read-more-more-text-value="{{ 'read-more'|trans }}"
+                                         data-read-more-less-text-value="{{ 'read-less'|trans }}">
+                                        <div class="read-more-content" data-read-more-target="content">
+                                            {{ job.description|nl2br }}
+                                        </div>
+                                        {% if job.description|length > 200 %}
+                                            <div class="text-center text-muted">
+                                                <a class="hover-pointer" data-action="read-more#toggle">
+                                                    {{ 'read-more'|trans }}
+                                                </a>
+                                            </div>
                                         {% endif %}
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card-header">
-                                <div class="d-flex flex-wrap fs-4 gap-1">
-                                    <span data-bs-toggle="tooltip" data-bs-placement="top"
-                                          data-bs-title="{{ 'budget'|trans }}"
-                                          class="badge hover-pointer rounded-pill text-bg-dark">{{ (job.budget / 100)|format_currency(job.currencyCodeEnum.value, {}, 'en') }}</span>
-                                    {% for skill in job.skills %}
-                                        <span class="badge rounded-pill text-bg-primary">{{ skill.name|trans(domain='skills')|title }}</span>
-                                    {% endfor %}
-                                    <span class="badge rounded-pill text-bg-dark">{{ job.timelinePreferenceEnum.value|trans }}</span>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div data-controller="read-more"
-                                     data-read-more-more-text-value="{{ 'read-more'|trans }}"
-                                     data-read-more-less-text-value="{{ 'read-less'|trans }}">
-                                    <div class="read-more-content" data-read-more-target="content">
-                                        {{ job.description|nl2br }}
+
+                                <div class="card-footer">
+                                    <div class="d-flex gap-3 justify-content-end align-items-center">
+                                        <a class="btn btn-light text-primary rounded-pill"
+                                           href="{{ path('client_show_engagement', {id: job.id}) }}">
+                                            <i class="bi bi-arrow-right-short fs-3"></i>
+                                        </a>
                                     </div>
-                                    {% if job.description|length > 200 %}
-                                        <div class="text-center text-muted">
-                                            <a class="hover-pointer"
-                                               data-action="read-more#toggle">{{ 'read-more'|trans }}</a>
-                                        </div>
-                                    {% endif %}
                                 </div>
-                            </div>
-                            <div class="card-footer">
-                                <div class="d-flex gap-3 justify-content-end align-items-center">
-                                    <a class="btn btn-light text-primary rounded-pill"
-                                       href="{{ path('client_show_engagement', {id: job.id}) }}">
-                                        <i class="bi bi-arrow-right-short fs-3"></i>
-                                    </a>
-                                </div>
+
                             </div>
                         </div>
-                    </div>
                     {% else %}
-                    <!-- Content displayed if engagements is empty -->
-                    <div class="col-12">
-                        <div class="text-center text-muted">
-                            <p class="fw-bold mb-1 fs-4">{{ 'nothing-to-see-here'|trans }}</p>
-                            <p class="mb-0">{{ 'no-jobs-posted'|trans }}</p>
+                        <div class="col-12">
+                            <div class="text-center text-muted">
+                                <p class="fw-bold mb-1 fs-4">{{ 'nothing-to-see-here'|trans }}</p>
+                                <p class="mb-0">{{ 'no-jobs-posted'|trans }}</p>
+                            </div>
                         </div>
-                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
 
                 {{ knp_pagination_render(pagination) }}
 
@@ -88,5 +100,3 @@
         </div>
     </div>
 {% endblock %}
-
-

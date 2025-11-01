@@ -78,4 +78,7 @@ return [
     Symfony\UX\Icons\UXIconsBundle::class => [
         'all' => true,
     ],
+    Misd\PhoneNumberBundle\MisdPhoneNumberBundle::class => [
+        'all' => true,
+    ],
 ];

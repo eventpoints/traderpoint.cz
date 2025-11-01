@@ -25,14 +25,16 @@ class ClientController extends AbstractController
     {
     }
 
-    #[Route(path: '/client/dashboard', name: 'client_dashboard')]
-    public function clientDashboard(#[CurrentUser] User $currentUser, Request $request): Response
-    {
+    #[Route(path: '/client/dashboard', name: 'client_dashboard', methods: ['GET', 'POST'])]
+    public function clientDashboard(
+        #[CurrentUser]
+        User $currentUser,
+        Request $request
+    ): Response {
         $engagementsQuery = $this->engagementRepository->findByOwner($currentUser, true);
-
         $page = $request->query->getInt('page', 1);
         $limit = $request->query->getInt('limit', 5);
-        $pagination = $this->paginator->paginate(target: $engagementsQuery, page: $page, limit: $limit);
+        $pagination = $this->paginator->paginate($engagementsQuery, $page, $limit);
 
         return $this->render('client/dashboard.html.twig', [
             'pagination' => $pagination,

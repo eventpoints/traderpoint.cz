@@ -1,18 +1,40 @@
+{# templates/form/_phone_number.html.twig #}
 {% block phone_number_row %}
     <div {{ block('attributes') }}>
-
         {% if form_errors(form) is not empty %}
             <div class="invalid-feedback d-block">{{ form_errors(form) }}</div>
         {% endif %}
 
         <div class="row g-1">
             <div class="col-5">
-                {{ form_row(form.prefix) }}
+                <div class="form-floating">
+                    {{ form_widget(form.prefix, {
+                        attr: {
+                            placeholder: ' ',
+                            class: (form.prefix.vars.attr.class|default('') ~ ' form-control')|trim
+                        }
+                    }) }}
+                    {{ form_label(form.prefix) }}
+                    {{ form_errors(form.prefix) }}
+                </div>
             </div>
+
             <div class="col-7">
-                {{ form_row(form.number) }}
+                <div class="form-floating">
+                    {{ form_widget(form.number, {
+                        attr: {
+                            class: (form.number.vars.attr.class|default('') ~ ' form-control')|trim,
+                            placeholder: ' ',
+                            inputmode: 'tel',
+                            autocomplete: 'tel'
+                        }
+                    }) }}
+                    {{ form_label(form.number) }}
+                    {{ form_errors(form.number) }}
+                </div>
             </div>
         </div>
+
         {{ form_help(form) }}
     </div>
 {% endblock %}

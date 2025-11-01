@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Form\Form;
+namespace App\Form\Type;
 
 use App\Data\PhonePrefixCodeData;
 use App\Entity\PhoneNumber;
@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class PhoneNumberFormType extends AbstractType
+class PhoneNumberType extends AbstractType
 {
     public function __construct(
         private readonly TranslatorInterface $translator
@@ -23,21 +23,21 @@ class PhoneNumberFormType extends AbstractType
     {
         $builder
             ->add('prefix', ChoiceType::class, [
-                'required' => false,
-                'empty_data' => null,
+                'preferred_choices' => ['420'],
+                'data' => '420',
+                'autocomplete' => true,
                 'label' => $this->translator->trans('country-code'),
                 'choices' => array_flip(PhonePrefixCodeData::getDialCodes()),
-                'row_attr' => [
-                    'class' => 'form-floating',
+                'attr' => [
+                    'class' => 'form-control',
                 ],
-                'autocomplete' => true,
             ])
             ->add('number', TextType::class, [
-                'required' => false,
-                'empty_data' => null,
                 'label' => $this->translator->trans('number'),
-                'row_attr' => [
-                    'class' => 'form-floating',
+                'attr' => [
+                    'class' => 'form-control',
+                    'inputmode' => 'tel',
+                    'autocomplete' => 'tel-national',
                 ],
             ]);
     }

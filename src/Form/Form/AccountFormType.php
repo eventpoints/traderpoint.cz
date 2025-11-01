@@ -2,7 +2,11 @@
 
 namespace App\Form\Form;
 
+use App\Entity\PhoneNumber;
 use App\Entity\User;
+use App\Form\Type\PhoneNumberType;
+use Carbon\CarbonImmutable;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\LanguageType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -15,13 +19,20 @@ use Symfony\UX\Dropzone\Form\DropzoneType;
 class AccountFormType extends AbstractType
 {
     public function __construct(
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly Security $security
     )
     {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $currentUser = $this->security->getUser();
+
+        if(! $currentUser instanceof User){
+            throw new \RuntimeException('User not found');
+        }
+
         $builder
             ->add('firstName', TextType::class, [
                 'label' => $this->translator->trans('first-name'),
@@ -35,9 +46,13 @@ class AccountFormType extends AbstractType
                     'class' => 'form-floating',
                 ],
             ])
-            ->add('phoneNumber', PhoneNumberFormType::class, [
+            ->add('phoneNumber', PhoneNumberType::class, [
+                'disabled' => true,
                 'label' => false,
                 'required' => false,
+                'help' => (! $currentUser->getPhoneNumber() instanceof PhoneNumber || ! $currentUser->getPhoneNumber()->getConfirmedAt() instanceof CarbonImmutable) ? $this->translator->trans('phone-number.not-confirmed') : $this->translator->trans('phone-number.confirmed-at', [
+                    'date' => $currentUser->getPhoneNumber()->getConfirmedAt()->diffForHumans(),
+                ]),
             ])
             ->add('preferredLanguage', LanguageType::class, [
                 'label' => $this->translator->trans('preferred-language'),

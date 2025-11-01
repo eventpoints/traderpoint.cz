@@ -23,6 +23,10 @@ services:
       OAUTH_FACEBOOK_CLIENT_SECRET: "__TRADERPOINT_OAUTH_FACEBOOK_CLIENT_SECRET__"
       JWT_QR_PRIVATE_KEY_PATH: "/app/config/jwt-qr/private.pem"
       JWT_QR_PUBLIC_KEY_PATH: "/app/config/jwt-qr/public.pem"
+      ELKS_USERNAME: "__TRADERPOINT_ELKS_USERNAME__"
+      ELKS_PASSWORD: "__TRADERPOINT_ELKS_PASSWORD__"
+      ELKS_FROM: "__TRADERPOINT_ELKS_FROM__"
+      OTP_DIGEST_KEY: "__TRADERPOINT_OTP_DIGEST_KEY__"
     volumes:
       - ./php/php.ini:/usr/local/etc/php/php.ini:ro
       - ./config/jwt-qr:/app/config/jwt-qr:ro
@@ -65,6 +69,10 @@ services:
       OAUTH_FACEBOOK_CLIENT_SECRET: "__TRADERPOINT_OAUTH_FACEBOOK_CLIENT_SECRET__"
       JWT_QR_PRIVATE_KEY_PATH: "/app/config/jwt-qr/private.pem"
       JWT_QR_PUBLIC_KEY_PATH: "/app/config/jwt-qr/public.pem"
+      ELKS_USERNAME: "__TRADERPOINT_ELKS_USERNAME__"
+      ELKS_PASSWORD: "__TRADERPOINT_ELKS_PASSWORD__"
+      ELKS_FROM: "__TRADERPOINT_ELKS_FROM__"
+      OTP_DIGEST_KEY: "__TRADERPOINT_OTP_DIGEST_KEY__"
     volumes:
       - ./php/php.ini:/usr/local/etc/php/php.ini:ro
       - ./config/jwt-qr:/app/config/jwt-qr:ro

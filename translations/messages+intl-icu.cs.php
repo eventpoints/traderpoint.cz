@@ -162,4 +162,11 @@ return [
     'decline' => 'pokles',
     'accept' => 'přijmout',
     'continue-with' => 'pokračovat s {provider}',
+    'add-your-phone' => 'přidejte své telefonní číslo',
+    'add-your-phone-explainer' => 'Potřebujeme ověřit vaše telefonní číslo, aby vás řemeslníci mohli kontaktovat.',
+    'send-code' => 'odeslat kód',
+    'verification-code' => 'ověřovací kód',
+    'enter-the-6-digit-code-we-sent' => 'Zadejte šestimístný kód, který jsme poslali na vámi zadané číslo.',
+    'phone-number.not-confirmed' => 'telefonní číslo není ověřeno',
+    'phone-number.confirmed-at' => 'telefonní číslo ověřeno {date}',
 ];

@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Enum\FlashEnum;
 use App\Form\Form\EngagementFormType;
 use App\Form\Form\QuoteFormType;
+use App\Message\Message\EngagementPostedMessage;
 use App\Repository\EngagementRepository;
 use App\Repository\QuoteRepository;
 use App\Repository\UserRepository;
@@ -17,6 +18,7 @@ use App\Security\Voter\EngagementVoter;
 use App\Service\EmailService\EmailService;
 use App\Service\ImageOptimizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,6 +41,7 @@ class EngagmentController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly ImageOptimizer $imageOptimizer,
         private readonly EmailService $emailService,
+        private readonly EventDispatcherInterface $dispatcher
     )
     {
     }
@@ -195,6 +198,8 @@ class EngagmentController extends AbstractController
             $engagement->setAddress($mapLocationDto->getAddress());
 
             $this->engagementRepository->save(entity: $engagement, flush: true);
+            $this->dispatcher->dispatch(new EngagementPostedMessage(engagementId: $engagement->getId()));
+
             return $this->redirectToRoute('client_show_engagement', [
                 'id' => $engagement->getId(),
             ]);

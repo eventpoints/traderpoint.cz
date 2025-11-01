@@ -165,4 +165,11 @@ return array(
     'job-created' => 'created {count} job ',
     'nice-try' => 'Nice try! 😉',
     'continue-with' => 'continue with {provider}',
+    'add-your-phone' => 'add your phone number',
+    'add-your-phone-explainer' => 'We need to verify your phone number to ensure traders can contact you.',
+    'send-code' => 'send code',
+    'verification-code' => 'verification code',
+    'enter-the-6-digit-code-we-sent' => 'Enter the 6-digit code we sent to the number you entered.',
+    'phone-number.not-confirmed' => 'phone number not verified',
+    'phone-number.confirmed-at' => 'phone number verified {date}',
 );

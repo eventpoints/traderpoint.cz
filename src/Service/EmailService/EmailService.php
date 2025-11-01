@@ -60,6 +60,23 @@ final readonly class EmailService
      * @param array<mixed> $context
      * @throws TransportExceptionInterface
      */
+    public function sendVerificationCodeEmail(User $user, string $locale = 'en', array $context = []): void
+    {
+        $this->send(
+            subject: $this->translator->trans(id: 'email.client.subject.verify-email-address', parameters: [
+                'firstName' => $user->getFirstName(),
+            ], domain: 'email'),
+            template: '/email/verification/email-verification.html.twig',
+            emailAddress: $user->getEmail(),
+            context: $context,
+            locale: $locale
+        );
+    }
+
+    /**
+     * @param array<mixed> $context
+     * @throws TransportExceptionInterface
+     */
     public function sendEngagementMatchAlertEmail(User $user, string $locale = 'en', array $context = []): void
     {
         $this->send(
