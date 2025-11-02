@@ -172,4 +172,6 @@ return array(
     'enter-the-6-digit-code-we-sent' => 'Enter the 6-digit code we sent to the number you entered.',
     'phone-number.not-confirmed' => 'phone number not verified',
     'phone-number.confirmed-at' => 'phone number verified {date}',
+    'account' => 'account',
+    'logout' => 'logout',
 );

@@ -77,22 +77,22 @@
         <div class="list-group list-group-flush fs-5">
             {% if app.user.isTrader %}
                 <a class="list-group-item list-group-item-action {{ app.locale == 'trader_dashboard' ? 'active' }}"
-                   href="{{ path('trader_dashboard') }}">{{ 'dashboard'|title }}</a>
+                   href="{{ path('trader_dashboard') }}">{{ 'dashboard'|trans|title }}</a>
             {% else %}
                 <a class="list-group-item list-group-item-action {{ app.locale == 'client_dashboard' ? 'active' }}"
-                   href="{{ path('client_dashboard') }}">{{ 'dashboard'|title }}</a>
+                   href="{{ path('client_dashboard') }}">{{ 'dashboard'|trans|title }}</a>
             {% endif %}
             <a class="list-group-item list-group-item-action {{ app.locale == 'user_conversations' ? 'active' }}"
-               href="{{ path('user_conversations') }}">{{ 'messages'|title }}</a>
+               href="{{ path('user_conversations') }}">{{ 'messages'|trans|title }}</a>
             {% if app.user.isTrader %}
                 <a class="list-group-item list-group-item-action {{ app.locale == 'trader_account' ? 'active' }}"
-                   href="{{ path('trader_account') }}">{{ 'account'|title }}</a>
+                   href="{{ path('trader_account') }}">{{ 'account'|trans|title }}</a>
             {% else %}
                 <a class="list-group-item list-group-item-action {{ app.locale == 'user_account' ? 'active' }}"
-                   href="{{ path('user_account') }}">{{ 'account'|title }}</a>
+                   href="{{ path('user_account') }}">{{ 'account'|trans|title }}</a>
             {% endif %}
             <a class="list-group-item text-danger list-group-item-action"
-               href="{{ path('app_logout') }}">{{ 'logout'|title }}</a>
+               href="{{ path('app_logout') }}">{{ 'logout'|trans|title }}</a>
         </div>
     </div>
 {% endif %}
@@ -112,6 +112,8 @@
            href="{{ path('landing', {_locale: 'cs'}) }}">{{ 'cs'|locale_name|title }}</a>
         <a class="list-group-item list-group-item-action {{ app.locale == 'en' ? 'active' }}"
            href="{{ path('landing', {_locale: 'en'}) }}">{{ 'en'|locale_name|title }}</a>
+        <a class="list-group-item list-group-item-action {{ app.locale == 'uk' ? 'active' }}"
+           href="{{ path('landing', {_locale: 'uk'}) }}">{{ 'uk'|locale_name|title }}</a>
         <a class="list-group-item list-group-item-action {{ app.locale == 'ru' ? 'active' }}"
            href="{{ path('landing', {_locale: 'ru'}) }}">{{ 'ru'|locale_name|title }}</a>
     </div>

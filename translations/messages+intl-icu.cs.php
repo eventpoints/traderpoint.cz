@@ -169,4 +169,6 @@ return [
     'enter-the-6-digit-code-we-sent' => 'Zadejte šestimístný kód, který jsme poslali na vámi zadané číslo.',
     'phone-number.not-confirmed' => 'telefonní číslo není ověřeno',
     'phone-number.confirmed-at' => 'telefonní číslo ověřeno {date}',
+    'account' => 'účet',
+    'logout' => 'odhlásit se',
 ];

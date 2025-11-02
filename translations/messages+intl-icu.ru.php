@@ -171,4 +171,6 @@ return [
     'enter-the-6-digit-code-we-sent' => 'Введите шестизначный код, который мы отправили на указанный вами номер.',
     'phone-number.not-confirmed' => 'номер телефона не подтверждён',
     'phone-number.confirmed-at' => 'номер телефона подтверждён {date}',
+    'account' => 'счет',
+    'logout' => 'выход из системы',
 ];
