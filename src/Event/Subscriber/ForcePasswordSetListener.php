@@ -16,7 +16,7 @@ use Symfony\Component\Routing\RouterInterface;
 final readonly class ForcePasswordSetListener
 {
     public function __construct(
-        private Security        $security,
+        private Security $security,
         private RouterInterface $router,
     )
     {
@@ -24,14 +24,14 @@ final readonly class ForcePasswordSetListener
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        if (!$event->isMainRequest()) {
+        if (! $event->isMainRequest()) {
             return;
         }
 
         $request = $event->getRequest();
         $user = $this->security->getUser();
 
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             return; // not logged in
         }
 

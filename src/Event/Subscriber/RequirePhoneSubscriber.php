@@ -14,13 +14,12 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use function in_array;
 
 #[AsEventListener(event: KernelEvents::CONTROLLER, priority: 1)]
 final readonly class RequirePhoneSubscriber
 {
     public function __construct(
-        private Security              $security,
+        private Security $security,
         private UrlGeneratorInterface $urls,
     )
     {
@@ -28,12 +27,12 @@ final readonly class RequirePhoneSubscriber
 
     public function __invoke(ControllerEvent $event): void
     {
-        if (!$event->isMainRequest()) {
+        if (! $event->isMainRequest()) {
             return;
         }
 
         $request = $event->getRequest();
-        $route = (string)$request->attributes->get('_route', '');
+        $route = (string) $request->attributes->get('_route', '');
 
         // skip public/dev/api routes to avoid loops or breaking APIs
         if (
@@ -58,18 +57,18 @@ final readonly class RequirePhoneSubscriber
 
         /** @var User|null $user */
         $user = $this->security->getUser();
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             return;
         }
 
-        if (!$user->hasPassword()) {
+        if (! $user->hasPassword()) {
             return;
         }
 
         $phone = $user->getPhoneNumber();
 
-        if (!$phone instanceof PhoneNumber) {
-            $event->setController(fn() => new RedirectResponse(
+        if (! $phone instanceof PhoneNumber) {
+            $event->setController(fn(): \Symfony\Component\HttpFoundation\RedirectResponse => new RedirectResponse(
                 $this->urls->generate('create_phone_number', [
                     'return' => $request->getRequestUri(),
                 ]),
@@ -78,8 +77,8 @@ final readonly class RequirePhoneSubscriber
             return;
         }
 
-        if (!$phone->getConfirmedAt() instanceof CarbonImmutable) {
-            $event->setController(fn() => new RedirectResponse(
+        if (! $phone->getConfirmedAt() instanceof CarbonImmutable) {
+            $event->setController(fn(): \Symfony\Component\HttpFoundation\RedirectResponse => new RedirectResponse(
                 $this->urls->generate('phone_verification', [
                     'return' => $request->getRequestUri(),
                 ]),
@@ -88,5 +87,4 @@ final readonly class RequirePhoneSubscriber
             return;
         }
     }
-
 }

@@ -11,7 +11,6 @@ use App\Enum\CurrencyCodeEnum;
 use App\Enum\TimelinePreferenceEnum;
 use App\Form\DataTransformer\MoneyToMinorUnitsTransformer;
 use App\Form\Type\MapLocationType;
-use App\Form\Type\PhoneNumberType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -34,14 +33,14 @@ final class EngagementFormType extends AbstractType
 {
     public function __construct(
         private readonly TranslatorInterface $translator,
-        private readonly Security            $security
+        private readonly Security $security
     )
     {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var ArrayCollection $skills */
+        /** @var ArrayCollection<int, Skill> $skills */
         $skills = $options['skills'];
         $moneyTransformer = new MoneyToMinorUnitsTransformer(2);
 
@@ -131,7 +130,7 @@ final class EngagementFormType extends AbstractType
 
         $currentUser = $this->security->getUser();
 
-        if (!$currentUser instanceof User) {
+        if (! $currentUser instanceof User) {
             $builder->add('email', EmailType::class, [
                 'mapped' => false,
                 'label' => $this->translator->trans('email'),
@@ -140,7 +139,6 @@ final class EngagementFormType extends AbstractType
                 ],
             ]);
         }
-
 
         // Attach transformers after fields are added
         $builder->get('budget')->addModelTransformer($moneyTransformer);

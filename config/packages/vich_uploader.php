@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Vich\UploaderBundle\Naming\SmartUniqueNamer;
-use Vich\UploaderBundle\Naming\UniqidNamer;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->extension('vich_uploader', [

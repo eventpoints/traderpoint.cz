@@ -41,16 +41,16 @@ use Symfony\UX\Map\Point;
 class EngagmentController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface      $translator,
-        private readonly QuoteRepository          $quoteRepository,
-        private readonly EngagementRepository     $engagementRepository,
-        private readonly UserRepository           $userRepository,
-        private readonly ImageOptimizer           $imageOptimizer,
-        private readonly EmailService             $emailService,
+        private readonly TranslatorInterface $translator,
+        private readonly QuoteRepository $quoteRepository,
+        private readonly EngagementRepository $engagementRepository,
+        private readonly UserRepository $userRepository,
+        private readonly ImageOptimizer $imageOptimizer,
+        private readonly EmailService $emailService,
         private readonly EventDispatcherInterface $dispatcher,
-        private readonly SkillRepository          $skillRepository,
-        private readonly UserFactory              $userFactory,
-        private readonly Security                 $security
+        private readonly SkillRepository $skillRepository,
+        private readonly UserFactory $userFactory,
+        private readonly Security $security
     )
     {
     }
@@ -159,11 +159,11 @@ class EngagmentController extends AbstractController
     {
         $skills = new ArrayCollection();
         $skillId = $request->query->get('skill');
-        if (!empty($skillId)) {
+        if (! empty($skillId)) {
             $skillUuid = Uuid::fromString($skillId);
             $skill = $this->skillRepository->find($skillUuid);
 
-            if (!$skill instanceof Skill) {
+            if (! $skill instanceof Skill) {
                 return $this->redirectToRoute('landing');
             }
 
@@ -194,13 +194,13 @@ class EngagmentController extends AbstractController
 
         $engagementForm = $this->createForm(EngagementFormType::class, $engagement, [
             'map' => $map,
-            'skills' => $skills
+            'skills' => $skills,
         ]);
 
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
 
-            if (!$currentUser instanceof User) {
+            if (! $currentUser instanceof User) {
                 $email = $engagementForm->get('email')->getData();
                 $currentUser = $this->userFactory->createClientUser(email: $email);
                 $engagement->setOwner($currentUser);

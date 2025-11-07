@@ -3,22 +3,20 @@
 namespace App\Factory;
 
 use App\Entity\User;
-use App\Enum\RolesEnum;
 use App\Enum\UserRoleEnum;
 use App\Service\AvatarService\AvatarService;
 
-final class UserFactory
+final readonly class UserFactory
 {
-
     public function __construct(
-        private readonly AvatarService $avatarService
+        private AvatarService $avatarService
     )
     {
     }
 
     public function createClientUser (
         string $email
-    ) : User
+    ): User
     {
         $user = new User();
         $user->setEmail($email);
@@ -27,5 +25,4 @@ final class UserFactory
 
         return $user;
     }
-
 }
