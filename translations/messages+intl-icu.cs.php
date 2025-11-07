@@ -171,8 +171,6 @@ return [
     'phone-number.confirmed-at' => 'telefonní číslo ověřeno {date}',
     'account' => 'účet',
     'logout' => 'odhlásit se',
-    'i-need-a-builder' => 'Potřebuji stavaře',
-    'i-need-a-plumber' => 'Potřebuji instalatéra',
-    'i-need-a-electrician' => 'Potřebuji elektrikáře',
+    'i-need-a' => 'Potřebuji {skill}',
     'i-need-something-else' => 'Potřebuji něco jiného',
 ];

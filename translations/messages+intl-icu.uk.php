@@ -190,9 +190,6 @@ return array (
     'client' => 'клієнт',
     'action.toggle_dropdown' => 'перемкнути спадне меню',
     'logout' => 'вихід',
-    'i-need-a-builder' => 'Мені потрібен будівельник',
-    'i-need-a-plumber' => 'Мені потрібен сантехнік',
-    'i-need-a-electrician' => 'Мені потрібен електрик',
+    'i-need-a' => 'Мені потрібен {skill}',
     'i-need-something-else' => 'Мені потрібно щось інше',
-
 );

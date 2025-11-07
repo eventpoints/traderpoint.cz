@@ -173,9 +173,6 @@ return [
     'phone-number.confirmed-at' => 'номер телефона подтверждён {date}',
     'account' => 'счет',
     'logout' => 'выход из системы',
-    'i-need-a-builder' => 'Мне нужен строитель',
-    'i-need-a-plumber' => 'Мне нужен сантехник',
-    'i-need-a-electrician' => 'Мне нужен электрик',
+    'i-need-a' => 'Мне нужен {skill}',
     'i-need-something-else' => 'Мне нужно что-то другое',
-
 ];
