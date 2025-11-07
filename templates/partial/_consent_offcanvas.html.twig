@@ -1,0 +1,27 @@
+{% trans_default_domain('cookies') %}
+<div
+        id="consentOffcanvas"
+        class="offcanvas offcanvas-bottom border-0 shadow-lg"
+        style="--bs-offcanvas-height:auto;"
+        tabindex="-1"
+        data-controller="consent"
+        data-bs-scroll="true"
+        data-bs-backdrop="false"
+        data-consent-vendors-value="{{ cookies.vendors|json_encode|e('html_attr') }}"
+>
+    <div class="offcanvas-body py-3">
+        <div class="row g-3 align-items-start">
+            <div class="col-12 col-lg">
+                <h6 class="mb-1">{{ 'cookies.title'|trans }}</h6>
+                <p class="mb-2 small text-body-secondary">{{ 'cookies.copy'|trans }}</p>
+                <a href="#" class="small" data-action="consent#openModal">{{ 'cookies.manage'|trans }}</a>
+            </div>
+            <div class="col-auto ms-auto d-flex gap-2">
+                <button class="btn btn-outline-secondary"
+                        data-action="click->consent#rejectAll">{{ 'cookies.reject'|trans }}</button>
+                <button class="btn btn-dark"
+                        data-action="click->consent#acceptAll">{{ 'cookies.accept'|trans }}</button>
+            </div>
+        </div>
+    </div>
+</div>

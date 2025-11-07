@@ -19,8 +19,8 @@
                         {{ form_row(engagementForm.title) }}
                         {{ form_row(engagementForm.description) }}
                         {{ form_row(engagementForm.images) }}
-                        {% if engagementForm.phoneNumber is defined %}
-                            {{ form_row(engagementForm.phoneNumber) }}
+                        {% if engagementForm.email is defined %}
+                            {{ form_row(engagementForm.email) }}
                         {% endif %}
                         {{ form_row(engagementForm.skills) }}
                         {{ form_row(engagementForm.timelinePreferenceEnum) }}

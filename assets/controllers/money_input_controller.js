@@ -1,4 +1,3 @@
-// assets/controllers/money_input_controller.js
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
@@ -6,19 +5,60 @@ export default class extends Controller {
         locale: { type: String, default: (typeof navigator !== "undefined" ? navigator.language : "en-US") },
         decimals: { type: Number, default: 2 },
         grouping: { type: Boolean, default: true },
-        groupWhileTyping: { type: Boolean, default: true } // 👈 live commas
+        groupWhileTyping: { type: Boolean, default: true }
     };
 
     connect() {
-        // force text to avoid browser numeric quirks
-        if (!this.element.getAttribute("type")) this.element.setAttribute("type", "text");
+        // Force text to avoid <input type="number"> quirks
+        if (!this.element.getAttribute("type")) {
+            this.element.setAttribute("type", "text");
+        }
+
         const v = this.element.value?.trim();
-        if (v !== "") this.formatCurrent(/*fixed=*/true);
+        if (v !== "") {
+            this.formatCurrent(true);
+        }
+
+        this.bindFormSubmit();
+    }
+
+    disconnect() {
+        if (this.form) {
+            this.form.removeEventListener("submit", this.onFormSubmit);
+        }
+    }
+
+    bindFormSubmit() {
+        this.form = this.element.form;
+        if (!this.form) return;
+
+        // Bind per-controller so each input cleans itself
+        this.onFormSubmit = this.onFormSubmit?.bind(this) ?? this._onFormSubmit.bind(this);
+        this.form.addEventListener("submit", this.onFormSubmit);
+    }
+
+    _onFormSubmit() {
+        // On submit, send a plain, ungrouped, locale-correct number
+        const n = this.parse(this.element.value);
+        if (n === null || isNaN(n)) {
+            // Let Symfony validation handle truly invalid input
+            return;
+        }
+
+        const ds = this.decimalSep();
+
+        // Fixed decimals, no grouping
+        let normalized = n.toFixed(this.decimalsValue); // "1234.50"
+
+        if (ds !== ".") {
+            // Convert to the server-side locale decimal separator
+            normalized = normalized.replace(".", ds); // e.g. "1234,50"
+        }
+
+        this.element.value = normalized;
     }
 
     onFocus() {
-        // Keep grouping while typing if enabled (no ungrouping step)
-        // Ensure caret is not stuck
         const len = this.element.value?.length ?? 0;
         this.element.setSelectionRange(len, len);
     }
@@ -27,53 +67,48 @@ export default class extends Controller {
         const el = this.element;
         const caretBefore = el.selectionStart ?? el.value.length;
 
-        // Clean input: allow digits and one decimal separator
         const ds = this.decimalSep();
         const notAllowed = new RegExp(`[^0-9${this.escape(ds)}-]`, "g");
         let raw = el.value.replace(/\s|\u00A0/g, "").replace(notAllowed, "");
 
-        // Collapse multiple decimals
         const first = raw.indexOf(ds);
-        if (first !== -1) raw = raw.slice(0, first + 1) + raw.slice(first + 1).replaceAll(ds, "");
+        if (first !== -1) {
+            raw = raw.slice(0, first + 1) + raw.slice(first + 1).replaceAll(ds, "");
+        }
 
-        // Split integer/decimal parts by locale decimal sep
         let [intPart, decPart = ""] = raw.split(ds);
 
-        // Track how many digits are to the left of the caret BEFORE formatting
         const leftOfCaretDigits = this.countDigits(el.value.slice(0, caretBefore));
 
-        // Strip non-digits from intPart except leading minus
         const sign = intPart.startsWith("-") ? "-" : "";
         intPart = intPart.replace(/[^0-9]/g, "");
-        // Format integer part with grouping (commas in en-US)
+
         if (this.groupWhileTypingValue) {
             intPart = this.formatInteger(sign + intPart);
         } else {
             intPart = sign + intPart;
         }
 
-        // Rebuild value
         let next = intPart;
+
         if (decPart !== "") {
-            // Keep only digits in decimal part, limit to configured decimals
             decPart = decPart.replace(/[^0-9]/g, "").slice(0, this.decimalsValue);
-            next += ds + decPart;
+            if (decPart !== "") {
+                next += ds + decPart;
+            }
         }
 
-        // Apply
         el.value = next;
 
-        // Restore caret so it feels natural
         const newCaret = this.caretFromDigits(el.value, leftOfCaretDigits);
         el.setSelectionRange(newCaret, newCaret);
     }
 
     onBlur() {
-        // Pretty-print with fixed decimals on blur
-        this.formatCurrent(/*fixed=*/true);
+        this.formatCurrent(true);
     }
 
-    // ---- helpers ----
+    // ---- helpers (unchanged) ----
     formatCurrent(fixed) {
         const n = this.parse(this.element.value);
         if (n === null || isNaN(n)) return;
@@ -91,11 +126,8 @@ export default class extends Controller {
         const ds = this.decimalSep();
         const gs = this.groupSep();
 
-        // remove spaces & group seps
         s = s.replace(new RegExp(`[\\s${this.escape(gs)}\u00A0]`, "g"), "");
-        // normalize decimal to dot
         if (ds !== ".") s = s.replace(ds, ".");
-        // keep digits, dot, minus
         s = s.replace(/[^0-9.\-]/g, "");
 
         const num = Number(s);
@@ -112,12 +144,10 @@ export default class extends Controller {
     }
 
     formatInteger(intStrWithOptionalSign) {
-        // Use Intl on the integer portion to get locale grouping (commas in en-US)
         const sign = intStrWithOptionalSign.startsWith("-") ? "-" : "";
         const digits = intStrWithOptionalSign.replace(/[^0-9]/g, "");
         if (digits === "") return sign;
         const n = Number(digits);
-        // Format without decimals
         const formatted = new Intl.NumberFormat(this.localeValue || "en-US", {
             useGrouping: true,
             maximumFractionDigits: 0
@@ -140,7 +170,6 @@ export default class extends Controller {
     }
 
     caretFromDigits(formatted, targetDigitsLeft) {
-        // Place caret so that the same count of digits remains on the left
         let count = 0;
         for (let i = 0; i < formatted.length; i++) {
             if (/\d/.test(formatted[i])) count++;

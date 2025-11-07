@@ -71,11 +71,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[ORM\OneToMany(targetEntity: ConversationParticipant::class, mappedBy: 'owner')]
     private Collection $conversationParticipates;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private string $firstName;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private null|string $firstName = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private string $lastName;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private null|string $lastName = null;
 
     #[ORM\Column(type: Types::STRING, length: 15, nullable: true)]
     private null|string $preferredLanguage = null;
@@ -249,22 +249,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         $this->verifiedAt = $verifiedAt;
     }
 
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): void
+    public function setFirstName(?string $firstName): void
     {
         $this->firstName = $firstName;
     }
 
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): void
+    public function setLastName(?string $lastName): void
     {
         $this->lastName = $lastName;
     }

@@ -12,11 +12,13 @@ use App\Enum\TimelinePreferenceEnum;
 use App\Form\DataTransformer\MoneyToMinorUnitsTransformer;
 use App\Form\Type\MapLocationType;
 use App\Form\Type\PhoneNumberType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -32,13 +34,15 @@ final class EngagementFormType extends AbstractType
 {
     public function __construct(
         private readonly TranslatorInterface $translator,
-        private readonly Security $security
+        private readonly Security            $security
     )
     {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var ArrayCollection $skills */
+        $skills = $options['skills'];
         $moneyTransformer = new MoneyToMinorUnitsTransformer(2);
 
         $builder
@@ -62,6 +66,7 @@ final class EngagementFormType extends AbstractType
                 'label' => $this->translator->trans('engagement.skills'),
                 'class' => Skill::class,
                 'choice_label' => 'name',
+                'data' => $skills,
                 'choice_translation_domain' => 'skills',
                 'group_by' => fn(Skill $skill): string => $this->translator->trans($skill->getTrade()->getName()),
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
@@ -125,12 +130,17 @@ final class EngagementFormType extends AbstractType
             ]);
 
         $currentUser = $this->security->getUser();
-        if ($currentUser instanceof User && ! $currentUser->getPhoneNumber() instanceof \App\Entity\PhoneNumber) {
-            $builder->add('phoneNumber', PhoneNumberType::class, [
+
+        if (!$currentUser instanceof User) {
+            $builder->add('email', EmailType::class, [
                 'mapped' => false,
-                'label' => false,
+                'label' => $this->translator->trans('email'),
+                'row_attr' => [
+                    'class' => 'form-floating',
+                ],
             ]);
         }
+
 
         // Attach transformers after fields are added
         $builder->get('budget')->addModelTransformer($moneyTransformer);
@@ -141,6 +151,7 @@ final class EngagementFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Engagement::class,
             'map' => Map::class,
+            'skills' => ArrayCollection::class,
         ]);
     }
 }

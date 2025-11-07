@@ -174,4 +174,8 @@ return array(
     'phone-number.confirmed-at' => 'phone number verified {date}',
     'account' => 'account',
     'logout' => 'logout',
+    'i-need-a-builder' => 'I need a builder',
+    'i-need-a-plumber' => 'I need a plumber',
+    'i-need-a-electrician' => 'I need an electrician',
+    'i-need-something-else' => 'something else',
 );

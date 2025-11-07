@@ -1,0 +1,84 @@
+{% trans_default_domain('cookies') %}
+
+<div class="modal fade" tabindex="-1" aria-hidden="true" data-consent-modal>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ 'cookies.settings'|trans }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="{{ 'close'|trans }}"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="list-group list-group-flush">
+                    {% for code, cat in cookies.categories %}
+                        {% set inputId = 'c-' ~ code %}
+                        <div class="list-group-item">
+                            <div class="form-check form-switch fs-4">
+                                <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        id="{{ inputId }}"
+                                        {% if not cat.toggleable %}checked disabled{% endif %}
+                                        {% if cat.toggleable and cat.target is defined %}
+                                            data-consent-target="{{ cat.target }}"
+                                        {% endif %}
+                                >
+                                <label class="form-check-label fw-semibold" for="{{ inputId }}">
+                                    {{ cat.label|trans }}
+                                </label>
+                            </div>
+
+                            <div>
+                                {% if cat.description is defined %}
+                                    <div class="small text-body-secondary ms-4">
+                                        {{ cat.description|trans }}
+                                    </div>
+                                {% endif %}
+
+                                {# List vendors under this category #}
+                                {% for vendor in cookies.vendors %}
+                                    {% if vendor.category == code %}
+                                        <div class="small text-body-secondary ms-4">
+                                            <strong>{{ vendor.name }}</strong>
+                                            {% if vendor.description is defined %}
+                                                – {{ vendor.description|trans }}
+                                            {% endif %}
+                                            {% if vendor.policy_url is defined %}
+                                                <a href="{{ vendor.policy_url }}"
+                                                   target="_blank"
+                                                   rel="noopener"
+                                                   class="ms-1">
+                                                    {{ 'cookies.vendor.policy'|trans }}
+                                                </a>
+                                            {% endif %}
+                                            {% if vendor.cookies is defined and vendor.cookies is not empty %}
+                                                <span class="d-block text-muted">
+                                        <span class="opacity-75">
+                                            {{ 'cookies.vendor.cookies'|trans }}:
+                                            {{ vendor.cookies|join(', ') }}
+                                        </span>
+                                    </span>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary"
+                        data-action="click->consent#closeModal">
+                    {{ 'cookies.cancel'|trans }}
+                </button>
+                <button class="btn btn-dark"
+                        data-action="click->consent#save">
+                    {{ 'cookies.save'|trans }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

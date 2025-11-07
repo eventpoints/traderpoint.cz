@@ -6,24 +6,30 @@ use App\DataTransferObject\MapLocationDto;
 use App\Entity\Engagement;
 use App\Entity\Image;
 use App\Entity\Quote;
+use App\Entity\Skill;
 use App\Entity\User;
 use App\Enum\FlashEnum;
+use App\Factory\UserFactory;
 use App\Form\Form\EngagementFormType;
 use App\Form\Form\QuoteFormType;
 use App\Message\Message\EngagementPostedMessage;
 use App\Repository\EngagementRepository;
 use App\Repository\QuoteRepository;
+use App\Repository\SkillRepository;
 use App\Repository\UserRepository;
 use App\Security\Voter\EngagementVoter;
 use App\Service\EmailService\EmailService;
 use App\Service\ImageOptimizer;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Map\Bridge\Leaflet\LeafletOptions;
 use Symfony\UX\Map\Bridge\Leaflet\Option\TileLayer;
@@ -35,13 +41,16 @@ use Symfony\UX\Map\Point;
 class EngagmentController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface $translator,
-        private readonly QuoteRepository $quoteRepository,
-        private readonly EngagementRepository $engagementRepository,
-        private readonly UserRepository $userRepository,
-        private readonly ImageOptimizer $imageOptimizer,
-        private readonly EmailService $emailService,
-        private readonly EventDispatcherInterface $dispatcher
+        private readonly TranslatorInterface      $translator,
+        private readonly QuoteRepository          $quoteRepository,
+        private readonly EngagementRepository     $engagementRepository,
+        private readonly UserRepository           $userRepository,
+        private readonly ImageOptimizer           $imageOptimizer,
+        private readonly EmailService             $emailService,
+        private readonly EventDispatcherInterface $dispatcher,
+        private readonly SkillRepository          $skillRepository,
+        private readonly UserFactory              $userFactory,
+        private readonly Security                 $security
     )
     {
     }
@@ -146,9 +155,26 @@ class EngagmentController extends AbstractController
     }
 
     #[Route(path: 'engagement/create', name: 'create_engagement')]
-    public function create(Request $request, #[CurrentUser] User $currentUser): Response
+    public function create(Request $request, #[CurrentUser] null|User $currentUser = null): Response
     {
-        $engagement = new Engagement(owner: $currentUser);
+        $skills = new ArrayCollection();
+        $skillId = $request->query->get('skill');
+        if (!empty($skillId)) {
+            $skillUuid = Uuid::fromString($skillId);
+            $skill = $this->skillRepository->find($skillUuid);
+
+            if (!$skill instanceof Skill) {
+                return $this->redirectToRoute('landing');
+            }
+
+            $skills->add($skill);
+        }
+
+        $engagement = new Engagement();
+
+        if ($currentUser instanceof User) {
+            $engagement->setOwner($currentUser);
+        }
 
         $map = (new Map('default'))
             ->center(new Point(50.07897895366278, 14.430823454571573))
@@ -168,14 +194,18 @@ class EngagmentController extends AbstractController
 
         $engagementForm = $this->createForm(EngagementFormType::class, $engagement, [
             'map' => $map,
+            'skills' => $skills
         ]);
+
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
 
-            if ($engagementForm->has('phoneNumber')) {
-                $phoneNumber = $engagementForm->get('phoneNumber')->getData();
-                $currentUser->setPhoneNumber($phoneNumber);
+            if (!$currentUser instanceof User) {
+                $email = $engagementForm->get('email')->getData();
+                $currentUser = $this->userFactory->createClientUser(email: $email);
+                $engagement->setOwner($currentUser);
                 $this->userRepository->save(entity: $currentUser, flush: true);
+                $this->security->login($currentUser, 'security.authenticator.form_login.main');
             }
 
             /** @var UploadedFile[] $files */

@@ -40,8 +40,18 @@ final readonly class EngagementTraderMatchAlertHandler
                 user: $user,
                 locale: $locale,
                 context: [
-                    'trader' => $traderProfile,
-                    'engagement' => $engagement,
+                    'trader' => [
+                        'latitude' => $traderProfile->getLatitude(),
+                        'longitude' => $traderProfile->getLongitude(),
+                    ],
+                    'engagement' => [
+                        'id' => (string) $engagement->getId(),
+                        'title' => $engagement->getTitle(),
+                        'budget' => $engagement->getBudget(),
+                        'currency' => $engagement->getCurrencyCodeEnum()->value,
+                        'latitude' => $engagement->getLatitude(),
+                        'longitude' => $engagement->getLongitude(),
+                    ],
                     'locale' => $locale,
                 ]
             );

@@ -40,8 +40,8 @@
                     <div class="card-body">
                         <div class="row g-2 justify-content-start" {{ stimulus_controller('lightbox') }}>
                             {% for image in engagement.images %}
-                                <div href="{{ asset('uploads/images/' ~ image.filename) }}" class="col-6">
-                                    <img src="{{ asset('uploads/images/' ~ image.filename) }}"
+                                <div href="{{ vich_uploader_asset(image, 'imageFile') }}" class="col-6">
+                                    <img src="{{ vich_uploader_asset(image, 'imageFile') }}"
                                          class="img-fluid rounded-3 hover-pointer"/>
                                 </div>
                             {% endfor %}

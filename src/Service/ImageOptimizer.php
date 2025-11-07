@@ -24,16 +24,15 @@ final readonly class ImageOptimizer
         $sourcePath = $file->getPathname();
         $driver = $this->images->driver();
 
-        $supportsAvif = $driver->supports('avif');
         $supportsWebp = $driver->supports('webp');
 
         $maxDim = 1920;
         $minDim = 640;
-        $quality = $supportsAvif ? 50 : ($supportsWebp ? 70 : 75);
-        $minQ = $supportsAvif ? 28 : ($supportsWebp ? 50 : 55);
+        $quality = $supportsWebp ? 70 : 75;
+        $minQ = $supportsWebp ? 50 : 55;
 
-        $ext = $supportsAvif ? 'avif' : ($supportsWebp ? 'webp' : 'jpg');
-        $mime = $ext === 'jpg' ? 'image/jpeg' : "image/{$ext}";
+        $ext = $supportsWebp ? 'webp' : 'jpg';
+        $mime = $ext === 'jpg' ? 'image/jpeg' : 'image/webp';
 
         $tmpBase = tempnam(sys_get_temp_dir(), 'img_');
         @unlink($tmpBase);
@@ -43,9 +42,7 @@ final readonly class ImageOptimizer
             $img = $this->images->read($sourcePath)->scaleDown(width: $maxDim, height: $maxDim);
             $img = $this->applyTiledWatermark($img, $this->watermarkPath);
 
-            if ($ext === 'avif') {
-                $encoded = $img->toAvif(quality: $quality, strip: true);
-            } elseif ($ext === 'webp') {
+            if ($ext === 'webp') {
                 $encoded = $img->toWebp(quality: $quality, strip: true);
             } else {
                 $encoded = $img->toJpeg(quality: $quality, progressive: true, strip: true);

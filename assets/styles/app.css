@@ -30,10 +30,41 @@ body {
     z-index: 1
 }
 
-.card-img-overlay-filter {
-    filter: brightness(.70) contrast(1.07)
+.card-img-overlay-filter-vertical {
+    filter: brightness(.85)
 }
 
+.card-img-zoom {
+    position: relative;
+    overflow: hidden;
+}
+.card-img-zoom .card-overlay-image {
+    display: block;
+    transition: all 0.5s ease;
+    transform-origin: center center;
+    will-change: transform;
+}
+.card-img-zoom:hover .card-overlay-image {
+    transform: scale(1.05) !important;
+    filter: brightness(1) !important
+}
+
+.trade-category {
+    font-family: "a Black Lives", sans-serif !important;
+    color: #ffffff;
+    display: block;
+    transition: all 0.5s ease;
+    transform-origin: center center;
+    will-change: transform;
+}
+
+.card-img-zoom:hover .trade-category {
+    color: #EC4E20FF !important;
+}
+
+.card-img-overlay-filter {
+    filter: brightness(.70) contrast(1.07);
+}
 
 .ts-control {
     padding: .785rem 0.75rem !important;

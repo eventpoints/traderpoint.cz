@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
@@ -16,6 +17,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'form/password_input.html.twig',
             'form/phone_number.html.twig',
             'form/_form_theme.html.twig',
+        ],
+        'globals' => [
+            'cookies' => '%app.cookies%',
         ],
     ]);
     if ($containerConfigurator->env() === 'test') {
