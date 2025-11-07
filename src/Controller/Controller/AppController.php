@@ -3,6 +3,7 @@
 namespace App\Controller\Controller;
 
 use App\Entity\User;
+use App\Repository\SkillRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,6 +12,12 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class AppController extends AbstractController
 {
+    public function __construct(
+        private readonly SkillRepository $skillRepository
+    )
+    {
+    }
+
     #[Route(path: '/', name: 'landing')]
     public function landing(Request $request, #[CurrentUser] null|User $currentUser): Response
     {
@@ -21,7 +28,11 @@ class AppController extends AbstractController
             return $this->redirectToRoute('client_dashboard');
         }
 
-        return $this->render('app/landing.html.twig');
+        $skills = $this->skillRepository->findPrimarySkills();
+
+        return $this->render('app/landing.html.twig', [
+            'skills' => $skills,
+        ]);
     }
 
     #[Route(path: '/terms-of-use', name: 'terms_of_use')]
