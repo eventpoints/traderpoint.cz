@@ -19,6 +19,11 @@
                     </a>
                 </li>
             {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_login') }}">
+                        {{ 'login'|trans|title }}
+                    </a>
+                </li>
                 {% if app.current_route == 'trader_register' %}
                     <li class="nav-item">
                         <a class="btn btn-outline-secondary fw-bold text-primary" href="{{ path('landing') }}"
