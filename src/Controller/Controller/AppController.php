@@ -40,4 +40,10 @@ class AppController extends AbstractController
     {
         return $this->render('app/terms-of-use.html.twig');
     }
+
+    #[Route(path: '/about-us', name: 'about_us')]
+    public function aboutUs(): Response
+    {
+        return $this->render('app/about-us.html.twig');
+    }
 }

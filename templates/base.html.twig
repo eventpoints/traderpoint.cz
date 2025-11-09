@@ -126,6 +126,7 @@
 </div>
 {% block body %}{% endblock %}
 
+{% include 'partial/_footer.html.twig' %}
 {% include 'partial/_consent_offcanvas.html.twig'  with { cookies: cookies } %}
 {% include 'partial/_consent_modal.html.twig'  with { cookies: cookies } %}
 </body>

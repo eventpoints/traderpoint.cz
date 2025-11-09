@@ -63,7 +63,7 @@ return array(
     'find-clients-fast' => 'Find quality leads. Fast.',
     'landing-client-explainer-short' => 'Plumbers, electricians, builders & more — get a quote in minutes.',
     'join-client-tagline' => 'Free to join • Free to post job • No hidden fees',
-    'advertise-job' => 'Post your job',
+    'advertise-job' => 'Post a job',
     'advertise-job-explainer' => 'Sign up & post your job for free — tell us what you need and when.',
     'receive-quotes' => 'Get quotes',
     'receive-quotes-explainer' => 'We will match you with Tradesmen who will provide you with an estimate',
@@ -176,4 +176,5 @@ return array(
     'logout' => 'logout',
     'i-need-a' => 'I need a {skill}',
     'i-need-something-else' => 'I need something else',
+    'join-as-tradesman' => 'Join as Tradesman',
 );

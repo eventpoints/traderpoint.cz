@@ -31,7 +31,7 @@ body {
 }
 
 .card-img-overlay-filter-vertical {
-    filter: brightness(.85)
+    filter: brightness(.85) blur(3px);
 }
 
 .card-img-zoom {
@@ -337,3 +337,13 @@ input[type="range"].form-range.range--xl:disabled {
 
 /* ensure label sits above the control */
 .form-floating > label { pointer-events:none; }
+
+.h-100-px{
+    height: 100px;
+}
+
+@media (min-width: 0px) and (max-width: 767.98px) {
+    .border-top-sm-only {
+        border-top: 3px solid var(--bs-border-color);
+    }
+}

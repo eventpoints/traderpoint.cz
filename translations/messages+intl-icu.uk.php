@@ -192,4 +192,5 @@ return array (
     'logout' => 'вихід',
     'i-need-a' => 'Мені потрібен {skill}',
     'i-need-something-else' => 'Мені потрібно щось інше',
+    'join-as-tradesman' => 'Приєднатися як майстер',
 );

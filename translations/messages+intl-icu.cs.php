@@ -173,4 +173,6 @@ return [
     'logout' => 'odhlásit se',
     'i-need-a' => 'Potřebuji {skill}',
     'i-need-something-else' => 'Potřebuji něco jiného',
+    'join-as-tradesman' => 'Připojte se jako řemeslník',
+
 ];

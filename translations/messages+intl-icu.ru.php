@@ -175,4 +175,5 @@ return [
     'logout' => 'выход из системы',
     'i-need-a' => 'Мне нужен {skill}',
     'i-need-something-else' => 'Мне нужно что-то другое',
+    'join-as-tradesman' => 'Присоединиться как мастер',
 ];

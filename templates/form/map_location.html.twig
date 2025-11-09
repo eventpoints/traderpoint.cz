@@ -4,16 +4,28 @@
 
         {{ ux_map(form.vars.map, { style: 'height: ' ~ (form.vars.height ?? '300px') }) }}
 
-        {# Hidden fields for point + address #}
         {{ form_widget(form.latitude) }}
         {{ form_widget(form.longitude) }}
         {{ form_widget(form.address) }}
 
-        {# Optional radius input #}
         {% if form.vars.with_radius and form.radiusKm is defined %}
-            <div class="mt-2 position-absolute left-0 ms-2 rounded-3 bottom-0 mb-1 bg-white p-2" style="z-index: 900; width: 25%">
+            <div class="mt-2 position-absolute left-0 ms-2 rounded-3 bottom-0 mb-1 bg-white p-2"
+                 style="z-index: 900; width: 25%">
                 {{ form_row(form.radiusKm) }}
             </div>
         {% endif %}
+
     </div>
+{% endblock %}
+
+{% block map_location_help %}
+    {% if help is not empty %}
+        {% set attr = help_attr|merge({
+            class: (help_attr.class|default('') ~ ' small text-muted d-block px-2 pt-2 pb-3')|trim
+        }) %}
+
+        <div {{ block('attributes') }}>
+            {{ help_html ? help|raw : help }}
+        </div>
+    {% endif %}
 {% endblock %}

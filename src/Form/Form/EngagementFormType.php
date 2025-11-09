@@ -121,6 +121,7 @@ final class EngagementFormType extends AbstractType
                 'mapped' => false,
                 'map' => $options['map'],
                 'height' => '320px',
+                'help' => 'click / tap on the map to set a location',
             ])
             ->add('budget', MoneyType::class, [
                 'currency' => CurrencyCodeEnum::CZK->value,

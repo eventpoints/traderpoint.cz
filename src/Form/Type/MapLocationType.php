@@ -19,7 +19,7 @@ final class MapLocationType extends AbstractType
 {
     public function getParent(): string
     {
-        return FormType::class; // compound
+        return FormType::class;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

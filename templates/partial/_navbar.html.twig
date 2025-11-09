@@ -1,15 +1,15 @@
 <nav class="navbar navbar-expand-lg glass rounded-0 border-0" data-bs-theme="light">
-    <div class="container d-flex gap-3 justify-content-between align-items-center flex-row">
+    <div class="container d-flex gap-3 justify-content-between justify-content-sm-between align-items-center flex-row">
         <a class="navbar-brand" href="{{ path('landing') }}">
             <div class="d-flex justify-content-start align-items-center gap-2">
-                <img height="60" src="{{ asset('images/tp-logo.png') }}">
+                <img height="50" src="{{ asset('images/traderpoint-prime.png') }}">
                 <div class="fs-4 border-start border-3 ps-2">
-                    <div class="lh-1">Trader</div>
-                    <div class="lh-1">Point</div>
+                    <div class="lh-1 fw-bold">{{ 'Trader'|upper }}</div>
+                    <div class="lh-1 fw-bold">{{ 'Point'|upper }}</div>
                 </div>
             </div>
         </a>
-        <ul class="navbar-nav align-items-center flex-row gap-3">
+        <ul class="navbar-nav align-items-center flex-row gap-3 justify-content-between justify-content-md-end justify-content-lg-end w-100 border-top-sm-only">
             {% if app.user %}
                 <li class="nav-item">
                     <a class="nav-link fw-bold" type="button" data-bs-toggle="offcanvas"
@@ -26,16 +26,15 @@
                 </li>
                 {% if app.current_route == 'trader_register' %}
                     <li class="nav-item">
-                        <a class="btn btn-outline-secondary fw-bold text-primary" href="{{ path('landing') }}"
+                        <a class="nav-link text-primary" href="{{ path('landing') }}"
                            type="button">
-                            {{ 'looking-to-hire'|trans }}
+                            {{ 'looking-to-hire'|trans|title }}
                         </a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="btn btn-outline-primary fw-bold text-black" href="{{ path('trader_register') }}"
-                           type="button">
-                            {{ 'tradesmen-register'|trans }}
+                        <a class="nav-link text-primary" href="{{ path('trader_register') }}">
+                            {{ 'join-as-tradesman'|trans|title }}
                         </a>
                     </li>
                 {% endif %}
