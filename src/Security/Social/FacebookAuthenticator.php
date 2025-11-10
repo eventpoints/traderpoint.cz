@@ -158,6 +158,7 @@ final class FacebookAuthenticator extends OAuth2Authenticator
             $this->em->persist($user);
             $created = true;
         } elseif ($roleIntent === 'trader' && ! $user->isTrader()) {
+
             $roles = $user->getRoles();
             if (! in_array(UserRoleEnum::ROLE_TRADER->name, $roles, true)) {
                 $roles[] = UserRoleEnum::ROLE_TRADER->name;

@@ -30,7 +30,7 @@ class TraderController extends AbstractController
         private readonly PaginatorInterface $paginator,
         private readonly TraderProfileRepository $traderProfileRepository,
         private readonly QuoteRepository $quoteRepository,
-        private readonly ImageOptimizer $imageOptimizer
+        private readonly ImageOptimizer $imageOptimizer,
     )
     {
     }

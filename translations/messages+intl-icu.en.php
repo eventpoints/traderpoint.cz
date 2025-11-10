@@ -90,7 +90,7 @@ return array(
     'client-dashboard' => 'client dashboard',
     'your-jobs' => 'your jobs',
     'trader-dashboard' => 'trader dashboard',
-    'jobs-for-you' => 'recommended jobs',
+    'jobs-for-you' => 'Matched leads',
     'get-started' => 'get started',
     'set-your-service-radius' => 'Add your skills and service area to see matching jobs.',
     'update-now' => 'update now',
@@ -192,5 +192,9 @@ return array(
     'report-problem-with' => 'report problem with {name}',
     'something-is-wrong' => 'something is wrong',
     'report-problem' => 'report problem',
-
+    'quote-not-selected' => 'Quote not selected',
+    'quote-not-selected-explainer' => 'Unfortunately, your quote was not accepted this time.',
+    'standard-plan-label' => 'standard plan',
+    'standard-plan-trial-headline' => '30 days free, then just 499 CZK / month',
+    'standard-plan-trial-subline' => 'No card required to start. Cancel anytime during your trial.'
 );

@@ -111,8 +111,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[ORM\OneToMany(targetEntity: ExternalIdentity::class, mappedBy: 'user', cascade: ['persist'], orphanRemoval: true)]
     private Collection $externalIdentities;
 
+    #[ORM\OneToOne(targetEntity: StripeProfile::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?StripeProfile $stripeProfile = null;
+
     public function __construct()
     {
+        $this->id = Uuid::v4();
         $this->token = Uuid::v7();
         $this->reviews = new ArrayCollection();
         $this->engagements = new ArrayCollection();
@@ -121,8 +125,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         $this->externalIdentities = new ArrayCollection();
     }
 
-    public
-    function getId(): Uuid
+    public function getId(): Uuid
     {
         return $this->id;
     }
@@ -433,6 +436,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     public function hasPassword(): bool
     {
         return $this->password !== null && $this->password !== '' && $this->password !== '0';
+    }
+
+    public function getStripeProfile(): ?StripeProfile
+    {
+        return $this->stripeProfile;
+    }
+
+    public function setStripeProfile(?StripeProfile $stripeProfile): self
+    {
+        $this->stripeProfile = $stripeProfile;
+        return $this;
     }
 }
 

@@ -82,6 +82,9 @@
             {% if app.user.isTrader %}
                 <a class="list-group-item list-group-item-action {{ app.locale == 'trader_dashboard' ? 'active' }}"
                    href="{{ path('trader_dashboard') }}">{{ 'dashboard'|trans|title }}</a>
+                <a class="list-group-item list-group-item-action {{ app.locale == 'trader_quotes' ? 'active' }}"
+                   href="{{ path('trader_quotes') }}">{{ 'quotes-sent'|trans|title }}</a>
+
             {% else %}
                 <a class="list-group-item list-group-item-action {{ app.locale == 'client_dashboard' ? 'active' }}"
                    href="{{ path('client_dashboard') }}">{{ 'dashboard'|trans|title }}</a>

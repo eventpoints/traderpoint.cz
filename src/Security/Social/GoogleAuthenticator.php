@@ -10,10 +10,13 @@ use App\Entity\User;
 use App\Enum\OauthProviderEnum;
 use App\Enum\UserRoleEnum;
 use App\Service\AvatarService\AvatarService;
+use App\Service\StandardPlanSubscriptionService;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
+use Random\RandomException;
+use Stripe\Exception\ApiErrorException;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,6 +43,7 @@ final class GoogleAuthenticator extends OAuth2Authenticator
         private readonly RequestStack $requestStack,
         private readonly AvatarService $avatarService,
         private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly StandardPlanSubscriptionService $standardPlanSubscriptionService,
     )
     {
     }
@@ -49,6 +53,10 @@ final class GoogleAuthenticator extends OAuth2Authenticator
         return $request->attributes->get('_route') === 'oauth_google_check';
     }
 
+    /**
+     * @throws ApiErrorException
+     * @throws RandomException
+     */
     public function authenticate(Request $request): SelfValidatingPassport
     {
         $session = $this->requestStack->getSession();
@@ -158,6 +166,12 @@ final class GoogleAuthenticator extends OAuth2Authenticator
                 $user->setTraderProfile($profile);
             }
             $upgradedToTrader = true;
+
+            $this->em->persist($user);
+        }
+
+        if ($roleIntent === 'trader') {
+            $this->standardPlanSubscriptionService->startStandardPlanTrial($user);
         }
 
         $newIdentity = new ExternalIdentity(

@@ -14,7 +14,9 @@ use App\Repository\UserRepository;
 use App\Security\AppCustomAuthenticator;
 use App\Service\AvatarService\AvatarService;
 use App\Service\EmailService\EmailService;
+use App\Service\StandardPlanSubscriptionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Stripe\Exception\ApiErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +33,8 @@ class RegistrationController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly AvatarService $avatarService,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
-        private readonly EmailService $emailService
+        private readonly EmailService $emailService,
+        private readonly StandardPlanSubscriptionService $standardPlanSubscriptionService,
     )
     {
     }
@@ -90,6 +93,9 @@ class RegistrationController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws ApiErrorException
+     */
     #[Route('trader/register', name: 'trader_register')]
     public function traderRegister(
         Request $request,
@@ -140,6 +146,8 @@ class RegistrationController extends AbstractController
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
+
+            $this->standardPlanSubscriptionService->startStandardPlanTrial($user);
 
             return $userAuthenticator->authenticateUser($user, $authenticator, $request);
         }
