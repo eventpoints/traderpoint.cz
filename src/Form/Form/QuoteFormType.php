@@ -46,10 +46,11 @@ class QuoteFormType extends AbstractType
                     'step' => 1,
                 ],
             ])
-            ->add('priceNetCents', MoneyType::class, [
+            ->add('price', MoneyType::class, [
                 'currency' => CurrencyCodeEnum::CZK->value,
                 'label' => $this->translator->trans('estimated-budget'),
                 'data' => $engagement->getBudget() / 100,
+                'grouping' => true,
                 'attr' => [
                     'data-money-input-locale-value' => 'en-US',
                     'min' => 0,

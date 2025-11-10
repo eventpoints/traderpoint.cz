@@ -1,69 +1,31 @@
+// assets/controllers/money_input_controller.js
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
     static values = {
-        locale: { type: String, default: (typeof navigator !== "undefined" ? navigator.language : "en-US") },
+        locale: { type: String,  default: (typeof navigator !== "undefined" ? navigator.language : "en-US") },
         decimals: { type: Number, default: 2 },
         grouping: { type: Boolean, default: true },
         groupWhileTyping: { type: Boolean, default: true }
     };
 
     connect() {
-        // Force text to avoid <input type="number"> quirks
-        if (!this.element.getAttribute("type")) {
-            this.element.setAttribute("type", "text");
-        }
-
+        // force text to avoid browser numeric quirks
+        if (!this.element.getAttribute("type")) this.element.setAttribute("type", "text");
         const v = this.element.value?.trim();
-        if (v !== "") {
-            this.formatCurrent(true);
-        }
-
-        this.bindFormSubmit();
-    }
-
-    disconnect() {
-        if (this.form) {
-            this.form.removeEventListener("submit", this.onFormSubmit);
-        }
-    }
-
-    bindFormSubmit() {
-        this.form = this.element.form;
-        if (!this.form) return;
-
-        // Bind per-controller so each input cleans itself
-        this.onFormSubmit = this.onFormSubmit?.bind(this) ?? this._onFormSubmit.bind(this);
-        this.form.addEventListener("submit", this.onFormSubmit);
-    }
-
-    _onFormSubmit() {
-        // On submit, send a plain, ungrouped, locale-correct number
-        const n = this.parse(this.element.value);
-        if (n === null || isNaN(n)) {
-            // Let Symfony validation handle truly invalid input
-            return;
-        }
-
-        const ds = this.decimalSep();
-
-        // Fixed decimals, no grouping
-        let normalized = n.toFixed(this.decimalsValue); // "1234.50"
-
-        if (ds !== ".") {
-            // Convert to the server-side locale decimal separator
-            normalized = normalized.replace(".", ds); // e.g. "1234,50"
-        }
-
-        this.element.value = normalized;
+        if (v !== "") this.formatCurrent(/*fixed=*/true, this.effectiveGrouping());
     }
 
     onFocus() {
+        // Re-apply pretty formatting on focus so separators are visible immediately
+        this.formatCurrent(/*fixed=*/false, this.effectiveGrouping());
+
+        // place caret at end
         const len = this.element.value?.length ?? 0;
         this.element.setSelectionRange(len, len);
     }
 
-    onInput(e) {
+    onInput() {
         const el = this.element;
         const caretBefore = el.selectionStart ?? el.value.length;
 
@@ -72,9 +34,7 @@ export default class extends Controller {
         let raw = el.value.replace(/\s|\u00A0/g, "").replace(notAllowed, "");
 
         const first = raw.indexOf(ds);
-        if (first !== -1) {
-            raw = raw.slice(0, first + 1) + raw.slice(first + 1).replaceAll(ds, "");
-        }
+        if (first !== -1) raw = raw.slice(0, first + 1) + raw.slice(first + 1).replaceAll(ds, "");
 
         let [intPart, decPart = ""] = raw.split(ds);
 
@@ -83,6 +43,7 @@ export default class extends Controller {
         const sign = intPart.startsWith("-") ? "-" : "";
         intPart = intPart.replace(/[^0-9]/g, "");
 
+        // Group while typing if enabled
         if (this.groupWhileTypingValue) {
             intPart = this.formatInteger(sign + intPart);
         } else {
@@ -90,12 +51,9 @@ export default class extends Controller {
         }
 
         let next = intPart;
-
         if (decPart !== "") {
             decPart = decPart.replace(/[^0-9]/g, "").slice(0, this.decimalsValue);
-            if (decPart !== "") {
-                next += ds + decPart;
-            }
+            next += ds + decPart;
         }
 
         el.value = next;
@@ -105,15 +63,21 @@ export default class extends Controller {
     }
 
     onBlur() {
-        this.formatCurrent(true);
+        // Keep grouping on blur if either grouping or groupWhileTyping is true
+        this.formatCurrent(/*fixed=*/true, this.effectiveGrouping());
     }
 
-    // ---- helpers (unchanged) ----
-    formatCurrent(fixed) {
+    // ---- helpers ----
+    effectiveGrouping() {
+        // Persist separators if either option is on
+        return !!(this.groupingValue || this.groupWhileTypingValue);
+    }
+
+    formatCurrent(fixed, groupingOverride) {
         const n = this.parse(this.element.value);
         if (n === null || isNaN(n)) return;
         this.element.value = this.toLocaleString(n, {
-            grouping: this.groupingValue,
+            grouping: groupingOverride !== undefined ? groupingOverride : this.groupingValue,
             fixed: !!fixed
         });
     }

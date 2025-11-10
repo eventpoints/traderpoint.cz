@@ -4,6 +4,7 @@ namespace App\Controller\Controller;
 
 use App\DataTransferObject\MapLocationDto;
 use App\Entity\Engagement;
+use App\Entity\EngagementIssue;
 use App\Entity\Image;
 use App\Entity\Quote;
 use App\Entity\Skill;
@@ -11,6 +12,7 @@ use App\Entity\User;
 use App\Enum\FlashEnum;
 use App\Factory\UserFactory;
 use App\Form\Form\EngagementFormType;
+use App\Form\Form\EngagementIssueFormType;
 use App\Form\Form\QuoteFormType;
 use App\Message\Message\EngagementPostedMessage;
 use App\Repository\EngagementRepository;
@@ -91,6 +93,7 @@ class EngagmentController extends AbstractController
         $quoteForm = $this->createForm(QuoteFormType::class, $quote);
         $quoteForm->handleRequest($request);
         if ($quoteForm->isSubmitted() && $quoteForm->isValid()) {
+
             $locale = $engagement->getOwner()->getPreferredLanguage() ?? 'cs';
             $this->emailService->sendQuoteMadeEmail($engagement->getOwner(), $locale, [
                 'quote' => $quote,
@@ -239,6 +242,28 @@ class EngagmentController extends AbstractController
             'map' => $map,
             'engagementForm' => $engagementForm,
             'engagement' => $engagement,
+        ]);
+    }
+
+    #[Route(path: 'engagement/issue/{quote}/{user}', name: 'engagement_issue')]
+    public function engagementIssue(Quote $quote, User $user, Request $request, #[CurrentUser] User $currentUser): Response
+    {
+        $engagementIssue = new EngagementIssue(engagement: $quote->getEngagement(), owner: $currentUser, target: $user, quote: $quote);
+        $engagementIssueForm = $this->createForm(EngagementIssueFormType::class, $engagementIssue);
+
+        $engagementIssueForm->handleRequest($request);
+
+        if($engagementIssueForm->isSubmitted() && $engagementIssueForm->isValid()){
+            $this->engagementRepository->save($quote->getEngagement(), true);
+            $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans(id: 'flash.issue-created', domain: 'flash'));
+            return $this->redirectToRoute('client_show_engagement', [
+                'id' => $quote->getEngagement()->getId(),
+            ]);
+        }
+
+        return $this->render('engagement/issue.html.twig', [
+            'engagementIssue' => $engagementIssue,
+            'engagementIssueForm' => $engagementIssueForm,
         ]);
     }
 }

@@ -70,12 +70,14 @@ final class QuoteFixtures extends Fixture implements DependentFixtureInterface
                     $currentVersion = ($versionMap[$key] ?? 0) + 1;
                     $versionMap[$key] = $currentVersion;
 
-                    $netCents = $faker->numberBetween(5_000, 250_000);
-                    $vatBps = $faker->randomElement([0, 1000, 1500, 2100]);
+                    $budget = $engagement->getBudget();
 
+                    $min = (int) round($budget * 0.8);
+                    $max = (int) round($budget * 1.2);
+
+                    $netCents = $faker->numberBetween($min, $max);
                     $quote = new Quote($engagement, $trader, $netCents, CurrencyCodeEnum::CZK);
                     $quote->setVersion($currentVersion);
-                    $quote->setVatRateBps($vatBps);
 
                     $createdAt = CarbonImmutable::instance($faker->dateTimeBetween('-30 days', 'now'));
                     $quote->setCreatedAt($createdAt);

@@ -147,8 +147,8 @@ final class FacebookAuthenticator extends OAuth2Authenticator
             }
             if ($roleIntent === 'trader') {
                 $roles = $user->getRoles();
-                if (! in_array(UserRoleEnum::ROLE_TRADER->value, $roles, true)) {
-                    $roles[] = UserRoleEnum::ROLE_TRADER->value;
+                if (! in_array(UserRoleEnum::ROLE_TRADER->name, $roles, true)) {
+                    $roles[] = UserRoleEnum::ROLE_TRADER->name;
                     $user->setRoles($roles);
                 }
                 $profile = new TraderProfile();
@@ -159,8 +159,8 @@ final class FacebookAuthenticator extends OAuth2Authenticator
             $created = true;
         } elseif ($roleIntent === 'trader' && ! $user->isTrader()) {
             $roles = $user->getRoles();
-            if (! in_array(UserRoleEnum::ROLE_TRADER->value, $roles, true)) {
-                $roles[] = UserRoleEnum::ROLE_TRADER->value;
+            if (! in_array(UserRoleEnum::ROLE_TRADER->name, $roles, true)) {
+                $roles[] = UserRoleEnum::ROLE_TRADER->name;
                 $user->setRoles($roles);
             }
             if ($user->getTraderProfile() === null) {

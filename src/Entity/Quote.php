@@ -56,22 +56,10 @@ class Quote implements \Stringable
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Assert\GreaterThanOrEqual(0)]
-    private int $priceNetCents;
+    private int $price;
 
     #[ORM\Column(length: 3, enumType: CurrencyCodeEnum::class)]
     private CurrencyCodeEnum $currency = CurrencyCodeEnum::CZK;
-
-    #[ORM\Column(type: Types::INTEGER, options: [
-        'unsigned' => true,
-    ])]
-    #[Assert\Range(min: 0, max: 10000)]
-    private int $vatRateBps = 0;
-
-    #[ORM\Column(type: Types::INTEGER)]
-    private int $priceVatCents = 0;
-
-    #[ORM\Column(type: Types::INTEGER)]
-    private int $priceGrossCents = 0;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private CarbonImmutable $createdAt;
@@ -105,38 +93,22 @@ class Quote implements \Stringable
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $message = null;
 
-    public function __construct(Engagement $engagement, User $trader, int $priceNetCents = 0, CurrencyCodeEnum $currency = CurrencyCodeEnum::CZK)
+    public function __construct(
+        Engagement $engagement,
+        User $trader,
+        int $price = 0,
+        CurrencyCodeEnum $currency = CurrencyCodeEnum::CZK
+    )
     {
         $now = CarbonImmutable::now();
         $this->setEngagement($engagement);
         $this->setOwner($trader);
-        $this->setPriceNetCents($priceNetCents);
+        $this->setPrice($price);
         $this->setCurrency($currency);
         $this->setCreatedAt($now);
         $this->setValidUntil($now->addDays(30)->endOfDay()); ;
         $this->setStatus(QuoteStatusEnum::SUBMITTED);
-    }
-
-    #[ORM\PrePersist]
-    public function onPrePersist(): void
-    {
-        $this->setCreatedAt($this->getCreatedAt());
-        $this->setCurrency($this->getCurrency());
-        $this->recalculateTotals();
-    }
-
-    #[ORM\PreUpdate]
-    public function onPreUpdate(): void
-    {
-        $this->setCurrency($this->getCurrency()); // normalize uppercase
-        $this->recalculateTotals();
-    }
-
-    private function recalculateTotals(): void
-    {
-        $vat = (int) round($this->priceNetCents * ($this->vatRateBps / 10000));
-        $this->priceVatCents = $vat;
-        $this->priceGrossCents = $this->priceNetCents + $vat;
+        $this->createdAt = CarbonImmutable::now();
     }
 
     public function submit(?CarbonImmutable $validUntil = null): void
@@ -247,36 +219,14 @@ class Quote implements \Stringable
         $this->status = $status;
     }
 
-    public function getPriceNetCents(): int
+    public function getPrice(): int
     {
-        return $this->priceNetCents;
+        return $this->price;
     }
 
-    public function setPriceNetCents(int $cents): void
+    public function setPrice(int $cents): void
     {
-        $this->priceNetCents = max(0, $cents);
-        $this->recalculateTotals();
-    }
-
-    public function getVatRateBps(): int
-    {
-        return $this->vatRateBps;
-    }
-
-    public function setVatRateBps(int $bps): void
-    {
-        $this->vatRateBps = max(0, min(10000, $bps));
-        $this->recalculateTotals();
-    }
-
-    public function getPriceVatCents(): int
-    {
-        return $this->priceVatCents;
-    }
-
-    public function getPriceGrossCents(): int
-    {
-        return $this->priceGrossCents;
+        $this->price = max(0, $cents);
     }
 
     public function getCreatedAt(): CarbonImmutable
@@ -389,11 +339,6 @@ class Quote implements \Stringable
         return $this->status == QuoteStatusEnum::SUBMITTED;
     }
 
-    public function getPrice(): int
-    {
-        return $this->getPriceNetCents() / 100;
-    }
-
     public function __toString(): string
     {
         return $this->getId() . '-' . $this->getPrice();
@@ -408,7 +353,8 @@ class Quote implements \Stringable
         int $workdayStartHour = 9,
         int $workdayEndHour = 17,
         array $workdays = [1, 2, 3, 4, 5]
-    ): CarbonImmutable {
+    ): CarbonImmutable
+    {
         $remaining = (int) round(((float) $hours) * 3600);
         if ($remaining <= 0) {
             return $start;
@@ -416,9 +362,9 @@ class Quote implements \Stringable
 
         $current = $start;
 
-        $isWorkday = fn (CarbonImmutable $d): bool => in_array($d->dayOfWeek, $workdays, true);
-        $dayStart = fn (CarbonImmutable $d) => $d->setTime($workdayStartHour, 0, 0);
-        $dayEnd = fn (CarbonImmutable $d) => $d->setTime($workdayEndHour, 0, 0);
+        $isWorkday = fn(CarbonImmutable $d): bool => in_array($d->dayOfWeek, $workdays, true);
+        $dayStart = fn(CarbonImmutable $d) => $d->setTime($workdayStartHour, 0, 0);
+        $dayEnd = fn(CarbonImmutable $d) => $d->setTime($workdayEndHour, 0, 0);
 
         $nextWorkStart = function (CarbonImmutable $d) use ($isWorkday, $dayStart): CarbonImmutable {
             $d = $d->addDay();
@@ -482,5 +428,10 @@ class Quote implements \Stringable
         }
 
         return $this->addWorkingHours($startAt, (float) $hours, 9, 17, [1, 2, 3, 4, 5]);
+    }
+
+    public function isAfterStart(): bool
+    {
+        return CarbonImmutable::now()->greaterThanOrEqualTo($this->getStartAt());
     }
 }

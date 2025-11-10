@@ -122,7 +122,7 @@ class RegistrationController extends AbstractController
             $avatar = $this->avatarService->generate($userTraderDto->getEmail());
 
             $user = new User();
-            $user->setRoles([UserRoleEnum::ROLE_TRADER->value]);
+            $user->setRoles([UserRoleEnum::ROLE_TRADER->name]);
             $user->setAvatar($avatar);
             $user->setFirstName($userTraderDto->getFirstName());
             $user->setLastName($userTraderDto->getLastName());

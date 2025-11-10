@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-#[AsEventListener(event: KernelEvents::CONTROLLER, priority: 1)]
+//#[AsEventListener(event: KernelEvents::CONTROLLER, priority: 1)]
 final readonly class RequirePhoneSubscriber
 {
     public function __construct(

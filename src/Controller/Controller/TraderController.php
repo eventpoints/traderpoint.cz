@@ -49,7 +49,6 @@ class TraderController extends AbstractController
     #[Route(path: '/dashboard', name: 'trader_dashboard')]
     public function dashboard(#[CurrentUser] User $currentUser, Request $request): Response
     {
-
         if (! $currentUser->isTrader()) {
             return $this->redirectToRoute('client_dashboard');
         }
@@ -109,7 +108,7 @@ class TraderController extends AbstractController
             $currentUser->getTraderProfile()->setServiceRadius($location->getRadiusKm());
             $currentUser->getTraderProfile()->setAddress($location->getAddress());
             $this->traderProfileRepository->save(entity: $currentUser->getTraderProfile(), flush: true);
-            return $this->redirectToRoute('trader_account');
+            return $this->redirectToRoute('trader_dashboard');
         }
 
         $accountForm = $this->createForm(AccountFormType::class, $currentUser);

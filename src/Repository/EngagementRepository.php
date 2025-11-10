@@ -7,7 +7,6 @@ use App\Entity\Quote;
 use App\Entity\Skill;
 use App\Entity\User;
 use App\Enum\EngagementStatusEnum;
-use App\Enum\PaymentStatusEnum;
 use Carbon\CarbonImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Order;
@@ -43,6 +42,7 @@ class EngagementRepository extends ServiceEntityRepository
 
         // --- PostGIS helper returns ordered IDs by distance (each row: ['id' => '...', 'dist' => ...])
         $rows = $this->findNearbyIdsOrdered($lat, $lng, $meters);
+
         if ($rows === []) {
             return $isQuery ? $this->createQueryBuilder('e')->where('1=0')->getQuery() : [];
         }
@@ -68,7 +68,7 @@ class EngagementRepository extends ServiceEntityRepository
 
         $qb->andWhere(
             $qb->expr()->eq('engagement.status', ':status')
-        )->setParameter('status', EngagementStatusEnum::PENDING);
+        )->setParameter('status', EngagementStatusEnum::ACCEPTED);
 
         $skillIds = $user->getTraderProfile()->getSkills()
             ->map(fn(Skill $skill): string => $skill->getId()->toRfc4122())
@@ -79,10 +79,6 @@ class EngagementRepository extends ServiceEntityRepository
         )
             ->setParameter('skills', $skillIds)
             ->distinct();
-
-        $qb->andWhere(
-            $qb->expr()->eq('payment.status', ':paid')
-        )->setParameter('paid', PaymentStatusEnum::PAID);
 
         $now = CarbonImmutable::now();
         $qb->andWhere(

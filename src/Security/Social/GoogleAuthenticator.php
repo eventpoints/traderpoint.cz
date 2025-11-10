@@ -135,8 +135,8 @@ final class GoogleAuthenticator extends OAuth2Authenticator
             }
             if ($roleIntent === 'trader') {
                 $roles = $user->getRoles();
-                if (! in_array(UserRoleEnum::ROLE_TRADER->value, $roles, true)) {
-                    $roles[] = UserRoleEnum::ROLE_TRADER->value;
+                if (! in_array(UserRoleEnum::ROLE_TRADER->name, $roles, true)) {
+                    $roles[] = UserRoleEnum::ROLE_TRADER->name;
                     $user->setRoles($roles);
                 }
                 $profile = new TraderProfile();
@@ -148,8 +148,8 @@ final class GoogleAuthenticator extends OAuth2Authenticator
         } elseif ($roleIntent === 'trader' && ! $user->isTrader()) {
             // Upgrade if trader intent
             $roles = $user->getRoles();
-            if (! in_array(UserRoleEnum::ROLE_TRADER->value, $roles, true)) {
-                $roles[] = UserRoleEnum::ROLE_TRADER->value;
+            if (! in_array(UserRoleEnum::ROLE_TRADER->name, $roles, true)) {
+                $roles[] = UserRoleEnum::ROLE_TRADER->name;
                 $user->setRoles($roles);
             }
             if ($user->getTraderProfile() === null) {

@@ -39,9 +39,15 @@
     {# Hreflang alternates #}
     {% if app.request.attributes.get('_route') %}
         {% set params = app.request.attributes.get('_route_params')|default({}) %}
-        <link rel="alternate" href="{{ absolute_url(path(app.request.attributes.get('_route'), params|merge({'_locale': 'en'}))) }}" hreflang="en">
-        <link rel="alternate" href="{{ absolute_url(path(app.request.attributes.get('_route'), params|merge({'_locale': 'cs'}))) }}" hreflang="cs-CZ">
-        <link rel="alternate" href="{{ absolute_url(path(app.request.attributes.get('_route'), params|merge({'_locale': 'ru'}))) }}" hreflang="ru-RU">
+        <link rel="alternate"
+              href="{{ absolute_url(path(app.request.attributes.get('_route'), params|merge({'_locale': 'en'}))) }}"
+              hreflang="en">
+        <link rel="alternate"
+              href="{{ absolute_url(path(app.request.attributes.get('_route'), params|merge({'_locale': 'cs'}))) }}"
+              hreflang="cs-CZ">
+        <link rel="alternate"
+              href="{{ absolute_url(path(app.request.attributes.get('_route'), params|merge({'_locale': 'ru'}))) }}"
+              hreflang="ru-RU">
         <link rel="alternate" href="{{ url }}" hreflang="x-default">
     {% endif %}
 
@@ -64,11 +70,14 @@
     <meta name="twitter:image" content="{{ image }}">
 
 
-
     {% if app.environment == 'prod' %}
         <script>
             window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
             gtag('consent', 'default', {
                 analytics_storage: 'denied',
                 functionality_storage: 'granted',
@@ -126,7 +135,11 @@
 </div>
 {% block body %}{% endblock %}
 
-{% include 'partial/_footer.html.twig' %}
+{% if app.user %}
+    {% include 'partial/_simple-footer.html.twig' %}
+{% else %}
+    {% include 'partial/_footer.html.twig' %}
+{% endif %}
 {% include 'partial/_consent_offcanvas.html.twig'  with { cookies: cookies } %}
 {% include 'partial/_consent_modal.html.twig'  with { cookies: cookies } %}
 </body>

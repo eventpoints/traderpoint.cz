@@ -21,7 +21,7 @@ final readonly class UserFactory
         $user = new User();
         $user->setEmail($email);
         $user->setAvatar($this->avatarService->generate(hashString: $email));
-        $user->setRoles([UserRoleEnum::ROLE_USER->value]);
+        $user->setRoles([UserRoleEnum::ROLE_USER->name]);
 
         return $user;
     }

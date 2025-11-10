@@ -81,6 +81,7 @@ final class TraderAccountFormType extends AbstractType
                 'radius_min' => 0.5,
                 'radius_max' => 100,
                 'radius_step' => 0.5,
+                'help' => $this->translator->trans('trader-location-help'),
             ]);
     }
 

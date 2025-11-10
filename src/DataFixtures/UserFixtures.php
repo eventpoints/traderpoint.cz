@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Data\SkillData;
+use App\Entity\PhoneNumber;
 use App\Entity\Skill;
 use App\Entity\TraderProfile;
 use App\Entity\User;
@@ -41,6 +42,12 @@ final class UserFixtures extends Fixture implements DependentFixtureInterface
             $user->setVerifiedAt(CarbonImmutable::now());
             $user->setPassword($this->passwordHasher->hashPassword($user, self::FAKE_USER_PASSWORD));
 
+            $phoneNumber = new PhoneNumber();
+            $phoneNumber->setPrefix('420');
+            $phoneNumber->setNumber($faker->numerify('#########'));
+            $phoneNumber->setConfirmedAt(CarbonImmutable::now());
+            $user->setPhoneNumber($phoneNumber);
+
             // 20% traders, 80% clients
             $isTrader = $faker->boolean(20);
 
@@ -74,7 +81,7 @@ final class UserFixtures extends Fixture implements DependentFixtureInterface
                 }
 
                 $user->setTraderProfile($profile); // inverse side kept in sync
-                $user->setRoles([UserRoleEnum::ROLE_TRADER->value]);
+                $user->setRoles([UserRoleEnum::ROLE_TRADER->name]);
             } else {
                 // client-only; leave roles empty, getRoles() will add ROLE_USER
                 $user->setRoles([]);

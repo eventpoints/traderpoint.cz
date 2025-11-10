@@ -334,7 +334,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function isTrader(): bool
     {
-        return in_array(UserRoleEnum::ROLE_TRADER->value, $this->getRoles(), true);
+        return in_array(UserRoleEnum::ROLE_TRADER->name, $this->getRoles(), true);
     }
 
     public function getTraderProfile(): ?TraderProfile

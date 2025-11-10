@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container min-vh-100">
+        <div class="row justify-content-center g-3 mt-3">
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    {{ form_start(engagementIssueForm) }}
+                    <div class="card-header">
+                        <div class="fs-4">{{ 'something-is-wrong'|trans }}</div>
+                        <div>{{ 'report-problem-with'|trans({name: engagementIssue.target.fullName}) }}</div>
+                    </div>
+                    <div class="card-body vstack gap-3">
+                        {{ form_row(engagementIssueForm.type) }}
+                        {{ form_row(engagementIssueForm.description) }}
+                    </div>
+                    <div class="card-footer text-end">
+                        <button type="submit" class="btn btn-primary">{{ 'report-problem'|trans }}</button>
+                    </div>
+                    {{ form_end(engagementIssueForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

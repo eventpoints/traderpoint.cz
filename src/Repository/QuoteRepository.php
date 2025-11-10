@@ -50,7 +50,7 @@ class QuoteRepository extends ServiceEntityRepository
             $qb->expr()->eq('quote.engagement', ':engagement')
         )->setParameter('engagement', $engagement);
 
-        $qb->orderBy('quote.priceGrossCents', 'ASC');
+        $qb->orderBy('quote.price', 'ASC');
 
         return $qb->getQuery()->getResult();
     }

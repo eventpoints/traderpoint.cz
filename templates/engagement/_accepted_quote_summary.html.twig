@@ -1,0 +1,69 @@
+{# engagement/_accepted_quote_summary.html.twig #}
+{% if acceptedQuote is defined and acceptedQuote %}
+    <div class="list-group list-group-flush">
+        <div class="list-group-item text-center">
+            <div class="fs-4 mb-3">
+                {{ ux_icon('mdi:check-circle-outline', {
+                    style: 'height: 1.8em',
+                    class: 'text-success'
+                }) }}
+            </div>
+            <div class="fw-bold fs-4">
+                {{ 'quote-accepted'|trans|capitalize }}
+            </div>
+            <div class="text-muted">
+                {{ 'quote-accepted-explainer'|trans }}
+            </div>
+        </div>
+
+        <div class="list-group-item d-flex justify-content-between">
+            <div>{{ 'price'|trans }}</div>
+            <div>{{ acceptedQuote.price|format_currency(acceptedQuote.currency.value) }}</div>
+        </div>
+
+        <div class="list-group-item d-flex justify-content-between">
+            <div>{{ 'start-date'|trans }}</div>
+            <div>{{ acceptedQuote.startAt|format_datetime }}</div>
+        </div>
+
+        <div class="list-group-item d-flex justify-content-between">
+            <div>{{ 'aproximate-duration'|trans }}</div>
+            <div>{{ 'duration-in-hours'|trans({ duration: acceptedQuote.expectedDurationHours }) }}</div>
+        </div>
+
+        <div class="list-group-item d-flex justify-content-between">
+            <div>{{ 'materials'|trans }}</div>
+            <div>
+                {{ acceptedQuote.includesMaterials
+                ? 'includes-materials'|trans
+                : 'does-not-includes-materials'|trans }}
+            </div>
+        </div>
+
+        <div class="list-group-item d-flex justify-content-between">
+            <div>{{ 'warranty-duration'|trans }}</div>
+            <div>
+                {{ 'warranty-duration-in-months'|trans({ duration: acceptedQuote.warrantyMonths }) }}
+            </div>
+        </div>
+
+        {% if acceptedQuote.message %}
+            <div class="list-group-item">
+                <div data-controller="read-more"
+                     data-read-more-more-text-value="{{ 'read-more'|trans }}"
+                     data-read-more-less-text-value="{{ 'read-less'|trans }}">
+                    <div class="read-more-content" data-read-more-target="content">
+                        {{ acceptedQuote.message|nl2br }}
+                    </div>
+                    {% if acceptedQuote.message|length > 200 %}
+                        <div class="text-center text-muted">
+                            <a class="hover-pointer"
+                               data-action="click->read-more#toggle">{{ 'read-more'|trans }}</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+{% endif %}
