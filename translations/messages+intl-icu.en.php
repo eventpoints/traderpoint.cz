@@ -195,6 +195,6 @@ return array(
     'quote-not-selected' => 'Quote not selected',
     'quote-not-selected-explainer' => 'Unfortunately, your quote was not accepted this time.',
     'standard-plan-label' => 'standard plan',
-    'standard-plan-trial-headline' => '30 days free, then just 499 CZK / month',
+    'standard-plan-trial-headline' => '90 days free, then just 499 CZK / month',
     'standard-plan-trial-subline' => 'No card required to start. Cancel anytime during your trial.'
 );
