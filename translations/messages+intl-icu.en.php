@@ -196,5 +196,15 @@ return array(
     'quote-not-selected-explainer' => 'Unfortunately, your quote was not accepted this time.',
     'standard-plan-label' => 'standard plan',
     'standard-plan-trial-headline' => '90 days free, then just 499 CZK / month',
-    'standard-plan-trial-subline' => 'No card required to start. Cancel anytime during your trial.'
+    'standard-plan-trial-subline' => 'No card required to start. Cancel anytime during your trial.',
+    'reaction.interested' => 'Interested',
+    'reaction.interested-description' => 'Trader is interested in this job.',
+    'reaction.need-photos' => 'Need photos',
+    'reaction.need-photos-description' => 'Trader needs photos to properly assess the job.',
+    'reaction.schedule-full' => 'schedule full',
+    'reaction.schedule-full-description' => 'Trader is fully booked for the requested dates.',
+    'reaction.budget-too-low' => 'budget too low',
+    'reaction.budget-too-low-description' => 'Posted budget is below what traders usually accept.',
+    'reaction.need-more-info' => 'Need more info',
+    'reaction.needs-more-info-description' => 'Trader needs more details before they can commit or quote.'
 );
