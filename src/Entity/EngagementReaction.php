@@ -25,13 +25,17 @@ class EngagementReaction
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
 
-    public function __construct(#[ORM\ManyToOne(targetEntity: Engagement::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private Engagement $engagement, #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private User $user, #[ORM\ManyToOne(targetEntity: Reaction::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private Reaction $reaction)
+    public function __construct(
+        #[ORM\ManyToOne(targetEntity: Engagement::class)]
+        #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+        private Engagement $engagement,
+        #[ORM\ManyToOne(targetEntity: User::class)]
+        #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+        private User $user,
+        #[ORM\ManyToOne(targetEntity: Reaction::class)]
+        #[ORM\JoinColumn(nullable: false)]
+        private Reaction $reaction
+    )
     {
         $this->id = Uuid::v4();
         $this->createdAt = new \DateTimeImmutable();
