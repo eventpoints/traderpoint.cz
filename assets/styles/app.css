@@ -38,12 +38,14 @@ body {
     position: relative;
     overflow: hidden;
 }
+
 .card-img-zoom .card-overlay-image {
     display: block;
     transition: all 0.5s ease;
     transform-origin: center center;
     will-change: transform;
 }
+
 .card-img-zoom:hover .card-overlay-image {
     transform: scale(1.05) !important;
     filter: brightness(1) !important
@@ -298,7 +300,9 @@ input[type="range"].form-range.range--xl:disabled {
 
 /* Desktop/tablet: keep your old 80vh look */
 @media (min-width: 768px) {
-    .hero-img { height: 80vh; }
+    .hero-img {
+        height: 80vh;
+    }
 }
 
 /* Mobile: make the image fill the *real* viewport height */
@@ -319,12 +323,14 @@ input[type="range"].form-range.range--xl:disabled {
 
 
 /* Make TomSelect play nice with .form-floating */
-.form-floating .ts-wrapper { display:block; }
+.form-floating .ts-wrapper {
+    display: block;
+}
 
 /* match Bootstrap floating input height/padding */
 .form-floating .ts-wrapper .ts-control {
-    min-height: calc(3.5rem + var(--bs-border-width)*2);
-    padding-top: 1.625rem;   /* space for the floating label */
+    min-height: calc(3.5rem + var(--bs-border-width) * 2);
+    padding-top: 1.625rem; /* space for the floating label */
     padding-bottom: .625rem;
 }
 
@@ -336,9 +342,11 @@ input[type="range"].form-range.range--xl:disabled {
 }
 
 /* ensure label sits above the control */
-.form-floating > label { pointer-events:none; }
+.form-floating > label {
+    pointer-events: none;
+}
 
-.h-100-px{
+.h-100-px {
     height: 100px;
 }
 
@@ -346,4 +354,102 @@ input[type="range"].form-range.range--xl:disabled {
     .border-top-sm-only {
         border-top: 3px solid var(--bs-border-color);
     }
+}
+
+
+/* === 1) Wrapper: create an invisible hover "bridge" === */
+.reaction-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* invisible buffer that extends the hover area upward */
+.reaction-wrapper::before {
+    content: "";
+    position: absolute;
+    left: -8px; /* widen a bit so diagonal mouse moves are safe */
+    right: -8px;
+    bottom: 100%;
+    height: 12px; /* buffer height (tweak as you like) */
+    /* transparent by default; exists only to keep :hover alive */
+}
+
+/* === 2) Menu: vertical stack directly above trigger (no gap) === */
+.reaction-menu {
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    transform: translate(-50%, -6px);
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px 8px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    z-index: 30;
+}
+
+/* === 3) Keep it open while on trigger OR on the menu === */
+.reaction-wrapper:hover .reaction-menu,
+.reaction-menu:hover {
+    display: flex;
+}
+
+/* Your existing option styling still applies */
+.reaction-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 3px 6px;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color .12s, transform .12s, box-shadow .12s;
+}
+
+.reaction-icon-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 40px;
+}
+
+.reaction-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.reaction-count {
+    margin-top: 2px;
+    font-size: .65rem;
+    line-height: 1;
+    color: #6c757d;
+}
+
+.reaction-label {
+    font-size: .8rem;
+    line-height: 1.2;
+    color: #343a40;
+    white-space: nowrap;
+}
+
+.reaction-option:hover {
+    background: #f8f9fa;
+    transform: translateY(-1px);
+}
+
+.reaction-option-active .reaction-icon-wrap {
+    background: rgba(25, 135, 84, .08);
+}
+
+.reaction-option-active .reaction-label,
+.reaction-option-active .reaction-count {
+    color: #198754;
+    font-weight: 600;
 }

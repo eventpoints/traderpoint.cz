@@ -5,7 +5,7 @@
         <div class="row justify-content-center g-3 mt-3">
 
             <div class="col-12 col-md-4">
-                <div class="card">
+                <div class="card mb-3">
                     {% if engagement.quote and app.user == engagement.quote.owner %}
                         {{ ux_map(map, { style: 'height: 250px' }) }}
                         <div class="list-group list-group-flush">
@@ -208,61 +208,33 @@
                     {{ form_errors(quoteForm) }}
                     <div class="card">
                         {{ form_start(quoteForm) }}
-                        <div class="card-header fs-5">
+                        <div class="card-header fs-5 fw-bold">
                             {{ 'send-quotation'|trans|title }}
                         </div>
                         <div class="card-body vstack gap-3">
                             {{ form_row(quoteForm.startAt) }}
-
-                            <div class="bg-white rounded-3 p-3"
-                                    {{ stimulus_controller('duration-presets', {
-                                        hoursPerDay: 8,
-                                        hoursPerWeek: 40,
-                                        weeksPerMonth: 4
-                                    }) }}>
-                                {{ form_widget(quoteForm.expectedDurationHours, {
-                                    attr: {
-                                        class: (quoteForm.expectedDurationHours.vars.attr.class|default('form-control')),
-                                        'data-duration-presets-target': 'input'
-                                    }
-                                }) }}
-
-                                <div class="d-flex gap-2 mt-2">
-                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
-                                            {{ stimulus_action('duration-presets','add','click',{ amount: 8 }) }}>
-                                        {{ 'plus-one-day'|trans }}
-                                    </a>
-                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
-                                            {{ stimulus_action('duration-presets','add','click',{ amount: 40 }) }}>
-                                        {{ 'plus-one-week'|trans }}
-                                    </a>
-                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"
-                                            {{ stimulus_action('duration-presets','add','click',{ amount: 160 }) }}>
-                                        {{ 'plus-one-month'|trans }}
-                                    </a>
-                                    <a href="#" class="btn btn-sm btn-outline-primary rounded-pill"
-                                            {{ stimulus_action('duration-presets','reset','click',{ amount: 0 }) }}>
-                                        {{ 'reset'|trans }}
-                                    </a>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    {{ form_row(quoteForm.expectedDurationHours) }}
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    {{ form_row(quoteForm.price) }}
                                 </div>
                             </div>
-
-                            {{ form_row(quoteForm.price, {
-                                attr: {
-                                    'data-controller' : 'price-percent',
-                                    'data-money-input-locale-value': 'en-US',
-                                    'data-price-percent-target': 'input',
-                                    'data-money-input-decimals-value': 2
-                                }
-                            }) }}
-
                             {{ form_row(quoteForm.includesMaterials) }}
-                            {{ form_row(quoteForm.warrantyMonths) }}
-                            {{ form_row(quoteForm.validUntil) }}
+
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    {{ form_row(quoteForm.warrantyMonths) }}
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    {{ form_row(quoteForm.validUntil) }}
+                                </div>
+                            </div>
                             {{ form_row(quoteForm.message) }}
                         </div>
                         <div class="card-footer text-end">
-                            <button class="btn btn-primary" type="submit">
+                            <button class="btn btn-lg btn-primary rounded-pill" type="submit">
                                 {{ 'submit'|trans }}
                             </button>
                         </div>

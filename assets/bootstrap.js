@@ -22,3 +22,4 @@ app.register('lightbox', Lightbox)
 app.register('read-more', ReadMore)
 app.register('animated-number', AnimatedNumber)
 app.register('clipboard', Clipboard)
+

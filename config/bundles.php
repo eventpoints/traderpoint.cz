@@ -81,4 +81,7 @@ return [
     Misd\PhoneNumberBundle\MisdPhoneNumberBundle::class => [
         'all' => true,
     ],
+    Symfony\UX\LiveComponent\LiveComponentBundle::class => [
+        'all' => true,
+    ],
 ];

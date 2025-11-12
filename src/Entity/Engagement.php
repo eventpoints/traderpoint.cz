@@ -129,11 +129,23 @@ class Engagement implements Stringable
     #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'engagement', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $payments;
 
+    /**
+     * @var ArrayCollection<int, EngagementReaction>
+     */
+    #[ORM\OneToMany(
+        targetEntity: EngagementReaction::class,
+        mappedBy: 'engagement',
+        cascade: ['remove'],
+        orphanRemoval: true
+    )]
+    private Collection $reactions;
+
     public function __construct(
         #[ORM\ManyToOne(inversedBy: 'engagements')]
         private ?User $owner = null
     )
     {
+        $this->reactions = new ArrayCollection();
         $this->payments = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->skills = new ArrayCollection();
@@ -492,5 +504,29 @@ class Engagement implements Stringable
         }else{
             $this->setPoint(null);
         }
+    }
+
+    /**
+     * @return Collection<int, EngagementReaction>
+     */
+    public function getReactions(): Collection
+    {
+        return $this->reactions;
+    }
+
+    public function addReaction(EngagementReaction $reaction): self
+    {
+        if (! $this->reactions->contains($reaction)) {
+            $this->reactions->add($reaction);
+        }
+
+        return $this;
+    }
+
+    public function removeReaction(EngagementReaction $reaction): self
+    {
+        $this->reactions->removeElement($reaction);
+
+        return $this;
     }
 }

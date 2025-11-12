@@ -1,0 +1,46 @@
+{% set counts = this.counts %}
+{% set userCodes = this.userReactionCodes %}
+{% set reactions = this.reactions %}
+
+{% if reactions is not empty %}
+    <div {{ attributes|default('') }} class="reaction-wrapper">
+        {# Trigger button (bottom-left) #}
+        <button
+                type="button"
+                class="btn btn-light rounded-pill"
+        >
+            <i class="bi bi-hand-thumbs-up fs-4"></i>
+        </button>
+
+        {# Vertical menu above trigger #}
+        <div class="reaction-menu rounded-pill">
+            {% for reaction in reactions %}
+                {% set code = reaction.code %}
+                {% set isActive = code in userCodes %}
+                {% set count = counts[code]|default(0) %}
+
+                <button
+                        type="button"
+                        class="btn border-0 fs-3 reaction-option {{ isActive ? 'reaction-option-active' : '' }}"
+                        data-action="live#action"
+                        data-live-action-param="toggle"
+                        data-live-code-param="{{ code }}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                        title="{{ reaction.label }}"
+                >
+                    <div class="reaction-icon-col">
+                        <div class="reaction-icon-wrap">
+                            <i class="bi {{ reaction.icon }} {{ reaction.color }}"></i>
+                        </div>
+                        {% if count > 0 %}
+                            <div class="reaction-count">
+                                {{ count|compact_notation }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </button>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

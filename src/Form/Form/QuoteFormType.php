@@ -112,6 +112,7 @@ class QuoteFormType extends AbstractType
                 'label' => false,
                 'required' => false,
                 'attr' => [
+                    'data-controller' => "textarea-autogrow",
                     'placeholder' => $this->translator->trans('message'),
                     'class' => 'form-control',
                     'rows' => 5,

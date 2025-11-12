@@ -17,6 +17,7 @@ use App\Form\Form\QuoteFormType;
 use App\Message\Message\EngagementPostedMessage;
 use App\Repository\EngagementRepository;
 use App\Repository\QuoteRepository;
+use App\Repository\ReactionRepository;
 use App\Repository\SkillRepository;
 use App\Repository\UserRepository;
 use App\Security\Voter\EngagementVoter;
@@ -52,7 +53,8 @@ class EngagmentController extends AbstractController
         private readonly EventDispatcherInterface $dispatcher,
         private readonly SkillRepository $skillRepository,
         private readonly UserFactory $userFactory,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly ReactionRepository $reactionRepository
     )
     {
     }
@@ -60,6 +62,7 @@ class EngagmentController extends AbstractController
     #[Route(path: 'trader/engagement/{id}', name: 'trader_show_engagement')]
     public function traderShow(Engagement $engagement, Request $request, #[CurrentUser] User $currentUser): Response
     {
+        $reactions = $this->reactionRepository->findAll();
         $this->denyAccessUnlessGranted(EngagementVoter::TRADER_VIEW, $engagement);
 
         $map = null;
@@ -108,6 +111,7 @@ class EngagmentController extends AbstractController
         }
 
         return $this->render('engagement/trader/show.html.twig', [
+            'reactions' => $reactions,
             'quoteForm' => $quoteForm,
             'engagement' => $engagement,
             'map' => $map,
