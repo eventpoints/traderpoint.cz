@@ -47,12 +47,19 @@ class EngagementFixtures extends Fixture implements DependentFixtureInterface
             // fallback: take up to 25 users from DB
             $owners = $manager->getRepository(User::class)->findBy([], null, 25);
         }
+
+        // ---- Filter out traders so they don't get any engagements ----
+        $owners = array_values(array_filter(
+            $owners,
+            fn (User $u): bool => ! $this->isTrader($u)
+        ));
+
         if ($owners === []) {
-            // nothing to do
+            // nothing to do if no client owners available
             return;
         }
 
-        // For each owner, create a bunch of engagements
+        // For each (client) owner, create a bunch of engagements
         foreach ($owners as $owner) {
             $numEngagements = $faker->numberBetween(10, 25);
 
@@ -114,6 +121,30 @@ class EngagementFixtures extends Fixture implements DependentFixtureInterface
         }
 
         $manager->flush();
+    }
+
+    /**
+     * Determines if a user is a trader, using whatever your User model exposes.
+     */
+    private function isTrader(User $u): bool
+    {
+        // 1) Dedicated method
+        if (method_exists($u, 'isTrader')) {
+            return $u->isTrader();
+        }
+
+        // 2) Role checks
+        if (method_exists($u, 'hasRole') && $u->hasRole('ROLE_TRADER')) {
+            return true;
+        }
+        if (method_exists($u, 'getRoles')) {
+            $roles = $u->getRoles();
+            if (\in_array('ROLE_TRADER', $roles, true)) {
+                return true;
+            }
+        }
+        // 3) Trader profile relation
+        return method_exists($u, 'getTraderProfile') && $u->getTraderProfile() instanceof \App\Entity\TraderProfile;
     }
 
     public function getDependencies(): array

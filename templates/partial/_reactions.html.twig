@@ -1,0 +1,31 @@
+{# --- Reactions summary (read-only) --- #}
+{% set counts = {} %}
+{% set firstByCode = {} %}
+
+{# Build counts and remember one ER per code for icon/label/color #}
+{% for er in reactions %}
+    {% set code = er.reaction.code %}
+    {% if firstByCode[code] is not defined %}
+        {% set firstByCode = firstByCode|merge({ (code): er }) %}
+    {% endif %}
+    {% set counts = counts|merge({ (code): (counts[code]|default(0) + 1) }) %}
+{% endfor %}
+
+<div class="d-flex flex-wrap gap-2 align-items-center">
+    {% if counts is empty %}
+    {% else %}
+        {% for code, sample in firstByCode %}
+            {% set cnt   = counts[code]|default(0) %}
+            {% set icon  = sample.reaction.icon %}
+            {% set color = sample.reaction.color %}
+            {% set label = sample.reaction.label|trans %}
+
+            {% if cnt > 0 %}
+                <div class="p-1 px-2 rounded-pill bg-light text-dark position-relative" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ label }}">
+                    <i class="bi {{ icon }} {{ color }} fs-4"></i>
+                      <span class="position-absolute small top-0 start-100 translate-middle badge rounded-pill bg-dark text-white">{{ cnt|compact_notation }}</span>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>

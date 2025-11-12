@@ -52,7 +52,6 @@ class EngagementRepository extends ServiceEntityRepository
 
         $qb = $this->createQueryBuilder('engagement');
         $qb->leftJoin('engagement.skills', 'skill');
-        $qb->leftJoin('engagement.payments', 'payment');
 
         $sub = $this->getEntityManager()->createQueryBuilder()
             ->select('1')
@@ -167,15 +166,10 @@ class EngagementRepository extends ServiceEntityRepository
     public function findByOwner(User $currentUser, bool $isQuery = false): array|Query
     {
         $qb = $this->createQueryBuilder('engagement');
-        $qb->leftJoin('engagement.payments', 'payment');
 
         $qb->andWhere(
             $qb->expr()->eq('engagement.owner', ':owner')
         )->setParameter('owner', $currentUser->getId());
-
-        $qb->andWhere(
-            $qb->expr()->eq('engagement.status', ':status')
-        )->setParameter('status', EngagementStatusEnum::PENDING);
 
         $qb->orderBy('engagement.createdAt', Order::Descending->value);
 

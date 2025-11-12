@@ -453,3 +453,18 @@ input[type="range"].form-range.range--xl:disabled {
     color: #198754;
     font-weight: 600;
 }
+
+.info-rounded {
+    --bs-btn-color: #000;
+    --bs-btn-bg: #ecedea;
+    --bs-btn-hover-color: #000;
+    --bs-btn-hover-bg: #c9c9c7;
+    --bs-btn-focus-shadow-rgb: 201, 201, 199;
+    --bs-btn-active-color: #000;
+    --bs-btn-active-bg: #bdbebb;
+    --bs-btn-active-border-color: #b1b2b0;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #000;
+    --bs-btn-disabled-bg: #ecedea;
+    --bs-btn-disabled-border-color: #ecedea;
+}

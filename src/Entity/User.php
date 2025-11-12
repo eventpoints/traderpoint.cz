@@ -106,6 +106,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     private CarbonImmutable $createdAt;
 
     /**
+     * @var ArrayCollection<int, EngagementReaction> $reactions
+     */
+    #[ORM\OneToMany(
+        targetEntity: EngagementReaction::class,
+        mappedBy: 'user',
+        cascade: ['remove'],
+        orphanRemoval: true
+    )]
+    private Collection $reactions;
+
+    /**
      * @var ArrayCollection<int, ExternalIdentity>
      */
     #[ORM\OneToMany(targetEntity: ExternalIdentity::class, mappedBy: 'user', cascade: ['persist'], orphanRemoval: true)]
@@ -123,6 +134,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         $this->conversationParticipates = new ArrayCollection();
         $this->createdAt = new CarbonImmutable();
         $this->externalIdentities = new ArrayCollection();
+        $this->reactions = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -446,6 +458,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     public function setStripeProfile(?StripeProfile $stripeProfile): self
     {
         $this->stripeProfile = $stripeProfile;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EngagementReaction>
+     */
+    public function getReactions(): Collection
+    {
+        return $this->reactions;
+    }
+
+    public function addReaction(EngagementReaction $reaction): self
+    {
+        if (! $this->reactions->contains($reaction)) {
+            $this->reactions->add($reaction);
+            $reaction->setUser($this);
+        }
+        return $this;
+    }
+
+    public function removeReaction(EngagementReaction $reaction): self
+    {
+        $this->reactions->removeElement($reaction);
         return $this;
     }
 }

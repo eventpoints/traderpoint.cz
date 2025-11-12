@@ -46,9 +46,19 @@ class EngagementReaction
         return $this->id;
     }
 
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
     public function getEngagement(): Engagement
     {
         return $this->engagement;
+    }
+
+    public function setEngagement(Engagement $engagement): void
+    {
+        $this->engagement = $engagement;
     }
 
     public function getUser(): User
@@ -56,13 +66,18 @@ class EngagementReaction
         return $this->user;
     }
 
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
+    }
+
     public function getReaction(): Reaction
     {
         return $this->reaction;
     }
 
-    public function getCreatedAt(): \DateTimeImmutable
+    public function setReaction(Reaction $reaction): void
     {
-        return $this->createdAt;
+        $this->reaction = $reaction;
     }
 }

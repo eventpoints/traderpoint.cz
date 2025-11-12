@@ -34,7 +34,9 @@ final class EngagementReactions
         private EngagementReactionRepository $engagementReactionRepository,
         private EntityManagerInterface $em,
         private Security $security,
-    ) {}
+    )
+    {
+    }
 
     /**
      * @return Reaction[]
@@ -114,17 +116,16 @@ final class EngagementReactions
             return;
         }
 
-        /** @var Reaction|null $reaction */
         $reaction = $this->reactionRepository->findOneBy([
             'code' => $code,
             'active' => true,
         ]);
-
         if (! $reaction instanceof Reaction) {
             return;
         }
 
-        // Toggle: one EngagementReaction per (engagement, user, reaction)
+        $user = $this->em->getReference(User::class, $user->getId());
+
         $existing = $this->engagementReactionRepository->findOneBy([
             'engagement' => $this->engagement,
             'user' => $user,
@@ -132,9 +133,14 @@ final class EngagementReactions
         ]);
 
         if ($existing !== null) {
+            $this->engagement->removeReaction($existing);
+            $user->removeReaction($existing);
             $this->em->remove($existing);
         } else {
-            $this->em->persist(new EngagementReaction($this->engagement, $user, $reaction));
+            $engagementReaction = new EngagementReaction(engagement: $this->engagement, user: $user, reaction: $reaction);
+            $this->engagement->addReaction($engagementReaction);
+            $user->addReaction($engagementReaction);
+            $this->em->persist($engagementReaction);
         }
 
         $this->em->flush();
@@ -143,7 +149,6 @@ final class EngagementReactions
     private function getUser(): ?User
     {
         $user = $this->security->getUser();
-
         return $user instanceof User ? $user : null;
     }
 }

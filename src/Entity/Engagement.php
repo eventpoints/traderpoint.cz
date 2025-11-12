@@ -518,15 +518,14 @@ class Engagement implements Stringable
     {
         if (! $this->reactions->contains($reaction)) {
             $this->reactions->add($reaction);
+            $reaction->setEngagement($this);
         }
-
         return $this;
     }
 
     public function removeReaction(EngagementReaction $reaction): self
     {
         $this->reactions->removeElement($reaction);
-
         return $this;
     }
 }
