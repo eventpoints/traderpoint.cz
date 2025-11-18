@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container min-vh-100">
+        <div class="row justify-content-center g-3 mt-4">
+
+            <div class="col-12 col-md-5">
+                <div class="card h-100 border-primary border-2 shadow-sm">
+
+                    {{ form_start(cardPaymentForm, {
+                        attr: {
+                            id: 'subscription-form',
+                            'data-controller': 'stripe-subscription',
+                            'data-stripe-subscription-public-key-value': stripe_public_key,
+                            'data-stripe-subscription-private-key-value': stripe_private_key,
+                            'data-email': user.email,
+                            'data-name-required-message': 'trader_paywall.error.name_required'|trans|default('Please enter the name on the card.'),
+                            'data-generic-error-message': 'trader_paywall.error.generic'|trans|default('There was a problem confirming your card. Please try again.'),
+                            'data-action': 'submit->stripe-subscription#submit',
+                        }
+                    }) }}
+
+                    <div class="card-header text-center bg-primary text-white">
+                        <div class="fw-bold text-uppercase small">
+                            {{ 'trader_paywall.plan_name'|trans }}
+                        </div>
+                    </div>
+
+                    <div class="card-body d-flex flex-column justify-content-between">
+
+
+                        <div class="text-center mb-3">
+                            <div class="display-5 fw-bold">
+                                499&nbsp;CZK
+                            </div>
+                            <div class="text-muted">
+                                {{ 'trader_paywall.per_month'|trans }}
+                            </div>
+                        </div>
+
+                        <div class="vstack gap-3">
+                            <div>
+                                {{ form_errors(cardPaymentForm) }}
+                                <div
+                                        id="card-errors"
+                                        class="form-text text-danger mt-1 text-center"
+                                        role="alert"
+                                        data-stripe-subscription-target="cardErrors"
+                                ></div>
+                            </div>
+
+                            {{ form_row(cardPaymentForm.cardholder_name) }}
+
+                            <div class="form-floating mb-3">
+                                <div
+                                        id="card-element"
+                                        class="form-control"
+                                        style="padding-top: 1.6rem; padding-bottom: 0.6rem;"
+                                        data-stripe-subscription-target="cardElement"
+                                ></div>
+                                <label for="card-element">
+                                    {{ 'trader_paywall.card_details'|trans|default('Card details') }}
+                                </label>
+                            </div>
+
+                            {{ form_row(cardPaymentForm.payment_method) }}
+                        </div>
+
+                        <button
+                                type="submit"
+                                class="btn btn-lg btn-primary w-100 rounded-pill mt-2"
+                                data-stripe-subscription-target="submitButton"
+                        >
+                            {{ 'trader_paywall.cta_subscribe'|trans|default('Start subscription') }}
+                        </button>
+
+                        <div
+                                class="form-text text-muted d-none"
+                                data-stripe-subscription-target="processing"
+                        >
+                            {{ 'trader_paywall.processing'|trans|default('Processing your card details, please wait…') }}
+                        </div>
+
+                        <div class="small text-muted text-center mb-0">
+                            {{ 'trader_paywall.stripe_notice'|trans|default('Card payments are processed securely by Stripe. We do not store your full card details.') }}
+                        </div>
+
+                    </div>
+                </div>
+
+                {{ form_end(cardPaymentForm) }}
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

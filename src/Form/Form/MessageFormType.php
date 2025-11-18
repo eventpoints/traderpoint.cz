@@ -20,7 +20,8 @@ class MessageFormType extends AbstractType
                 'class' => 'form-floating',
             ],
             'attr' => [
-                'style' => 'min-height:100px;background-color:#fff',
+                'data-controller' => 'textarea-autogrow',
+                'style' => 'min-height:100px;background-color:#fff;resize:none',
             ],
         ]);
     }

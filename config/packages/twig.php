@@ -18,6 +18,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'form/_form_theme.html.twig',
         ],
         'globals' => [
+            'stripe_public_key' => '%env(STRIPE_PUBLIC_KEY)%',
+            'stripe_private_key' => '%env(STRIPE_PRIVATE_KEY)%',
             'cookies' => '%app.cookies%',
         ],
     ]);

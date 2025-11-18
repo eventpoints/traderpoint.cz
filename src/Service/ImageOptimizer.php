@@ -13,7 +13,7 @@ final readonly class ImageOptimizer
 {
     public function __construct(
         private ImageManager $images,
-        #[Autowire('%kernel.project_dir%/public/images/tp-logo.png')]
+        #[Autowire('%kernel.project_dir%/public/images/v3/logo-v3.png')]
         private string $watermarkPath
     )
     {
@@ -147,7 +147,7 @@ final readonly class ImageOptimizer
         string $watermarkPath,
         int $opacity = 25,
         int $angle = 35,
-        ?int $tileWidth = 60,
+        ?int $tileWidth = 120,
         ?int $gap = 240
     ): ImageInterface {
         $imgW = $img->width();

@@ -33,7 +33,7 @@ final class EngagementFormType extends AbstractType
 {
     public function __construct(
         private readonly TranslatorInterface $translator,
-        private readonly Security $security
+        private readonly Security            $security
     )
     {
     }
@@ -127,18 +127,34 @@ final class EngagementFormType extends AbstractType
                 'currency' => CurrencyCodeEnum::CZK->value,
                 'label' => $this->translator->trans('estimated-budget'),
                 'required' => true,
+                'grouping' => true,
+                'scale' => 2,
             ]);
 
         $currentUser = $this->security->getUser();
 
-        if (! $currentUser instanceof User) {
-            $builder->add('email', EmailType::class, [
+        if (!$currentUser instanceof User) {
+            $builder->add('firstName', TextType::class, [
                 'mapped' => false,
-                'label' => $this->translator->trans('email'),
+                'label' => $this->translator->trans('first-name'),
                 'row_attr' => [
                     'class' => 'form-floating',
                 ],
-            ]);
+            ])
+                ->add('lastName', TextType::class, [
+                    'mapped' => false,
+                    'label' => $this->translator->trans('last-name'),
+                    'row_attr' => [
+                        'class' => 'form-floating',
+                    ],
+                ])
+                ->add('email', EmailType::class, [
+                    'mapped' => false,
+                    'label' => $this->translator->trans('email'),
+                    'row_attr' => [
+                        'class' => 'form-floating',
+                    ],
+                ]);
         }
 
         // Attach transformers after fields are added

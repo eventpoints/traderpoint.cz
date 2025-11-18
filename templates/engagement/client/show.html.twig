@@ -8,10 +8,17 @@
             <div class="col-12 col-md-4">
                 <div class="card">
                     {{ ux_map(map, { style: 'height: 250px' }) }}
-                    <div class="card-header border-bottom border-light border-3 d-flex justify-content-between align-items-center">
-                        <div class="fs-4 ">
-                            <div class="fw-bold text-dark">{{ engagement.title }}</div>
-                            <span class="badge rounded-pill bg-primary">{{ 'quotes-received'|trans({count: engagement.quotes.count}) }}</span>
+                    <div class="card-header">
+                        <div class="d-flex justify-content-start align-items-start gap-2">
+                            <a href="{{ path('client_profile', {id: engagement.owner.id}) }}">
+                                <img class="rounded-circle avatar-50" src="{{ engagement.owner.avatar }}">
+                            </a>
+                            <div class="">
+                                <div class="fw-bold text-dark fs-4 lh-1">{{ engagement.title }}</div>
+                                <div class="d-flex justify-content-start gap-3">
+                                    <a href="{{ path('client_profile', {id: engagement.owner.id}) }}">{{ engagement.owner.fullName|title }}</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-header">
@@ -44,7 +51,7 @@
                             {% for image in engagement.images %}
                                 <div href="{{ asset('uploads/images/' ~ image.filename) }}" class="col-6">
                                     <img src="{{ asset('uploads/images/' ~ image.filename) }}"
-                                         class="img-fluid rounded-3 hover-pointer"/>
+                                         class="w-100 object-fit-cover rounded-3 hover-pointer" style="height: 150px"/>
                                 </div>
                             {% endfor %}
                         </div>
@@ -64,18 +71,13 @@
                                 </a>
                             </div>
                         {% endif %}
-                        <a href="{{ path('client_profile', {id: engagement.owner.id}) }}"
-                           class="list-group-item list-group-item-action">
-                            <div class="d-flex flex-wrap gap-2">
-                                <div>
-                                    <img class="rounded-circle avatar-50" src="{{ engagement.owner.avatar }}">
-                                </div>
-                                <div>
-                                    <div>{{ engagement.owner.fullName|title }}</div>
-                                    <div>{{ engagement.createdAt.diffForHumans }}</div>
-                                </div>
-                            </div>
-                        </a>
+                    </div>
+                    <div class="card-footer text-center">
+                        <div class="d-flex justify-content-between align-items-center fs-4">
+                            {{ component('engagement_viewers', {engagement: engagement}) }}
+                            <span class="badge rounded-pill bg-primary">{{ 'quotes-received'|trans({count: engagement.quotes.count}) }}</span>
+                        </div>
+                        <div class="text-muted">{{ engagement.createdAt.diffForHumans }}</div>
                     </div>
                 </div>
 
@@ -255,6 +257,9 @@
                         {% endfor %}
                     {% endif %}
                 </div>
+
+
+                {{ include('engagement/_messages.html.twig', {messageForm: messageForm}) }}
             </div>
         </div>
     </div>

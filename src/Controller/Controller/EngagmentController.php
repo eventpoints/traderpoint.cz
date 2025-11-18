@@ -3,18 +3,25 @@
 namespace App\Controller\Controller;
 
 use App\DataTransferObject\MapLocationDto;
+use App\Entity\Conversation;
+use App\Entity\ConversationParticipant;
 use App\Entity\Engagement;
 use App\Entity\EngagementIssue;
 use App\Entity\Image;
+use App\Entity\Message;
 use App\Entity\Quote;
 use App\Entity\Skill;
 use App\Entity\User;
+use App\Enum\ConversationTypeEnum;
 use App\Enum\FlashEnum;
+use App\Factory\ConversationFactory;
 use App\Factory\UserFactory;
 use App\Form\Form\EngagementFormType;
 use App\Form\Form\EngagementIssueFormType;
+use App\Form\Form\MessageFormType;
 use App\Form\Form\QuoteFormType;
 use App\Message\Message\EngagementPostedMessage;
+use App\Repository\ConversationRepository;
 use App\Repository\EngagementRepository;
 use App\Repository\QuoteRepository;
 use App\Repository\ReactionRepository;
@@ -44,17 +51,19 @@ use Symfony\UX\Map\Point;
 class EngagmentController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface $translator,
-        private readonly QuoteRepository $quoteRepository,
-        private readonly EngagementRepository $engagementRepository,
-        private readonly UserRepository $userRepository,
-        private readonly ImageOptimizer $imageOptimizer,
-        private readonly EmailService $emailService,
+        private readonly TranslatorInterface      $translator,
+        private readonly QuoteRepository          $quoteRepository,
+        private readonly EngagementRepository     $engagementRepository,
+        private readonly UserRepository           $userRepository,
+        private readonly ImageOptimizer           $imageOptimizer,
+        private readonly EmailService             $emailService,
         private readonly EventDispatcherInterface $dispatcher,
-        private readonly SkillRepository $skillRepository,
-        private readonly UserFactory $userFactory,
-        private readonly Security $security,
-        private readonly ReactionRepository $reactionRepository
+        private readonly SkillRepository          $skillRepository,
+        private readonly UserFactory              $userFactory,
+        private readonly Security                 $security,
+        private readonly ReactionRepository       $reactionRepository,
+        private readonly ConversationRepository   $conversationRepository,
+        private readonly ConversationFactory   $conversationFactory
     )
     {
     }
@@ -92,6 +101,22 @@ class EngagmentController extends AbstractController
             ));
         }
 
+        [$conversation, $participant] = $this->conversationFactory
+            ->getOrCreateForEngagement($engagement, $currentUser);
+        $message = new Message($participant, $conversation);
+        $messageForm = $this->createForm(MessageFormType::class, $message);
+        $messageForm->handleRequest($request);
+
+        if ($messageForm->isSubmitted() && $messageForm->isValid()) {
+            $conversation->addMessage($message);
+            $participant->addMessage($message);
+            $this->conversationRepository->save($conversation, true);
+
+            return $this->redirectToRoute('trader_show_engagement', [
+                'id' => $engagement->getId(),
+            ]);
+        }
+
         $quote = new Quote($engagement, $currentUser);
         $quoteForm = $this->createForm(QuoteFormType::class, $quote);
         $quoteForm->handleRequest($request);
@@ -111,6 +136,7 @@ class EngagmentController extends AbstractController
         }
 
         return $this->render('engagement/trader/show.html.twig', [
+            'messageForm' => $messageForm,
             'reactions' => $reactions,
             'quoteForm' => $quoteForm,
             'engagement' => $engagement,
@@ -153,8 +179,25 @@ class EngagmentController extends AbstractController
             icon: Icon::svg('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="9" cy="9" r="7" fill="#EC4E20" stroke="white" stroke-width="2"/></svg>')
         ));
 
+        [$conversation, $participant] = $this->conversationFactory
+            ->getOrCreateForEngagement($engagement, $currentUser);
+        $message = new Message($participant, $conversation);
+        $messageForm = $this->createForm(MessageFormType::class, $message);
+        $messageForm->handleRequest($request);
+
+        if ($messageForm->isSubmitted() && $messageForm->isValid()) {
+            $conversation->addMessage($message);
+            $participant->addMessage($message);
+            $this->conversationRepository->save($conversation, true);
+
+            return $this->redirectToRoute('trader_show_engagement', [
+                'id' => $engagement->getId(),
+            ]);
+        }
+
         $quotes = $this->quoteRepository->findByEngagement($engagement);
         return $this->render('engagement/client/show.html.twig', [
+            'messageForm' => $messageForm,
             'map' => $map,
             'engagement' => $engagement,
             'quotes' => $quotes,
@@ -166,11 +209,11 @@ class EngagmentController extends AbstractController
     {
         $skills = new ArrayCollection();
         $skillId = $request->query->get('skill');
-        if (! empty($skillId)) {
+        if (!empty($skillId)) {
             $skillUuid = Uuid::fromString($skillId);
             $skill = $this->skillRepository->find($skillUuid);
 
-            if (! $skill instanceof Skill) {
+            if (!$skill instanceof Skill) {
                 return $this->redirectToRoute('landing');
             }
 
@@ -207,9 +250,13 @@ class EngagmentController extends AbstractController
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
 
-            if (! $currentUser instanceof User) {
+            if (!$currentUser instanceof User) {
                 $email = $engagementForm->get('email')->getData();
+                $firstName = $engagementForm->get('firstName')->getData();
+                $lastName = $engagementForm->get('lastName')->getData();
                 $currentUser = $this->userFactory->createClientUser(email: $email);
+                $currentUser->setFirstName($firstName);
+                $currentUser->setLastName($lastName);
                 $engagement->setOwner($currentUser);
                 $this->userRepository->save(entity: $currentUser, flush: true);
                 $this->security->login($currentUser, 'security.authenticator.form_login.main');
@@ -257,7 +304,7 @@ class EngagmentController extends AbstractController
 
         $engagementIssueForm->handleRequest($request);
 
-        if($engagementIssueForm->isSubmitted() && $engagementIssueForm->isValid()){
+        if ($engagementIssueForm->isSubmitted() && $engagementIssueForm->isValid()) {
             $this->engagementRepository->save($quote->getEngagement(), true);
             $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans(id: 'flash.issue-created', domain: 'flash'));
             return $this->redirectToRoute('client_show_engagement', [

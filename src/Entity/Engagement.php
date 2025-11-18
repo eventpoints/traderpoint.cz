@@ -140,6 +140,13 @@ class Engagement implements Stringable
     )]
     private Collection $reactions;
 
+    #[ORM\OneToOne(
+        targetEntity: Conversation::class,
+        mappedBy: 'engagement',
+        cascade: ['persist', 'remove']
+    )]
+    private ?Conversation $conversation = null;
+
     public function __construct(
         #[ORM\ManyToOne(inversedBy: 'engagements')]
         private ?User $owner = null
@@ -528,4 +535,15 @@ class Engagement implements Stringable
         $this->reactions->removeElement($reaction);
         return $this;
     }
+
+    public function getConversation(): ?Conversation
+    {
+        return $this->conversation;
+    }
+
+    public function setConversation(?Conversation $conversation): void
+    {
+        $this->conversation = $conversation;
+    }
+
 }

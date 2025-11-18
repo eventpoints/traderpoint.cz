@@ -31,7 +31,7 @@ final readonly class StandardPlanSubscriptionService
 
     public function startStandardPlanTrial(User $user): Subscription
     {
-        $billing = $this->getOrCreateBillingProfile($user);
+        $billing = $this->getOrCreateStripeProfile($user);
 
         if ($this->hasActiveOrTrialStandardSubscription($billing)) {
             $this->logger->info('User already has active/trial Standard Plan', [
@@ -104,7 +104,7 @@ final readonly class StandardPlanSubscriptionService
         }
     }
 
-    private function getOrCreateBillingProfile(User $user): StripeProfile
+    private function getOrCreateStripeProfile(User $user): StripeProfile
     {
         $stripeProfile = $user->getStripeProfile();
         if ($stripeProfile instanceof StripeProfile) {
@@ -142,4 +142,15 @@ final readonly class StandardPlanSubscriptionService
             return false;
         }
     }
+
+    public function activateStandardPlanFromPaymentMethod(User $user, string $paymentMethodId): Subscription
+    {
+        $billing = $this->getOrCreateStripeProfile($user);
+        $customerId = $billing->getStripeCustomerId();
+
+        if (! $customerId) {
+            throw new \RuntimeException('Stripe customer missing when activating subscription.');
+        }
+    }
+
 }

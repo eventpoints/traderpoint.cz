@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Twig\Components;
+namespace App\Twig\Component;
 
 use App\Entity\Engagement;
 use App\Entity\EngagementReaction;

@@ -26,6 +26,7 @@ class Message
 
     public function __construct(
         #[ORM\ManyToOne(inversedBy: 'messages')]
+        #[ORM\JoinColumn(nullable: false)]
         private null|ConversationParticipant $participant,
         #[ORM\ManyToOne(inversedBy: 'messages')]
         private ?Conversation $conversation

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\ConversationTypeEnum;
 use App\Repository\ConversationRepository;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
@@ -21,6 +22,9 @@ class Conversation
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
     private Uuid $id;
 
+    #[ORM\Column(type: 'string', length: 32, enumType: ConversationTypeEnum::class)]
+    private ConversationTypeEnum $type;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private null|CarbonInterface $createdAt = null;
 
@@ -33,20 +37,26 @@ class Conversation
     /**
      * @var Collection<int, Message>
      */
-    #[ORM\OneToMany(mappedBy: 'conversation', targetEntity: Message::class, cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'conversation', cascade: ['persist'])]
     private Collection $messages;
 
-    public function __construct(
-        #[ORM\ManyToOne(inversedBy: 'createdConversations')]
-        private null|User $owner,
-    )
+    #[ORM\ManyToOne(inversedBy: 'createdConversations')]
+    private ?User $owner = null;
+
+    #[ORM\OneToOne(inversedBy: 'conversation')]
+    #[ORM\JoinColumn(name: 'engagement_id', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
+    private ?Engagement $engagement = null;
+
+    public function __construct(?User $owner)
     {
+        $this->owner      = $owner;
         $this->participants = new ArrayCollection();
-        $this->createdAt = new CarbonImmutable();
-        $this->messages = new ArrayCollection();
+        $this->messages     = new ArrayCollection();
+        $this->createdAt    = new CarbonImmutable();
+        $this->type         = ConversationTypeEnum::DIRECT; // or whatever default
     }
 
-    public function getId(): null|Uuid
+    public function getId(): ?Uuid
     {
         return $this->id;
     }
@@ -71,7 +81,7 @@ class Conversation
 
     public function addParticipant(ConversationParticipant $conversationParticipate): static
     {
-        if (! $this->participants->contains($conversationParticipate)) {
+        if (!$this->participants->contains($conversationParticipate)) {
             $this->participants->add($conversationParticipate);
             $conversationParticipate->setConversation($this);
         }
@@ -81,7 +91,6 @@ class Conversation
 
     public function removeParticipant(ConversationParticipant $conversationParticipate): static
     {
-        // set the owning side to null (unless already changed)
         if ($this->participants->removeElement($conversationParticipate) && $conversationParticipate->getConversation() === $this) {
             $conversationParticipate->setConversation(null);
         }
@@ -111,7 +120,7 @@ class Conversation
 
     public function addMessage(Message $message): static
     {
-        if (! $this->messages->contains($message)) {
+        if (!$this->messages->contains($message)) {
             $this->messages->add($message);
             $message->setConversation($this);
         }
@@ -121,11 +130,35 @@ class Conversation
 
     public function removeMessage(Message $message): static
     {
-        // set the owning side to null (unless already changed)
         if ($this->messages->removeElement($message) && $message->getConversation() === $this) {
             $message->setConversation(null);
         }
 
         return $this;
     }
+
+    public function getEngagement(): ?Engagement
+    {
+        return $this->engagement;
+    }
+
+    public function setEngagement(?Engagement $engagement): static
+    {
+        $this->engagement = $engagement;
+
+        return $this;
+    }
+
+    public function getType(): ConversationTypeEnum
+    {
+        return $this->type;
+    }
+
+    public function setType(ConversationTypeEnum $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
 }
+
