@@ -1,6 +1,7 @@
 <?php
 
 return array(
+    'app-tag-line' => 'Get it done!',
     'name' => 'full name',
     'register' => 'register',
     'login' => 'login',
@@ -175,7 +176,7 @@ return array(
     'phone-number.confirmed-at' => 'phone number verified {date}',
     'account' => 'account',
     'logout' => 'logout',
-    'i-need-a' => 'I need a {skill}',
+    'i-need-a' => 'I need {article} {skill}',
     'i-need-something-else' => 'I need something else',
     'join-as-tradesman' => 'Join as Tradesman',
     'trader-location-help' => 'click or tap on the map to set a location, then add a service radius in kilometers. We will only show jobs within the radius.',

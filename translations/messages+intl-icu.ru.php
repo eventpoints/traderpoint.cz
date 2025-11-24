@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'app-tag-line' => 'Сделай это!',
     'name' => 'полное имя',
     'register' => 'регистрация',
     'login' => 'вход',

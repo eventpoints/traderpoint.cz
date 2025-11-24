@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'app-tag-line' => 'Dokončete to!',
     'name' => 'celé jméno',
     'register' => 'registrovat se',
     'login' => 'přihlášení',

@@ -1,6 +1,7 @@
 <?php
 
 return array(
+    'app-tag-line' => 'Зроби це!',
     'name' => 'повне ім’я',
     'register' => 'зареєструватися',
     'login' => 'увійти',

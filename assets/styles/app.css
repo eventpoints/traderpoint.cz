@@ -6,67 +6,26 @@ body {
     font-style: normal;
 }
 
-.card-img-overlay {
-    position: absolute
-}
-
-.card-img-overlay::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-            to top,
-            rgba(0, 0, 0, .72) 0%,
-            rgba(0, 0, 0, .55) 40%,
-            rgba(0, 0, 0, .20) 75%,
-            rgba(0, 0, 0, 0) 100%
-    );
-    z-index: 0;
-    pointer-events: none;
-}
-
-.card-img-overlay > * {
-    position: relative;
-    z-index: 1
-}
-
-.card-img-overlay-filter-vertical {
-    filter: brightness(.85) blur(3px);
-}
-
-.card-img-zoom {
-    position: relative;
-    overflow: hidden;
-}
-
-.card-img-zoom .card-overlay-image {
-    display: block;
-    transition: all 0.5s ease;
-    transform-origin: center center;
-    will-change: transform;
-}
-
-.card-img-zoom:hover .card-overlay-image {
-    transform: scale(1.05) !important;
-    filter: brightness(1) !important
-}
-
-.trade-category {
-    text-transform: uppercase;
-    font-weight: 700;
-    color: #ffffff;
-    display: block;
-    transition: all 0.5s ease;
-    transform-origin: center center;
-    will-change: transform;
-}
 
 .card-img-zoom:hover .trade-category {
-    color: #EC4E20FF !important;
+    color: var(--bs-black) !important;
 }
 
-.card-img-overlay-filter {
-    filter: brightness(.70) contrast(1.07);
+.card-img-zoom .trade-category {
+    transition: all .35s ease-in-out;
+}
+
+.trade-category-card{
+    background-color: var(--bs-primary);
+    color: #ffffff!important;
+    border:0 !important;
+    border-radius: 0 !important;
+    transition: all .35s ease-in-out;
+}
+
+
+.trade-category-card:hover {
+    background-color: #ee6137;
 }
 
 .ts-control {

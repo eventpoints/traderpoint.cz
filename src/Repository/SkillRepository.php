@@ -23,7 +23,7 @@ class SkillRepository extends ServiceEntityRepository
     /**
      * @return MainSkillCategory[]
      */
-    public function findPrimarySkills(): array
+    public function findPrimarySkillsForLandingPage(): array
     {
         $names = ['skill.builder', 'skill.plumber', 'skill.electrician'];
         $qb = $this->createQueryBuilder('skill');
@@ -39,7 +39,7 @@ class SkillRepository extends ServiceEntityRepository
               $mainSkillCategory = new MainSkillCategory(
                   id: $item->getId(),
                   title: $item->getName(),
-                  imagePath: 'images/' . Strings::webalize($item->getName()) . '.jpg',
+                  imagePath: 'images/landing/' . Strings::webalize($item->getName()) . '.png',
               );
                $skills->add($mainSkillCategory);
            }

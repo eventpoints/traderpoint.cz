@@ -28,7 +28,7 @@ class AppController extends AbstractController
             return $this->redirectToRoute('client_dashboard');
         }
 
-        $skills = $this->skillRepository->findPrimarySkills();
+        $skills = $this->skillRepository->findPrimarySkillsForLandingPage();
 
         return $this->render('app/landing.html.twig', [
             'skills' => $skills,
