@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Security\Accessor;
@@ -33,7 +34,7 @@ final class TraderSubscriptionAccessor implements AccessorInterface
         if ($status === 'trialing') {
             $trialEndsAt = $profile->getTrialEndsAt();
 
-            if (empty($trialEndsAt)) {
+            if (! $trialEndsAt instanceof \DateTimeImmutable) {
                 // defensive: if Stripe didn't send trial_end for some reason, treat as valid
                 return true;
             }
@@ -55,11 +56,11 @@ final class TraderSubscriptionAccessor implements AccessorInterface
         $status = $profile->getSubscriptionStatus();
 
         return match ($status) {
-            'canceled'   => 'subscription_canceled',
-            'past_due'   => 'subscription_past_due',
+            'canceled' => 'subscription_canceled',
+            'past_due' => 'subscription_past_due',
             'incomplete' => 'subscription_incomplete',
-            'trialing'   => 'trial_expired',
-            default      => 'subscription_inactive',
+            'trialing' => 'trial_expired',
+            default => 'subscription_inactive',
         };
     }
 }

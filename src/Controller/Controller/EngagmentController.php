@@ -3,8 +3,6 @@
 namespace App\Controller\Controller;
 
 use App\DataTransferObject\MapLocationDto;
-use App\Entity\Conversation;
-use App\Entity\ConversationParticipant;
 use App\Entity\Engagement;
 use App\Entity\EngagementIssue;
 use App\Entity\Image;
@@ -12,7 +10,6 @@ use App\Entity\Message;
 use App\Entity\Quote;
 use App\Entity\Skill;
 use App\Entity\User;
-use App\Enum\ConversationTypeEnum;
 use App\Enum\FlashEnum;
 use App\Factory\ConversationFactory;
 use App\Factory\UserFactory;
@@ -51,19 +48,19 @@ use Symfony\UX\Map\Point;
 class EngagmentController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface      $translator,
-        private readonly QuoteRepository          $quoteRepository,
-        private readonly EngagementRepository     $engagementRepository,
-        private readonly UserRepository           $userRepository,
-        private readonly ImageOptimizer           $imageOptimizer,
-        private readonly EmailService             $emailService,
+        private readonly TranslatorInterface $translator,
+        private readonly QuoteRepository $quoteRepository,
+        private readonly EngagementRepository $engagementRepository,
+        private readonly UserRepository $userRepository,
+        private readonly ImageOptimizer $imageOptimizer,
+        private readonly EmailService $emailService,
         private readonly EventDispatcherInterface $dispatcher,
-        private readonly SkillRepository          $skillRepository,
-        private readonly UserFactory              $userFactory,
-        private readonly Security                 $security,
-        private readonly ReactionRepository       $reactionRepository,
-        private readonly ConversationRepository   $conversationRepository,
-        private readonly ConversationFactory   $conversationFactory
+        private readonly SkillRepository $skillRepository,
+        private readonly UserFactory $userFactory,
+        private readonly Security $security,
+        private readonly ReactionRepository $reactionRepository,
+        private readonly ConversationRepository $conversationRepository,
+        private readonly ConversationFactory $conversationFactory
     )
     {
     }
@@ -209,11 +206,11 @@ class EngagmentController extends AbstractController
     {
         $skills = new ArrayCollection();
         $skillId = $request->query->get('skill');
-        if (!empty($skillId)) {
+        if (! empty($skillId)) {
             $skillUuid = Uuid::fromString($skillId);
             $skill = $this->skillRepository->find($skillUuid);
 
-            if (!$skill instanceof Skill) {
+            if (! $skill instanceof Skill) {
                 return $this->redirectToRoute('landing');
             }
 
@@ -250,7 +247,7 @@ class EngagmentController extends AbstractController
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
 
-            if (!$currentUser instanceof User) {
+            if (! $currentUser instanceof User) {
                 $email = $engagementForm->get('email')->getData();
                 $firstName = $engagementForm->get('firstName')->getData();
                 $lastName = $engagementForm->get('lastName')->getData();

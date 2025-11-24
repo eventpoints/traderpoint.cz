@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Event\Listener;
@@ -17,22 +18,22 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
     method: 'onKernelRequest',
     priority: 0,
 )]
-final class TraderSubscriptionListener
+final readonly class TraderSubscriptionListener
 {
     public function __construct(
-        private Security                   $security,
+        private Security $security,
         private TraderSubscriptionAccessor $traderSubscriptionAccessor,
-        private UrlGeneratorInterface      $urlGenerator,
+        private UrlGeneratorInterface $urlGenerator,
     ) {}
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        if (!$event->isMainRequest()) {
+        if (! $event->isMainRequest()) {
             return;
         }
 
         $request = $event->getRequest();
-        $route   = (string) $request->attributes->get('_route');
+        $route = (string) $request->attributes->get('_route');
 
         // If no route (e.g. static assets handled elsewhere), bail out
         if ($route === '') {
@@ -55,15 +56,14 @@ final class TraderSubscriptionListener
 
         // Only care about logged-in users
         $user = $this->security->getUser();
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             return;
         }
-
 
         // Optional: if you really want to block *only* traders, keep this.
         // If you literally want "any logged-in user must have a valid subscription",
         // then remove this block.
-        if (!$user->isTrader()) {
+        if (! $user->isTrader()) {
             return;
         }
 

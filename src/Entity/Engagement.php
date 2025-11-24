@@ -545,5 +545,4 @@ class Engagement implements Stringable
     {
         $this->conversation = $conversation;
     }
-
 }

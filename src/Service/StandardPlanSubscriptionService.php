@@ -142,15 +142,4 @@ final readonly class StandardPlanSubscriptionService
             return false;
         }
     }
-
-    public function activateStandardPlanFromPaymentMethod(User $user, string $paymentMethodId): Subscription
-    {
-        $billing = $this->getOrCreateStripeProfile($user);
-        $customerId = $billing->getStripeCustomerId();
-
-        if (! $customerId) {
-            throw new \RuntimeException('Stripe customer missing when activating subscription.');
-        }
-    }
-
 }

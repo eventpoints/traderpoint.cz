@@ -13,7 +13,8 @@ class PaywallController extends AbstractController
 {
     #[Route('/trader/paywall', name: 'trader_paywall')]
     public function __invoke(
-        #[CurrentUser] ?User $user,
+        #[CurrentUser]
+        ?User $user,
     ): Response {
 
         $cardPaymentForm = $this->createForm(CardPaymentFormType::class);
@@ -25,6 +26,4 @@ class PaywallController extends AbstractController
             'profile' => $user?->getStripeProfile(),
         ]);
     }
-
-
 }

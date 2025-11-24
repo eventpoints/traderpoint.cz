@@ -33,7 +33,7 @@ final class EngagementFormType extends AbstractType
 {
     public function __construct(
         private readonly TranslatorInterface $translator,
-        private readonly Security            $security
+        private readonly Security $security
     )
     {
     }
@@ -133,7 +133,7 @@ final class EngagementFormType extends AbstractType
 
         $currentUser = $this->security->getUser();
 
-        if (!$currentUser instanceof User) {
+        if (! $currentUser instanceof User) {
             $builder->add('firstName', TextType::class, [
                 'mapped' => false,
                 'label' => $this->translator->trans('first-name'),

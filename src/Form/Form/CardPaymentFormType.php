@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Form\Form;
@@ -39,7 +40,7 @@ final class CardPaymentFormType extends AbstractType
             // no data_class – we’re just capturing values
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
-            'csrf_token_id'   => 'trader_paywall',
+            'csrf_token_id' => 'trader_paywall',
         ]);
     }
 }

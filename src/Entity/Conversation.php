@@ -23,7 +23,7 @@ class Conversation
     private Uuid $id;
 
     #[ORM\Column(type: 'string', length: 32, enumType: ConversationTypeEnum::class)]
-    private ConversationTypeEnum $type;
+    private ConversationTypeEnum $type = ConversationTypeEnum::DIRECT;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private null|CarbonInterface $createdAt = null;
@@ -40,20 +40,18 @@ class Conversation
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'conversation', cascade: ['persist'])]
     private Collection $messages;
 
-    #[ORM\ManyToOne(inversedBy: 'createdConversations')]
-    private ?User $owner = null;
-
     #[ORM\OneToOne(inversedBy: 'conversation')]
     #[ORM\JoinColumn(name: 'engagement_id', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
     private ?Engagement $engagement = null;
 
-    public function __construct(?User $owner)
+    public function __construct(
+        #[ORM\ManyToOne(inversedBy: 'createdConversations')]
+        private ?User $owner
+    )
     {
-        $this->owner      = $owner;
         $this->participants = new ArrayCollection();
-        $this->messages     = new ArrayCollection();
-        $this->createdAt    = new CarbonImmutable();
-        $this->type         = ConversationTypeEnum::DIRECT; // or whatever default
+        $this->messages = new ArrayCollection();
+        $this->createdAt = new CarbonImmutable(); // or whatever default
     }
 
     public function getId(): ?Uuid
@@ -81,7 +79,7 @@ class Conversation
 
     public function addParticipant(ConversationParticipant $conversationParticipate): static
     {
-        if (!$this->participants->contains($conversationParticipate)) {
+        if (! $this->participants->contains($conversationParticipate)) {
             $this->participants->add($conversationParticipate);
             $conversationParticipate->setConversation($this);
         }
@@ -120,7 +118,7 @@ class Conversation
 
     public function addMessage(Message $message): static
     {
-        if (!$this->messages->contains($message)) {
+        if (! $this->messages->contains($message)) {
             $this->messages->add($message);
             $message->setConversation($this);
         }

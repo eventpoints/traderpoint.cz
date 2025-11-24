@@ -50,7 +50,7 @@ final class EngagementViewersComponent
             $identifier = 'u_' . $user->getId()->toRfc4122();
         } else {
             $session = $this->requestStack->getSession();
-            $identifier = 's_' . ($session?->getId() ?? bin2hex(random_bytes(8)));
+            $identifier = 's_' . $session->getId();
         }
 
         $now = time();

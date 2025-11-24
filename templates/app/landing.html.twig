@@ -16,7 +16,7 @@
                          src="{{ asset(skill.imagePath) }}"
                          alt="Find quality trade jobs near you">
                     <div class="card-img-overlay d-flex flex-column justify-content-end align-items-center text-center px-5">
-                        <div class="fs-2 lh-1 fw-bold trade-category text-uppercase mb-5">{{ 'i-need-a'|trans({article: 'a', skill: skill.title|trans(domain='skills')})|title }}</div>
+                        <div class="fs-4 lh-1 fw-bold trade-category text-uppercase mb-5">{{ 'i-need-a'|trans({article: 'a', skill: skill.title|trans(domain='skills')})|title }}</div>
                     </div>
                     <a href="{{ path('create_engagement', {skill: skill.id}) }}"
                        class="stretched-link"></a>
@@ -29,7 +29,7 @@
                      src="{{ asset('images/landing/something-else.png') }}"
                      alt="Find quality trade jobs near you">
                 <div class="card-img-overlay d-flex flex-column justify-content-end align-items-center text-center px-5">
-                    <div class="fs-2 lh-1 fw-bold trade-category text-uppercase mb-5">{{ 'i-need-something-else'|trans|title }}</div>
+                    <div class="fs-5 lh-1 fw-bold trade-category text-uppercase mb-5">{{ 'i-need-something-else'|trans|title }}</div>
                 </div>
                 <a href="{{ path('create_engagement') }}"
                    class="stretched-link"></a>
