@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Data;
@@ -28,7 +29,9 @@ final readonly class FaqData
             new FaqModelView(
                 'faq.q.trader-pricing',
                 'faq.a.trader-pricing',
-                ['{trial_days}' => 90],
+                [
+                    '{trial_days}' => 90,
+                ],
             ),
             new FaqModelView(
                 'faq.q.client-pricing',
@@ -41,7 +44,9 @@ final readonly class FaqData
             new FaqModelView(
                 'faq.q.where-available',
                 'faq.a.where-available',
-                ['{country}' => 'Czech Republic'],
+                [
+                    '{country}' => 'Czech Republic',
+                ],
             ),
             new FaqModelView(
                 'faq.q.languages',
@@ -62,7 +67,9 @@ final readonly class FaqData
             new FaqModelView(
                 'faq.q.report-problem',
                 'faq.a.report-problem',
-                ['{support_email}' => 'support@traderpoint.cz'],
+                [
+                    '{support_email}' => 'support@traderpoint.cz',
+                ],
             ),
             new FaqModelView(
                 'faq.q.mobile',

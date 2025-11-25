@@ -34,7 +34,7 @@ class AppController extends AbstractController
 
         return $this->render('app/landing.html.twig', [
             'skills' => $skills,
-            'faqs' => $faqs
+            'faqs' => $faqs,
         ]);
     }
 
