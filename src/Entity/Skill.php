@@ -45,6 +45,7 @@ class Skill implements \Stringable
         private string $name
     )
     {
+        $this->id = Uuid::v4();
         $this->users = new ArrayCollection();
         $this->skills = new ArrayCollection();
         $this->engagements = new ArrayCollection();
