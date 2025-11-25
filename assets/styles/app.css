@@ -18,14 +18,12 @@ body {
 .trade-category-card{
     background-color: var(--bs-primary);
     color: #ffffff!important;
-    border:0 !important;
-    border-radius: 0 !important;
     transition: all .35s ease-in-out;
 }
 
 
 .trade-category-card:hover {
-    background-color: #ee6137;
+    background-color: #d33d12;
 }
 
 .ts-control {
