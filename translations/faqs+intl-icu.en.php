@@ -1,0 +1,59 @@
+<?php
+
+return [
+    // General
+    'faq.title' => 'Frequently asked questions',
+    'faq.intro' => 'Here are answers to the most common questions about using Trader Point.',
+
+    // 1) What is Trader Point?
+    'faq.q.what-is-traderpoint' => 'What is Trader Point?',
+    'faq.a.what-is-traderpoint' => 'Trader Point is an online platform that helps people quickly find verified tradesmen for home and property jobs. Clients post what they need, and local tradesmen send quotes directly through the platform.',
+
+    // 2) How does it work for clients?
+    'faq.q.how-it-works-clients' => 'How does Trader Point work for clients?',
+    'faq.a.how-it-works-clients' => 'As a client, you describe your job, add photos if needed, and choose your location. Interested tradesmen can respond with quotes and messages. You compare options, choose who to work with, and agree the final price and timing directly with the tradesman.',
+
+    // 3) How does it work for tradesmen?
+    'faq.q.how-it-works-traders' => 'How does Trader Point work for tradesmen?',
+    'faq.a.how-it-works-traders' => 'As a tradesman, you create a profile, select your skills and work area, and receive relevant job requests from clients near you. You can respond with quotes, ask questions, and manage conversations all inside Trader Point.',
+
+    // 4) Is there a subscription / how do you charge tradesmen?
+    'faq.q.trader-pricing' => 'How do you charge tradesmen?',
+    'faq.a.trader-pricing' => 'Trader Point uses a simple subscription model. You pay one fixed monthly fee with no per-lead charges and no hidden extras. During the free trial period of {trial_days} days, you can try the platform without paying, and cancel before the trial ends if it is not right for you.',
+
+    // 5) Do clients pay to post a job?
+    'faq.q.client-pricing' => 'Do clients pay to post a job?',
+    'faq.a.client-pricing' => 'Clients can create an account and post jobs for free. You only pay the tradesman for the work you agree together. There are no platform fees added to the price of the job from Trader Point.',
+
+    // 6) Is Trader Point a party to the contract?
+    'faq.q.who-is-the-contract-with' => 'Who is my contract with?',
+    'faq.a.who-is-the-contract-with' => 'The contract for the work is always between the client and the tradesman. Trader Point is a matchmaking platform and does not become a party to the contract. We do not set prices or guarantee the outcome of the work.',
+
+    // 7) In which areas is Trader Point available?
+    'faq.q.where-available' => 'Where is Trader Point available?',
+    'faq.a.where-available' => 'Trader Point is currently focused on {country} and the surrounding region. Availability may vary depending on how many tradesmen are active in your area. We are gradually expanding to new cities and regions.',
+
+    // 8) Which languages does the platform support?
+    'faq.q.languages' => 'Which languages does the platform support?',
+    'faq.a.languages' => 'The Trader Point interface currently supports multiple languages, including English, Czech, Russian, and Ukrainian. You can choose your preferred language in your account settings.',
+
+    // 9) Are tradesmen verified?
+    'faq.q.trader-verification' => 'Are tradesmen verified?',
+    'faq.a.trader-verification' => 'We perform basic checks on new tradesmen and encourage them to complete their profile, add references, and collect reviews from clients. However, you should always use your own judgment, ask questions, and check references before agreeing to any work.',
+
+    // 10) How are payments handled?
+    'faq.q.payments' => 'How are payments handled?',
+    'faq.a.payments' => 'In most cases, you pay the tradesman directly using the payment method you agree together (for example, bank transfer, cash, or card). Trader Point does not hold your money and does not act as an escrow service, unless explicitly stated for a specific feature.',
+
+    // 11) How do I change or cancel my subscription?
+    'faq.q.manage-subscription' => 'How can I change or cancel my subscription?',
+    'faq.a.manage-subscription' => 'You can manage your subscription in the billing section of your Trader Point account. You can change your plan or cancel your subscription at any time. Changes apply from the next billing cycle, according to the terms shown at checkout.',
+
+    // 12) How do I report a problem?
+    'faq.q.report-problem' => 'How do I report a problem or a user?',
+    'faq.a.report-problem' => 'If you experience a problem with a job or another user, you can report it through the help section inside the app or by contacting our support at {support_email}. Provide as much detail as possible so we can review the situation and respond.',
+
+    // 13) Can I use Trader Point on my phone?
+    'faq.q.mobile' => 'Can I use Trader Point on my phone?',
+    'faq.a.mobile' => 'Yes. Trader Point is designed to work on mobile, tablet, and desktop. You can browse jobs, respond to messages, and manage your account directly from your phone’s browser.',
+];

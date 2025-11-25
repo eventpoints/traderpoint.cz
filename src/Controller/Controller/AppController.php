@@ -2,6 +2,7 @@
 
 namespace App\Controller\Controller;
 
+use App\Data\FaqData;
 use App\Entity\User;
 use App\Repository\SkillRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,9 +30,11 @@ class AppController extends AbstractController
         }
 
         $skills = $this->skillRepository->findPrimarySkillsForLandingPage();
+        $faqs = FaqData::getItems();
 
         return $this->render('app/landing.html.twig', [
             'skills' => $skills,
+            'faqs' => $faqs
         ]);
     }
 

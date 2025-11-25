@@ -83,5 +83,54 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="row justify-content-center my-5">
+            <div class="col-10">
+                <div class="row justify-content-between g-3 mt-5">
+                    <div class="text-center short-underline-heading">
+                        <div class="fs-2 fw-bold">{{ 'faq.title'|trans(domain='faqs')|title }}</div>
+                        <div>{{ 'faq.intro'|trans|trans(domain='faqs') }}</div>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <div class="vstack gap-3">
+                            <img class="img-fluid rounded-3 w-100 object-fit-cover" style="height: 300px" src="{{ asset('images/consumer-box.jpg') }}" alt="Find quality trade jobs near you">
+                            <img class="img-fluid rounded-3 w-100 object-fit-cover" style="height: 300px" src="{{ asset('images/skill-builder.jpg') }}" alt="Find quality trade jobs near you">
+                            <img class="img-fluid rounded-3 w-100 object-fit-cover" style="height: 300px" src="{{ asset('images/skill-electrician.jpg') }}" alt="Find quality trade jobs near you">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <div class="accordion" id="faqAccordion">
+                            {% for item in faqs %}
+                                {% trans_default_domain 'faqs' %}
+                                {% set params = item.parameters %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="faq-heading-{{ loop.index }}">
+                                        <button class="accordion-button collapsed"
+                                                type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#faq-collapse-{{ loop.index }}"
+                                                aria-expanded="false"
+                                                aria-controls="faq-collapse-{{ loop.index }}">
+                                            {{ item.questionKey|trans }}
+                                        </button>
+                                    </h2>
+                                    <div id="faq-collapse-{{ loop.index }}"
+                                         class="accordion-collapse collapse"
+                                         aria-labelledby="faq-heading-{{ loop.index }}"
+                                         data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            {{ item.answerKey|trans(params)|raw }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 {% endblock %}
