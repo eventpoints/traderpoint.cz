@@ -56,4 +56,11 @@ return [
     // 13) Can I use Trader Point on my phone?
     'faq.q.mobile' => 'Can I use Trader Point on my phone?',
     'faq.a.mobile' => 'Yes. Trader Point is designed to work on mobile, tablet, and desktop. You can browse jobs, respond to messages, and manage your account directly from your phone’s browser.',
+
+    'faq.q.trader-credits' => 'Does Trader Point use tokens or credits?',
+    'faq.a.trader-credits' => 'No. Trader Point does not use any token or credit system. You always see exactly what you pay in your subscription.',
+
+    'faq.q.trader-per-lead' => 'Do you charge per lead?',
+    'faq.a.trader-per-lead' => 'Never. There are no per-lead fees on Trader Point. You pay a simple subscription and can respond to relevant jobs without extra charges.',
+
 ];

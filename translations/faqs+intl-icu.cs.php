@@ -56,4 +56,10 @@ return [
     // 13) Can I use Trader Point on my phone?
     'faq.q.mobile' => 'Můžu Trader Point používat v telefonu?',
     'faq.a.mobile' => 'Ano. Trader Point je navržený tak, aby fungoval na mobilu, tabletu i počítači. Zakázky můžete procházet, odpovídat na zprávy a spravovat svůj účet přímo z prohlížeče ve svém telefonu.',
+
+    'faq.q.trader-credits' => 'Používá Trader Point tokeny nebo kredity?',
+    'faq.a.trader-credits' => 'Ne. Trader Point nepoužívá žádný systém tokenů ani kreditů. Vždy přesně víte, kolik za své předplatné platíte.',
+
+    'faq.q.trader-per-lead' => 'Účtujete poplatky za jednotlivé poptávky?',
+    'faq.a.trader-per-lead' => 'Nikdy. Na Trader Pointu nejsou žádné poplatky za jednotlivé poptávky. Platíte jednoduché předplatné a můžete odpovídat na relevantní zakázky bez dalších poplatků.',
 ];

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Controller;
 
+use App\Data\FaqData;
 use App\DataTransferObject\UserTraderDto;
 use App\Entity\TraderProfile;
 use App\Entity\User;
@@ -152,7 +153,10 @@ class RegistrationController extends AbstractController
             return $userAuthenticator->authenticateUser($user, $authenticator, $request);
         }
 
+        $faqs = FaqData::getTradesmenFaqs();
+
         return $this->render('registration/trader/register.html.twig', [
+            'faqs' => $faqs,
             'traderForm' => $form->createView(),
         ]);
     }

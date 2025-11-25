@@ -425,3 +425,35 @@ input[type="range"].form-range.range--xl:disabled {
     --bs-btn-disabled-bg: #ecedea;
     --bs-btn-disabled-border-color: #ecedea;
 }
+
+
+/* Hero card container */
+.hero-card {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Put the image behind everything and make it stretch with the card */
+.hero-card-img {
+    position: absolute;
+    inset: 0;               /* top:0; right:0; bottom:0; left:0; */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+/* Let the overlay content define the card height, keep it above the image */
+.hero-card-overlay {
+    position: relative !important;  /* override Bootstrap's absolute */
+    z-index: 2;
+    /* optional: darken image behind text/form */
+    background: linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.55),
+            rgba(0,0,0,0.55)
+    );
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+

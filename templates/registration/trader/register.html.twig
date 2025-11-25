@@ -3,13 +3,12 @@
 {% block title %}Trader Register{% endblock %}
 
 {% block body %}
-    <div class="card text-bg-dark border-0 rounded-0 mb-3">
-        <img class="hero-img flip-horizontal img-fluid w-100 object-fit-cover card-img card-overlay-image card-img-overlay-filter"
+    <div class="card text-bg-dark border-0 rounded-0 mb-3 hero-card">
+        <img class="hero-img flip-horizontal img-fluid w-100 object-fit-cover card-img hero-card-img card-overlay-image card-img-overlay-filter"
              src="{{ asset('images/4.jpg') }}"
              alt="Find quality trade jobs near you">
-        <div class="card-img-overlay">
-
-            <div class="row justify-content-around align-items-center h-100 g-1">
+        <div class="card-img-overlay hero-card-overlay">
+            <div class="row justify-content-around align-items-center g-1">
                 <div class="col-12 col-md-4">
                     <div class="display-1 display-md-3 text-white fw-bold">{{ 'get-jobs-you-want-fast'|trans|title }}</div>
                     <p class="lead mt-2 mb-4 text-white-50">{{ 'trader-tagline-explainer-short'|trans }}</p>
@@ -19,10 +18,13 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="text-center">
-                                <div class="fw-bold fs-4">
-                                    {{ 'standard-plan-trial-headline'|trans }}
+                                <div class="fw-bold fs-1 lh-1">
+                                    <div class="text-primary">
+                                        {{ 'standard-plan-trial-headline-main'|trans }}
+                                    </div>
+                                    <div>{{ 'standard-plan-trial-headline-rest'|trans }}</div>
                                 </div>
-                                <div class="small">
+                                <div class="mt-3">
                                     {{ 'standard-plan-trial-subline'|trans }}
                                 </div>
                             </div>
@@ -37,16 +39,13 @@
                             {{ form_row(traderForm.plainPassword) }}
                         </div>
                         <div class="card-body p-2 text-center text-muted">
-                            {{ 'by-continuing-accept-terms'|trans(domain='terms') }} <a
-                                    href="{{ path('terms_of_use') }}">{{ 'terms-of-use'|trans(domain='terms') }}</a>
-                        </div>
-                        <div class="card-body p-2 text-center text-muted">
                             {{ include('partial/_social_register.html.twig') }}
                         </div>
-                        <div class="card-footer d-flex justify-content-end align-items-center gap-4 border-top">
-                            <a href="{{ path('app_login') }}" type="button"
-                               class="link-dark">{{ 'login'|trans }}</a>
-                            <button type="submit" class="btn btn-primary btn-lg">{{ 'register'|trans }}</button>
+                        <div class="card-footer border-top">
+                            <div class="text-center mb-1 text-muted">{{ 'by-continuing-accept-terms'|trans(domain='terms') }} <a
+                                        href="{{ path('terms_of_use') }}">{{ 'terms-of-use'|trans(domain='terms')|title }}</a>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg w-100">{{ 'register'|trans }}</button>
                         </div>
                     </div>
                     {{ form_end(traderForm) }}
@@ -98,6 +97,53 @@
                 </div>
 
             </div>
+
+            <div class="row justify-content-center my-5">
+                <div class="col-10">
+                    <div class="row justify-content-between g-3 mt-5">
+                        <div class="text-center short-underline-heading">
+                            <div class="fs-2 fw-bold">{{ 'faq.title'|trans(domain='faqs')|title }}</div>
+                            <div>{{ 'faq.intro'|trans|trans(domain='faqs') }}</div>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <div class="vstack gap-3">
+                                <img class="img-fluid rounded-3 w-100 object-fit-cover" style="height: 300px" src="{{ asset('images/consumer-box.jpg') }}" alt="Find quality trade jobs near you">
+                                <img class="img-fluid rounded-3 w-100 object-fit-cover" style="height: 300px" src="{{ asset('images/skill-builder.jpg') }}" alt="Find quality trade jobs near you">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <div class="accordion" id="faqAccordion">
+                                {% for item in faqs %}
+                                    {% trans_default_domain 'faqs' %}
+                                    {% set params = item.parameters %}
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="faq-heading-{{ loop.index }}">
+                                            <button class="accordion-button collapsed"
+                                                    type="button"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#faq-collapse-{{ loop.index }}"
+                                                    aria-expanded="false"
+                                                    aria-controls="faq-collapse-{{ loop.index }}">
+                                                {{ item.questionKey|trans }}
+                                            </button>
+                                        </h2>
+                                        <div id="faq-collapse-{{ loop.index }}"
+                                             class="accordion-collapse collapse"
+                                             aria-labelledby="faq-heading-{{ loop.index }}"
+                                             data-bs-parent="#faqAccordion">
+                                            <div class="accordion-body">
+                                                {{ item.answerKey|trans(params)|raw }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 {% endblock %}

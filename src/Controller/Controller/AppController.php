@@ -30,7 +30,7 @@ class AppController extends AbstractController
         }
 
         $skills = $this->skillRepository->findPrimarySkillsForLandingPage();
-        $faqs = FaqData::getItems();
+        $faqs = FaqData::getClientFaqs();
 
         return $this->render('app/landing.html.twig', [
             'skills' => $skills,
