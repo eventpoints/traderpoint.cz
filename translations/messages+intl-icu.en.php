@@ -2,6 +2,7 @@
 
 return array(
     'app-tag-line' => 'Get it done!',
+    'app-sub-tag-line' => 'Post an inquiry, get offers from thousands of verified tradesmen. Free, Fast & safe.',
     'name' => 'full name',
     'register' => 'register',
     'login' => 'login',
@@ -207,5 +208,6 @@ return array(
     'reaction.budget-too-low' => 'budget too low',
     'reaction.budget-too-low-description' => 'Posted budget is below what traders usually accept.',
     'reaction.need-more-info' => 'Need more info',
-    'reaction.needs-more-info-description' => 'Trader needs more details before they can commit or quote.'
+    'reaction.needs-more-info-description' => 'Trader needs more details before they can commit or quote.',
+    'company-details' => 'company details'
 );

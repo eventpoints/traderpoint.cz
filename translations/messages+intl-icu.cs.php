@@ -2,6 +2,7 @@
 
 return [
     'app-tag-line' => 'Dokončete to!',
+    'app-sub-tag-line' => 'Zadejte poptávku, získejte nabídky od tisíců ověřených řemeslníků. Zdarma, rychle a bezpečně.',
     'name' => 'celé jméno',
     'register' => 'registrovat se',
     'login' => 'přihlášení',

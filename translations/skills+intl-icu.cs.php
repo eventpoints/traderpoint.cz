@@ -1,19 +1,179 @@
 <?php
 
-// translations/skills.cs.php
-return [
+return array (
     // Group labels
-    'skill.group.general_building'   => 'Stavební práce',
-    'skill.group.electrical'         => 'Elektroinstalace',
-    'skill.group.plumbing_heating'   => 'Voda a topení',
-    'skill.group.handyman'           => 'Řemeslník',
+    'skill.group.general_building'      => 'Stavební práce',
+    'skill.group.carpentry_joinery'     => 'Tesařství a truhlářství',
+    'skill.group.roofing'               => 'Střechy a střešní práce',
+    'skill.group.kitchens'              => 'Kuchyně',
+    'skill.group.bathrooms'             => 'Koupelny',
+    'skill.group.flooring_tiling'       => 'Podlahy a obklady',
+    'skill.group.windows_doors'         => 'Okna a dveře',
+    'skill.group.electrical'            => 'Elektroinstalace',
+    'skill.group.plumbing_heating'      => 'Voda a topení',
+    'skill.group.heating_aircon'        => 'Topení a klimatizace',
+    'skill.group.outdoor_garden'        => 'Exteriér a zahrada',
+    'skill.group.painting_decorating'   => 'Malování a dekorace',
+    'skill.group.cleaning'              => 'Úklid',
+    'skill.group.handyman'              => 'Hodinový manžel a drobné práce',
+    'skill.group.specialist_trades'     => 'Specializované profese',
+    'skill.group.professional_services' => 'Odborné služby',
 
-    // Skills
-    'skill.general_contractor'       => 'Hlavní dodavatel staveb',
-    'skill.builder'                  => 'Stavitel',
-    'skill.electrician'              => 'Elektrikář',
-    'skill.plumber'                  => 'Instalatér',
-    'skill.handyman'                 => 'Řemeslník na drobné práce',
-    'skill.flatpack_assembly'        => 'Montáž nábytku',
-    'skill.small_repairs'            => 'Drobné opravy',
-];
+    // Core skills you already had
+    'skill.general_contractor'          => 'Generální dodavatel stavby',
+    'skill.builder'                     => 'Stavitel',
+    'skill.electrician'                 => 'Elektrikář',
+    'skill.plumber'                     => 'Instalatér',
+    'skill.handyman'                    => 'Hodinový manžel',
+    'skill.flatpack_assembly'           => 'Montáž nábytku z plochého balení (flat-pack)',
+    'skill.small_repairs'               => 'Drobné opravy v domácnosti',
+
+    // General building
+    'skill.bricklayer'                  => 'Zedník',
+    'skill.block_paver'                 => 'Pokládka zámkové dlažby',
+    'skill.groundworker'                => 'Zemní práce (groundworker)',
+    'skill.concrete_specialist'         => 'Betonář / specialista na beton',
+    'skill.demolition_contractor'       => 'Demoliční práce',
+    'skill.basement_conversion'         => 'Úpravy a rekonstrukce sklepů',
+    'skill.loft_conversion'             => 'Vestavby do podkroví (loft conversion)',
+    'skill.extension_specialist'        => 'Přístavby a rozšíření domů',
+    'skill.new_build_specialist'        => 'Specialista na novostavby',
+    'skill.structural_steel_installer'  => 'Montáž ocelových konstrukcí',
+
+    // Carpentry & joinery
+    'skill.carpenter_joiner'            => 'Tesař / truhlář',
+    'skill.cabinet_maker'               => 'Truhlář – výroba nábytku',
+    'skill.staircase_specialist'        => 'Specialista na schodiště',
+    'skill.timber_frame_specialist'     => 'Specialista na dřevostavby (skelet)',
+    'skill.decking_installer'           => 'Montáž teras (decking)',
+    'skill.bespoke_furniture_maker'     => 'Výroba nábytku na míru',
+    'skill.shed_home_office_builder'    => 'Stavba zahradních domků a kanceláří',
+    'skill.partition_wall_installer'    => 'Montáž příček (např. sádrokarton)',
+    'skill.internal_door_fitter'        => 'Montáž interiérových dveří',
+
+    // Roofing
+    'skill.roofer'                      => 'Pokrývač',
+    'skill.flat_roof_specialist'        => 'Specialista na ploché střechy',
+    'skill.pitched_roof_specialist'     => 'Specialista na šikmé střechy',
+    'skill.roof_tiler'                  => 'Pokrývač – střešní tašky',
+    'skill.slate_roofer'                => 'Pokrývač – břidlice',
+    'skill.roof_insulation_specialist'  => 'Zateplení střech',
+    'skill.chimney_specialist'          => 'Specialista na komíny',
+    'skill.guttering_specialist'        => 'Specialista na okapy',
+    'skill.fascias_soffits_installer'   => 'Montáž podhledů a oplechování střechy',
+    'skill.roof_window_installer'       => 'Montáž střešních oken / světlíků',
+
+    // Kitchens
+    'skill.kitchen_fitter'              => 'Montáž kuchyní',
+    'skill.kitchen_installer'           => 'Instalace kuchyní',
+    'skill.kitchen_worktop_fitter'      => 'Montáž kuchyňských pracovních desek',
+    'skill.kitchen_cabinet_installer'   => 'Montáž kuchyňských skříněk',
+    'skill.kitchen_appliance_installer' => 'Instalace kuchyňských spotřebičů',
+
+    // Bathrooms
+    'skill.bathroom_fitter'             => 'Rekonstrukce a montáž koupelen',
+    'skill.wetroom_specialist'          => 'Specialista na bezbariérové koupelny (wet room)',
+    'skill.shower_installer'            => 'Montáž sprchových koutů',
+    'skill.toilet_installer'            => 'Montáž WC',
+    'skill.bath_installer'              => 'Montáž vany',
+
+    // Flooring & tiling
+    'skill.floor_layer'               => 'Podlahář',
+    'skill.carpet_fitter'             => 'Pokládka koberců',
+    'skill.laminate_floor_specialist' => 'Pokládka laminátových podlah',
+    'skill.wood_floor_specialist'     => 'Pokládka dřevěných a parketových podlah',
+    'skill.vinyl_floor_specialist'    => 'Pokládka vinylových podlah',
+    'skill.tiler'                     => 'Obkladač',
+    'skill.mosaic_tiler'              => 'Obkladač – mozaikové obklady',
+
+    // Windows & doors
+    'skill.window_installer'            => 'Montáž oken',
+    'skill.double_glazing_specialist'   => 'Specialista na plastová a izolační okna',
+    'skill.external_door_fitter'        => 'Montáž vchodových dveří',
+    'skill.garage_door_installer'       => 'Montáž garážových vrat',
+    'skill.conservatory_installer'      => 'Stavba zimních zahrad / verand',
+    'skill.glazing_repair_specialist'   => 'Opravy zasklení',
+
+    // Electrical
+    'skill.electrical_inspector_tester' => 'Revizní technik elektro',
+    'skill.rewire_specialist'           => 'Kompletní rekonstrukce elektroinstalace',
+    'skill.lighting_installer'          => 'Montáž osvětlení',
+    'skill.ev_charger_installer'        => 'Instalace nabíječek pro elektromobily',
+    'skill.alarm_cctv_installer'        => 'Montáž alarmů a kamerových systémů (CCTV)',
+    'skill.data_cabling_specialist'     => 'Datové rozvody / strukturovaná kabeláž',
+    'skill.smart_home_installer'        => 'Montáž chytré domácnosti',
+    'skill.fire_alarm_installer'        => 'Montáž požárních hlásičů a EPS',
+
+    // Plumbing & heating
+    'skill.heating_engineer'            => 'Topenář',
+    'skill.gas_engineer'                => 'Plynař',
+    'skill.boiler_installer'            => 'Montáž kotlů',
+    'skill.boiler_service_engineer'     => 'Servis kotlů',
+    'skill.underfloor_heating_installer'=> 'Instalace podlahového topení',
+    'skill.drainage_specialist'         => 'Specialista na kanalizaci a odpady',
+    'skill.radiator_installer'          => 'Montáž radiátorů',
+    'skill.water_tank_installer'        => 'Montáž bojlerů a zásobníků',
+    'skill.heat_pump_installer'         => 'Instalace tepelných čerpadel',
+
+    // Heating & air conditioning
+    'skill.air_conditioning_engineer'   => 'Klimatizace – montáž a servis',
+    'skill.ventilation_specialist'      => 'Vzduchotechnika a větrání',
+    'skill.refrigeration_engineer'      => 'Chladicí technika',
+
+    // Outdoor & garden
+    'skill.landscaper'                  => 'Zahradní architekt / realizace zahrad',
+    'skill.gardener'                    => 'Zahradník',
+    'skill.tree_surgeon'                => 'Arborista (péče o stromy)',
+    'skill.fencing_installer'           => 'Montáž plotů',
+    'skill.paving_specialist'           => 'Pokládka dlažby a příjezdových cest',
+    'skill.artificial_grass_installer'  => 'Montáž umělého trávníku',
+    'skill.garden_wall_builder'         => 'Stavba zahradních zídek',
+    'skill.garden_shed_installer'       => 'Montáž zahradních domků a přístřešků',
+    'skill.irrigation_specialist'       => 'Instalace závlahových systémů',
+
+    // Painting & decorating
+    'skill.painter_decorator'           => 'Malíř a natěrač',
+    'skill.plasterer'                   => 'Sádrokartonář / omítkář',
+    'skill.renderer'                    => 'Fasádník (omítky, zateplení fasád)',
+    'skill.coving_specialist'           => 'Montáž lišt a říms (coving, cornice)',
+    'skill.wallpaper_hanger'            => 'Lepení tapet',
+    'skill.spray_painter'               => 'Stříkání nátěrů (spray painting)',
+
+    // Cleaning
+    'skill.domestic_cleaner'            => 'Úklid domácností',
+    'skill.end_of_tenancy_cleaner'      => 'Úklid po nájemnících / stěhování',
+    'skill.window_cleaner'              => 'Mytí oken',
+    'skill.gutter_cleaner'              => 'Čištění okapů',
+    'skill.pressure_wash_specialist'    => 'Tlakové čištění (fasády, chodníky)',
+    'skill.carpet_upholstery_cleaner'   => 'Čištění koberců a čalounění',
+
+    // Handyman & small jobs
+    'skill.odd_jobs_specialist'         => 'Drobné práce v domácnosti',
+    'skill.tv_wall_mount_installer'     => 'Montáž TV na stěnu',
+    'skill.curtain_blind_installer'     => 'Montáž záclon, žaluzií a rolet',
+    'skill.picture_mirror_hanger'       => 'Věšení obrazů a zrcadel',
+    'skill.lock_minor_repairs'          => 'Základní opravy zámků a kování',
+
+    // Specialist trades
+    'skill.locksmith'                   => 'Zámečník',
+    'skill.security_system_installer'   => 'Montáž zabezpečovacích systémů',
+    'skill.pest_control'                => 'Deratizace a dezinsekce (likvidace škůdců)',
+    'skill.asbestos_removal_specialist' => 'Odstraňování azbestu',
+    'skill.damp_proofing_specialist'    => 'Sanace vlhkého zdiva',
+    'skill.insulation_installer'        => 'Zateplování a izolace',
+    'skill.solar_panel_installer'       => 'Instalace solárních panelů',
+    'skill.chimney_sweep'               => 'Kominík',
+    'skill.metal_fabricator'            => 'Kovovýroba',
+    'skill.welder'                      => 'Svářeč',
+    'skill.stonemason'                  => 'Kameník',
+    'skill.swimming_pool_specialist'    => 'Stavba a servis bazénů',
+    'skill.sauna_steam_room_installer'  => 'Montáž saun a parních kabin',
+
+    'skill.architect'                     => 'Architekt',
+    'skill.structural_engineer'           => 'Statik',
+    'skill.building_surveyor'             => 'Stavební technik / inspektor',
+    'skill.building.technical.inspector'  => 'Technický inspektor nemovitosti',
+    'skill.planning_consultant'           => 'Poradenství k územnímu a stavebnímu řízení',
+    'skill.interior_designer'             => 'Interiérový designér',
+    'skill.energy_assessor'               => 'Energetický specialista / energetický auditor',
+);
