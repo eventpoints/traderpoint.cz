@@ -23,7 +23,7 @@ class PaywallController extends AbstractController
         return $this->render('trader/paywall.html.twig', [
             'cardPaymentForm' => $cardPaymentForm,
             'user' => $user,
-            'profile' => $user?->getStripeProfile(),
+            'stripe_profile' => $user?->getStripeProfile(),
         ]);
     }
 }

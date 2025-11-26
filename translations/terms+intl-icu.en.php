@@ -1,55 +1,65 @@
 <?php
 return [
     'terms-of-use-agreement' => 'I agree to these {link}',
-    'terms-of-use' => 'terms of use',
+    'terms-of-use' => 'terms of use and privacy policy',
+
+    'title' => 'TraderPoint Terms of Use and Privacy Policy',
+    'effective-date' => 'Effective Date: {date}',
+    'operator' => 'Operator: Kerrial Newham, sole trader (IČO 17710634)',
 
     'acceptance-of-agreement' => 'Acceptance Of This Agreement',
-    'acceptance-of-agreement-content' => 'Your access to and use of traderpoint.cz (the "Platform") is subject exclusively to these Terms and Conditions. You may not use the Platform for any purpose that is unlawful or prohibited by these Terms and Conditions. By creating an account, posting a job, requesting quotes, or responding to a job as a tradesman, you confirm that you have read, understood, and agree to be bound by these Terms and Conditions. If you do not accept these Terms and Conditions, you must immediately stop using the Platform. The Platform Trader Point / traderpoint.cz is operated by Kerrial Newham, sole trader (IČO 17710634).',
+    'acceptance-of-agreement-content' => 'By creating an account and/or subscribing to traderpoint.cz (the "Platform"), you agree to be bound by these Terms and Conditions and the Privacy Policy. If you do not agree, you must not use the Platform.',
 
-    'platform-role' => 'Platform role and relationship between users',
-    'platform-role-content' => 'Trader Point / traderpoint.cz is an online matchmaking platform that allows users to post jobs, search for jobs, submit quotes and communicate with each other. All contracts (for example contracts for work, job orders, agreements on price) are concluded exclusively between the client and the individual tradesman. Trader Point is not a party to these contracts, is not their guarantor or surety, and does not determine the content of such contracts. Tradesmen provide their services in their own name and on their own responsibility, and not on behalf of Trader Point. No employment relationship, partnership, joint venture or principal–agent relationship arises between Trader Point and tradesmen. Trader Point is not responsible for the acts or omissions, statements, promises, prices, deadlines, quality, legality or insurance of services provided by tradesmen, nor for any damage to property or other loss arising in connection with such services. All claims relating to defective performance, compensation for damage, unpaid amounts or other disputes must be resolved directly between the client and the tradesman, without the involvement of Trader Point, except where applicable law expressly requires us to intervene.',
+    'platform-purpose' => 'Platform Purpose',
+    'platform-purpose-content' => 'TraderPoint is an online matchmaking and showcase platform. Tradesmen may create profiles to promote their services, and users may view these profiles. TraderPoint does not provide, perform, guarantee, or supervise any work arising from connections made through the Platform.',
 
-    'advice' => 'Advice',
-    'advice-content' => 'The content on the Platform is provided for general information only. TraderPoint does not provide professional trade, legal, financial, or other specialist advice. Any decision to hire a tradesman or to accept a job is made solely by you and at your own risk. You should always make your own checks, including qualifications, insurance, and suitability, before entering into any agreement.',
+    'subscriptions-and-payments' => 'Subscriptions and Payments',
+    'subscriptions-and-payments-content' => 'Tradesmen may access the Platform by paying a subscription fee. This fee is the only financial transaction facilitated by TraderPoint. TraderPoint is not involved in any contracts, payments, or agreements between tradesmen and clients.',
 
-    'changes-to-software-and-services' => 'Changes to the Platform and Services',
-    'changes-to-software-and-services-content' => 'TraderPoint reserves the right to: 1. change, update, or remove (temporarily or permanently) the Platform or any part of it without notice, and you confirm that TraderPoint shall not be liable to you for any such change or removal; 2. change, remove, or discontinue any feature, service, subscription plan, pricing, or promotion (including but not limited to job posting fees, trader subscription packages, or trial periods) at any time and you confirm that TraderPoint shall not be liable for any such change or removal; 3. change or discontinue any promotional discount vouchers or coupon codes at any time and you confirm that TraderPoint shall not be liable for any such change or removal; 4. change this Agreement at any time, and your continued use of the Platform following any changes shall be deemed to be your acceptance of such changes.',
+    'use-of-the-platform' => 'Use of the Platform',
+    'use-of-the-platform-content' => "You agree to:\n\n- Use the Platform lawfully\n- Provide accurate information\n- Avoid posting content that infringes intellectual property or third-party rights\n- Not interfere with or disrupt the Platform\n\nTraderPoint reserves the right to suspend or terminate accounts that breach these Terms.",
 
-    'links-to-third-party-websites' => 'Links to Third Party Websites',
-    'links-to-third-party-websites-content' => 'The Platform may include links to third party websites or services (for example, payment providers, map services, or external resources) that are controlled and maintained by others. Any link to other websites does not constitute an endorsement of such websites, and you acknowledge and agree that we are not responsible for the content, availability, or practices of any such sites.',
-
-    'copyright' => 'Copyright',
-    'copyright-content' => 'The Intellectual Property Rights in the Platform and the materials on or accessible via it belong to TraderPoint or its licensors. The Platform, including its software, design, text, graphics, logos and other content, and the Intellectual Property Rights therein, may not be copied, distributed, published, licensed, used, or reproduced in any way (save to the extent strictly necessary for accessing and using the Platform as intended). TraderPoint and the TraderPoint logo are trademarks which belong to TraderPoint and may not be used, copied, or reproduced in any way without prior written consent. For these purposes "Intellectual Property Rights" includes, wherever and whenever arising and for the full term of each of them: any patent, trade mark, trade name, service mark, service name, design, design right, copyright, database right, moral rights, know-how, trade secret and other confidential information, rights in the nature of any of these items in any country, rights in the nature of unfair competition rights and rights to sue for passing off or similar, and registrations of and applications to register any of them.',
+    'intellectual-property' => 'Intellectual Property',
+    'intellectual-property-content' => 'All materials on the Platform, including software, text, graphics, logos, and content, are owned by TraderPoint or its licensors. You may only use such materials to access and use the Platform as intended. Any other use requires prior written consent.',
 
     'limitation-of-liability' => 'Limitation Of Liability',
-    'limitation-of-liability-content' => 'The Platform is provided on an "AS IS" and "AS AVAILABLE" basis without any representation, guarantee, or endorsement made and without warranty of any kind, whether express or implied, including but not limited to the implied warranties of satisfactory quality, fitness for a particular purpose, non-infringement, compatibility, security, and accuracy. TraderPoint is a marketplace matching clients with independent tradesmen. TraderPoint is not a party to any contract between clients and tradesmen, does not control or supervise the work carried out, and does not guarantee the quality, safety, legality, or completion of any job. The tradesman (and, where relevant, the client) is solely responsible for the performance of the job, any defects, delays, damage to property or other loss arising out of or in connection with that job. To the extent permitted by law, TraderPoint will not be liable for any indirect or consequential loss or damage (including, without limitation, loss of business, opportunity, data, goodwill, or profits) arising out of or in connection with your use of the Platform or any relationship between clients and tradesmen. TraderPoint makes no warranty that the functionality of the Platform will be uninterrupted or error-free, that defects will be corrected, or that the Platform or the server that makes it available are free of viruses or anything else harmful or destructive. Nothing in these Terms and Conditions shall be construed so as to exclude or limit the liability of TraderPoint for death or personal injury resulting from its negligence or the negligence of its employees or agents where such limitation is prohibited by law.',
+    'limitation-of-liability-content' => 'The Platform is provided "AS IS" and "AS AVAILABLE." TraderPoint does not guarantee uninterrupted access or error-free operation. To the extent permitted by law, TraderPoint shall not be liable for loss of data or access, or for indirect, incidental, or consequential damages arising from Platform use. Nothing in these Terms limits TraderPoint\'s liability for death or personal injury caused by its negligence, or for other liability that cannot be excluded by law.',
 
     'indemnity' => 'Indemnity',
-    'indemnity-content' => 'You agree to indemnify and hold TraderPoint, its owners, employees, and agents harmless from and against all liabilities, claims, legal fees, damages, losses, costs, and other expenses arising from: (a) any breach by you of these Terms and Conditions; (b) any content you submit or upload to the Platform; or (c) any dispute between you and another user (including but not limited to clients, tradesmen, or third parties) arising out of your use of the Platform.',
+    'indemnity-content' => 'You agree to indemnify TraderPoint from any claims, damages, or expenses arising from your breach of these Terms or your use of the Platform, including any content you upload.',
 
-    'severability' => 'Severability',
-    'severability-content' => 'If any provision of this Agreement is held by a court or other competent authority to be void, voidable, illegal, or otherwise unenforceable, that provision shall be deemed modified to the minimum extent necessary to make it valid and enforceable while preserving the parties’ original intent, or, where this is not possible, shall be severed from this Agreement. In either case, the remaining provisions of this Agreement shall remain in full force and effect.',
+    'changes-to-terms' => 'Changes to Terms',
+    'changes-to-terms-content' => 'TraderPoint may amend these Terms at any time. Material changes affecting subscriptions or user rights will be communicated with at least 14 days’ notice. Continued use after changes constitutes acceptance.',
 
-    'applicable-law-and-dispute' => 'Applicable Law and Dispute',
-    'applicable-law-and-dispute-content' => 'This Agreement and any dispute or claim arising out of or in connection with it, your use of the Platform, or any non-contractual obligations arising out of or in connection with it, shall be governed by and construed in accordance with the laws of the Czech Republic. The courts of the Czech Republic, with Prague as the agreed place of performance, shall have exclusive jurisdiction to settle any such dispute or claim, subject to any mandatory consumer protection rules that may apply under the laws of your country of residence.',
-
-    'headings' => 'Headings',
-    'headings-content' => 'Headings are included in this Agreement for convenience only and shall not affect the interpretation or construction of any provision of this Agreement.',
-
-    'entire-agreement' => 'Entire Agreement',
-    'entire-agreement-content' => 'These Terms and Conditions, together with any documents expressly referred to in them (including our Privacy Policy and any subscription or pricing information shown to you when purchasing a plan or posting a job), constitute the entire agreement between you and TraderPoint in relation to your use of the Platform, and supersede any previous agreements, arrangements, undertakings, or proposals, written or oral, between us in respect of the Platform.',
-
-    'company-privacy-policy' => 'Company Privacy Policy',
-    'company-privacy-policy-content' => 'This Privacy Policy explains how we collect, use, store, and share personal data when you use our Platform to post jobs, request quotes, or offer your services as a tradesman. It also explains your data protection rights and how the law protects you. In particular, this policy describes: what data we collect, how we collect your data, how we use your data, the legal bases we rely on, how long we keep your data, how we share your data, how we use cookies and similar technologies, and the rights you have under applicable data protection laws.',
+    'privacy-and-data-collection' => 'Privacy and Data Collection',
+    'privacy-and-data-collection-content' => 'This section explains how we collect, use, store, and share personal data when you use our Platform.',
 
     'data-collected' => 'Data Collected',
-    'data-collected-content' => 'We may collect and process the following types of personal data: identification and contact details (such as name, email address, phone number); account information (such as password, language preferences, and communication preferences); profile information for tradesmen (such as trade type, skills, qualifications, years of experience, business name, and public profile description); job-related information for clients (such as description of the work, photos or videos you upload, budget, location or approximate address); billing and payment information (such as subscription details, partial payment identifiers and billing history – payment card details are processed by our payment providers and are not stored in full by us); technical and usage data (such as IP address, device information, and logs of how you interact with the Platform); and reviews, messages, and other content you submit.',
+    'data-collected-content' => "We may collect:\n\n- Identification and contact information (name, email, phone)\n- Account credentials and preferences\n- Profile information for tradesmen (trade type, skills, experience, qualifications, public description)\n- Subscription and billing information\n- Technical data (IP address, device, logs)",
 
-    'how-do-we-collect-your-data' => 'How do we collect your data?',
-    'how-do-we-collect-your-data-content' => 'You directly provide most of the data we collect. We collect data when you: create an account; complete or update your profile; post a job or request quotes; send messages via the Platform; purchase a subscription or pay a job-related fee; or contact us for support. We also automatically collect certain technical and usage data when you use the Platform via your browser’s or app’s cookies and similar technologies. In addition, we may receive limited information from third parties, such as payment providers (for example, confirmation of successful payments) or geolocation information derived from the address or area you provide for a job.',
+    'purpose-and-legal-basis' => 'Purpose and Legal Basis',
+    'purpose-and-legal-basis-content' => "We process your data to:\n\n- Create and manage your account (performance of contract)\n- Operate and improve the Platform (legitimate interest)\n- Process subscription payments (performance of contract)\n- Communicate updates and promotions (consent or legitimate interest)\n- Comply with legal obligations",
 
-    'how-will-we-use-your-data' => 'How will we use your data?',
-    'how-will-we-use-your-data-content' => 'We use your data to: create and manage your account; operate and improve the Platform; match clients and tradesmen based on location, trade, and other criteria; enable messaging and communication between users; process payments, subscriptions, and any applicable fees; detect and prevent fraud, abuse, or violations of these Terms; provide customer support; and comply with legal obligations. With your consent, or where permitted by law, we may also use your contact details to send you information about Platform updates, promotions, or offers that may be relevant to you. Where required, we will give you simple ways to opt out of marketing at any time. We may share your data with trusted service providers who help us operate the Platform (such as hosting providers, payment processors, email and SMS providers, or analytics tools) under appropriate data protection safeguards. We do not sell your personal data.',
+    'data-sharing' => 'Data Sharing',
+    'data-sharing-content' => "We do not sell your data. We may share it with:\n\n- Service providers (hosting, payments, analytics)\n- Regulators or law enforcement as required by law",
+
+    'data-retention' => 'Retention',
+    'data-retention-content' => 'Data is retained only as long as necessary to provide the Platform and comply with legal obligations. Account data is retained for a maximum of 5 years after account closure, unless otherwise required by law.',
+
+    'cookies-and-tracking' => 'Cookies and Tracking',
+    'cookies-and-tracking-content' => 'We use cookies and similar technologies to operate the Platform and improve user experience. You may manage cookies through your browser settings.',
+
+    'user-rights' => 'User Rights',
+    'user-rights-content' => "Under GDPR, you have the right to:\n\n- Access your personal data\n- Correct inaccurate data\n- Request erasure\n- Restrict processing\n- Object to processing\n- Request data portability\n- Lodge a complaint with the Czech Office for Personal Data Protection",
+
+    'security' => 'Security',
+    'security-content' => 'We implement appropriate technical and organizational measures to protect your data against unauthorized access, disclosure, or destruction.',
+
+    'applicable-law-and-dispute' => 'Applicable Law and Jurisdiction',
+    'applicable-law-and-dispute-content' => 'These Terms and Privacy Policy are governed by Czech law. The courts of the Czech Republic, with Prague as the place of performance, shall have exclusive jurisdiction over disputes, subject to mandatory consumer protection rules.',
+
+    'contact' => 'Contact',
+    'contact-content' => "For privacy questions or to exercise your rights, contact:\nKerrial Newham\nEmail: kerrialbeckettnewham@gmail.com",
 
     'company-details' => 'Operator details',
     'company-details-content' => 'The Trader Point / traderpoint.cz platform is operated by: Kerrial Newham, sole trader, ID number (IČO) 17710634. E-mail: kerrialbeckettnewham@gmail.com, phone: +420 608 187 548.',

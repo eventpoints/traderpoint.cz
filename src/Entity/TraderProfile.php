@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\TraderStatusEnum;
 use App\Repository\TraderProfileRepository;
+use App\Validator\CompanyNumberValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Jsor\Doctrine\PostGIS\Types\PostGISType;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: TraderProfileRepository::class)]
 #[ORM\Index(
@@ -31,6 +33,13 @@ class TraderProfile
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private null|string $avatar = null;
+
+    #[ORM\Column(length: 32, nullable: true)]
+    #[CompanyNumberValidator(countryField: 'country')]
+    private ?string $companyNumber = null;
+
+    #[ORM\Column(length: 3, nullable: true)]
+    private ?string $country = 'CZ';
 
     /**
      * @var Collection<int, Skill>
@@ -224,6 +233,8 @@ class TraderProfile
     #[ORM\PreUpdate]
     public function syncPointFromLatLng(): void
     {
+        $this->setCountry('CZ');
+
         if (! empty($this->latitude) && ! empty($this->longitude)) {
             $point = sprintf('SRID=4326;POINT(%F %F)', $this->longitude, $this->latitude);
             $this->setPoint($point);
@@ -274,4 +285,26 @@ class TraderProfile
 
         return $count !== 0 ? round($sum / $count, 1) : 0;
     }
+
+    public function getCompanyNumber(): ?string
+    {
+        return $this->companyNumber;
+    }
+
+    public function setCompanyNumber(?string $companyNumber): void
+    {
+        $this->companyNumber = $companyNumber;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): void
+    {
+        $this->country = $country;
+    }
+
+
 }

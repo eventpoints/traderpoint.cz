@@ -14,6 +14,7 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -52,6 +53,19 @@ final class TraderAccountFormType extends AbstractType
                 'row_attr' => [
                     'class' => 'form-floating',
                 ],
+            ])
+            ->add('country', CountryType::class, [
+                'disabled' => true,
+                'data' => 'CZ',
+                'label' => $this->translator->trans('country'),
+                'row_attr' => [
+                    'class' => 'form-floating',
+                ],
+            ])
+            ->add('companyNumber', TextType::class, [
+                'label' => $this->translator->trans('company-number'),
+                'required' => false,
+                'row_attr' => ['class' => 'form-floating'],
             ])
             ->add('skills', EntityType::class, [
                 'label' => 'Required skills',

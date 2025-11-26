@@ -210,5 +210,6 @@ return array(
     'reaction.budget-too-low-description' => 'Posted budget is below what traders usually accept.',
     'reaction.need-more-info' => 'Need more info',
     'reaction.needs-more-info-description' => 'Trader needs more details before they can commit or quote.',
-    'company-details' => 'company details'
+    'company-details' => 'company details',
+    'company-number' => 'Company number',
 );
