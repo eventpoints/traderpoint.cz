@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraint;
 class CompanyNumberValidator extends Constraint
 {
     public string $messageInvalidFormat = 'trader.company_number.invalid_format';
+
     public string $messageInvalidChecksum = 'trader.company_number.invalid_checksum';
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Validator\Constraint;
@@ -25,7 +26,7 @@ final class CompanyNumberConstraintValidator extends ConstraintValidator
             return;
         }
 
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             throw new UnexpectedValueException($value, 'string');
         }
 
@@ -42,7 +43,7 @@ final class CompanyNumberConstraintValidator extends ConstraintValidator
         }
 
         // If not CZ/CZE, we don't validate here (could extend later for other countries)
-        if (!\in_array($country, ['CZ', 'CZE'], true)) {
+        if (! \in_array($country, ['CZ', 'CZE'], true)) {
             return;
         }
 
@@ -50,7 +51,7 @@ final class CompanyNumberConstraintValidator extends ConstraintValidator
         $raw = preg_replace('/\s+/', '', $value);
 
         // Czech IČO: exactly 8 digits
-        if (!preg_match('/^\d{8}$/', $raw)) {
+        if (! preg_match('/^\d{8}$/', (string) $raw)) {
             $this->context
                 ->buildViolation($constraint->messageInvalidFormat)
                 ->addViolation();
@@ -58,16 +59,16 @@ final class CompanyNumberConstraintValidator extends ConstraintValidator
             return;
         }
 
-        if (!self::isValidCzechIco($raw)) {
+        if (! $this->isValidCzechIco($raw)) {
             $this->context
                 ->buildViolation($constraint->messageInvalidChecksum)
                 ->addViolation();
         }
     }
 
-    private static function isValidCzechIco(string $ico): bool
+    private function isValidCzechIco(string $ico): bool
     {
-        if (!preg_match('/^\d{8}$/', $ico)) {
+        if (! preg_match('/^\d{8}$/', $ico)) {
             return false;
         }
 

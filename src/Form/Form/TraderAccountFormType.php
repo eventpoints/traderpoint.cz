@@ -65,7 +65,9 @@ final class TraderAccountFormType extends AbstractType
             ->add('companyNumber', TextType::class, [
                 'label' => $this->translator->trans('company-number'),
                 'required' => false,
-                'row_attr' => ['class' => 'form-floating'],
+                'row_attr' => [
+                    'class' => 'form-floating',
+                ],
             ])
             ->add('skills', EntityType::class, [
                 'label' => 'Required skills',

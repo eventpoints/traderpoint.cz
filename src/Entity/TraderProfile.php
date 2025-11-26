@@ -12,7 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Jsor\Doctrine\PostGIS\Types\PostGISType;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\Uuid;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: TraderProfileRepository::class)]
 #[ORM\Index(
@@ -305,6 +304,4 @@ class TraderProfile
     {
         $this->country = $country;
     }
-
-
 }
