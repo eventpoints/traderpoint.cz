@@ -39,7 +39,7 @@ final readonly class TraderSubscriptionListener
         }
 
         $request = $event->getRequest();
-        $route   = (string) $request->attributes->get('_route');
+        $route = (string) $request->attributes->get('_route');
 
         if ($route === '') {
             dump('empty route');
@@ -52,7 +52,7 @@ final readonly class TraderSubscriptionListener
             'stripe_webhook',
             'app_login',
             'app_logout',
-            'trader_subscription_process_payment'
+            'trader_subscription_process_payment',
         ];
 
         if (in_array($route, $whitelistedRoutes, true)) {
@@ -61,7 +61,7 @@ final readonly class TraderSubscriptionListener
         }
 
         $user = $this->security->getUser();
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             dump('no user');
             return;
         }
@@ -72,7 +72,7 @@ final readonly class TraderSubscriptionListener
         }
 
         $stripeProfile = $user->getStripeProfile();
-        if (!$stripeProfile instanceof StripeProfile) {
+        if (! $stripeProfile instanceof StripeProfile) {
             $this->standardPlanSubscriptionService->startStandardPlanTrial($user);
 
             $stripeProfile = $user->getStripeProfile();

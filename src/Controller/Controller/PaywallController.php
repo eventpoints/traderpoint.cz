@@ -16,9 +16,9 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class PaywallController extends AbstractController
 {
     public function __construct(
-        private StandardPlanSubscriptionService $standardPlanSubscriptionService,
+        private readonly StandardPlanSubscriptionService $standardPlanSubscriptionService,
         #[Autowire('%env(STRIPE_PUBLIC_KEY)%')]
-        private string                          $stripePublicKey,
+        private readonly string $stripePublicKey,
     )
     {
     }
@@ -26,7 +26,7 @@ class PaywallController extends AbstractController
     #[Route('/trader/paywall', name: 'trader_paywall', methods: ['GET'])]
     public function paywall(Request $request, #[CurrentUser] ?User $user): Response
     {
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             return $this->redirectToRoute('app_login');
         }
 
@@ -55,7 +55,8 @@ class PaywallController extends AbstractController
     #[Route(path: '/trader/subscript/process/payment', name: 'trader_subscription_process_payment', methods: ['POST'])]
     public function subscriptionProcessPayment(
         Request $request,
-        #[CurrentUser] ?User $user,
+        #[CurrentUser]
+        ?User $user,
     ): Response {
         if (! $user instanceof User) {
             return $this->redirectToRoute('app_login');
@@ -91,7 +92,7 @@ class PaywallController extends AbstractController
 
             // change this route to wherever your trader “home” is
             return $this->redirectToRoute('trader_dashboard');
-        } catch (ApiErrorException $e) {
+        } catch (ApiErrorException) {
             // Stripe error – log + flash & send back to paywall
             $this->addFlash('danger', 'trader_paywall.error.generic');
 
