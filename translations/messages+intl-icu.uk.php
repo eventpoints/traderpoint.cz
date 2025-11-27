@@ -97,7 +97,8 @@ return array(
     'set-your-service-radius' => 'Додайте навички та зону обслуговування, щоб бачити відповідні замовлення.',
     'update-now' => 'оновити зараз',
     'trader-settings' => 'налаштування майстра',
-    'account-setting' => 'налаштування облікового запису',
+    'account-settings' => 'Налаштування облікового запису',
+    'notification-settings' => 'Налаштування сповіщень',
     'sms-code' => 'SMS-код',
     'timeline-preference' => 'бажаний термін',
     'estimated-budget' => 'Орієнтовний бюджет',
@@ -238,4 +239,22 @@ return array(
     'trader_paywall.stripe_notice' => 'Платежі карткою безпечно обробляються через Stripe. Ми не зберігаємо повні дані вашої картки.',
     'trader_paywall.error.name_required' => 'Будь ласка, вкажіть імʼя, як на картці.',
     'trader_paywall.error.generic' => 'Під час підтвердження картки сталася помилка. Будь ласка, спробуйте ще раз.',
+
+
+    'trader_paywall.success.subscription_activated' => 'Ваша підписка активована. Тепер у вас є доступ до всіх функцій для майстрів.',
+
+// Trader – new matching jobs
+    'trader.new_matching_job.email' => 'Замовлення, що відповідають моїм навичкам – e-mail',
+    'trader.new_matching_job.sms' => 'Замовлення, що відповідають моїм навичкам – SMS',
+
+// Client – quotes on my job
+    'client.new_quote.email' => 'Пропозиції щодо моїх замовлень – e-mail',
+    'client.new_quote.sms' => 'Пропозиції щодо моїх замовлень – SMS',
+
+// Shared – new messages
+    'job.new_message.email' => 'Нові повідомлення щодо замовлень – e-mail',
+
+// Marketing / news
+    'marketing.email' => 'Новини, поради та спеціальні пропозиції – e-mail',
+
 );

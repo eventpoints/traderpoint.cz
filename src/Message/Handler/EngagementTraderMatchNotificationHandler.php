@@ -4,14 +4,14 @@ namespace App\Message\Handler;
 
 use App\Entity\Engagement;
 use App\Entity\TraderProfile;
-use App\Message\Message\EngagementTraderMatchAlert;
+use App\Message\Message\EngagementTraderMatchNotification;
 use App\Service\EmailService\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Translation\LocaleSwitcher;
 
 #[AsMessageHandler]
-final readonly class EngagementTraderMatchAlertHandler
+final readonly class EngagementTraderMatchNotificationHandler
 {
     public function __construct(
         private EntityManagerInterface $em,
@@ -21,7 +21,7 @@ final readonly class EngagementTraderMatchAlertHandler
     {
     }
 
-    public function __invoke(EngagementTraderMatchAlert $engagementTraderMatchAlert): void
+    public function __invoke(EngagementTraderMatchNotification $engagementTraderMatchAlert): void
     {
         /** @var Engagement|null $engagement */
         $engagement = $this->em->getRepository(Engagement::class)->find($engagementTraderMatchAlert->getEngagementId());

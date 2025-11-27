@@ -96,7 +96,8 @@ return [
     'set-your-service-radius' => 'Добавьте навыки и область обслуживания, чтобы видеть подходящие заказы.',
     'update-now' => 'обновить сейчас',
     'trader-settings' => 'настройки мастера',
-    'account-setting' => 'настройки аккаунта',
+    'account-settings' => 'Настройки аккаунта',
+    'notification-settings' => 'Настройки уведомлений',
     'sms-code' => 'SMS-код',
     'timeline-preference' => 'предпочитаемый срок',
     'estimated-budget' => 'ориентировочный бюджет',
@@ -221,4 +222,22 @@ return [
     'trader_paywall.stripe_notice' => 'Платежи по карте безопасно обрабатываются через Stripe. Полные данные вашей карты мы не сохраняем.',
     'trader_paywall.error.name_required' => 'Пожалуйста, укажите имя, как на карте.',
     'trader_paywall.error.generic' => 'Произошла ошибка при подтверждении карты. Пожалуйста, попробуйте ещё раз.',
+
+
+    'trader_paywall.success.subscription_activated' => 'Ваша подписка активирована. Теперь у вас есть доступ ко всем функциям для мастеров.',
+
+// Trader – new matching jobs
+    'trader.new_matching_job.email' => 'Заказы, соответствующие моим навыкам – e-mail',
+    'trader.new_matching_job.sms' => 'Заказы, соответствующие моим навыкам – SMS',
+
+// Client – quotes on my job
+    'client.new_quote.email' => 'Предложения по моим заказам – e-mail',
+    'client.new_quote.sms' => 'Предложения по моим заказам – SMS',
+
+// Shared – new messages
+    'job.new_message.email' => 'Новые сообщения по заказам – e-mail',
+
+// Marketing / news
+    'marketing.email' => 'Новости, советы и специальные предложения – e-mail',
+
 ];

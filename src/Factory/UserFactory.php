@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\User;
+use App\Entity\UserNotificationSettings;
 use App\Enum\UserRoleEnum;
 use App\Service\AvatarService\AvatarService;
 

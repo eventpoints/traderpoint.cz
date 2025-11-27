@@ -51,6 +51,19 @@ class UserNotificationSettings
     #[ORM\Column(type: 'boolean')]
     private bool $marketingSms = false;
 
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+        $this->traderNewMatchingJobEmail = true;
+        $this->traderNewMatchingJobSms   = false;
+        $this->clientNewQuoteOnMyJobEmail = true;
+        $this->clientNewQuoteOnMyJobSms   = false;
+        $this->jobNewMessageEmail         = true;
+        $this->jobNewMessageSms           = false;
+        $this->marketingEmail             = false;
+        $this->marketingSms               = false;
+    }
+
     public function getId(): ?Uuid
     {
         return $this->id;

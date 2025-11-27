@@ -6,7 +6,7 @@ namespace App\Event\Listener;
 
 use App\Entity\Engagement;
 use App\Message\Message\EngagementPostedMessage;
-use App\Message\Message\EngagementTraderMatchAlert;
+use App\Message\Message\EngagementTraderMatchNotification;
 use App\Repository\EngagementRepository;
 use App\Repository\TraderProfileRepository;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -32,7 +32,7 @@ final readonly class EngagementPostedListener
         }
 
         foreach ($this->traderProfileRepository->iterateTradersForEngagement($engagement, false) as $profile) {
-            $this->bus->dispatch(new EngagementTraderMatchAlert(
+            $this->bus->dispatch(new EngagementTraderMatchNotification(
                 engagementId: $engagement->getId(),
                 traderProfileId: $profile->getId()
             ));

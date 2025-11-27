@@ -4,7 +4,7 @@ namespace App\Message\Message;
 
 use Symfony\Component\Uid\Uuid;
 
-final readonly class EngagementTraderMatchAlert
+final readonly class EngagementTraderMatchNotification
 {
     public function __construct(
         private Uuid $engagementId,

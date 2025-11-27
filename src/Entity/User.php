@@ -217,7 +217,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addReview(Review $review): static
     {
-        if (! $this->reviews->contains($review)) {
+        if (!$this->reviews->contains($review)) {
             $this->reviews->add($review);
             $review->setOwner($this);
         }
@@ -244,7 +244,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addEngagement(Engagement $engagement): static
     {
-        if (! $this->engagements->contains($engagement)) {
+        if (!$this->engagements->contains($engagement)) {
             $this->engagements->add($engagement);
             $engagement->setOwner($this);
         }
@@ -340,7 +340,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addConversationParticipate(ConversationParticipant $conversationParticipate): static
     {
-        if (! $this->conversationParticipates->contains($conversationParticipate)) {
+        if (!$this->conversationParticipates->contains($conversationParticipate)) {
             $this->conversationParticipates->add($conversationParticipate);
             $conversationParticipate->setOwner($this);
         }
@@ -419,7 +419,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     public function addLanguage(string $lang): self
     {
         $lang = strtolower(str_replace('-', '_', trim($lang)));
-        if (! in_array($lang, $this->languages, true)) {
+        if (!in_array($lang, $this->languages, true)) {
             $this->languages[] = $lang;
         }
         return $this;
@@ -435,7 +435,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addExternalIdentity(ExternalIdentity $idn): self
     {
-        if (! $this->externalIdentities->contains($idn)) {
+        if (!$this->externalIdentities->contains($idn)) {
             $this->externalIdentities->add($idn);
             $idn->setUser($this);
         }
@@ -478,7 +478,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addReaction(EngagementReaction $reaction): self
     {
-        if (! $this->reactions->contains($reaction)) {
+        if (!$this->reactions->contains($reaction)) {
             $this->reactions->add($reaction);
             $reaction->setUser($this);
         }
@@ -491,18 +491,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         return $this;
     }
 
-    public function getNotificationSettings(): UserNotificationSettings
+    public function getNotificationSettings(): null|UserNotificationSettings
     {
-        if (! $this->notificationSettings instanceof UserNotificationSettings) {
-            $settings = new UserNotificationSettings();
-            $settings->setUser($this);
-            $this->notificationSettings = $settings;
-        }
-
         return $this->notificationSettings;
     }
 
-    public function setNotificationSettings(?UserNotificationSettings $notificationSettings): void
+    public function setNotificationSettings(null|UserNotificationSettings $notificationSettings): void
     {
         $this->notificationSettings = $notificationSettings;
     }

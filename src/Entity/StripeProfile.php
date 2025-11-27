@@ -32,7 +32,7 @@ class StripeProfile
     private ?\DateTimeImmutable $trialEndsAt = null;
 
     public function __construct(
-        #[ORM\OneToOne(inversedBy: 'billingProfile')]
+        #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'stripeProfile')]
         #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
         private User $user
     )

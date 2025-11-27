@@ -96,7 +96,8 @@ return [
     'set-your-service-radius' => 'Přidejte své dovednosti a oblast působnosti, abyste viděli odpovídající zakázky.',
     'update-now' => 'aktualizovat nyní',
     'trader-settings' => 'nastavení řemeslníka',
-    'account-setting' => 'nastavení účtu',
+    'account-settings'      => 'Nastavení účtu',
+    'notification-settings' => 'Nastavení oznámení',
     'sms-code' => 'SMS kód',
     'timeline-preference' => 'preferovaný termín',
     'estimated-budget' => 'odhadovaný rozpočet',
@@ -219,4 +220,18 @@ return [
     'trader_paywall.stripe_notice' => 'Platby kartou zpracováváme bezpečně přes Stripe. Úplné údaje o vaší kartě neukládáme.',
     'trader_paywall.error.name_required' => 'Zadejte prosím jméno uvedené na kartě.',
     'trader_paywall.error.generic' => 'Při ověření vaší karty došlo k problému. Zkuste to prosím znovu.',
+    'trader_paywall.success.subscription_activated' => 'Vaše předplatné je nyní aktivní. Nyní máte přístup ke všem funkcím pro obchodníky.',
+
+    'trader.new_matching_job.email' => 'Zakázky odpovídající mým dovednostem – e-mail',
+    'trader.new_matching_job.sms'   => 'Zakázky odpovídající mým dovednostem – SMS',
+
+// Client – quotes on my job
+    'client.new_quote.email' => 'Nabídky na moje zakázky – e-mail',
+    'client.new_quote.sms'   => 'Nabídky na moje zakázky – SMS',
+
+// Shared – new messages
+    'job.new_message.email' => 'Nové zprávy u zakázek – e-mail',
+
+// Marketing / news
+    'marketing.email' => 'Novinky, tipy a speciální nabídky – e-mail',
 ];

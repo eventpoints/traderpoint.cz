@@ -41,21 +41,23 @@ class TraderProfileRepository extends ServiceEntityRepository
         }
     }
 
+
     /**
-     * @return Generator<TraderProfile>
+     * @return \Generator<TraderProfile>
      */
-    public function iterateTradersForEngagement(Engagement $engagement, bool $requireAllSkills = false): Generator
+    public function iterateTradersForEngagement(Engagement $engagement, bool $requireAllSkills = false): \Generator
     {
-        $em = $this->getEntityManager();
+        $em  = $this->getEntityManager();
         $eid = $engagement->getId()->toRfc4122();
 
+        // ANY matching skill
         $sqlAny = <<<SQL
 WITH job AS (
   SELECT e.id,
-         COALESCE(e.point::geography,
-                  ST_SetSRID(ST_MakePoint(e.longitude, e.latitude), 4326)::geography) AS geo
+         e.point::geography AS geo
   FROM engagement e
   WHERE e.id = :engagement_id
+    AND e.point IS NOT NULL
 )
 SELECT tp.*
 FROM trader_profile tp
@@ -65,27 +67,33 @@ JOIN engagement_skill es
   ON es.engagement_id = :engagement_id
  AND es.skill_id = tps.skill_id
 CROSS JOIN job j
-WHERE tp.latitude IS NOT NULL
-  AND tp.longitude IS NOT NULL
+JOIN "user" u
+  ON u.id = tp.owner_id
+JOIN user_notification_settings uns
+  ON uns.user_id = u.id
+ AND uns.trader_new_matching_job_email = TRUE
+WHERE tp.point IS NOT NULL
   AND tp.service_radius IS NOT NULL
   AND ST_DWithin(
-        ST_SetSRID(ST_MakePoint(tp.longitude, tp.latitude), 4326)::geography,
+        tp.point::geography,
         j.geo,
         (tp.service_radius * 1000)::int
       )
 GROUP BY tp.id, j.geo
 ORDER BY ST_Distance(
-         ST_SetSRID(ST_MakePoint(tp.longitude, tp.latitude), 4326)::geography,
+         tp.point::geography,
          j.geo
        ) ASC
 SQL;
 
+        // ALL skills must match
         $sqlAll = <<<SQL
 WITH job AS (
   SELECT e.id,
-         COALESCE(e.point::geography,
-                  ST_SetSRID(ST_MakePoint(e.longitude, e.latitude), 4326)::geography) AS geo
-  FROM engagement e WHERE e.id = :engagement_id
+         e.point::geography AS geo
+  FROM engagement e
+  WHERE e.id = :engagement_id
+    AND e.point IS NOT NULL
 )
 SELECT tp.*
 FROM trader_profile tp
@@ -95,11 +103,15 @@ JOIN trader_profile_skill tps
   ON tps.trader_profile_id = tp.id
  AND tps.skill_id = es.skill_id
 CROSS JOIN job j
-WHERE tp.latitude IS NOT NULL
-  AND tp.longitude IS NOT NULL
+JOIN "user" u
+  ON u.id = tp.owner_id
+JOIN user_notification_settings uns
+  ON uns.user_id = u.id
+ AND uns.trader_new_matching_job_email = TRUE
+WHERE tp.point IS NOT NULL
   AND tp.service_radius IS NOT NULL
   AND ST_DWithin(
-        ST_SetSRID(ST_MakePoint(tp.longitude, tp.latitude), 4326)::geography,
+        tp.point::geography,
         j.geo,
         (tp.service_radius * 1000)::int
       )
@@ -108,7 +120,7 @@ HAVING COUNT(DISTINCT es.skill_id) = (
   SELECT COUNT(*) FROM engagement_skill es2 WHERE es2.engagement_id = :engagement_id
 )
 ORDER BY ST_Distance(
-         ST_SetSRID(ST_MakePoint(tp.longitude, tp.latitude), 4326)::geography,
+         tp.point::geography,
          j.geo
        ) ASC
 SQL;
@@ -122,9 +134,9 @@ SQL;
             ->setParameter('engagement_id', $eid);
 
         foreach ($q->toIterable() as $profile) {
-            yield $profile; // $profile->getUser() → email / locale
-            // Optionally clear per chunk if iterating thousands:
-            // static $i=0; if ((++$i % 200) === 0) { $em->clear(TraderProfile::class); }
+            /** @var TraderProfile $profile */
+            yield $profile;
         }
     }
+
 }

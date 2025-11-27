@@ -5,6 +5,7 @@ namespace App\Controller\Controller;
 use App\Entity\User;
 use App\Repository\EngagementRepository;
 use App\Repository\QuoteRepository;
+use App\Repository\TraderProfileRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ class TraderController extends AbstractController
         private readonly EngagementRepository $engagementRepository,
         private readonly PaginatorInterface $paginator,
         private readonly QuoteRepository $quoteRepository,
+        private readonly TraderProfileRepository $traderProfileRepository,
     )
     {
     }
