@@ -33,8 +33,6 @@ final readonly class TraderSubscriptionListener
     {
 
         if (! $event->isMainRequest()) {
-
-            dump('not main request');
             return;
         }
 
@@ -42,13 +40,14 @@ final readonly class TraderSubscriptionListener
         $route = (string) $request->attributes->get('_route');
 
         if ($route === '') {
-            dump('empty route');
-
             return;
         }
 
         $whitelistedRoutes = [
             'trader_paywall',
+            'landing',
+            'trader_register',
+            'app_register',
             'stripe_webhook',
             'app_login',
             'app_logout',
@@ -56,18 +55,15 @@ final readonly class TraderSubscriptionListener
         ];
 
         if (in_array($route, $whitelistedRoutes, true)) {
-            dump('whitelisted route');
             return;
         }
 
         $user = $this->security->getUser();
         if (! $user instanceof User) {
-            dump('no user');
             return;
         }
 
         if (! $user->isTrader()) {
-            dump('not trader');
             return;
         }
 
