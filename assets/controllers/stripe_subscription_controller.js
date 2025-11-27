@@ -17,8 +17,8 @@ export default class extends Controller {
     ];
 
     async connect() {
-        if (!this.publicKeyValue || !this.privateKeyValue) {
-            console.error('Stripe public key or client secret missing on paywall.');
+        if (!this.publicKeyValue) {
+            console.error('Stripe public key missing on paywall.');
             return;
         }
 
@@ -60,7 +60,7 @@ export default class extends Controller {
         this.cardErrorsTarget.textContent = '';
 
         const { setupIntent, error } = await this.stripe.confirmCardSetup(
-            this.privateKeyValue,
+            this.privateKeyValue, // now correctly mapped to setup_intent_client_secret
             {
                 payment_method: {
                     card: this.card,
@@ -89,4 +89,5 @@ export default class extends Controller {
         // Submit the underlying form
         this.element.submit();
     }
+
 }

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Event\Listener;
 
+use App\Entity\StripeProfile;
 use App\Entity\User;
 use App\Security\Accessor\TraderSubscriptionAccessor;
+use App\Service\StandardPlanSubscriptionService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,55 +26,62 @@ final readonly class TraderSubscriptionListener
         private Security $security,
         private TraderSubscriptionAccessor $traderSubscriptionAccessor,
         private UrlGeneratorInterface $urlGenerator,
+        private StandardPlanSubscriptionService $standardPlanSubscriptionService,
     ) {}
 
     public function onKernelRequest(RequestEvent $event): void
     {
+
         if (! $event->isMainRequest()) {
+
+            dump('not main request');
             return;
         }
 
         $request = $event->getRequest();
-        $route = (string) $request->attributes->get('_route');
+        $route   = (string) $request->attributes->get('_route');
 
-        // If no route (e.g. static assets handled elsewhere), bail out
         if ($route === '') {
+            dump('empty route');
+
             return;
         }
 
-        // Routes that must remain accessible even when blocked,
-        // otherwise you get redirect loops or break webhooks.
         $whitelistedRoutes = [
             'trader_paywall',
             'stripe_webhook',
             'app_login',
             'app_logout',
-            // add register/forgot-password/etc if needed
+            'trader_subscription_process_payment'
         ];
 
         if (in_array($route, $whitelistedRoutes, true)) {
+            dump('whitelisted route');
             return;
         }
 
-        // Only care about logged-in users
         $user = $this->security->getUser();
-        if (! $user instanceof User) {
+        if (!$user instanceof User) {
+            dump('no user');
             return;
         }
 
-        // Optional: if you really want to block *only* traders, keep this.
-        // If you literally want "any logged-in user must have a valid subscription",
-        // then remove this block.
         if (! $user->isTrader()) {
+            dump('not trader');
             return;
         }
 
-        // Subscription / trial check
-        if ($this->traderSubscriptionAccessor->canAccess($user)) {
-            return; // OK, let them through
+        $stripeProfile = $user->getStripeProfile();
+        if (!$stripeProfile instanceof StripeProfile) {
+            $this->standardPlanSubscriptionService->startStandardPlanTrial($user);
+
+            $stripeProfile = $user->getStripeProfile();
         }
 
-        // Denied → redirect to paywall
+        if ($this->traderSubscriptionAccessor->canAccess($user)) {
+            return;
+        }
+
         $reason = $this->traderSubscriptionAccessor->getDenialReason($user);
 
         $url = $this->urlGenerator->generate('trader_paywall', [
@@ -82,4 +91,3 @@ final readonly class TraderSubscriptionListener
         $event->setResponse(new RedirectResponse($url));
     }
 }
-

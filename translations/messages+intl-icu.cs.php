@@ -206,4 +206,16 @@ return [
     'reaction.budget-too-low-description' => 'Uvedený rozpočet je nižší, než řemeslníci obvykle akceptují.',
     'reaction.need-more-info' => 'Potřebuji více informací',
     'reaction.needs-more-info-description' => 'Řemeslník potřebuje více detailů, aby se mohl zavázat nebo poslat nabídku.',
+    'company-details' => 'údaje o společnosti',
+    'company-number' => 'IČO',
+
+    'trader_paywall.plan_name' => 'Standardní plán',
+    'trader_paywall.per_month' => 'měsíčně',
+    'trader_paywall.cardholder_name' => 'Jméno na kartě',
+    'trader_paywall.card_details' => 'Údaje o kartě',
+    'trader_paywall.cta_subscribe' => 'Aktivovat předplatné',
+    'trader_paywall.processing' => 'Zpracováváme údaje o vaší kartě, vyčkejte prosím…',
+    'trader_paywall.stripe_notice' => 'Platby kartou zpracováváme bezpečně přes Stripe. Úplné údaje o vaší kartě neukládáme.',
+    'trader_paywall.error.name_required' => 'Zadejte prosím jméno uvedené na kartě.',
+    'trader_paywall.error.generic' => 'Při ověření vaší karty došlo k problému. Zkuste to prosím znovu.',
 ];

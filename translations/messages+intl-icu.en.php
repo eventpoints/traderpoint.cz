@@ -212,4 +212,17 @@ return array(
     'reaction.needs-more-info-description' => 'Trader needs more details before they can commit or quote.',
     'company-details' => 'company details',
     'company-number' => 'Company number',
+
+
+    'trader_paywall.plan_name' => 'Standard Plan',
+    'trader_paywall.per_month' => 'per month',
+    'trader_paywall.cardholder_name' => 'Name on card',
+    'trader_paywall.card_details' => 'Card details',
+    'trader_paywall.cta_subscribe' => 'Start subscription',
+    'trader_paywall.processing' => 'Processing your card details, please wait…',
+    'trader_paywall.stripe_notice' => 'Card payments are processed securely by Stripe. We do not store your full card details.',
+    'trader_paywall.error.name_required' => 'Please enter the name on the card.',
+    'trader_paywall.error.generic' => 'There was a problem confirming your card. Please try again.',
+    'trader_paywall.success.subscription_activated' => 'Your subscription is now active. You can now access all trader features.',
+
 );

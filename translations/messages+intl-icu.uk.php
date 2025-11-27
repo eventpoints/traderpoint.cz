@@ -225,5 +225,16 @@ return array(
     'reaction.budget-too-low-description' => 'Вказаний бюджет нижчий, ніж зазвичай приймають майстри.',
     'reaction.need-more-info' => 'Потрібно більше інформації',
     'reaction.needs-more-info-description' => 'Майстру потрібно більше деталей, щоб підтвердити участь або надіслати пропозицію.',
+    'company-details' => 'реквізити компанії',
+    'company-number' => 'номер компанії',
 
+    'trader_paywall.plan_name' => 'Стандартний план',
+    'trader_paywall.per_month' => 'на місяць',
+    'trader_paywall.cardholder_name' => 'Імʼя на картці',
+    'trader_paywall.card_details' => 'Дані картки',
+    'trader_paywall.cta_subscribe' => 'Активувати підписку',
+    'trader_paywall.processing' => 'Опрацьовуємо дані вашої картки, зачекайте, будь ласка…',
+    'trader_paywall.stripe_notice' => 'Платежі карткою безпечно обробляються через Stripe. Ми не зберігаємо повні дані вашої картки.',
+    'trader_paywall.error.name_required' => 'Будь ласка, вкажіть імʼя, як на картці.',
+    'trader_paywall.error.generic' => 'Під час підтвердження картки сталася помилка. Будь ласка, спробуйте ще раз.',
 );

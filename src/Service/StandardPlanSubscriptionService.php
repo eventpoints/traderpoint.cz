@@ -11,6 +11,7 @@ use Psr\Log\LoggerInterface;
 use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 use Stripe\Subscription;
+use Stripe\SetupIntent;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -25,8 +26,7 @@ final readonly class StandardPlanSubscriptionService
         #[Autowire('%env(int:TRADERPOINT_TRIAL_DAYS)%')]
         private int $trialDays,
         private RequestStack $requestStack,
-    )
-    {
+    ) {
     }
 
     public function startStandardPlanTrial(User $user): Subscription
@@ -35,8 +35,8 @@ final readonly class StandardPlanSubscriptionService
 
         if ($this->hasActiveOrTrialStandardSubscription($billing)) {
             $this->logger->info('User already has active/trial Standard Plan', [
-                'userId' => $user->getId(),
-                'subscriptionId' => $billing->getStripeSubscriptionId(),
+                'userId'        => $user->getId(),
+                'subscriptionId'=> $billing->getStripeSubscriptionId(),
             ]);
 
             return $this->stripe->subscriptions->retrieve(
@@ -51,10 +51,12 @@ final readonly class StandardPlanSubscriptionService
             if (! $customerId) {
                 $customer = $this->stripe->customers->create([
                     'email' => $user->getEmail(),
-                    'name' => in_array($user->getFullName(), ['', '0'], true) ? $user->getFullName() : $user->getUserIdentifier(),
+                    'name'  => in_array($user->getFullName(), ['', '0'], true)
+                        ? $user->getUserIdentifier()
+                        : $user->getFullName(),
                     'metadata' => [
                         'user_id' => (string) $user->getId(),
-                        'locale' => $this->requestStack->getCurrentRequest()->getLocale(),
+                        'locale'  => $this->requestStack->getCurrentRequest()?->getLocale(),
                     ],
                 ]);
 
@@ -74,7 +76,7 @@ final readonly class StandardPlanSubscriptionService
                     ],
                 ],
                 'metadata' => [
-                    'plan' => 'standard',
+                    'plan'    => 'standard',
                     'user_id' => (string) $user->getId(),
                 ],
             ]);
@@ -97,11 +99,50 @@ final readonly class StandardPlanSubscriptionService
         } catch (ApiErrorException $e) {
             $this->logger->error('Stripe error while starting Standard Plan trial', [
                 'userId' => $user->getId(),
-                'error' => $e->getMessage(),
+                'error'  => $e->getMessage(),
             ]);
 
             throw $e;
         }
+    }
+
+    /**
+     * NEW – used by the paywall GET to prepare Stripe Elements.
+     */
+    public function createSetupIntentFor(User $user): SetupIntent
+    {
+        $profile = $this->getOrCreateStripeProfile($user);
+
+        // Ensure Stripe Customer exists
+        $customerId = $profile->getStripeCustomerId();
+        if (! $customerId) {
+            $customer = $this->stripe->customers->create([
+                'email' => $user->getEmail(),
+                'name'  => $user->getFullName() ?: $user->getUserIdentifier(),
+                'metadata' => [
+                    'user_id' => (string) $user->getId(),
+                ],
+            ]);
+
+            $customerId = $customer->id;
+            $profile->setStripeCustomerId($customerId);
+
+            // persist the customer id update
+            $this->em->persist($profile);
+            $this->em->flush();
+        }
+
+        // This is where we pass context to Stripe as metadata (purely for your own bookkeeping)
+        return $this->stripe->setupIntents->create([
+            'customer' => $customerId,
+            'usage'    => 'off_session',
+            'metadata' => [
+                'user_id'                => (string) $user->getId(),
+                'stripe_profile_id'      => (string) $profile->getId(),
+                'current_plan'           => $profile->getCurrentPlan() ?? 'standard',
+                'current_subscription_id'=> $profile->getStripeSubscriptionId() ?? '',
+            ],
+        ]);
     }
 
     private function getOrCreateStripeProfile(User $user): StripeProfile
@@ -136,10 +177,96 @@ final readonly class StandardPlanSubscriptionService
         } catch (ApiErrorException $e) {
             $this->logger->warning('Unable to verify existing subscription', [
                 'subscriptionId' => $subscriptionId,
-                'error' => $e->getMessage(),
+                'error'          => $e->getMessage(),
             ]);
 
             return false;
         }
     }
+
+    public function activateStandardPlanFromPaymentMethod(User $user, string $paymentMethodId): Subscription
+    {
+        $billing = $this->getOrCreateStripeProfile($user);
+
+        // Ensure Stripe Customer exists (same pattern as startStandardPlanTrial)
+        $customerId = $billing->getStripeCustomerId();
+        if (! $customerId) {
+            $customer = $this->stripe->customers->create([
+                'email' => $user->getEmail(),
+                'name'  => in_array($user->getFullName(), ['', '0'], true)
+                    ? $user->getUserIdentifier()
+                    : $user->getFullName(),
+                'metadata' => [
+                    'user_id' => (string) $user->getId(),
+                    'locale'  => $this->requestStack->getCurrentRequest()?->getLocale(),
+                ],
+            ]);
+
+            $customerId = $customer->id;
+            $billing->setStripeCustomerId($customerId);
+        }
+
+        try {
+            // 1) Attach the payment method to this customer
+            $this->stripe->paymentMethods->attach($paymentMethodId, [
+                'customer' => $customerId,
+            ]);
+
+            // 2) Make it the default payment method for invoices
+            $this->stripe->customers->update($customerId, [
+                'invoice_settings' => [
+                    'default_payment_method' => $paymentMethodId,
+                ],
+            ]);
+
+            // 3) Create or reuse subscription
+            $subscriptionId = $billing->getStripeSubscriptionId();
+            $subscription   = null;
+
+            if ($subscriptionId) {
+                $subscription = $this->stripe->subscriptions->retrieve($subscriptionId, []);
+            }
+
+            if (! $subscription || in_array($subscription->status, ['canceled', 'incomplete_expired'], true)) {
+                // New subscription, no trial – trial already used or expired
+                $subscription = $this->stripe->subscriptions->create([
+                    'customer' => $customerId,
+                    'items' => [[
+                        'price' => $this->standardPlanPriceId,
+                    ]],
+                    'metadata' => [
+                        'plan'    => 'standard',
+                        'user_id' => (string) $user->getId(),
+                    ],
+                ]);
+            } else {
+                // There is an existing subscription (trialing/incomplete etc.)
+                // Just ensuring default payment method is enough; no need to recreate the sub.
+            }
+
+            $trialEndsAt = null;
+            if ($subscription->trial_end) {
+                $trialEndsAt = (new \DateTimeImmutable())->setTimestamp($subscription->trial_end);
+            }
+
+            $billing
+                ->setStripeSubscriptionId($subscription->id)
+                ->setCurrentPlan('standard')
+                ->setSubscriptionStatus($subscription->status)
+                ->setTrialEndsAt($trialEndsAt);
+
+            $this->em->persist($billing);
+            $this->em->flush();
+
+            return $subscription;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Stripe error while activating Standard Plan from payment method', [
+                'userId' => $user->getId(),
+                'error'  => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+    }
+
 }

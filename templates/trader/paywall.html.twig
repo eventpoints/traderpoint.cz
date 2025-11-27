@@ -11,14 +11,18 @@
                         attr: {
                             id: 'subscription-form',
                             'data-controller': 'stripe-subscription',
+
                             'data-stripe-subscription-public-key-value': stripe_public_key,
-                            'data-stripe-subscription-private-key-value': stripe_private_key,
+                            'data-stripe-subscription-private-key-value': setup_intent_client_secret,
+
                             'data-email': user.email,
-                            'data-name-required-message': 'trader_paywall.error.name_required'|trans|default('Please enter the name on the card.'),
-                            'data-generic-error-message': 'trader_paywall.error.generic'|trans|default('There was a problem confirming your card. Please try again.'),
+                            'data-name-required-message': 'trader_paywall.error.name_required'|trans,
+                            'data-generic-error-message': 'trader_paywall.error.generic'|trans,
+
                             'data-action': 'submit->stripe-subscription#submit',
                         }
                     }) }}
+
 
                     <div class="card-header text-center bg-primary text-white">
                         <div class="fw-bold text-uppercase small">
@@ -31,7 +35,7 @@
 
                         <div class="text-center mb-3">
                             <div class="display-5 fw-bold">
-                                499&nbsp;CZK
+                                {{ 499|format_currency('CZK', locale: app.locale) }}
                             </div>
                             <div class="text-muted">
                                 {{ 'trader_paywall.per_month'|trans }}

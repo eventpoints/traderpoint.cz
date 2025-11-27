@@ -208,4 +208,16 @@ return [
     'reaction.budget-too-low-description' => 'Указанный бюджет ниже того, что обычно принимают мастера.',
     'reaction.need-more-info' => 'Нужно больше информации',
     'reaction.needs-more-info-description' => 'Мастеру нужно больше деталей, чтобы подтвердить участие или дать предложение.',
+    'company-details' => 'данные компании',
+    'company-number' => 'Номер компании',
+
+    'trader_paywall.plan_name' => 'Стандартный тариф',
+    'trader_paywall.per_month' => 'в месяц',
+    'trader_paywall.cardholder_name' => 'Имя на карте',
+    'trader_paywall.card_details' => 'Данные карты',
+    'trader_paywall.cta_subscribe' => 'Активировать подписку',
+    'trader_paywall.processing' => 'Обрабатываем данные вашей карты, пожалуйста подождите…',
+    'trader_paywall.stripe_notice' => 'Платежи по карте безопасно обрабатываются через Stripe. Полные данные вашей карты мы не сохраняем.',
+    'trader_paywall.error.name_required' => 'Пожалуйста, укажите имя, как на карте.',
+    'trader_paywall.error.generic' => 'Произошла ошибка при подтверждении карты. Пожалуйста, попробуйте ещё раз.',
 ];

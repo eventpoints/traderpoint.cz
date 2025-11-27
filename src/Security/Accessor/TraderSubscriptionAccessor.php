@@ -50,6 +50,7 @@ final class TraderSubscriptionAccessor implements AccessorInterface
     {
         $profile = $user->getStripeProfile();
         if (! $profile instanceof StripeProfile) {
+
             return 'no_subscription_started';
         }
 
