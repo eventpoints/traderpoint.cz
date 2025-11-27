@@ -49,6 +49,7 @@ final class TraderAccountFormType extends AbstractType
 
         $builder
             ->add('title', TextType::class, [
+                'required' => true,
                 'label' => $this->translator->trans('business-name'),
                 'row_attr' => [
                     'class' => 'form-floating',
@@ -89,6 +90,7 @@ final class TraderAccountFormType extends AbstractType
                 ],
             ])
             ->add('location', MapLocationType::class, [
+                'required' => true,
                 'mapped' => false,
                 'data' => $mapLocationDto,
                 'map' => $options['map'],

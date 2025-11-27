@@ -13,7 +13,11 @@
                     {{ form_start(engagementForm,   attr: {
                         'data-turbo': 'false'
                     }) }}
-                    <div class="card-header fs-4 fw-bold">{{ 'advertise-job'|trans }}</div>
+                    <div class="card-header">
+                        <div class="fs-4 fw-bold">{{ 'advertise-job'|trans }}</div>
+                        <div>{{ 'advertise-job-sub-heading'|trans }}</div>
+                        <hr/>
+                    </div>
                     {{ form_row(engagementForm.location) }}
                     <div class="card-body vstack gap-3">
                         {{ form_row(engagementForm.title) }}

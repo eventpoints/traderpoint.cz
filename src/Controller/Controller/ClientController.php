@@ -3,10 +3,7 @@
 namespace App\Controller\Controller;
 
 use App\Entity\User;
-use App\Form\Form\AccountFormType;
 use App\Repository\EngagementRepository;
-use App\Repository\UserRepository;
-use App\Service\ImageOptimizer;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,10 +14,8 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class ClientController extends AbstractController
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaginatorInterface $paginator,
-        private readonly ImageOptimizer $imageOptimizer
+        private readonly PaginatorInterface $paginator
     )
     {
     }
@@ -46,32 +41,6 @@ class ClientController extends AbstractController
     {
         return $this->render('client/profile.html.twig', [
             'user' => $user,
-        ]);
-    }
-
-    #[Route(path: '/account', name: 'user_account', methods: [Request::METHOD_GET, Request::METHOD_POST])]
-    public function account(Request $request, #[CurrentUser] User $currentUser): Response
-    {
-        $accountForm = $this->createForm(AccountFormType::class, $currentUser);
-
-        $accountForm->handleRequest($request);
-        if ($accountForm->isSubmitted() && $accountForm->isValid()) {
-
-            $avatarFile = $accountForm->get('avatar')->getData() ?? null;
-
-            if (! empty($avatarFile)) {
-                $optimisedFile = $this->imageOptimizer->getOptimizedAvatarFile($avatarFile);
-                $base64Image = $this->imageOptimizer->toBase64($optimisedFile);
-                $currentUser->setAvatar($base64Image);
-                $this->userRepository->save(entity: $currentUser, flush: true);
-            }
-
-            $this->userRepository->save(entity: $currentUser, flush: true);
-            return $this->redirectToRoute('user_account');
-        }
-
-        return $this->render('client/account.html.twig', [
-            'accountForm' => $accountForm,
         ]);
     }
 }

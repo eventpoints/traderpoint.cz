@@ -91,13 +91,8 @@
             {% endif %}
             <a class="list-group-item list-group-item-action {{ app.locale == 'user_conversations' ? 'active' }}"
                href="{{ path('user_conversations') }}">{{ 'messages'|trans|title }}</a>
-            {% if app.user.isTrader %}
-                <a class="list-group-item list-group-item-action {{ app.locale == 'trader_account' ? 'active' }}"
-                   href="{{ path('trader_account') }}">{{ 'account'|trans|title }}</a>
-            {% else %}
                 <a class="list-group-item list-group-item-action {{ app.locale == 'user_account' ? 'active' }}"
                    href="{{ path('user_account') }}">{{ 'account'|trans|title }}</a>
-            {% endif %}
             <a class="list-group-item text-danger list-group-item-action"
                href="{{ path('app_logout') }}">{{ 'logout'|trans|title }}</a>
         </div>

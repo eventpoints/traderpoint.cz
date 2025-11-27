@@ -1,12 +1,30 @@
+{# Renders the actual <input> and binds it to the form #}
 {% block switch_widget %}
+    <input
+            type="checkbox"
+            {{ block('widget_attributes') }}   {# name, id, required, etc. #}
+            class="form-check-input {{ attr.class|default('') }}"
+            role="switch"
+            {% if value is defined and value is not same as(false) %}value="{{ value }}"{% endif %}
+            {% if checked %}checked="checked"{% endif %}
+    />
 {% endblock %}
 
-
+{# Layout: label on the left, switch on the right #}
 {% block switch_row %}
-    <div style="background-color: var(--bs-body-bg);" class="ps-0 p-3 m-0 border rounded-3 form-switch form-switch-lg row justify-content-between align-items-center w-100">
-        <label class="text-muted small" for="switchCheckChecked" {{ block('widget_attributes') }}
-               value="{{ value is defined ? value : 1 }}">{{ form.vars.label|title }}</label>
-        <input class="form-check-input" type="checkbox" role="switch" id="switchCheckChecked"
-               {% if checked %}checked="checked"{% endif %}>
+    {% set label_text = form.vars.label %}
+    <div class="ps-0 p-3 m-0 border rounded-3 row justify-content-between align-items-center w-100"
+         style="background-color: var(--bs-body-bg);">
+        <div class="col">
+            {% if label_text is not same as(false) and label_text is not empty %}
+                <label class="text-muted small mb-0" for="{{ form.vars.id }}">
+                    {{ label_text|trans({}, translation_domain) }}
+                </label>
+            {% endif %}
+            {{ form_errors(form) }}
+        </div>
+        <div class="col-auto form-switch form-switch-lg">
+            {{ form_widget(form) }} {# calls switch_widget above #}
+        </div>
     </div>
 {% endblock %}

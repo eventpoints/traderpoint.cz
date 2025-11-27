@@ -125,6 +125,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[ORM\OneToOne(targetEntity: StripeProfile::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?StripeProfile $stripeProfile = null;
 
+    #[ORM\OneToOne(
+        targetEntity: UserNotificationSettings::class,
+        mappedBy: 'user',
+        cascade: ['persist', 'remove']
+    )]
+    private ?UserNotificationSettings $notificationSettings = null;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -482,6 +489,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     {
         $this->reactions->removeElement($reaction);
         return $this;
+    }
+
+    public function getNotificationSettings(): UserNotificationSettings
+    {
+        if (! $this->notificationSettings instanceof UserNotificationSettings) {
+            $settings = new UserNotificationSettings();
+            $settings->setUser($this);
+            $this->notificationSettings = $settings;
+        }
+
+        return $this->notificationSettings;
+    }
+
+    public function setNotificationSettings(?UserNotificationSettings $notificationSettings): void
+    {
+        $this->notificationSettings = $notificationSettings;
     }
 }
 

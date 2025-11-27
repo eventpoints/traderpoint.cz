@@ -67,6 +67,7 @@ return array(
     'landing-client-explainer-short' => 'Plumbers, electricians, builders & more — get a quote in minutes.',
     'join-client-tagline' => 'Free to join • Free to post job • No hidden fees',
     'advertise-job' => 'Post a job',
+    'advertise-job-sub-heading' => 'Describe the work once and get quotes – your job stays visible for 30 days.',
     'advertise-job-explainer' => 'Sign up & post your job for free — tell us what you need and when.',
     'receive-quotes' => 'Get quotes',
     'receive-quotes-explainer' => 'We will match you with Tradesmen who will provide you with an estimate',
@@ -225,4 +226,17 @@ return array(
     'trader_paywall.error.generic' => 'There was a problem confirming your card. Please try again.',
     'trader_paywall.success.subscription_activated' => 'Your subscription is now active. You can now access all trader features.',
 
+    // Trader – new matching jobs
+    'trader.new_matching_job.email' => 'Job matches my skills – email',
+    'trader.new_matching_job.sms'   => 'Job matches my skills – SMS',
+
+    // Client – quotes on my job
+    'client.new_quote.email' => 'Quotes on my jobs – email',
+    'client.new_quote.sms'   => 'Quotes on my jobs – SMS',
+
+    // Shared – new messages
+    'job.new_message.email' => 'New messages on jobs – email',
+
+    // Marketing / news
+    'marketing.email' => 'News, tips and special offers – email',
 );

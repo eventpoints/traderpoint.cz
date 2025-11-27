@@ -65,6 +65,7 @@ return [
     'landing-client-explainer-short' => 'Instalatéři, elektrikáři, stavitelé a další — nabídku získáte během několika minut.',
     'join-client-tagline' => 'Registrace zdarma • Zveřejnění nabídky práce zdarma • Žádné skryté poplatky',
     'advertise-job' => 'zadat zakázku',
+    'advertise-job-sub-heading' => 'Popište práci jednou a získejte cenové nabídky – vaše práce zůstane viditelná 30 dní.',
     'advertise-job-explainer' => 'Zaregistrujte se a zveřejněte svou nabídku práce zdarma – sdělte nám, co potřebujete a kdy.',
     'receive-quotes' => 'získejte nabídky',
     'receive-quotes-explainer' => 'Porovnejte a vyberte tu nejvhodnější.',
