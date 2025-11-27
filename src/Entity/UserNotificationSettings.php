@@ -17,10 +17,6 @@ class UserNotificationSettings
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
     private ?Uuid $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'notificationSettings', targetEntity: User::class)]
-    #[ORM\JoinColumn(unique: true, nullable: false)]
-    private User $user;
-
     // --- TRADER SIDE ---
     // When a client posts a new job that matches me
     #[ORM\Column(type: 'boolean')]
@@ -51,17 +47,12 @@ class UserNotificationSettings
     #[ORM\Column(type: 'boolean')]
     private bool $marketingSms = false;
 
-    public function __construct(User $user)
+    public function __construct(
+        #[ORM\OneToOne(inversedBy: 'notificationSettings', targetEntity: User::class)]
+        #[ORM\JoinColumn(unique: true, nullable: false)]
+        private User $user
+    )
     {
-        $this->user = $user;
-        $this->traderNewMatchingJobEmail = true;
-        $this->traderNewMatchingJobSms   = false;
-        $this->clientNewQuoteOnMyJobEmail = true;
-        $this->clientNewQuoteOnMyJobSms   = false;
-        $this->jobNewMessageEmail         = true;
-        $this->jobNewMessageSms           = false;
-        $this->marketingEmail             = false;
-        $this->marketingSms               = false;
     }
 
     public function getId(): ?Uuid

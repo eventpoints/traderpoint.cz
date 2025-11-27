@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Event\Listener;
@@ -6,7 +7,6 @@ namespace App\Event\Listener;
 use App\Entity\User;
 use App\Entity\UserNotificationSettings;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Events;
 
 #[AsEntityListener(
@@ -16,7 +16,7 @@ use Doctrine\ORM\Events;
 )]
 final class UserAccountSetupListener
 {
-    public function setupAccount(User $user, PrePersistEventArgs $event): void
+    public function setupAccount(User $user): void
     {
         $this->configureUserNotificationSettings($user);
     }
@@ -30,5 +30,4 @@ final class UserAccountSetupListener
         $settings = new UserNotificationSettings($user);
         $user->setNotificationSettings($settings);
     }
-
 }

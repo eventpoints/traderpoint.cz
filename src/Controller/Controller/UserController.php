@@ -2,14 +2,11 @@
 
 namespace App\Controller\Controller;
 
-use App\Entity\Engagement;
 use App\Entity\User;
 use App\Enum\FlashEnum;
-use App\Enum\UserRoleEnum;
 use App\Form\Form\AccountFormType;
 use App\Form\Form\TraderAccountFormType;
 use App\Form\Form\UserNotificationSettingsType;
-use App\Repository\EngagementRepository;
 use App\Repository\TraderProfileRepository;
 use App\Repository\UserRepository;
 use App\Service\ImageOptimizer;
@@ -30,7 +27,6 @@ class UserController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly TraderProfileRepository $traderProfileRepository,
         private readonly ImageOptimizer $imageOptimizer,
-        private readonly EngagementRepository $engagementRepository,
     )
     {
     }

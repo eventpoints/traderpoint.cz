@@ -31,8 +31,7 @@ final class BackfillNotificationSettingsCommand extends Command
             ->getResult();
 
         foreach ($users as $user) {
-            $settings = new UserNotificationSettings();
-            $settings->setUser($user);
+            $settings = new UserNotificationSettings(user: $user);
             $user->setNotificationSettings($settings);
             $this->em->persist($settings);
         }

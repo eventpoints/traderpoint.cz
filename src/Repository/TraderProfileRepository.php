@@ -7,7 +7,6 @@ use App\Entity\TraderProfile;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Generator;
 
 /**
  * @extends ServiceEntityRepository<TraderProfile>
@@ -41,13 +40,12 @@ class TraderProfileRepository extends ServiceEntityRepository
         }
     }
 
-
     /**
      * @return \Generator<TraderProfile>
      */
     public function iterateTradersForEngagement(Engagement $engagement, bool $requireAllSkills = false): \Generator
     {
-        $em  = $this->getEntityManager();
+        $em = $this->getEntityManager();
         $eid = $engagement->getId()->toRfc4122();
 
         // ANY matching skill
@@ -138,5 +136,4 @@ SQL;
             yield $profile;
         }
     }
-
 }
