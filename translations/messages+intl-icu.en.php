@@ -185,7 +185,8 @@ return array(
     'trader-location-help' => 'click or tap on the map to set a location, then add a service radius in kilometers. We will only show jobs within the radius.',
     'awaiting-client-response' => 'awaiting client response',
     'awaiting-client-response-explainer' => 'we will notify you as soon as the client responds',
-    'issue.no_show' => 'no show',
+    'issue.client_not_home' => 'client not home',
+    'issue.no_show' => 'trader no show',
     'issue.cant_contact' => 'cant contact',
     'issue.change_agreement' => 'change agreement',
     'issue.work_quality' => 'work quality',
@@ -246,6 +247,7 @@ return array(
     'tab.clarifying-questions' => 'Clarifying Questions',
     'jobs-you-posted' => 'Jobs you posted',
     'confirm-delete-job' => 'are you sure you want to delete this job?',
+    'edit' => 'edit',
     'delete' => 'delete',
     'cancel' => 'cancel',
 );
