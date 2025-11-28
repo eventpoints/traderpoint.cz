@@ -21,7 +21,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class QuoteFormType extends AbstractType
 {
     public function __construct(
-        private readonly TranslatorInterface        $translator,
+        private readonly TranslatorInterface $translator,
         private readonly CarbonImmutableTransformer $carbonTransformer
     )
     {

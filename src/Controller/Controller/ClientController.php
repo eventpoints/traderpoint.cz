@@ -3,7 +3,6 @@
 namespace App\Controller\Controller;
 
 use App\Entity\User;
-use App\Enum\FlashEnum;
 use App\Repository\EngagementRepository;
 use App\Repository\SkillRepository;
 use Knp\Component\Pager\PaginatorInterface;
@@ -35,10 +34,9 @@ class ClientController extends AbstractController
         $pagination = $this->paginator->paginate($engagementsQuery, $page, $limit);
         $skills = $this->skillRepository->findPrimarySkillsForLandingPage();
 
-
         return $this->render('client/dashboard.html.twig', [
             'pagination' => $pagination,
-            'skills' => $skills
+            'skills' => $skills,
         ]);
     }
 

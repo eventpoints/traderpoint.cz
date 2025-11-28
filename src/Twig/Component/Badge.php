@@ -10,12 +10,18 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 final class Badge
 {
     public string $text;
+
     public string $variant = 'secondary';
+
     public bool $pill = true;
+
     public bool $isOutline = false;
+
     public ?string $icon = null;
 
-    /** sm|md|lg */
+    /**
+     * sm|md|lg
+     */
     public string $size = 'md';
 
     public function getClasses(): string

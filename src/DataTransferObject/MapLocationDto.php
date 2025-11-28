@@ -7,10 +7,10 @@ use App\Entity\Engagement;
 final class MapLocationDto
 {
     public function __construct(
-        private null|float  $latitude,
-        private null|float  $longitude,
+        private null|float $latitude,
+        private null|float $longitude,
         private null|string $address,
-        private null|int    $radiusKm
+        private null|int $radiusKm
     )
     {
     }
@@ -55,8 +55,7 @@ final class MapLocationDto
         $this->radiusKm = $radiusKm;
     }
 
-
-    public static function getFromEngagement(Engagement $engagement) : null|MapLocationDto
+    public static function getFromEngagement(Engagement $engagement): null|MapLocationDto
     {
         if (empty($engagement->getLatitude()) ||
             empty($engagement->getLongitude())
@@ -64,9 +63,9 @@ final class MapLocationDto
             return null;
         } else {
             return new MapLocationDto(
-                (float)$engagement->getLatitude(),
-                (float)$engagement->getLongitude(),
-                (string)($engagement->getAddress() ?? ''),
+                $engagement->getLatitude(),
+                $engagement->getLongitude(),
+                $engagement->getAddress() ?? '',
                 null
             );
         }

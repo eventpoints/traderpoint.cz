@@ -558,5 +558,4 @@ class Engagement implements Stringable
     {
         $this->isDeleted = $isDeleted;
     }
-
 }

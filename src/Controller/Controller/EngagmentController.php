@@ -49,19 +49,19 @@ use Symfony\UX\Map\Point;
 class EngagmentController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface      $translator,
-        private readonly QuoteRepository          $quoteRepository,
-        private readonly EngagementRepository     $engagementRepository,
-        private readonly UserRepository           $userRepository,
-        private readonly ImageOptimizer           $imageOptimizer,
-        private readonly EmailService             $emailService,
+        private readonly TranslatorInterface $translator,
+        private readonly QuoteRepository $quoteRepository,
+        private readonly EngagementRepository $engagementRepository,
+        private readonly UserRepository $userRepository,
+        private readonly ImageOptimizer $imageOptimizer,
+        private readonly EmailService $emailService,
         private readonly EventDispatcherInterface $dispatcher,
-        private readonly SkillRepository          $skillRepository,
-        private readonly UserFactory              $userFactory,
-        private readonly Security                 $security,
-        private readonly ReactionRepository       $reactionRepository,
-        private readonly ConversationRepository   $conversationRepository,
-        private readonly ConversationFactory      $conversationFactory
+        private readonly SkillRepository $skillRepository,
+        private readonly UserFactory $userFactory,
+        private readonly Security $security,
+        private readonly ReactionRepository $reactionRepository,
+        private readonly ConversationRepository $conversationRepository,
+        private readonly ConversationFactory $conversationFactory
     )
     {
     }
@@ -207,11 +207,11 @@ class EngagmentController extends AbstractController
     {
         $skills = new ArrayCollection();
         $skillId = $request->query->get('skill');
-        if (!empty($skillId)) {
+        if (! empty($skillId)) {
             $skillUuid = Uuid::fromString($skillId);
             $skill = $this->skillRepository->find($skillUuid);
 
-            if (!$skill instanceof Skill) {
+            if (! $skill instanceof Skill) {
                 return $this->redirectToRoute('landing');
             }
 
@@ -248,7 +248,7 @@ class EngagmentController extends AbstractController
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
 
-            if (!$currentUser instanceof User) {
+            if (! $currentUser instanceof User) {
                 $email = $engagementForm->get('email')->getData();
                 $firstName = $engagementForm->get('firstName')->getData();
                 $lastName = $engagementForm->get('lastName')->getData();
@@ -283,12 +283,12 @@ class EngagmentController extends AbstractController
         ]);
     }
 
-
     #[Route(path: 'engagement/edit/{id}', name: 'edit_engagement')]
     public function edit(
-        Engagement           $engagement,
-        Request              $request,
-        #[CurrentUser] ?User $currentUser = null
+        Engagement $engagement,
+        Request $request,
+        #[CurrentUser]
+        ?User $currentUser = null
     ): Response
     {
         // 1) Decide what lat/lng to use for the map centre
@@ -348,7 +348,6 @@ class EngagmentController extends AbstractController
         ]);
     }
 
-
     #[Route(path: 'engagement/issue/{quote}/{user}', name: 'engagement_issue')]
     public function engagementIssue(Quote $quote, User $user, Request $request, #[CurrentUser] User $currentUser): Response
     {
@@ -376,7 +375,7 @@ class EngagmentController extends AbstractController
      */
     private function handleImageUpload(array $files, Engagement $engagement): void
     {
-        if ($files === [] || count($files) === 0) {
+        if ($files === []) {
             return;
         }
 
@@ -397,7 +396,6 @@ class EngagmentController extends AbstractController
             $engagement->addImage($img);
         }
     }
-
 
     #[Route(path: 'engagement/delete/{id}', name: 'client_delete_engagement')]
     public function delete(Engagement $engagement, #[CurrentUser] User $currentUser): Response

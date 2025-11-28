@@ -64,18 +64,18 @@ final class MapLocationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => MapLocationDto::class,
-            'mapped'     => false,
-            'label'      => false,
-            'map'        => null,
-            'height'     => '300px',
+            'mapped' => false,
+            'label' => false,
+            'map' => null,
+            'height' => '300px',
 
-            'with_radius'        => false,
-            'radius_label'       => 'Radius (km)',
-            'radius_default_km'  => 5.0,
-            'radius_min'         => 0.5,
-            'radius_max'         => 100.0,
-            'radius_step'        => 0.5,
-            'radius_attr'        => [],
+            'with_radius' => false,
+            'radius_label' => 'Radius (km)',
+            'radius_default_km' => 5.0,
+            'radius_min' => 0.5,
+            'radius_max' => 100.0,
+            'radius_step' => 0.5,
+            'radius_attr' => [],
 
             // NEW: optional engagement to derive initial location from
             'engagement' => null,
@@ -135,8 +135,8 @@ final class MapLocationType extends AbstractType
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        $view->vars['map']         = $options['map'];
-        $view->vars['height']      = $options['height'];
+        $view->vars['map'] = $options['map'];
+        $view->vars['height'] = $options['height'];
         $view->vars['with_radius'] = $options['with_radius'];
     }
 

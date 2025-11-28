@@ -47,7 +47,6 @@ final class EngagementFormType extends AbstractType
         $view->vars['is_edit'] = $options['is_edit'];
     }
 
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var Engagement|null $engagement */
@@ -137,7 +136,7 @@ final class EngagementFormType extends AbstractType
                 'map' => $options['map'],
                 'height' => '320px',
                 'help' => 'click / tap on the map to set a location',
-                'engagement' => $engagement
+                'engagement' => $engagement,
             ])
             ->add('budget', MoneyType::class, [
                 'currency' => CurrencyCodeEnum::CZK->value,
@@ -183,7 +182,7 @@ final class EngagementFormType extends AbstractType
             'data_class' => Engagement::class,
             'map' => Map::class,
             'skills' => null,
-            'is_edit' => false
+            'is_edit' => false,
         ]);
 
         $resolver->setAllowedTypes('skills', [Collection::class, 'null']);

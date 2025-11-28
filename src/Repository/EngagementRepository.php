@@ -31,14 +31,14 @@ class EngagementRepository extends ServiceEntityRepository
     public function findUpcomingBySkillsAndLocation(User $user, bool $isQuery = false): array|Query
     {
         $profile = $user->getTraderProfile();
-        if (!$profile || $profile->getLatitude() === null || $profile->getLongitude() === null || !$profile->getServiceRadius()) {
+        if (! $profile || $profile->getLatitude() === null || $profile->getLongitude() === null || ! $profile->getServiceRadius()) {
             return $isQuery ? $this->createQueryBuilder('e')->where('1=0')->getQuery() : [];
         }
 
         $lat = $profile->getLatitude();
         $lng = $profile->getLongitude();
-        $radiusKm = (float)$profile->getServiceRadius();
-        $meters = (int)round($radiusKm * 1000);
+        $radiusKm = (float) $profile->getServiceRadius();
+        $meters = (int) round($radiusKm * 1000);
 
         // --- PostGIS helper returns ordered IDs by distance (each row: ['id' => '...', 'dist' => ...])
         $rows = $this->findNearbyIdsOrdered($lat, $lng, $meters);
