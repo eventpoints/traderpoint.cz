@@ -40,7 +40,7 @@ class Engagement implements Stringable
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isDeleted = false;
 
     #[ORM\Column(type: Types::TEXT)]

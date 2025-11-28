@@ -95,7 +95,7 @@
                         <div class="card-footer d-flex justify-content-between align-items-center small text-muted">
                             <div>
                                 {% if review.owner %}
-                                    {{ 'by'|trans }} <strong>{{ review.owner.fullName ?? review.owner.email }}</strong>
+                                    {{ 'by'|trans({name: review.owner.fullName ?? review.owner.email}) }}
                                 {% endif %}
                             </div>
                             <div>

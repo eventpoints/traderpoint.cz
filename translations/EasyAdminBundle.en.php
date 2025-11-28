@@ -59,6 +59,7 @@ return array (
   'filter.label.is_less_than_or_equal_to' => 'is less than or equal to',
   'filter.label.is_between' => 'is between',
   'filter.label.contains' => 'contains',
+  'filter.label.contains_all' => 'contains all',
   'filter.label.not_contains' => 'doesn\'t contain',
   'filter.label.starts_with' => 'starts with',
   'filter.label.ends_with' => 'ends with',
@@ -95,4 +96,5 @@ return array (
   'autocomplete.no-results-found' => 'No results found',
   'autocomplete.no-more-results' => 'No more results',
   'autocomplete.loading-more-results' => 'Loading more results…',
+  'files' => '__files',
 );

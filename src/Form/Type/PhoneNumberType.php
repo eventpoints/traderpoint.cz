@@ -27,7 +27,7 @@ class PhoneNumberType extends AbstractType
                 'data' => '420',
                 'autocomplete' => true,
                 'label' => $this->translator->trans('country-code'),
-                'choices' => array_flip(PhonePrefixCodeData::getDialCodes()),
+                'choices' => PhonePrefixCodeData::getDialCodes(),
                 'attr' => [
                     'class' => 'form-control',
                 ],

@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
     'app-tag-line' => 'Dokončete to!',
     'app-sub-tag-line' => 'Zadejte poptávku, získejte nabídky od tisíců ověřených řemeslníků. Zdarma, rychle a bezpečně.',
     'name' => 'celé jméno',
@@ -96,7 +96,7 @@ return [
     'set-your-service-radius' => 'Přidejte své dovednosti a oblast dojezdu, abyste viděli odpovídající zakázky.',
     'update-now' => 'aktualizovat nyní',
     'trader-settings' => 'nastavení řemeslníka',
-    'account-settings'      => 'Nastavení účtu',
+    'account-settings' => 'Nastavení účtu',
     'notification-settings' => 'Nastavení oznámení',
     'sms-code' => 'SMS kód',
     'timeline-preference' => 'preferovaný termín',
@@ -211,7 +211,6 @@ return [
     'reaction.needs-more-info-description' => 'Řemeslník potřebuje více detailů, aby se mohl zavázat nebo poslat nabídku.',
     'company-details' => 'údaje o společnosti',
     'company-number' => 'IČO',
-
     'trader_paywall.plan_name' => 'Standardní plán',
     'trader_paywall.per_month' => 'měsíčně',
     'trader_paywall.cardholder_name' => 'Jméno na kartě',
@@ -222,20 +221,12 @@ return [
     'trader_paywall.error.name_required' => 'Zadejte prosím jméno uvedené na kartě.',
     'trader_paywall.error.generic' => 'Při ověření vaší karty došlo k problému. Zkuste to prosím znovu.',
     'trader_paywall.success.subscription_activated' => 'Vaše předplatné je nyní aktivní. Nyní máte přístup ke všem funkcím pro obchodníky.',
-
     'trader.new_matching_job.email' => 'Zakázky odpovídající mým dovednostem – e-mail',
-    'trader.new_matching_job.sms'   => 'Zakázky odpovídající mým dovednostem – SMS',
-
-// Client – quotes on my job
+    'trader.new_matching_job.sms' => 'Zakázky odpovídající mým dovednostem – SMS',
     'client.new_quote.email' => 'Nabídky na moje zakázky – e-mail',
-    'client.new_quote.sms'   => 'Nabídky na moje zakázky – SMS',
-
-// Shared – new messages
+    'client.new_quote.sms' => 'Nabídky na moje zakázky – SMS',
     'job.new_message.email' => 'Nové zprávy u zakázek – e-mail',
-
-// Marketing / news
     'marketing.email' => 'Novinky, tipy a speciální nabídky – e-mail',
-
     'tab.quote-form' => 'Formulář poptávky',
     'tab.quotes' => 'Obdržené nabídky',
     'tab.clarifying-questions' => 'Upřesňující dotazy',
@@ -245,4 +236,39 @@ return [
     'delete' => 'smazat',
     'cancel' => 'zrušit',
 
-];
+    'password.must-match' => 'password must match',
+    'password.new-password' => 'new password',
+    'password.repeat-password' => 'repeat-password',
+    'preferred-language' => 'preferred language',
+    'languages' => 'languages',
+    'avatar.image.upload' => 'upload avatar image',
+    'issue.details' => 'issue details',
+    'country' => 'country',
+    'can-not-review-that-profile' => 'can-not-review-that-profile',
+    'We sent you a code by SMS.' => 'We sent you a code by SMS.',
+    'nice-try' => 'nice try',
+    'Phone verified.' => 'Phone verified.',
+    'faq.intro' => 'faq.intro',
+    'about' => 'about',
+    'faqs' => 'FAQs',
+    'privacy' => 'privacy',
+    'terms-of-use' => 'terms of use',
+    'by' => 'by {name}',
+    'no-reviews-yet' => 'no reviews yet',
+    'could-not-find-any-jobs-extra' => 'Don’t worry — we’ll email you as soon as a matching job appears',
+    'set-password' => 'set password',
+    'quote-closed-already-accepted' => 'quote already accepted',
+    'quote-accepted' => 'quote accepted',
+    'price' => 'price',
+    'start-date' => 'start date',
+    'approximate-duration' => 'approximate duration',
+    'materials' => 'materials',
+    'warranty-duration' => 'warranty-duration',
+    'trader-information' => 'trader-information',
+    'phone' => 'phone',
+    'verify' => 'verify',
+    'public' => 'public',
+    'client-profile' => 'client profile',
+    'client' => 'client',
+    'job-created' => 'job created',
+);
