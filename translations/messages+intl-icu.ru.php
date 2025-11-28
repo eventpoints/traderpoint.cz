@@ -223,22 +223,55 @@ return [
     'trader_paywall.stripe_notice' => 'Платежи по карте безопасно обрабатываются через Stripe. Мы не сохраняем данные вашей карты',
     'trader_paywall.error.name_required' => 'Пожалуйста, укажите имя, как на карте.',
     'trader_paywall.error.generic' => 'Произошла ошибка при подтверждении карты. Пожалуйста, попробуйте ещё раз.',
-
-
     'trader_paywall.success.subscription_activated' => 'Ваша подписка активирована. Теперь у вас есть доступ ко всем функциям для мастеров.',
-
-// Trader – new matching jobs
     'trader.new_matching_job.email' => 'Заказы, соответствующие моим навыкам – e-mail',
     'trader.new_matching_job.sms' => 'Заказы, соответствующие моим навыкам – SMS',
-
-// Client – quotes on my job
     'client.new_quote.email' => 'Предложения по моим заказам – e-mail',
     'client.new_quote.sms' => 'Предложения по моим заказам – SMS',
-
-// Shared – new messages
     'job.new_message.email' => 'Новые сообщения по заказам – e-mail',
-
-// Marketing / news
     'marketing.email' => 'Новости, советы и специальные предложения – e-mail',
+    'tab.quote-form' => 'Форма запроса',
+    'tab.quotes' => 'Полученные предложения',
+    'tab.clarifying-questions' => 'Уточняющие вопросы',
+    'jobs-you-posted' => 'Размещённые вами заказы',
+    'confirm-delete-job' => 'Вы уверены, что хотите удалить этот заказ?',
+    'edit' => 'редактировать',
+    'delete' => 'удалить',
+    'cancel' => 'отмена',
 
+    'password.must-match' => 'пароли должны совпадать',
+    'password.new-password' => 'новый пароль',
+    'password.repeat-password' => 'повторите пароль',
+    'preferred-language' => 'предпочитаемый язык',
+    'languages' => 'языки',
+    'avatar.image.upload' => 'загрузить профильное изображение',
+    'issue.details' => 'подробности проблемы',
+    'country' => 'страна',
+    'can-not-review-that-profile' => 'вы не можете оставить отзыв об этом профиле',
+    'We sent you a code by SMS.' => 'Мы отправили вам код по SMS.',
+    'nice-try' => 'хорошая попытка',
+    'Phone verified.' => 'Телефон подтверждён.',
+    'faq.intro' => 'faq.intro',
+    'about' => 'о нас',
+    'faqs' => 'Частые вопросы',
+    'privacy' => 'конфиденциальность',
+    'terms-of-use' => 'условия использования',
+    'by' => 'от {name}',
+    'no-reviews-yet' => 'отзывов пока нет',
+    'could-not-find-any-jobs-extra' => 'Не волнуйтесь — как только появится подходящий заказ, мы отправим вам письмо.',
+    'set-password' => 'установить пароль',
+    'quote-closed-already-accepted' => 'предложение уже принято',
+    'quote-accepted' => 'предложение принято',
+    'price' => 'цена',
+    'start-date' => 'дата начала',
+    'approximate-duration' => 'примерная продолжительность',
+    'materials' => 'материалы',
+    'warranty-duration' => 'срок гарантии',
+    'trader-information' => 'информация о мастере',
+    'phone' => 'телефон',
+    'verify' => 'подтвердить',
+    'public' => 'публичный',
+    'client-profile' => 'профиль клиента',
+    'client' => 'клиент',
+    'job-created' => 'заказ создан',
 ];

@@ -238,22 +238,37 @@ return array(
     'trader_paywall.stripe_notice' => 'Платежі карткою безпечно обробляються через Stripe. Ми не зберігаємо повні дані вашої картки.',
     'trader_paywall.error.name_required' => 'Будь ласка, вкажіть імʼя, як на картці.',
     'trader_paywall.error.generic' => 'Під час підтвердження картки сталася помилка. Будь ласка, спробуйте ще раз.',
-
-
     'trader_paywall.success.subscription_activated' => 'Ваша підписка активована. Тепер у вас є доступ до всіх функцій для майстрів.',
-
-// Trader – new matching jobs
     'trader.new_matching_job.email' => 'Замовлення, що відповідають моїм навичкам – e-mail',
     'trader.new_matching_job.sms' => 'Замовлення, що відповідають моїм навичкам – SMS',
-
-// Client – quotes on my job
     'client.new_quote.email' => 'Пропозиції щодо моїх замовлень – e-mail',
     'client.new_quote.sms' => 'Пропозиції щодо моїх замовлень – SMS',
-
-// Shared – new messages
     'job.new_message.email' => 'Нові повідомлення щодо замовлень – e-mail',
-
-// Marketing / news
     'marketing.email' => 'Новини, поради та спеціальні пропозиції – e-mail',
-
+    'tab.quote-form' => 'Форма запиту',
+    'tab.quotes' => 'Отримані пропозиції',
+    'tab.clarifying-questions' => 'Уточнювальні запитання',
+    'jobs-you-posted' => 'Розміщені вами замовлення',
+    'confirm-delete-job' => 'Ви впевнені, що хочете видалити це замовлення?',
+    'edit' => 'редагувати',
+    'delete' => 'видалити',
+    'cancel' => 'скасувати',
+    'issue.details' => 'деталі проблеми',
+    'country' => 'країна',
+    'faq.intro' => 'faq.intro',
+    'about' => 'про нас',
+    'faqs' => 'Поширені запитання',
+    'privacy' => 'конфіденційність',
+    'terms-of-use' => 'умови використання',
+    'by' => 'від {name}',
+    'could-not-find-any-jobs-extra' => 'Не хвилюйтеся — щойно з’явиться відповідне замовлення, ми надішлемо вам e-mail.',
+    'quote-closed-already-accepted' => 'пропозицію вже прийнято',
+    'quote-accepted' => 'пропозицію прийнято',
+    'price' => 'ціна',
+    'start-date' => 'дата початку',
+    'approximate-duration' => 'приблизна тривалість',
+    'materials' => 'матеріали',
+    'warranty-duration' => 'строк гарантії',
+    'trader-information' => 'інформація про майстра',
+    'phone' => 'телефон',
 );
