@@ -10,4 +10,6 @@ return array(
     'flash.sceptical-issue' => 'Hmmm, something went wrong',
     'flash.email-address-confirmed' => 'Email address confirmed',
     'flash.password-changed' => 'Password changed successfully',
+
+    'flash.engagement-deleted' => 'Engagement deleted',
 );

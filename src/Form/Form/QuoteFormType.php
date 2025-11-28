@@ -6,9 +6,9 @@ use App\Entity\Engagement;
 use App\Entity\Quote;
 use App\Enum\CurrencyCodeEnum;
 use App\Form\DataTransformer\CarbonImmutableTransformer;
+use App\Form\Type\FlatpickrType;
 use App\Form\Type\SwitchType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -21,7 +21,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class QuoteFormType extends AbstractType
 {
     public function __construct(
-        private readonly TranslatorInterface $translator,
+        private readonly TranslatorInterface        $translator,
         private readonly CarbonImmutableTransformer $carbonTransformer
     )
     {
@@ -58,9 +58,9 @@ class QuoteFormType extends AbstractType
                 ],
                 'required' => true,
             ])
-            ->add('validUntil', DateTimeType::class, [
+            ->add('validUntil', FlatpickrType::class, [
                 'label' => $this->translator->trans('valid-until'),
-                'widget' => 'single_text',
+                'enable_time' => false,
                 'required' => false,
                 'attr' => [
                     'placeholder' => $this->translator->trans('valid-until'),
@@ -69,23 +69,13 @@ class QuoteFormType extends AbstractType
                 'row_attr' => [
                     'class' => 'form-floating',
                 ],
-                'label_attr' => [
-                    'class' => 'form-floating-label',
-                ],
             ])
-            ->add('startAt', DateTimeType::class, [
+            ->add('startAt', FlatpickrType::class, [
                 'label' => $this->translator->trans('start-at'),
-                'widget' => 'single_text',
-                'required' => false,
-                'attr' => [
-                    'placeholder' => $this->translator->trans('earliest-start-at'),
-                    'class' => 'form-control',
-                ],
+                'enable_time' => true,
+                'required' => true,
                 'row_attr' => [
                     'class' => 'form-floating',
-                ],
-                'label_attr' => [
-                    'class' => 'form-floating-label',
                 ],
             ])
             ->add('expectedDurationHours', IntegerType::class, [

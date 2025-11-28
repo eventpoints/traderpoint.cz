@@ -16,6 +16,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'form/password_input.html.twig',
             'form/phone_number.html.twig',
             'form/_form_theme.html.twig',
+            'form/flatpickr.html.twig',
         ],
         'globals' => [
             'stripe_public_key' => '%env(STRIPE_PUBLIC_KEY)%',

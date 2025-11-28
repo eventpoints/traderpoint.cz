@@ -10,4 +10,6 @@ return array(
     'flash.sceptical-issue' => 'Хмм, щось пішло не так',
     'flash.email-address-confirmed' => 'Електронну адресу підтверджено',
     'flash.password-changed' => 'Пароль успішно змінено',
+    'flash.engagement-deleted' => 'завдання видалено',
+
 );

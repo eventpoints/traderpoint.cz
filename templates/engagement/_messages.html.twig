@@ -1,13 +1,11 @@
-<div class="d-flex justify-content-between align-items-center mt-5 mb-3">
-    <div class="fw-bold fs-4">
-        {{ 'job-clarifications'|trans|default('Job clarifications') }}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="fw-bold">
+        {{ 'tab.clarifying-questions'|trans|default('Job clarifications') }}
     </div>
-    <div class="badge bg-light text-muted rounded-pill fs-5">
-        {{ engagement.conversation ? engagement.conversation.messages|length : 0 }} {{ 'messages'|trans|default('messages') }}
-    </div>
+    <twig:Badge text="{{ engagement.conversation ? engagement.conversation.messages|length : 0 }} {{ 'messages'|trans|default('messages') }}" variant="dark" :isOutline="true" size="md"/>
 </div>
 
-<div class="vstack gap-3">
+<div class="vstack gap-3 min-vh-50">
     {% for message in engagement.conversation.messages %}
         <div class="card">
             <div class="card-header hstack gap-3 text-end">

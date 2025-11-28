@@ -3,7 +3,9 @@
 namespace App\Controller\Controller;
 
 use App\Entity\User;
+use App\Enum\FlashEnum;
 use App\Repository\EngagementRepository;
+use App\Repository\SkillRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +17,8 @@ class ClientController extends AbstractController
 {
     public function __construct(
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaginatorInterface $paginator
+        private readonly PaginatorInterface $paginator,
+        private readonly SkillRepository $skillRepository
     )
     {
     }
@@ -30,9 +33,12 @@ class ClientController extends AbstractController
         $page = $request->query->getInt('page', 1);
         $limit = $request->query->getInt('limit', 5);
         $pagination = $this->paginator->paginate($engagementsQuery, $page, $limit);
+        $skills = $this->skillRepository->findPrimarySkillsForLandingPage();
+
 
         return $this->render('client/dashboard.html.twig', [
             'pagination' => $pagination,
+            'skills' => $skills
         ]);
     }
 

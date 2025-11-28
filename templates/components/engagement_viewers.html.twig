@@ -1,4 +1,9 @@
-<div {{ attributes }} class="badge rounded-pill bg-primary d-flex justify-content-between align-items-center gap-2" data-poll="interval(5s)|$render">
-    <div>{{ this.count|compact_notation }}</div>
-    <i class="bi bi-eye fs-4"></i>
+<div {{ attributes }}>
+    <twig:Badge
+            text="{{ this.count|compact_notation }}"
+            variant="primary"
+            icon="bi bi-eye"
+            :isOutline="true"
+            size="lg" />
 </div>
+

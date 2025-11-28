@@ -54,7 +54,7 @@ return [
         'version' => '1.0.3',
     ],
     'stimulus' => [
-        'version' => '3.2.2',
+        'version' => '1.1.1',
     ],
     '@stimulus-components/read-more' => [
         'version' => '5.0.0',
@@ -113,5 +113,31 @@ return [
     ],
     '@stripe/stripe-js' => [
         'version' => '8.4.0',
+    ],
+    'tailwindcss' => [
+        'version' => '4.1.17',
+    ],
+    'tailwindcss/index.min.css' => [
+        'version' => '4.1.17',
+        'type' => 'css',
+    ],
+    'flowbite-datepicker' => [
+        'version' => '2.0.0',
+    ],
+    'flatpickr' => [
+        'version' => '4.6.6',
+    ],
+    'flatpickr/dist/flatpickr.min.css' => [
+        'version' => '4.6.6',
+        'type' => 'css',
+    ],
+    '@stimulus/core' => [
+        'version' => '1.1.1',
+    ],
+    '@stimulus/mutation-observers' => [
+        'version' => '1.1.1',
+    ],
+    '@stimulus/multimap' => [
+        'version' => '2.0.0',
     ],
 ];

@@ -153,7 +153,7 @@ return array(
     'how-our-service-works' => 'how our service works',
     'looking-to-hire' => 'looking to hire',
     'leave-review-for' => 'leave review for {title}',
-    'review-client-explainer' => 'Reviews open after the trader’s estimated duration. You can leave a review on {date}',
+    'review-client-explainer' => 'Reviews open after the trader’s estimated duration. You can leave a review from {date}',
     'job-count' => '{count} jobs completed',
 
     'something-went-wrong' => 'Sorry, something went wrong.',
@@ -240,4 +240,12 @@ return array(
 
     // Marketing / news
     'marketing.email' => 'News, tips and special offers – email',
+
+    'tab.quote-form' => 'Quote Form',
+    'tab.quotes' => 'Quotes received',
+    'tab.clarifying-questions' => 'Clarifying Questions',
+    'jobs-you-posted' => 'Jobs you posted',
+    'confirm-delete-job' => 'are you sure you want to delete this job?',
+    'delete' => 'delete',
+    'cancel' => 'cancel',
 );

@@ -1,4 +1,5 @@
 import { Tooltip } from 'bootstrap';
+
 import './bootstrap.js';
 /*
  * Welcome to your app's main JavaScript file!
@@ -10,10 +11,8 @@ import './styles/theme.boostrap.css'
 import 'bootstrap';
 import './styles/app.css';
 import 'leaflet/dist/leaflet.css';
-
 import 'lightgallery/css/lightgallery.css'
-
-
+import 'flatpickr/dist/flatpickr.min.css';
 document.addEventListener('DOMContentLoaded', () => {
     new Tooltip(document.body, {
         selector: '[data-bs-toggle="tooltip"]',

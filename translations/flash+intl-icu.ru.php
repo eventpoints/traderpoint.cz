@@ -10,5 +10,6 @@ return [
     'flash.sceptical-issue' => 'Хм, что-то пошло не так',
     'flash.email-address-confirmed' => 'Адрес электронной почты подтвержден',
     'flash.password-changed' => 'Пароль успешно изменен',
+    'flash.engagement-deleted' => 'работа удалена',
 
 ];

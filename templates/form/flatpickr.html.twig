@@ -1,0 +1,15 @@
+{# templates/form/flatpickr.html.twig #}
+
+{% block flatpickr_widget %}
+    <input
+            class="form-control"
+            type="text"
+            id="{{ id }}"
+            name="{{ full_name }}"
+            value="{{ value }}"
+            {% if required %}required="required"{% endif %}
+            {% if disabled %}disabled="disabled"{% endif %}
+            data-controller="flatpickr"
+            data-flatpickr-enable-time-value="{{ enable_time ? 'true' : 'false' }}"
+    />
+{% endblock %}

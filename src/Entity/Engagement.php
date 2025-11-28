@@ -40,6 +40,9 @@ class Engagement implements Stringable
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $isDeleted = false;
+
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
@@ -545,4 +548,15 @@ class Engagement implements Stringable
     {
         $this->conversation = $conversation;
     }
+
+    public function getIsDeleted(): bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): void
+    {
+        $this->isDeleted = $isDeleted;
+    }
+
 }

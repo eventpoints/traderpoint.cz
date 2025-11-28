@@ -28,6 +28,7 @@ use App\Security\Voter\EngagementVoter;
 use App\Service\EmailService\EmailService;
 use App\Service\ImageOptimizer;
 use Doctrine\Common\Collections\ArrayCollection;
+use Nette\Utils\Strings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -48,19 +49,19 @@ use Symfony\UX\Map\Point;
 class EngagmentController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface $translator,
-        private readonly QuoteRepository $quoteRepository,
-        private readonly EngagementRepository $engagementRepository,
-        private readonly UserRepository $userRepository,
-        private readonly ImageOptimizer $imageOptimizer,
-        private readonly EmailService $emailService,
+        private readonly TranslatorInterface      $translator,
+        private readonly QuoteRepository          $quoteRepository,
+        private readonly EngagementRepository     $engagementRepository,
+        private readonly UserRepository           $userRepository,
+        private readonly ImageOptimizer           $imageOptimizer,
+        private readonly EmailService             $emailService,
         private readonly EventDispatcherInterface $dispatcher,
-        private readonly SkillRepository $skillRepository,
-        private readonly UserFactory $userFactory,
-        private readonly Security $security,
-        private readonly ReactionRepository $reactionRepository,
-        private readonly ConversationRepository $conversationRepository,
-        private readonly ConversationFactory $conversationFactory
+        private readonly SkillRepository          $skillRepository,
+        private readonly UserFactory              $userFactory,
+        private readonly Security                 $security,
+        private readonly ReactionRepository       $reactionRepository,
+        private readonly ConversationRepository   $conversationRepository,
+        private readonly ConversationFactory      $conversationFactory
     )
     {
     }
@@ -206,11 +207,11 @@ class EngagmentController extends AbstractController
     {
         $skills = new ArrayCollection();
         $skillId = $request->query->get('skill');
-        if (! empty($skillId)) {
+        if (!empty($skillId)) {
             $skillUuid = Uuid::fromString($skillId);
             $skill = $this->skillRepository->find($skillUuid);
 
-            if (! $skill instanceof Skill) {
+            if (!$skill instanceof Skill) {
                 return $this->redirectToRoute('landing');
             }
 
@@ -247,7 +248,7 @@ class EngagmentController extends AbstractController
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
 
-            if (! $currentUser instanceof User) {
+            if (!$currentUser instanceof User) {
                 $email = $engagementForm->get('email')->getData();
                 $firstName = $engagementForm->get('firstName')->getData();
                 $lastName = $engagementForm->get('lastName')->getData();
@@ -259,18 +260,7 @@ class EngagmentController extends AbstractController
                 $this->security->login($currentUser, 'security.authenticator.form_login.main');
             }
 
-            /** @var UploadedFile[] $files */
-            $files = $engagementForm->get('images')->getData() ?? [];
-
-            $positionBase = count($engagement->getImages());
-            foreach ($files as $idx => $file) {
-                $optimisedFile = $this->imageOptimizer->getOptimizedFile($file);
-                $img = new Image();
-                $img->setImageFile($optimisedFile);
-                $img->setEngagement($engagement);
-                $img->setPosition($positionBase + $idx + 1);
-                $engagement->addImage($img);
-            }
+            $this->handleImageUpload(files: $engagementForm->get('images')->getData(), engagement: $engagement);
 
             /** @var MapLocationDto $mapLocationDto */
             $mapLocationDto = $engagementForm->get('location')->getData();
@@ -293,6 +283,72 @@ class EngagmentController extends AbstractController
         ]);
     }
 
+
+    #[Route(path: 'engagement/edit/{id}', name: 'edit_engagement')]
+    public function edit(
+        Engagement           $engagement,
+        Request              $request,
+        #[CurrentUser] ?User $currentUser = null
+    ): Response
+    {
+        // 1) Decide what lat/lng to use for the map centre
+        $latitude = $engagement->getLatitude();
+        $longitude = $engagement->getLongitude();
+
+        if ($latitude === null || $longitude === null) {
+            // fallback for older jobs / first-time creation
+            // (Prague-ish, or whatever you want)
+            $latitude = 50.07897895366278;
+            $longitude = 14.430823454571573;
+        }
+
+        $map = (new Map('default'))
+            ->center(new Point($latitude, $longitude))
+            ->zoom(11)
+            ->options(
+                (new LeafletOptions())
+                    ->tileLayer(new TileLayer(
+                        url: 'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=1IDdEWmfCtjKNlJ6Ij3W',
+                        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                        options: [
+                            'maxZoom' => 25,
+                            'tileSize' => 512,
+                            'zoomOffset' => -1,
+                        ]
+                    ))
+            );
+
+        $engagementForm = $this->createForm(EngagementFormType::class, $engagement, [
+            'map' => $map,
+            'skills' => $engagement->getSkills(),
+            'is_edit' => true,
+        ]);
+
+        $engagementForm->handleRequest($request);
+        if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
+            /** @var MapLocationDto $mapLocationDto */
+            $mapLocationDto = $engagementForm->get('location')->getData();
+            $engagement->setLatitude($mapLocationDto->getLatitude());
+            $engagement->setLongitude($mapLocationDto->getLongitude());
+            $engagement->setAddress($mapLocationDto->getAddress());
+
+            $this->handleImageUpload(files: $engagementForm->get('images')->getData(), engagement: $engagement);
+
+            $this->engagementRepository->save(entity: $engagement, flush: true);
+
+            return $this->redirectToRoute('client_show_engagement', [
+                'id' => $engagement->getId(),
+            ]);
+        }
+
+        return $this->render('engagement/create.html.twig', [
+            'map' => $map,
+            'engagementForm' => $engagementForm,
+            'engagement' => $engagement,
+        ]);
+    }
+
+
     #[Route(path: 'engagement/issue/{quote}/{user}', name: 'engagement_issue')]
     public function engagementIssue(Quote $quote, User $user, Request $request, #[CurrentUser] User $currentUser): Response
     {
@@ -313,5 +369,47 @@ class EngagmentController extends AbstractController
             'engagementIssue' => $engagementIssue,
             'engagementIssueForm' => $engagementIssueForm,
         ]);
+    }
+
+    /**
+     * @param UploadedFile[] $files
+     */
+    private function handleImageUpload(array $files, Engagement $engagement): void
+    {
+        if ($files === [] || count($files) === 0) {
+            return;
+        }
+
+        $files = array_slice(array_values($files), 0, 4);
+
+        foreach ($engagement->getImages()->toArray() as $existing) {
+            $engagement->removeImage($existing);
+        }
+
+        foreach ($files as $idx => $file) {
+            $optimisedFile = $this->imageOptimizer->getOptimizedFile($file);
+
+            $img = new Image();
+            $img->setImageFile($optimisedFile);
+            $img->setEngagement($engagement);
+            $img->setPosition($idx + 1);
+
+            $engagement->addImage($img);
+        }
+    }
+
+
+    #[Route(path: 'engagement/delete/{id}', name: 'client_delete_engagement')]
+    public function delete(Engagement $engagement, #[CurrentUser] User $currentUser): Response
+    {
+        if (Strings::compare($currentUser->getId(), $engagement->getOwner()->getId())) {
+            $engagement->setIsDeleted(isDeleted: true);
+            $this->engagementRepository->save(entity: $engagement, flush: true);
+            $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans(id: 'flash.engagement-deleted', domain: 'flash'));
+            return $this->redirectToRoute('client_dashboard');
+        } else {
+            $this->security->logout();
+            return $this->redirectToRoute('app_login');
+        }
     }
 }

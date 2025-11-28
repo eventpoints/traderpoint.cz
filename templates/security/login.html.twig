@@ -30,6 +30,13 @@
                             </div>
                         </div>
                     </div>
+                    {% if error is defined and error %}
+                        <div class="card-header">
+                            <div class="alert alert-danger">
+                                {{ error.messageKey|trans(error.messageData, 'security') }}
+                            </div>
+                        </div>
+                    {% endif %}
                     <div class="card-body">
                         <div class="vstack gap-3">
                             {{ form_row(form.email) }}
@@ -38,7 +45,8 @@
                         </div>
                     </div>
                     <div class="card-body text-center text-muted">
-                        {{ 'by-continuing-accept-terms'|trans(domain='terms') }} <a href="{{ path('terms_of_use') }}">{{ 'terms-of-use'|trans(domain='terms') }}</a>
+                        {{ 'by-continuing-accept-terms'|trans(domain='terms') }} <a
+                                href="{{ path('terms_of_use') }}">{{ 'terms-of-use'|trans(domain='terms') }}</a>
                     </div>
                     <div class="card-footer text-center text-muted">
                         {{ include('partial/_social_login.html.twig') }}

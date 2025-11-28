@@ -1,0 +1,25 @@
+<div class="modal fade" id="confirmDeleteJobModal" tabindex="-1"
+     aria-labelledby="confirmDeleteJobLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-body">
+                <p class="mb-0 lead" data-role="body">
+                    {{ 'confirm-delete-job'|trans|title }}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal"
+                        data-role="cancel">
+                    {{ 'cancel'|trans|title }}
+                </button>
+                <button type="button"
+                        class="btn btn-danger"
+                        data-role="confirm">
+                    {{ 'delete'|trans|title }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

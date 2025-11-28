@@ -138,13 +138,9 @@
 </head>
 <body>
 {% include 'partial/_navbar.html.twig' %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-8">
-            {% include 'partial/_alert.html.twig' %}
-        </div>
-    </div>
-</div>
+
+{{ include('partial/_toast.html.twig') }}
+
 {% block body %}{% endblock %}
 
 {% if app.user %}

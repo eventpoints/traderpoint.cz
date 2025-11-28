@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form\Form;
 
+use App\DataTransferObject\MapLocationDto;
 use App\Entity\Engagement;
 use App\Entity\Skill;
 use App\Entity\User;
@@ -12,6 +13,7 @@ use App\Enum\TimelinePreferenceEnum;
 use App\Form\DataTransformer\MoneyToMinorUnitsTransformer;
 use App\Form\Type\MapLocationType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -23,6 +25,8 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -38,10 +42,20 @@ final class EngagementFormType extends AbstractType
     {
     }
 
+    public function buildView(FormView $view, FormInterface $form, array $options): void
+    {
+        $view->vars['is_edit'] = $options['is_edit'];
+    }
+
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var Engagement|null $engagement */
+        $engagement = $options['data'] ?? null;
+
         /** @var ArrayCollection<int, Skill> $skills */
-        $skills = $options['skills'];
+        $skills = $options['skills'] ?? new ArrayCollection();
+
         $moneyTransformer = new MoneyToMinorUnitsTransformer(2);
 
         $builder
@@ -119,9 +133,11 @@ final class EngagementFormType extends AbstractType
             ])
             ->add('location', MapLocationType::class, [
                 'mapped' => false,
+                'data' => MapLocationDto::getFromEngagement($engagement),
                 'map' => $options['map'],
                 'height' => '320px',
                 'help' => 'click / tap on the map to set a location',
+                'engagement' => $engagement
             ])
             ->add('budget', MoneyType::class, [
                 'currency' => CurrencyCodeEnum::CZK->value,
@@ -166,7 +182,11 @@ final class EngagementFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Engagement::class,
             'map' => Map::class,
-            'skills' => ArrayCollection::class,
+            'skills' => null,
+            'is_edit' => false
         ]);
+
+        $resolver->setAllowedTypes('skills', [Collection::class, 'null']);
+        $resolver->setAllowedTypes('is_edit', ['bool']);
     }
 }

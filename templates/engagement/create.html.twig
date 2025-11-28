@@ -22,6 +22,19 @@
                     <div class="card-body vstack gap-3">
                         {{ form_row(engagementForm.title) }}
                         {{ form_row(engagementForm.description) }}
+
+                        {% if engagementForm.vars.is_edit %}
+                            <div class="row g-2 justify-content-start" {{ stimulus_controller('lightbox') }}>
+                                {% for image in engagement.images %}
+                                    <div href="{{ asset('uploads/images/' ~ image.filename) }}" class="col-6">
+                                        <img src="{{ asset('uploads/images/' ~ image.filename) }}"
+                                             class="w-100 object-fit-cover rounded-3 hover-pointer"
+                                             style="height: 150px"/>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
                         {{ form_row(engagementForm.images) }}
                         {% if engagementForm.firstName is defined and engagementForm.lastName is defined %}
                             <div class="input-group">

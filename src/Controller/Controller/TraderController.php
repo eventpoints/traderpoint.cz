@@ -3,6 +3,7 @@
 namespace App\Controller\Controller;
 
 use App\Entity\User;
+use App\Enum\FlashEnum;
 use App\Repository\EngagementRepository;
 use App\Repository\QuoteRepository;
 use Knp\Component\Pager\PaginatorInterface;

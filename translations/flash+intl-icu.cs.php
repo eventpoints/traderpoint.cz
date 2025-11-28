@@ -9,4 +9,6 @@ return [
     'flash.sceptical-issue' => 'Hmmm, něco se pokazilo',
     'flash.email-address-confirmed' => 'E-mailová adresa potvrzena',
     'flash.password-changed' => 'Heslo bylo úspěšně změněno',
+    'flash.engagement-deleted' => 'úloha smazána',
+
 ];
