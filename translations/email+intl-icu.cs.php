@@ -12,7 +12,7 @@ return array(
     'quotation-received-content' => 'Na vaši zakázku „{title}“ přišla nová nabídka ve výši {amount} od {owner}.',
     'view-quote' => 'Zobrazit nabídku',
     'trader-job-match' => 'Nová shoda zakázky: {title}',
-    'trader-job-match-content' => 's rozpočtem {budget}, ve vzdálenosti {distance} od vás a odpovídá vašim dovednostem. Otevřete, prohlédněte a odešlete cínovou nabídku.',
+    'trader-job-match-content' => 's rozpočtem {budget}, ve vzdálenosti {distance} od vás a odpovídá vašim dovednostem. Otevřete, prohlédněte a odešlete cenovou nabídku.',
     'view-job' => 'Zobrazit zakázku',
     'nice-try' => 'Pěkný pokus! 😉',
     'email.client.subject.verify-email-address' => 'Ověřte svou e-mailovou adresu',

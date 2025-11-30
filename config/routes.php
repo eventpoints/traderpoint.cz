@@ -31,11 +31,6 @@ return static function (RoutingConfigurator $routingConfigurator): void {
     ], 'attribute');
 
     $routingConfigurator->import([
-        'path' => __DIR__ . '/../src/Controller/Admin',
-        'namespace' => 'App\Controller\Admin',
-    ], 'attribute');
-
-    $routingConfigurator->import([
         'path' => __DIR__ . '/../src/Controller/Api',
         'namespace' => 'App\Controller\Api',
     ], 'attribute');

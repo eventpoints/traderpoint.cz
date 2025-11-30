@@ -12,7 +12,6 @@
     "doctrine/doctrine-bundle": "^2.13",
     "doctrine/doctrine-migrations-bundle": "^3.3",
     "doctrine/orm": "^3.3",
-    "easycorp/easyadmin-bundle": "^4.26.5",
     "endroid/qr-code-bundle": "^6.0.0",
     "giggsey/libphonenumber-for-php-lite": "^9.0",
     "intervention/image": "^3.9",

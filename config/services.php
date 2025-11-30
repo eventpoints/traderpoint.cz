@@ -33,5 +33,4 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services
         ->set(CompanyNumberConstraintValidator::class)
         ->tag('validator.constraint_validator');
-
 };
