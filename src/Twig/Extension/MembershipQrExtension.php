@@ -62,9 +62,9 @@ final class MembershipQrExtension extends AbstractExtension
             size: $size,
             margin: 0,
             roundBlockSizeMode: RoundBlockSizeMode::Enlarge,
-            logoPath: 'images/traderpoint-white.png',
-            logoResizeToWidth: max(100, (int) floor($size * 0.20)),
-            logoPunchoutBackground: false
+            logoPath: 'images/v3/logo-white-v3.png',
+            logoResizeToWidth: max(80, (int) floor($size * 0.20)),
+            logoPunchoutBackground: true
         );
 
         return $result->getDataUri();

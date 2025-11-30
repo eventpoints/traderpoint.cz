@@ -35,10 +35,6 @@
                         {{ form_row(registrationForm.lastName) }}
                         {{ form_row(registrationForm.email) }}
                         {{ form_row(registrationForm.plainPassword) }}
-                        <div>
-                            <a href="#" type="button"
-                               class="link-dark">{{ 'forgot_password'|trans }}</a>
-                        </div>
                     </div>
                     <div class="card-body text-center text-muted">
                         {{ 'by-continuing-accept-terms'|trans(domain='terms') }} <a href="{{ path('terms_of_use') }}">{{ 'terms-of-use'|trans(domain='terms') }}</a>

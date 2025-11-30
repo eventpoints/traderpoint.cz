@@ -22,7 +22,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
     message: new TranslatableMessage('phone_number.already_registered', [], 'validators'),
     errorPath: 'number'
 )]
-#[Assert\Callback('validatePhone')]
 class PhoneNumber
 {
     #[ORM\Id]
@@ -46,21 +45,44 @@ class PhoneNumber
         #[Assert\NotBlank(message: 'Enter a phone number.')]
         #[Assert\Regex('/^\d+$/', message: 'Digits only.')]
         private ?string $number = null
-    ) {}
+    )
+    {
+    }
 
-    public function getId(): ?Uuid { return $this->id; }
+    public function getId(): ?Uuid
+    {
+        return $this->id;
+    }
 
-    public function getPrefix(): ?int { return $this->prefix; }
+    public function getPrefix(): ?int
+    {
+        return $this->prefix;
+    }
 
-    public function setPrefix(?int $prefix): void { $this->prefix = $prefix; }
+    public function setPrefix(?int $prefix): void
+    {
+        $this->prefix = $prefix;
+    }
 
-    public function getNumber(): ?string { return $this->number; }
+    public function getNumber(): ?string
+    {
+        return $this->number;
+    }
 
-    public function setNumber(?string $number): void { $this->number = $number; }
+    public function setNumber(?string $number): void
+    {
+        $this->number = $number;
+    }
 
-    public function getConfirmedAt(): ?CarbonImmutable { return $this->confirmedAt; }
+    public function getConfirmedAt(): ?CarbonImmutable
+    {
+        return $this->confirmedAt;
+    }
 
-    public function setConfirmedAt(?CarbonImmutable $confirmedAt): void { $this->confirmedAt = $confirmedAt; }
+    public function setConfirmedAt(?CarbonImmutable $confirmedAt): void
+    {
+        $this->confirmedAt = $confirmedAt;
+    }
 
     // Convenience: E.164 string when needed (for SMS send)
     public function getE164(): ?string
@@ -73,36 +95,40 @@ class PhoneNumber
         return $util->format($proto, PhoneNumberFormat::E164);
     }
 
-    public function validatePhone(ExecutionContextInterface $ctx): void
+    #[Assert\Callback]
+    public function validatePhone(ExecutionContextInterface $ctx, mixed $payload = null): void
     {
         if ($this->prefix === null || $this->number === null) {
             return; // field-level NotBlank will handle empties
         }
 
-        // strip non-digits defensively
         $cc = (int) preg_replace('/\D+/', '', (string) $this->prefix);
         $nsn = (string) preg_replace('/\D+/', '', $this->number);
 
         if ($cc <= 0 || $nsn === '') {
-            $ctx->buildViolation('Enter a valid phone number.')->atPath('number')->addViolation();
+            $ctx->buildViolation('Enter a valid phone number.')
+                ->atPath('number')
+                ->addViolation();
             return;
         }
 
         try {
             $util = PhoneNumberUtil::getInstance();
-            $proto = $util->parse('+' . $cc . $nsn, 'ZZ'); // “unknown region” parse
+            $proto = $util->parse('+' . $cc . $nsn, 'ZZ');
 
             if (! $util->isValidNumber($proto)) {
-                $ctx->buildViolation('Enter a valid phone number.')->atPath('number')->addViolation();
+                $ctx->buildViolation('Enter a valid phone number.')
+                    ->atPath('number')
+                    ->addViolation();
                 return;
             }
 
-            // Normalize what you store:
-            $this->prefix = $proto->getCountryCode();                // e.g. 420
-            $this->number = (string) $proto->getNationalNumber();    // e.g. 777123456
-
+            $this->prefix = $proto->getCountryCode();
+            $this->number = (string) $proto->getNationalNumber();
         } catch (\Throwable) {
-            $ctx->buildViolation('Enter a valid phone number.')->atPath('number')->addViolation();
+            $ctx->buildViolation('Enter a valid phone number.')
+                ->atPath('number')
+                ->addViolation();
         }
     }
 

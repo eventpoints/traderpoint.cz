@@ -29,6 +29,9 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="card-body text-center text-muted pb-0">
+                            {{ include('partial/_social_register.html.twig') }}
+                        </div>
                         <div class="card-body vstack gap-2">
                             <div class="input-group">
                                 {{ form_row(traderForm.firstName) }}
@@ -37,9 +40,6 @@
                             {{ form_row(traderForm.email) }}
                             {{ form_row(traderForm.skills) }}
                             {{ form_row(traderForm.plainPassword) }}
-                        </div>
-                        <div class="card-body p-2 text-center text-muted">
-                            {{ include('partial/_social_register.html.twig') }}
                         </div>
                         <div class="card-footer border-top">
                             <div class="text-center mb-1 text-muted">{{ 'by-continuing-accept-terms'|trans(domain='terms') }} <a

@@ -23,7 +23,9 @@ final readonly class EmailVerificationService implements VerificationServiceInte
         private EmailService $emailService,
         #[Autowire('%env(OTP_DIGEST_KEY)%')]
         private string $otpDigestKeyRaw,
-    ) {}
+    )
+    {
+    }
 
     public function start(User $user, VerificationPurposeEnum $purpose, int $ttlMinutes = 10): VerificationResultDto
     {
@@ -52,7 +54,7 @@ final readonly class EmailVerificationService implements VerificationServiceInte
         $digest = hash_hmac('sha256', $submittedCode, $this->digestKey(), true);
         $verificationCode = $this->verificationCodeRepository->findActiveByDigestForEmail($user->getEmail(), $purpose, $digest);
 
-        if (! $verificationCode instanceof \App\Entity\VerificationCode) {
+        if (! $verificationCode instanceof VerificationCode) {
             return false;
         }
 
@@ -61,7 +63,10 @@ final readonly class EmailVerificationService implements VerificationServiceInte
         }
         $verificationCode->setAttempts($verificationCode->getAttempts() + 1);
 
-        if (! password_verify($submittedCode, $verificationCode->getCodeHash())) { $this->entityManager->flush(); return false; }
+        if (! password_verify($submittedCode, $verificationCode->getCodeHash())) {
+            $this->entityManager->flush();
+            return false;
+        }
 
         $verificationCode->setVerified(true);
         $this->entityManager->flush();

@@ -9,6 +9,7 @@ use App\DataTransferObject\UserTraderDto;
 use App\Entity\TraderProfile;
 use App\Entity\User;
 use App\Enum\UserRoleEnum;
+use App\Enum\UserTokenPurposeEnum;
 use App\Form\Form\RegistrationFormType;
 use App\Form\Form\TraderRegisterFormType;
 use App\Repository\UserRepository;
@@ -16,9 +17,13 @@ use App\Security\AppCustomAuthenticator;
 use App\Service\AvatarService\AvatarService;
 use App\Service\EmailService\EmailService;
 use App\Service\StandardPlanSubscriptionService;
+use App\Service\UserTokenService\UserTokenService;
+use App\Service\UserTokenService\UserTokenServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Stripe\Exception\ApiErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -36,6 +41,9 @@ class RegistrationController extends AbstractController
         private readonly UserPasswordHasherInterface $userPasswordHasher,
         private readonly EmailService $emailService,
         private readonly StandardPlanSubscriptionService $standardPlanSubscriptionService,
+        private readonly LoggerInterface $logger,
+        #[Autowire(service: UserTokenService::class)]
+        private readonly UserTokenServiceInterface $userTokenService,
     )
     {
     }
@@ -74,23 +82,18 @@ class RegistrationController extends AbstractController
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            if ($user->isTrader()) {
-                $this->emailService->sendTraderWelcomeEmail(user: $user, locale: $request->getLocale(), context: [
-                    'user' => $user,
-                    'token' => $user->getToken(),
-                ]);
-            } else {
-                $this->emailService->sendClientWelcomeEmail(user: $user, locale: $request->getLocale(), context: [
-                    'user' => $user,
-                    'token' => $user->getToken(),
-                ]);
-            }
+            $token = $this->userTokenService->issueToken(user: $user, purpose: UserTokenPurposeEnum::EMAIL_VERIFICATION);
+
+            $this->emailService->sendClientWelcomeEmail(user: $user, locale: $request->getLocale(), context: [
+                'user' => $user,
+                'token' => $token,
+            ]);
 
             return $userAuthenticator->authenticateUser($user, $authenticator, $request);
         }
 
         return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form->createView(),
+            'registrationForm' => $form,
         ]);
     }
 
@@ -103,7 +106,7 @@ class RegistrationController extends AbstractController
         UserAuthenticatorInterface $userAuthenticator,
         AppCustomAuthenticator $authenticator,
         #[CurrentUser]
-        null|User $currentUser,
+        null|User $currentUser
     ): ?Response
     {
         if ($currentUser instanceof User) {
@@ -149,6 +152,18 @@ class RegistrationController extends AbstractController
             $this->entityManager->flush();
 
             $this->standardPlanSubscriptionService->startStandardPlanTrial($user);
+            $token = $this->userTokenService->issueToken(user: $user, purpose: UserTokenPurposeEnum::EMAIL_VERIFICATION);
+
+            try {
+                $this->emailService->sendTraderWelcomeEmail(user: $user, locale: $request->getLocale(), context: [
+                    'user' => $user,
+                    'token' => $token,
+                ]);
+            } catch (TransportExceptionInterface $e) {
+                $this->logger->error('Failed to send welcome email', [
+                    'exception' => $e,
+                ]);
+            }
 
             return $userAuthenticator->authenticateUser($user, $authenticator, $request);
         }
@@ -157,7 +172,7 @@ class RegistrationController extends AbstractController
 
         return $this->render('registration/trader/register.html.twig', [
             'faqs' => $faqs,
-            'traderForm' => $form->createView(),
+            'traderForm' => $form,
         ]);
     }
 }

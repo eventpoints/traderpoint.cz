@@ -271,4 +271,5 @@ return array(
     'warranty-duration' => 'строк гарантії',
     'trader-information' => 'інформація про майстра',
     'phone' => 'телефон',
+    'i-do-not-have-an-account' => 'У мене немає облікового запису, зареєструйтесь зараз',
 );

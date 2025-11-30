@@ -9,20 +9,26 @@ use App\Entity\TraderProfile;
 use App\Entity\User;
 use App\Enum\OauthProviderEnum;
 use App\Enum\UserRoleEnum;
+use App\Enum\UserTokenPurposeEnum;
 use App\Service\AvatarService\AvatarService;
+use App\Service\EmailService\EmailService;
 use App\Service\StandardPlanSubscriptionService;
+use App\Service\UserTokenService\UserTokenService;
+use App\Service\UserTokenService\UserTokenServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
+use Psr\Log\LoggerInterface;
 use Random\RandomException;
 use Stripe\Exception\ApiErrorException;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -42,8 +48,11 @@ final class GoogleAuthenticator extends OAuth2Authenticator
         private readonly Security $security,
         private readonly RequestStack $requestStack,
         private readonly AvatarService $avatarService,
-        private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly StandardPlanSubscriptionService $standardPlanSubscriptionService,
+        private readonly EmailService $emailService,
+        private readonly LoggerInterface $logger,
+        #[Autowire(service: UserTokenService::class)]
+        private readonly UserTokenServiceInterface $userTokenService,
     )
     {
     }
@@ -59,11 +68,111 @@ final class GoogleAuthenticator extends OAuth2Authenticator
      */
     public function authenticate(Request $request): SelfValidatingPassport
     {
+
         $session = $this->requestStack->getSession();
-        $roleIntent = $session->get('oauth.intent.role'); // 'client'|'trader'|null
+        $roleIntent = $this->getRoleIntent($session); // 'client' | 'trader' | null
+
+        $data = $this->fetchGoogleUserData();
+        $subject = $data['subject'];
+        $email = $data['email'];
+        $emailVerified = $data['emailVerified'];
+        $displayName = $data['displayName'];
+        $avatarUrl = $data['avatarUrl'];
+        $scopes = $data['scopes'];
+        $raw = $data['raw'];
+
+        // 1) Known external identity -> login
+        $identityRepo = $this->em->getRepository(ExternalIdentity::class);
+        $identity = $identityRepo->findOneBy([
+            'oauthProviderEnum' => OauthProviderEnum::GOOGLE,
+            'subject' => $subject,
+        ]);
+
+        if ($identity instanceof ExternalIdentity) {
+            return $this->loginKnownIdentity($identity);
+        }
+
+        // 2) Linking while logged in
+        $currentUser = $this->security->getUser();
+        if ($currentUser instanceof User) {
+            return $this->linkIdentityForCurrentUser(
+                $currentUser,
+                $subject,
+                $emailVerified,
+                $displayName,
+                $avatarUrl,
+                $scopes
+            );
+        }
+
+        // 3) Sign-in / sign-up
+        $userRepo = $this->em->getRepository(User::class);
+        /** @var User|null $user */
+        $user = $userRepo->findOneBy([
+            'email' => $email,
+        ]);
+        $isNewAccount = false;
+
+        if (! $user instanceof User) {
+            $user = $this->createNewUserFromGoogle(
+                raw: $raw,
+                email: $email,
+                role: $roleIntent,
+                locale: $request->getLocale()
+            );
+            $this->em->persist($user);
+            $isNewAccount = true;
+        }
+
+        // If they came through the trader flow, start trial (new trader account)
+        if ($isNewAccount && $roleIntent === 'trader') {
+            $this->standardPlanSubscriptionService->startStandardPlanTrial($user);
+        }
+
+        $newIdentity = $this->createExternalIdentityEntity(
+            user: $user,
+            subject: $subject,
+            emailVerified: $emailVerified,
+            displayName: $displayName,
+            avatarUrl: $avatarUrl,
+            scopes: $scopes
+        );
+        $this->em->persist($newIdentity);
+        $this->em->flush();
+
+        $this->sendWelcomeEmailIfNeeded(
+            user: $user,
+            isNewAccount: $isNewAccount,
+            roleIntent: $roleIntent,
+            locale: $request->getLocale()
+        );
+
+        // Onboarding only for brand-new users
+        $session->set(
+            'oauth.post.onboard',
+            $isNewAccount ? ($roleIntent ?? 'client') : null
+        );
+
+        return new SelfValidatingPassport(
+            new UserBadge($user->getUserIdentifier(), fn(): object => $user)
+        );
+    }
+
+    private function getRoleIntent(SessionInterface $session): ?string
+    {
+        $roleIntent = $session->get('oauth.intent.role');
+        // 'client'|'trader'|null
         $session->remove('oauth.intent.role');
         $session->remove('oauth.intent.source');
 
+        return is_string($roleIntent) ? $roleIntent : null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function fetchGoogleUserData(): array
+    {
         $client = $this->clients->getClient('google');
         /** @var ResourceOwnerInterface $owner */
         $owner = $client->fetchUser();
@@ -86,95 +195,130 @@ final class GoogleAuthenticator extends OAuth2Authenticator
                 is_string($raw['family_name'] ?? null) ? $raw['family_name'] : null,
             ]))
         )) ?: null;
+
         $avatarUrl = is_string($raw['picture'] ?? null) ? $raw['picture'] : null;
+
         $scopes = isset($raw['scope'])
-            ? (is_array($raw['scope']) ? $raw['scope'] : array_values(array_filter(explode(' ', (string) $raw['scope']))))
+            ? (is_array($raw['scope'])
+                ? $raw['scope']
+                : array_values(array_filter(explode(' ', (string) $raw['scope']))))
             : [];
 
-        // 1) Known external identity -> login
-        $identity = $this->em->getRepository(ExternalIdentity::class)->findOneBy([
-            'oauthProviderEnum' => OauthProviderEnum::GOOGLE,
+        return [
             'subject' => $subject,
-        ]);
-        if ($identity instanceof ExternalIdentity) {
-            $identity->updateLastLogin();
-            $this->em->flush();
-            $u = $identity->getUser();
-            return new SelfValidatingPassport(new UserBadge($u->getUserIdentifier(), fn(): \App\Entity\User => $u));
-        }
-
-        // 2) Linking while logged in
-        $currentUser = $this->security->getUser();
-        if ($currentUser instanceof User) {
-            $newIdentity = new ExternalIdentity(
-                $currentUser,
-                OauthProviderEnum::GOOGLE,
-                $subject,
-                $emailVerified,
-                $displayName,
-                $avatarUrl,
-                $scopes
-            );
-            $newIdentity->updateLastLogin();
-            $this->em->persist($newIdentity);
-            $this->em->flush();
-
-            return new SelfValidatingPassport(new UserBadge($currentUser->getUserIdentifier(), fn(): \App\Entity\User => $currentUser));
-        }
-
-        // 3) Sign-in/up
-        $userRepo = $this->em->getRepository(User::class);
-        $user = $userRepo->findOneBy([
             'email' => $email,
-        ]);
-        $created = false;
-        $upgradedToTrader = false;
+            'emailVerified' => $emailVerified,
+            'displayName' => $displayName,
+            'avatarUrl' => $avatarUrl,
+            'scopes' => $scopes,
+            'raw' => $raw,
+        ];
+    }
 
-        if ($user === null) {
-            $user = new User();
-            $user->setEmail($email);
-            $user->setFirstName($raw['given_name']);
-            $user->setLastName($raw['family_name'] ?? $raw['given_name']);
-            $user->setAvatar($this->avatarService->generate($email));
-            $user->setPreferredLanguage($request->getLocale());
-            // If password column is NOT NULL, set an unusable random hash
-            if ($user->getPassword() === null) {
-                $user->setPassword($this->passwordHasher->hashPassword($user, bin2hex(random_bytes(32))));
-            }
-            if ($roleIntent === 'trader') {
-                $roles = $user->getRoles();
-                if (! in_array(UserRoleEnum::ROLE_TRADER->name, $roles, true)) {
-                    $roles[] = UserRoleEnum::ROLE_TRADER->name;
-                    $user->setRoles($roles);
-                }
-                $profile = new TraderProfile();
-                $profile->setOwner($user);
-                $user->setTraderProfile($profile);
-            }
-            $this->em->persist($user);
-            $created = true;
-        } elseif ($roleIntent === 'trader' && ! $user->isTrader()) {
-            // Upgrade if trader intent
-            $roles = $user->getRoles();
-            if (! in_array(UserRoleEnum::ROLE_TRADER->name, $roles, true)) {
-                $roles[] = UserRoleEnum::ROLE_TRADER->name;
-                $user->setRoles($roles);
-            }
-            if ($user->getTraderProfile() === null) {
-                $profile = new TraderProfile();
-                $profile->setOwner($user);
-                $user->setTraderProfile($profile);
-            }
-            $upgradedToTrader = true;
+    private function loginKnownIdentity(ExternalIdentity $identity): SelfValidatingPassport
+    {
+        $identity->updateLastLogin();
+        $this->em->flush();
 
-            $this->em->persist($user);
+        $user = $identity->getUser();
+
+        return new SelfValidatingPassport(
+            new UserBadge($user->getUserIdentifier(), fn(): User => $user)
+        );
+    }
+
+    /**
+     * @param array<int,string> $scopes
+     */
+    private function linkIdentityForCurrentUser(
+        User $currentUser,
+        string $subject,
+        bool $emailVerified,
+        ?string $displayName,
+        ?string $avatarUrl,
+        array $scopes
+    ): SelfValidatingPassport
+    {
+        $newIdentity = $this->createExternalIdentityEntity(
+            user: $currentUser,
+            subject: $subject,
+            emailVerified: $emailVerified,
+            displayName: $displayName,
+            avatarUrl: $avatarUrl,
+            scopes: $scopes
+        );
+
+        $this->em->persist($newIdentity);
+        $this->em->flush();
+
+        return new SelfValidatingPassport(
+            new UserBadge($currentUser->getUserIdentifier(), fn(): User => $currentUser)
+        );
+    }
+
+    /**
+     * @param array<int, string> $raw
+     */
+    private function createNewUserFromGoogle(
+        array $raw,
+        string $email,
+        ?string $role,
+        string $locale
+    ): User
+    {
+        $user = new User();
+        $user->setEmail($email);
+        $user->setFirstName($raw['given_name'] ?? '');
+        $user->setLastName($raw['family_name'] ?? ($raw['given_name'] ?? ''));
+        $user->setAvatar($this->avatarService->generate($email));
+        $user->setPreferredLanguage($locale);
+
+        if ($role === 'trader') {
+            $this->setupTraderAccount($user);
+        } else {
+            $this->setupClientAccount($user);
         }
 
-        if ($roleIntent === 'trader') {
-            $this->standardPlanSubscriptionService->startStandardPlanTrial($user);
+        return $user;
+    }
+
+    private function setupTraderAccount(User $user): void
+    {
+        $roles = $user->getRoles();
+        if (! in_array(UserRoleEnum::ROLE_TRADER->name, $roles, true)) {
+            $roles[] = UserRoleEnum::ROLE_TRADER->name;
+            $user->setRoles($roles);
         }
 
-        $newIdentity = new ExternalIdentity(
+        if (! $user->getTraderProfile() instanceof \App\Entity\TraderProfile) {
+            $profile = new TraderProfile();
+            $profile->setOwner($user);
+            $user->setTraderProfile($profile);
+        }
+    }
+
+    private function setupClientAccount(User $user): void
+    {
+        $roles = $user->getRoles();
+        if (! in_array(UserRoleEnum::ROLE_USER->name, $roles, true)) {
+            $roles[] = UserRoleEnum::ROLE_USER->name;
+            $user->setRoles($roles);
+        }
+    }
+
+    /**
+     * @param array<int, string> $scopes
+     */
+    private function createExternalIdentityEntity(
+        User $user,
+        string $subject,
+        bool $emailVerified,
+        ?string $displayName,
+        ?string $avatarUrl,
+        array $scopes
+    ): ExternalIdentity
+    {
+        $identity = new ExternalIdentity(
             $user,
             OauthProviderEnum::GOOGLE,
             $subject,
@@ -183,18 +327,49 @@ final class GoogleAuthenticator extends OAuth2Authenticator
             $avatarUrl,
             $scopes
         );
-        $newIdentity->updateLastLogin();
+        $identity->updateLastLogin();
 
-        $this->em->persist($newIdentity);
-        $this->em->flush();
+        return $identity;
+    }
 
-        // Onboarding only for brand-new users (or upgrade to trader)
-        $session->set(
-            'oauth.post.onboard',
-            $created ? ($roleIntent ?? 'client') : ($upgradedToTrader ? 'trader' : null)
-        );
+    private function sendWelcomeEmailIfNeeded(
+        User $user,
+        bool $isNewAccount,
+        ?string $roleIntent,
+        string $locale
+    ): void
+    {
 
-        return new SelfValidatingPassport(new UserBadge($user->getUserIdentifier(), fn(): object => $user));
+        if (! $isNewAccount) {
+            return;
+        }
+
+        $this->logger->info('Sending welcome email after Google signup', [
+            'email' => $user->getEmail(),
+            'roleIntent' => $roleIntent,
+        ]);
+
+        $token = $this->userTokenService->issueToken(user: $user, purpose: UserTokenPurposeEnum::EMAIL_VERIFICATION);
+
+        if ($roleIntent === 'trader') {
+            $this->emailService->sendTraderWelcomeEmail(
+                user: $user,
+                locale: $locale,
+                context: [
+                    'user' => $user,
+                    'token' => $token,
+                ],
+            );
+        } else {
+            $this->emailService->sendClientWelcomeEmail(
+                user: $user,
+                locale: $locale,
+                context: [
+                    'user' => $user,
+                    'token' => $token,
+                ],
+            );
+        }
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?RedirectResponse

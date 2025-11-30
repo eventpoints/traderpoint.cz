@@ -46,13 +46,18 @@ final readonly class PhoneVerificationService implements VerificationServiceInte
             expiresAt:        $expiresAt
         );
         $vc->setLastSentAt(CarbonImmutable::now());
-
         $this->em->persist($vc);
         $this->em->flush();
 
-        $this->smsSender->send($phone->getPhoneNumberWithPrefix(), $this->formatMessage($code, $ttlMinutes));
+        $this->smsSender->send(
+            $phone->getPhoneNumberWithPrefix(),
+            $this->formatMessage($code, $ttlMinutes)
+        );
 
-        return new VerificationResultDto(destination: $phone->getPhoneNumberWithPrefix(), expiresAt: $expiresAt);
+        return new VerificationResultDto(
+            destination: $phone->getPhoneNumberWithPrefix(),
+            expiresAt:   $expiresAt
+        );
     }
 
     public function verify(

@@ -41,6 +41,7 @@ final class UserFixtures extends Fixture implements DependentFixtureInterface
             $user->setAvatar($avatar);
             $user->setVerifiedAt(CarbonImmutable::now());
             $user->setPassword($this->passwordHasher->hashPassword($user, self::FAKE_USER_PASSWORD));
+            $user->setPasswordSetAt(CarbonImmutable::now());
 
             $phoneNumber = new PhoneNumber();
             $phoneNumber->setPrefix('420');

@@ -77,10 +77,10 @@ final readonly class EmailService
      * @param array<mixed> $context
      * @throws TransportExceptionInterface
      */
-    public function sendEngagementMatchAlertEmail(User $user, string $locale = 'en', array $context = []): void
+    public function sendEngagementMatchEmail(User $user, string $locale = 'en', array $context = []): void
     {
         $this->send(
-            subject: $this->translator->trans(id: 'email.trader.engagment.match', parameters: [
+            subject: $this->translator->trans(id: 'email.trader.engagement.match', parameters: [
                 'firstName' => $user->getFirstName(),
             ], domain: 'email'),
             template: '/email/trader/lead.html.twig',
@@ -101,6 +101,23 @@ final readonly class EmailService
                 'firstName' => $user->getFirstName(),
             ], domain: 'email'),
             template: '/email/client/quote.html.twig',
+            emailAddress: $user->getEmail(),
+            context: $context,
+            locale: $locale
+        );
+    }
+
+    /**
+     * @param array<mixed> $context
+     * @throws TransportExceptionInterface
+     */
+    public function sendPasswordResetEmail(User $user, string $locale = 'en', array $context = []): void
+    {
+        $this->send(
+            subject: $this->translator->trans(id: 'password-reset', parameters: [
+                'firstName' => $user->getFirstName(),
+            ], domain: 'email'),
+            template: '/email/security/password-reset.html.twig',
             emailAddress: $user->getEmail(),
             context: $context,
             locale: $locale

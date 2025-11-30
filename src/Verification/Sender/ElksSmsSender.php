@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\Verification\Sender;
 
 use App\Enum\VerificationTypeEnum;
+use App\Exception\SmsSendFailedException;
 use App\Verification\Contract\VerificationSenderInterface;
-use RuntimeException;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Throwable;
 
 #[AsTaggedItem('app.verification_sender')]
 final readonly class ElksSmsSender implements VerificationSenderInterface
@@ -26,17 +27,20 @@ final readonly class ElksSmsSender implements VerificationSenderInterface
 
     public function send(string $toE164, string $message): void
     {
-        $from = 'TraderPoint';
-        $res = $this->httpClient->request('POST', 'sms', [
-            'body' => [
-                'from' => $from,
-                'to' => $toE164,
-                'message' => $message,
-            ],
-        ]);
+        try {
+            $res = $this->httpClient->request('POST', 'sms', [
+                'body' => [
+                    'from' => 'TraderPoint',
+                    'to' => $toE164,
+                    'message' => $message,
+                ],
+            ]);
+        } catch (Throwable $e) {
+            throw new SmsSendFailedException('46elks request failed', 0, $e);
+        }
 
         if (! in_array($res->getStatusCode(), [200, 201], true)) {
-            throw new RuntimeException('46elks send failed: ' . $res->getContent(false));
+            throw new SmsSendFailedException('46elks send failed, status ' . $res->getStatusCode());
         }
     }
 }

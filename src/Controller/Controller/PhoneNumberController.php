@@ -6,6 +6,7 @@ use App\Entity\PhoneNumber;
 use App\Entity\User;
 use App\Enum\FlashEnum;
 use App\Enum\VerificationPurposeEnum;
+use App\Exception\SmsSendFailedException;
 use App\Form\Type\PhoneNumberType;
 use App\Repository\UserRepository;
 use App\Service\VerificationService\PhoneVerificationService;
@@ -42,20 +43,26 @@ class PhoneNumberController extends AbstractController
             $currentUser->setPhoneNumber($phone);
             $this->userRepository->save($currentUser, true);
 
-            // Send OTP for phone verification
-            $this->phoneVerificationService->start(
-                $phone,
-                VerificationPurposeEnum::ENGAGEMENT_POSTING,
-            );
+            try {
+                $this->phoneVerificationService->start(
+                    $phone,
+                    VerificationPurposeEnum::ENGAGEMENT_POSTING,
+                );
+            } catch (SmsSendFailedException) {
+                $this->addFlash(
+                    FlashEnum::ERROR->value,
+                    $this->translator->trans('phone_verification.sms_failed', [], 'validators')
+                );
+
+                return $this->redirectToRoute('create_phone_number');
+            }
 
             $this->addFlash(FlashEnum::INFO->value, $this->translator->trans('We sent you a code by SMS.'));
             return $this->redirectToRoute('phone_verification');
         }
 
-        $phoneFormView = $phoneForm->createView();
-
         return $this->render('phone/create.html.twig', [
-            'phoneForm' => $phoneFormView,
+            'phoneForm' => $phoneForm,
         ]);
     }
 }

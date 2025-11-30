@@ -3,22 +3,31 @@
 namespace App\Controller\Controller;
 
 use App\DataTransferObject\LoginFormDto;
+use App\DataTransferObject\PasswordResetDto;
 use App\Entity\User;
+use App\Entity\UserToken;
 use App\Enum\FlashEnum;
+use App\Enum\UserTokenPurposeEnum;
 use App\Form\Form\LoginFormType;
 use App\Form\Form\PasswordFormType;
+use App\Form\Form\PasswordResetFormType;
 use App\Repository\UserRepository;
+use App\Service\EmailService\EmailService;
+use App\Service\UserTokenService\UserTokenService;
+use App\Service\UserTokenService\UserTokenServiceInterface;
 use Carbon\CarbonImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SecurityController extends AbstractController
@@ -27,6 +36,10 @@ class SecurityController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly UserRepository $userRepository,
+        private readonly EmailService $emailService,
+        #[Autowire(service: UserTokenService::class)]
+        private readonly UserTokenServiceInterface $userTokenService,
+        private readonly LoggerInterface $logger,
     )
     {
     }
@@ -52,7 +65,7 @@ class SecurityController extends AbstractController
         );
 
         return $this->render('security/login.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'error' => $error,
         ]);
     }
@@ -66,51 +79,81 @@ class SecurityController extends AbstractController
     #[Route('/verify/email/{token}', name: 'verify_email')]
     public function verifyEmail(
         #[MapEntity(mapping: [
-            'token' => 'token',
+            'token' => 'value',
         ])]
-        null|User $user = null
+        ?UserToken $token = null
     ): Response
     {
-        if (! $user instanceof User) {
-            $this->addFlash(FlashEnum::WARNING->value, $this->translator->trans(id: 'flash.sceptical-issue', domain: 'flash'));
+        if (
+            ! $token instanceof UserToken
+            || ! $token->isActive()
+            || $token->getPurpose() !== UserTokenPurposeEnum::EMAIL_VERIFICATION
+        ) {
+            $this->addFlash(
+                FlashEnum::WARNING->value,
+                $this->translator->trans('flash.sceptical-issue', [], 'flash')
+            );
+
             return $this->redirectToRoute('app_login');
         }
 
+        $user = $token->getUser();
+
         $user->setVerifiedAt(CarbonImmutable::now());
-        $user->setToken(Uuid::v7());
-        $this->userRepository->save(entity: $user, flush: true);
-        $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans(id: 'flash.email-address-confirmed', domain: 'flash'));
+        $this->userTokenService->consume($token);
 
-        if ($user->isTrader()) {
-            return $this->redirectToRoute('trader_dashboard');
-        }
+        $this->userRepository->save($user, true);
 
-        return $this->redirectToRoute('client_dashboard');
+        $this->addFlash(
+            FlashEnum::SUCCESS->value,
+            $this->translator->trans('flash.email-address-confirmed', [], 'flash')
+        );
+
+        return $this->redirectToRoute(
+            $user->isTrader() ? 'trader_dashboard' : 'client_dashboard'
+        );
     }
 
-    #[Route('/user/set-password', name: 'user_set_password')]
+    #[Route('/user/set-password/{token}', name: 'user_set_password')]
     public function setPassword(
         Request $request,
         UserPasswordHasherInterface $hasher,
-        #[CurrentUser]
-        User $currentUser
+        #[MapEntity(mapping: [
+            'token' => 'value',
+        ])]
+        ?UserToken $userToken = null,
     ): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        if (! $userToken instanceof UserToken
+            || ! $userToken->isActive()
+            || $userToken->getPurpose() !== UserTokenPurposeEnum::PASSWORD_SETUP
+        ) {
+            $this->addFlash(FlashEnum::ERROR->value, 'security.something-went-wrong');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $user = $userToken->getUser();
 
         $passwordForm = $this->createForm(PasswordFormType::class);
         $passwordForm->handleRequest($request);
 
         if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
             $plain = (string) $passwordForm->get('plainPassword')->getData();
-            $currentUser->setPassword($hasher->hashPassword($currentUser, $plain));
+            $user->setPassword($hasher->hashPassword($user, $plain));
 
-            if (method_exists($currentUser, 'setPasswordSetAt')) {
-                $currentUser->setPasswordSetAt(CarbonImmutable::now());
-            }
+            $user->setPasswordSetAt(CarbonImmutable::now());
+
+            $this->userTokenService->consumeAllForUserAndPurpose(
+                user: $user,
+                purpose: UserTokenPurposeEnum::PASSWORD_SETUP
+            );
 
             $this->entityManager->flush();
-            $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans(id: 'flash.password-changed', domain: 'flash'));
+
+            $this->addFlash(
+                FlashEnum::SUCCESS->value,
+                $this->translator->trans('flash.password-changed', [], 'flash')
+            );
 
             $target = $request->getSession()->get('post_set_password_target') ?? '/';
             return $this->redirect($target);
@@ -118,6 +161,52 @@ class SecurityController extends AbstractController
 
         return $this->render('user/set_password.html.twig', [
             'passwordForm' => $passwordForm,
+        ]);
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    #[Route(path: '/password-reset', name: 'request_password_reset')]
+    public function passwordReset(Request $request): Response
+    {
+        $passwordResetForm = $this->createForm(PasswordResetFormType::class);
+
+        $passwordResetForm->handleRequest($request);
+        if ($passwordResetForm->isSubmitted() && $passwordResetForm->isValid()) {
+            /** @var PasswordResetDto $passwordResetDto */
+            $passwordResetDto = $passwordResetForm->getData();
+
+            $user = $this->userRepository->findOneBy([
+                'email' => $passwordResetDto->getEmail(),
+            ]);
+
+            if (! $user instanceof User) {
+                $this->addFlash(FlashEnum::ERROR->value, 'security.something-went-wrong');
+                return $this->redirectToRoute('app_login');
+            }
+
+            $token = $this->userTokenService->issueToken(
+                user: $user,
+                purpose: UserTokenPurposeEnum::PASSWORD_RESET,
+            );
+
+            try{
+                $this->emailService->sendPasswordResetEmail(user: $user, locale: $request->getLocale(), context: [
+                    'user' => $user,
+                    'token' => $token,
+                ]);
+            }catch (TransportExceptionInterface $transportException){
+                $this->logger->error('Failed to send password reset email: ' . $transportException->getMessage());
+            }
+
+            $this->addFlash(FlashEnum::SUCCESS->value, 'security.password-reset-email-sent');
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('security/password_reset.html.twig', [
+            'passwordResetForm' => $passwordResetForm,
         ]);
     }
 }

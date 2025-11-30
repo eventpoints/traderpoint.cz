@@ -72,7 +72,7 @@ class VerificationController extends AbstractController
                 $codeForm->get('code')->addError(new FormError('Invalid or expired code.'));
             }
 
-            $codeFormView = $codeForm->createView();
+            $codeFormView = $codeForm;
 
             return $this->render('verification/index.html.twig', [
                 'phoneForm' => $phoneFormView,

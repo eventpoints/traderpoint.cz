@@ -5,9 +5,10 @@ services:
     volumes:
       - .:/app:cached
       - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/php/zz-opcache-dev.ini:/usr/local/etc/php/conf.d/zz-opcache-dev.ini
     healthcheck:
       # expects /app/php/docker-healthcheck.sh to ping 127.0.0.1:9000
-      test: ["CMD-SHELL", "/app/php/docker-healthcheck.sh"]
+      test: [ "CMD-SHELL", "/app/php/docker-healthcheck.sh" ]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -26,7 +27,7 @@ services:
       MERCURE_PUBLISHER_JWT_KEY: secret
       MERCURE_SUBSCRIBER_JWT_KEY: secret
     volumes:
-      - .:/app:ro        # <-- serve /app/public inside the caddy container
+      - .:/app:ro
       - caddy_data:/data
       - caddy_config:/config
     ports:

@@ -432,6 +432,10 @@ class Quote implements \Stringable
 
     public function isAfterStart(): bool
     {
+        if(! $this->getStartAt() instanceof \Carbon\CarbonImmutable){
+            return false;
+        }
+
         return CarbonImmutable::now()->greaterThanOrEqualTo($this->getStartAt());
     }
 }

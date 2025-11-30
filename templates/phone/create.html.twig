@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}{{ 'add-your-phone'|trans }}{% endblock %}
 
 {% block body %}
     <div class="container">
@@ -17,7 +17,7 @@
                         {{ form_row(phoneForm) }}
                     </div>
                     <div class="mt-3 d-grid">
-                        <button class="btn btn-primary">
+                        <button data-turbo="false"  class="btn btn-primary">
                             {{ 'send-code'|trans({}) }}
                         </button>
                     </div>

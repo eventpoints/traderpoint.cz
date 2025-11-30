@@ -37,17 +37,17 @@ final readonly class JwtQrTokenFactory
         $builder = $builder
             ->issuedBy($this->issuer)
             ->issuedAt($now)
-            ->canOnlyBeUsedAfter($now->modify('-30 seconds')) // clock skew tolerance
+            ->canOnlyBeUsedAfter($now->modify('-30 seconds'))
             ->expiresAt($now->modify(sprintf('+%d seconds', $this->ttlSeconds)))
             ->relatedTo($userUuid)
             ->identifiedBy(Uuid::v7()->toRfc4122());
 
         if ($this->audience) {
-            $builder = $builder->permittedFor($this->audience); // add aud
+            $builder = $builder->permittedFor($this->audience);
         }
 
         if ($this->kid) {
-            $builder = $builder->withHeader('kid', $this->kid); // add kid header
+            $builder = $builder->withHeader('kid', $this->kid);
         }
 
         return $builder->getToken($signer, $key)->toString();

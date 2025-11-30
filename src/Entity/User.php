@@ -22,8 +22,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, \Stringable
 {
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private Uuid $token;
+    /**
+     * @var \Symfony\Component\Uid\UuidV7
+     */
+    public $token;
 
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -132,6 +134,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     )]
     private ?UserNotificationSettings $notificationSettings = null;
 
+    /**
+     * @var ArrayCollection<int, UserToken> $tokens
+     */
+    #[ORM\OneToMany(targetEntity: UserToken::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $tokens;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -142,6 +150,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         $this->createdAt = new CarbonImmutable();
         $this->externalIdentities = new ArrayCollection();
         $this->reactions = new ArrayCollection();
+        $this->tokens = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -177,9 +186,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        $roles[] = UserRoleEnum::ROLE_USER->name;
-        return array_values(array_unique($roles));
+        return array_values(array_unique($this->roles));
     }
 
     /**
@@ -308,16 +315,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function eraseCredentials(): void
     {
-    }
-
-    public function getToken(): Uuid
-    {
-        return $this->token;
-    }
-
-    public function setToken(Uuid $token): void
-    {
-        $this->token = $token;
     }
 
     public function getPhoneNumber(): ?PhoneNumber
@@ -452,9 +449,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         $this->passwordSetAt = $passwordSetAt;
     }
 
-    public function hasPassword(): bool
+    public function isPasswordEmpty(): bool
     {
-        return $this->password !== null && $this->password !== '' && $this->password !== '0';
+        return $this->password === null || $this->password === '' || $this->password === '0';
     }
 
     public function getStripeProfile(): ?StripeProfile
@@ -499,6 +496,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     public function setNotificationSettings(null|UserNotificationSettings $notificationSettings): void
     {
         $this->notificationSettings = $notificationSettings;
+    }
+
+    /**
+     * @return Collection<int, UserToken>
+     */
+    public function getTokens(): Collection
+    {
+        return $this->tokens;
+    }
+
+    public function addToken(UserToken $userToken): self
+    {
+        if (! $this->tokens->contains($userToken)) {
+            $this->tokens->add($userToken);
+            $userToken->setUser($this);
+        }
+        return $this;
+    }
+
+    public function removeToken(UserToken $userToken): self
+    {
+        $this->tokens->removeElement($userToken);
+        return $this;
     }
 }
 

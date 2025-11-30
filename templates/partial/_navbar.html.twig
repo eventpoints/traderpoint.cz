@@ -15,9 +15,22 @@
                     <a class="nav-link fw-bold" type="button" data-bs-toggle="offcanvas"
                        data-bs-target="#user-menu-offcanvas" aria-controls="user-menu-offcanvas"
                        aria-label="Toggle navigation">
-                        {{ ux_icon('mdi:user-circle-outline', {style: 'height: 2em;'}) }}
+                        {{ ux_icon('mdi:menu', {style: 'height: 2em;'}) }}
                     </a>
                 </li>
+                {% if app.user.isTrader %}
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold" type="button" href="{{ path('trader_dashboard') }}">
+                            {{ ux_icon('mdi:user-circle-outline', {style: 'height: 2em;'}) }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold" type="button" href="{{ path('client_dashboard') }}">
+                            {{ ux_icon('mdi:user-circle-outline', {style: 'height: 2em;'}) }}
+                        </a>
+                    </li>
+                {% endif %}
             {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_login') }}">
@@ -78,21 +91,35 @@
                 </div>
             </div>
         </div>
-        <div class="list-group list-group-flush fs-5">
+        <div class="list-group list-group-flush">
             {% if app.user.isTrader %}
-                <a class="list-group-item list-group-item-action {{ app.locale == 'trader_dashboard' ? 'active' }}"
-                   href="{{ path('trader_dashboard') }}">{{ 'dashboard'|trans|title }}</a>
-                <a class="list-group-item list-group-item-action {{ app.locale == 'trader_quotes' ? 'active' }}"
-                   href="{{ path('trader_quotes') }}">{{ 'quotes-sent'|trans|title }}</a>
-
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ app.locale == 'trader_dashboard' ? 'active' }}"
+                   href="{{ path('trader_dashboard') }}">
+                    {{ 'dashboard'|trans|title }}
+                    {{ ux_icon('mdi:user-circle-outline', {style: 'height: 1.5em;'}) }}
+                </a>
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ app.locale == 'trader_quotes' ? 'active' }}"
+                   href="{{ path('trader_quotes') }}">
+                    {{ 'quotes-sent'|trans|title }}
+                    {{ ux_icon('mdi:invoice-text-send-outline', {style: 'height: 1.5em;'}) }}
+                </a>
             {% else %}
-                <a class="list-group-item list-group-item-action {{ app.locale == 'client_dashboard' ? 'active' }}"
-                   href="{{ path('client_dashboard') }}">{{ 'dashboard'|trans|title }}</a>
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ app.locale == 'client_dashboard' ? 'active' }}"
+                   href="{{ path('client_dashboard') }}">
+                    {{ 'dashboard'|trans|title }}
+                    {{ ux_icon('mdi:user-circle-outline', {style: 'height: 1.5em;'}) }}
+                </a>
             {% endif %}
-                <a class="list-group-item list-group-item-action {{ app.locale == 'user_account' ? 'active' }}"
-                   href="{{ path('user_account') }}">{{ 'account'|trans|title }}</a>
-            <a class="list-group-item text-danger list-group-item-action"
-               href="{{ path('app_logout') }}">{{ 'logout'|trans|title }}</a>
+            <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ app.locale == 'user_account' ? 'active' }}"
+               href="{{ path('user_account') }}">
+                {{ 'account'|trans|title }}
+                {{ ux_icon('mdi:cog-outline', {style: 'height: 1.5em;'}) }}
+            </a>
+            <a class="list-group-item text-danger list-group-item-action d-flex justify-content-between align-items-center"
+               href="{{ path('app_logout') }}">
+                {{ 'logout'|trans|title }}
+                {{ ux_icon('mdi:location-exit', {style: 'height: 1.5em;'}) }}
+            </a>
         </div>
     </div>
 {% endif %}

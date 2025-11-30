@@ -46,7 +46,7 @@ class PaywallController extends AbstractController
             'user' => $user,
             'profile' => $profile,
             'reason' => $reason,
-            'cardPaymentForm' => $form->createView(),
+            'cardPaymentForm' => $form,
             'stripe_public_key' => $this->stripePublicKey,
             'setup_intent_client_secret' => $setupIntent->client_secret,
         ]);

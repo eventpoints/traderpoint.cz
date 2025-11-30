@@ -1,6 +1,5 @@
 <?php
 
-// src/EventListener/RequirePhoneListener.php
 declare(strict_types=1);
 
 namespace App\Event\Subscriber;
@@ -34,7 +33,6 @@ final readonly class RequirePhoneSubscriber
         $request = $event->getRequest();
         $route = (string) $request->attributes->get('_route', '');
 
-        // skip public/dev/api routes to avoid loops or breaking APIs
         if (
             $route === '' ||
             \in_array($route, [
@@ -43,7 +41,8 @@ final readonly class RequirePhoneSubscriber
                 'app_register',
                 'create_phone_number',
                 'phone_verification',
-                'user_set_password', // add this too for safety / clarity
+                'user_set_password',
+                'verify_email',
             ], true) ||
             str_starts_with($route, '_profiler') ||
             str_starts_with($route, '_wdt') ||
@@ -61,14 +60,14 @@ final readonly class RequirePhoneSubscriber
             return;
         }
 
-        if (! $user->hasPassword()) {
+        if ($user->isPasswordEmpty()) {
             return;
         }
 
         $phone = $user->getPhoneNumber();
 
         if (! $phone instanceof PhoneNumber) {
-            $event->setController(fn(): \Symfony\Component\HttpFoundation\RedirectResponse => new RedirectResponse(
+            $event->setController(fn(): RedirectResponse => new RedirectResponse(
                 $this->urls->generate('create_phone_number', [
                     'return' => $request->getRequestUri(),
                 ]),
@@ -78,7 +77,7 @@ final readonly class RequirePhoneSubscriber
         }
 
         if (! $phone->getConfirmedAt() instanceof CarbonImmutable) {
-            $event->setController(fn(): \Symfony\Component\HttpFoundation\RedirectResponse => new RedirectResponse(
+            $event->setController(fn(): RedirectResponse => new RedirectResponse(
                 $this->urls->generate('phone_verification', [
                     'return' => $request->getRequestUri(),
                 ]),

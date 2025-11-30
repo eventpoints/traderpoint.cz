@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Entity\User;
 use App\Enum\RolesEnum;
-use App\Security\Social\FacebookAuthenticator;
 use App\Security\Social\GoogleAuthenticator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -44,7 +43,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
                 'custom_authenticators' => [
                     GoogleAuthenticator::class,
-                    FacebookAuthenticator::class,
                 ],
                 'entry_point' => 'form_login',
                 'logout' => [
@@ -66,6 +64,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         'access_control' => [
             [
                 'path' => '^/login',
+                'roles' => RolesEnum::PUBLIC_ACCESS->value,
+            ],
+            [
+                'path' => '^/user/set-password',
                 'roles' => RolesEnum::PUBLIC_ACCESS->value,
             ],
             [

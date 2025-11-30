@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace App\Event\Subscriber;
 
 use App\Entity\User;
+use App\Entity\UserToken;
+use App\Enum\UserTokenPurposeEnum;
+use App\Service\UserTokenService\UserTokenService;
+use App\Service\UserTokenService\UserTokenServiceInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -18,6 +23,8 @@ final readonly class ForcePasswordSetListener
     public function __construct(
         private Security $security,
         private RouterInterface $router,
+        #[Autowire(service: UserTokenService::class)]
+        private UserTokenServiceInterface $userTokenService,
     )
     {
     }
@@ -32,11 +39,11 @@ final readonly class ForcePasswordSetListener
         $user = $this->security->getUser();
 
         if (! $user instanceof User) {
-            return; // not logged in
+            return;
         }
 
-        if ($user->hasPassword()) {
-            return; // password already set, all good
+        if (! $user->isPasswordEmpty()) {
+            return;
         }
 
         $route = $request->attributes->get('_route');
@@ -49,9 +56,10 @@ final readonly class ForcePasswordSetListener
             'app_login',
             'oauth_google_check',
             'oauth_facebook_check',
+            'verify_email',
         ];
 
-        if (\in_array($route, $whitelist, true)) {
+        if (in_array($route, $whitelist, true)) {
             return;
         }
 
@@ -75,8 +83,16 @@ final readonly class ForcePasswordSetListener
             );
         }
 
+        $userToken = $this->userTokenService->findLatestActiveByUserAndPurpose(user: $user, purpose: UserTokenPurposeEnum::PASSWORD_SETUP);
+
+        if (! $userToken instanceof UserToken) {
+            $userToken = $this->userTokenService->issueToken(user: $user, purpose: UserTokenPurposeEnum::PASSWORD_SETUP);
+        }
+
         $event->setResponse(
-            new RedirectResponse($this->router->generate('user_set_password'))
+            new RedirectResponse($this->router->generate('user_set_password', [
+                'token' => $userToken->getValue(),
+            ]))
         );
     }
 }
