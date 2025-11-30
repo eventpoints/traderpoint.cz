@@ -12,7 +12,7 @@ return array(
     'quotation-received-content' => 'Na vaši zakázku „{title}“ přišla nová nabídka ve výši {amount} od {owner}.',
     'view-quote' => 'Zobrazit nabídku',
     'trader-job-match' => 'Nová shoda zakázky: {title}',
-    'trader-job-match-content' => 's rozpočtem {budget}, ve vzdálenosti {distance} od vás a odpovídá vašim dovednostem. Otevřete, prohlédněte a odešlete nabídku.',
+    'trader-job-match-content' => 's rozpočtem {budget}, ve vzdálenosti {distance} od vás a odpovídá vašim dovednostem. Otevřete, prohlédněte a odešlete cínovou nabídku.',
     'view-job' => 'Zobrazit zakázku',
     'nice-try' => 'Pěkný pokus! 😉',
     'email.client.subject.verify-email-address' => 'Ověřte svou e-mailovou adresu',
@@ -20,4 +20,6 @@ return array(
     'verify-email' => 'Ověřit e-mail',
     'verify-email-content' => 'Klikněte prosím na odkaz níže a ověřte svou e-mailovou adresu.',
     'link-expires-in' => 'tento odkaz vyprší za {hours} hodin',
+    'password-reset' => 'obnovení hesla',
+    'password-reset-content' => 'Klikněte prosím na odkaz níže a obnovte své heslo.',
 );

@@ -21,4 +21,6 @@ return array(
     'verify-email' => 'verify email',
     'verify-email-content' => 'Please click on the link below to verify your email address.',
     'link-expires-in' => 'this link expires in {hours} hours',
+    'password-reset' => 'password reset',
+    'password-reset-content' => 'Please click on the link below to reset your password.',
 );
