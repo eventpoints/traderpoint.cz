@@ -124,7 +124,7 @@ class SecurityController extends AbstractController
     {
         if (! $userToken instanceof UserToken
             || ! $userToken->isActive()
-            || !in_array($userToken->getPurpose(), [UserTokenPurposeEnum::PASSWORD_SETUP, UserTokenPurposeEnum::PASSWORD_RESET])
+            || ! in_array($userToken->getPurpose(), [UserTokenPurposeEnum::PASSWORD_SETUP, UserTokenPurposeEnum::PASSWORD_RESET])
         ) {
             $this->addFlash(FlashEnum::ERROR->value, 'security.something-went-wrong');
             return $this->redirectToRoute('app_login');
