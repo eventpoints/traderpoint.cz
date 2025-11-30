@@ -270,5 +270,6 @@ return array(
     'client-profile' => 'profil klienta',
     'client' => 'klient',
     'job-created' => 'poptávka vytvořena',
+    'forgot-password' => 'zapomenuté heslo',
 );
 
