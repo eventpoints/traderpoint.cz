@@ -17,7 +17,6 @@ use App\Service\UserTokenService\UserTokenService;
 use App\Service\UserTokenService\UserTokenServiceInterface;
 use Carbon\CarbonImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -39,7 +38,6 @@ class SecurityController extends AbstractController
         private readonly EmailService $emailService,
         #[Autowire(service: UserTokenService::class)]
         private readonly UserTokenServiceInterface $userTokenService,
-        private readonly LoggerInterface $logger,
     )
     {
     }
@@ -191,14 +189,10 @@ class SecurityController extends AbstractController
                 purpose: UserTokenPurposeEnum::PASSWORD_RESET,
             );
 
-            try{
-                $this->emailService->sendPasswordResetEmail(user: $user, locale: $request->getLocale(), context: [
-                    'user' => $user,
-                    'token' => $token,
-                ]);
-            }catch (TransportExceptionInterface $transportException){
-                $this->logger->error('Failed to send password reset email: ' . $transportException->getMessage());
-            }
+            $this->emailService->sendPasswordResetEmail(user: $user, locale: $request->getLocale(), context: [
+                'user' => $user,
+                'token' => $token,
+            ]);
 
             $this->addFlash(FlashEnum::SUCCESS->value, 'security.password-reset-email-sent');
 

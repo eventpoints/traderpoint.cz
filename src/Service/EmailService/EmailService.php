@@ -6,7 +6,6 @@ namespace App\Service\EmailService;
 
 use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -24,7 +23,6 @@ final readonly class EmailService
 
     /**
      * @param array<string|int|object> $context
-     * @throws TransportExceptionInterface
      */
     public function sendTraderWelcomeEmail(User $user, string $locale = 'en', array $context = []): void
     {
@@ -41,7 +39,6 @@ final readonly class EmailService
 
     /**
      * @param array<string|int|object> $context
-     * @throws TransportExceptionInterface
      */
     public function sendClientWelcomeEmail(User $user, string $locale = 'en', array $context = []): void
     {
@@ -58,7 +55,6 @@ final readonly class EmailService
 
     /**
      * @param array<mixed> $context
-     * @throws TransportExceptionInterface
      */
     public function sendVerificationCodeEmail(User $user, string $locale = 'en', array $context = []): void
     {
@@ -75,7 +71,6 @@ final readonly class EmailService
 
     /**
      * @param array<mixed> $context
-     * @throws TransportExceptionInterface
      */
     public function sendEngagementMatchEmail(User $user, string $locale = 'en', array $context = []): void
     {
@@ -92,7 +87,6 @@ final readonly class EmailService
 
     /**
      * @param array<mixed> $context
-     * @throws TransportExceptionInterface
      */
     public function sendQuoteMadeEmail(User $user, string $locale = 'en', array $context = []): void
     {
@@ -109,7 +103,6 @@ final readonly class EmailService
 
     /**
      * @param array<mixed> $context
-     * @throws TransportExceptionInterface
      */
     public function sendPasswordResetEmail(User $user, string $locale = 'en', array $context = []): void
     {
@@ -147,7 +140,6 @@ final readonly class EmailService
 
     /**
      * @param array<string|int|object> $context
-     * @throws TransportExceptionInterface
      */
     private function send(
         string $subject,
@@ -157,18 +149,14 @@ final readonly class EmailService
         string $locale,
     ): void
     {
-        try {
-            $envelope = $this->compose(
-                subject: $subject,
-                template: $template,
-                emailAddress: $emailAddress,
-                context: $context,
-                locale: $locale
-            );
+        $envelope = $this->compose(
+            subject: $subject,
+            template: $template,
+            emailAddress: $emailAddress,
+            context: $context,
+            locale: $locale
+        );
 
-            $this->mailer->send($envelope);
-        } catch (TransportExceptionInterface $transportException) {
-            throw new $transportException();
-        }
+        $this->mailer->send($envelope);
     }
 }

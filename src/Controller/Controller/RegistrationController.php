@@ -20,7 +20,6 @@ use App\Service\StandardPlanSubscriptionService;
 use App\Service\UserTokenService\UserTokenService;
 use App\Service\UserTokenService\UserTokenServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Stripe\Exception\ApiErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -41,7 +40,6 @@ class RegistrationController extends AbstractController
         private readonly UserPasswordHasherInterface $userPasswordHasher,
         private readonly EmailService $emailService,
         private readonly StandardPlanSubscriptionService $standardPlanSubscriptionService,
-        private readonly LoggerInterface $logger,
         #[Autowire(service: UserTokenService::class)]
         private readonly UserTokenServiceInterface $userTokenService,
     )
@@ -154,16 +152,10 @@ class RegistrationController extends AbstractController
             $this->standardPlanSubscriptionService->startStandardPlanTrial($user);
             $token = $this->userTokenService->issueToken(user: $user, purpose: UserTokenPurposeEnum::EMAIL_VERIFICATION);
 
-            try {
-                $this->emailService->sendTraderWelcomeEmail(user: $user, locale: $request->getLocale(), context: [
-                    'user' => $user,
-                    'token' => $token,
-                ]);
-            } catch (TransportExceptionInterface $e) {
-                $this->logger->error('Failed to send welcome email', [
-                    'exception' => $e,
-                ]);
-            }
+            $this->emailService->sendTraderWelcomeEmail(user: $user, locale: $request->getLocale(), context: [
+                'user' => $user,
+                'token' => $token,
+            ]);
 
             return $userAuthenticator->authenticateUser($user, $authenticator, $request);
         }

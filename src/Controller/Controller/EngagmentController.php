@@ -29,14 +29,12 @@ use App\Service\EmailService\EmailService;
 use App\Service\ImageOptimizer;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Utils\Strings;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Uid\Uuid;
@@ -63,8 +61,7 @@ class EngagmentController extends AbstractController
         private readonly Security $security,
         private readonly ReactionRepository $reactionRepository,
         private readonly ConversationRepository $conversationRepository,
-        private readonly ConversationFactory $conversationFactory,
-        private readonly LoggerInterface $logger
+        private readonly ConversationFactory $conversationFactory
     )
     {
     }
@@ -125,15 +122,11 @@ class EngagmentController extends AbstractController
 
             $locale = $engagement->getOwner()->getPreferredLanguage() ?? 'cs';
 
-            try{
-                $this->emailService->sendQuoteMadeEmail($engagement->getOwner(), $locale, [
-                    'quote' => $quote,
-                    'engagement' => $engagement,
-                    'user' => $engagement->getOwner(),
-                ]);
-            }catch (TransportExceptionInterface $transportException){
-                $this->logger->error('Failed to send quote made email to client: ' . $transportException->getMessage());
-            }
+            $this->emailService->sendQuoteMadeEmail($engagement->getOwner(), $locale, [
+                'quote' => $quote,
+                'engagement' => $engagement,
+                'user' => $engagement->getOwner(),
+            ]);
 
             $this->quoteRepository->save(entity: $quote, flush: true);
             $this->addFlash(type: FlashEnum::SUCCESS->value, message: $this->translator->trans(id: 'flash.quote-sent-successful', domain: 'flash'));
