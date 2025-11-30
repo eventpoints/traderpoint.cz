@@ -14,49 +14,61 @@
                                 <div class="fs-4 fw-bold">{{ 'jobs-for-you'|trans|title }}</div>
                             </div>
                             <div>
-                                <a href="{{ path('user_account', {tab: 'trader'}) }}" class="btn btn-light rounded-pill" type="button">
+                                <a href="{{ path('user_account', {tab: 'trader'}) }}" class="btn btn-light rounded-pill"
+                                   type="button">
                                     <i class="bi bi-gear-fill fs-5"></i>
                                 </a>
                             </div>
                         </div>
-                            <div class="d-flex align-items-center justify-content-start flex-wrap gap-2">
-                                {% for skill in app.user.traderProfile.skills %}
-                                    <twig:Badge text="{{ skill.name|trans(domain='skills') }}" variant="primary" :isOutline="true" size="lg"/>
-                                {% endfor %}
-                                <twig:Badge text="{{ 'km.radius'|trans({distance: app.user.traderProfile.serviceRadius}) }}" variant="dark" :isOutline="true" size="lg"/>
-                            </div>
+                        <div class="d-flex align-items-center justify-content-start flex-wrap gap-2">
+                            {% for skill in app.user.traderProfile.skills %}
+                                <twig:Badge text="{{ skill.name|trans(domain='skills') }}" variant="primary"
+                                            :isOutline="true" size="lg"/>
+                            {% endfor %}
+                            <twig:Badge text="{{ 'km.radius'|trans({distance: app.user.traderProfile.serviceRadius}) }}"
+                                        variant="dark" :isOutline="true" size="lg"/>
+                        </div>
                     </div>
 
                     <div class="row g-4 my-3">
                         {% for job in pagination.items %}
                         <div class="col-12">
                             <div class="card position-relative">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <div class="fs-4">
-                                        <div class="fw-bold text-dark">{{ job.title }}</div>
-                                        <twig:Badge text="{{ 'quotes-received'|trans({count: job.quotes.count}) }}" variant="dark" :isOutline="true" size="lg"/>
-                                    </div>
-
-                                    <div class="dropdown">
-                                        <button class="btn btn-light rounded-pill" type="button"
-                                                data-bs-toggle="dropdown"
-                                                aria-expanded="false">
-                                            <i class="bi bi-three-dots-vertical fs-4"></i>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Report</a></li>
-                                        </ul>
+                                <div class="card-header">
+                                    <div class="d-flex justify-content-between align-items-start gap-2">
+                                        <div class="d-flex justify-content-start align-items-start gap-2">
+                                            <a href="{{ path('client_profile', {id: job.owner.id}) }}">
+                                                <img class="rounded-circle avatar-50" src="{{ job.owner.avatar }}">
+                                            </a>
+                                            <div>
+                                                <div class="fw-bold text-dark fs-4 lh-1">{{ job.title }}</div>
+                                                <div class="">
+                                                    <a href="{{ path('client_profile', {id: job.owner.id}) }}">
+                                                        {{ job.owner.fullName|title }}
+                                                    </a>
+                                                    <div class="small text-muted">{{ job.createdAt.diffForHumans }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <twig:Badge text="{{ 'quotes-received'|trans({count: job.quotes.count}) }}"
+                                                    variant="dark" :isOutline="true" size="lg"/>
                                     </div>
                                 </div>
                                 <div class="card-header">
                                     <div class="d-flex fs-4 flex-wrap gap-2">
-                                        <twig:Badge text="{{ (job.budget / 100)|format_currency(job.currencyCodeEnum.value, {}, app.locale) }}" variant="dark" :isOutline="true" size="lg"/>
+                                        <twig:Badge
+                                                text="{{ (job.budget / 100)|format_currency(job.currencyCodeEnum.value, {}, app.locale) }}"
+                                                variant="dark" :isOutline="true" size="lg"/>
 
                                         {% for skill in job.skills %}
-                                        <twig:Badge text="{{ skill.name|trans(domain='skills')|title }}" variant="primary" :isOutline="true" size="lg"/>
+                                            <twig:Badge text="{{ skill.name|trans(domain='skills')|title }}"
+                                                        variant="primary" :isOutline="true" size="lg"/>
                                         {% endfor %}
-                                        <twig:Badge text="{{ 'km.distance'|trans({distance: distance_km(job.latitude, job.longitude, app.user.traderProfile.latitude,app.user.traderProfile.longitude)}) }}" variant="dark" :isOutline="true" size="lg"/>
-                                        <twig:Badge text="{{ job.timelinePreferenceEnum.value|trans }}" variant="dark" :isOutline="true" size="lg"/>
+                                        <twig:Badge
+                                                text="{{ 'km.distance'|trans({distance: distance_km(job.latitude, job.longitude, app.user.traderProfile.latitude,app.user.traderProfile.longitude)}) }}"
+                                                variant="dark" :isOutline="true" size="lg"/>
+                                        <twig:Badge text="{{ job.timelinePreferenceEnum.value|trans }}" variant="dark"
+                                                    :isOutline="true" size="lg"/>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -72,20 +84,6 @@
                                             </div>
                                         {% endif %}
                                     </div>
-                                </div>
-                                <div class="list-group list-group-flush">
-                                    <a href="{{ path('client_profile', {id: job.owner.id}) }}"
-                                       class="list-group-item list-group-item-action">
-                                        <div class="d-flex flex-wrap gap-2">
-                                            <div>
-                                                <img class="rounded-circle avatar-50" src="{{ job.owner.avatar }}">
-                                            </div>
-                                            <div>
-                                                <div>{{ job.owner.fullName|title }}</div>
-                                                <div>{{ job.createdAt.diffForHumans }}</div>
-                                            </div>
-                                        </div>
-                                    </a>
                                 </div>
                                 <div class="card-footer">
                                     <div class="d-flex justify-content-between align-items-center">
