@@ -126,7 +126,7 @@ class SecurityController extends AbstractController
             || ! $userToken->isActive()
             || ! in_array($userToken->getPurpose(), [UserTokenPurposeEnum::PASSWORD_SETUP, UserTokenPurposeEnum::PASSWORD_RESET])
         ) {
-            $this->addFlash(FlashEnum::ERROR->value, 'security.something-went-wrong');
+            $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('flash.sceptical-issue', [], 'flash'));
             return $this->redirectToRoute('app_login');
         }
 
@@ -180,7 +180,7 @@ class SecurityController extends AbstractController
             ]);
 
             if (! $user instanceof User) {
-                $this->addFlash(FlashEnum::ERROR->value, 'security.something-went-wrong');
+                $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('flash.sceptical-issue', [], 'flash'));
                 return $this->redirectToRoute('app_login');
             }
 
@@ -194,7 +194,7 @@ class SecurityController extends AbstractController
                 'token' => $token,
             ]);
 
-            $this->addFlash(FlashEnum::SUCCESS->value, 'security.password-reset-email-sent');
+            $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans('flash.password-reset-email-sent', [], 'flash'));
 
             return $this->redirectToRoute('app_login');
         }
