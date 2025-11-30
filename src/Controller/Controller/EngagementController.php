@@ -49,19 +49,19 @@ use Symfony\UX\Map\Point;
 class EngagementController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface      $translator,
-        private readonly QuoteRepository          $quoteRepository,
-        private readonly EngagementRepository     $engagementRepository,
-        private readonly UserRepository           $userRepository,
-        private readonly ImageOptimizer           $imageOptimizer,
-        private readonly EmailService             $emailService,
+        private readonly TranslatorInterface $translator,
+        private readonly QuoteRepository $quoteRepository,
+        private readonly EngagementRepository $engagementRepository,
+        private readonly UserRepository $userRepository,
+        private readonly ImageOptimizer $imageOptimizer,
+        private readonly EmailService $emailService,
         private readonly EventDispatcherInterface $dispatcher,
-        private readonly SkillRepository          $skillRepository,
-        private readonly UserFactory              $userFactory,
-        private readonly Security                 $security,
-        private readonly ReactionRepository       $reactionRepository,
-        private readonly ConversationRepository   $conversationRepository,
-        private readonly ConversationFactory      $conversationFactory
+        private readonly SkillRepository $skillRepository,
+        private readonly UserFactory $userFactory,
+        private readonly Security $security,
+        private readonly ReactionRepository $reactionRepository,
+        private readonly ConversationRepository $conversationRepository,
+        private readonly ConversationFactory $conversationFactory
     )
     {
     }
@@ -216,11 +216,11 @@ class EngagementController extends AbstractController
     {
         $skills = new ArrayCollection();
         $skillId = $request->query->get('skill');
-        if (!empty($skillId)) {
+        if (! empty($skillId)) {
             $skillUuid = Uuid::fromString($skillId);
             $skill = $this->skillRepository->find($skillUuid);
 
-            if (!$skill instanceof Skill) {
+            if (! $skill instanceof Skill) {
                 return $this->redirectToRoute('landing');
             }
 
@@ -257,7 +257,7 @@ class EngagementController extends AbstractController
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
 
-            if (!$currentUser instanceof User) {
+            if (! $currentUser instanceof User) {
                 $email = $engagementForm->get('email')->getData();
                 $firstName = $engagementForm->get('firstName')->getData();
                 $lastName = $engagementForm->get('lastName')->getData();
@@ -295,9 +295,9 @@ class EngagementController extends AbstractController
     #[Route(path: 'engagement/edit/{id}', name: 'edit_engagement')]
     public function edit(
         Engagement $engagement,
-        Request    $request,
+        Request $request,
         #[CurrentUser]
-        ?User      $currentUser = null
+        ?User $currentUser = null
     ): Response
     {
         // 1) Decide what lat/lng to use for the map centre
