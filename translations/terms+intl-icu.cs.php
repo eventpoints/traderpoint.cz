@@ -1,70 +1,100 @@
 <?php
 
 return array (
-  'terms-of-use-agreement' => 'Souhlasím s těmito {link}',
-  'terms-of-use' => 'podmínkami používání',
-  'acceptance-of-agreement' => 'Souhlas s těmito podmínkami',
-  'acceptance-of-agreement-content' => 'Váš přístup k traderpoint.cz a jeho používání (dále jen „Platforma“) se řídí výhradně těmito Podmínkami používání. Platformu nesmíte používat k žádnému účelu, který je nezákonný nebo je těmito Podmínkami zakázán. Vytvořením účtu, zveřejněním zakázky, žádostí o nabídku nebo odpovědí na zakázku jako řemeslník potvrzujete, že jste si tyto Podmínky přečetli, rozumíte jim a souhlasíte, že jimi budete vázáni. Pokud s těmito Podmínkami nesouhlasíte, musíte Platformu okamžitě přestat používat. Platformu Trader Point / traderpoint.cz provozuje Kerrial Newham, osoba samostatně výdělečně činná (IČO 17710634).',
-  'platform-role' => 'Role Platformy a vztah mezi uživateli',
-  'platform-role-content' => 'Trader Point / traderpoint.cz je online zprostředkovatelská platforma, která uživatelům umožňuje zveřejňovat zakázky, vyhledávat je, zasílat nabídky a vzájemně komunikovat. Veškeré smlouvy (například smlouvy o dílo, objednávky prací, dohody o ceně) se uzavírají výlučně mezi klientem a konkrétním řemeslníkem. Trader Point není smluvní stranou těchto smluv, není jejich garantem ani ručitelem a neurčuje obsah těchto smluv. Řemeslníci poskytují své služby vlastním jménem a na vlastní odpovědnost, nikoli jménem Trader Pointu. Mezi Trader Pointem a řemeslníky nevzniká pracovněprávní vztah, partnerství, společný podnik ani vztah zmocnitele a zmocněnce. Trader Point neodpovídá za jednání či opomenutí, prohlášení, sliby, ceny, termíny, kvalitu, zákonnost ani pojištění služeb poskytovaných řemeslníky, ani za škody na majetku či jinou újmu vzniklou v souvislosti s těmito službami. Veškeré nároky z vadného plnění, náhrady škody, neuhrazených plateb či jiné spory si klient a řemeslník řeší přímo mezi sebou, bez účasti Trader Pointu, s výjimkou případů, kdy nám právní předpisy výslovně ukládají povinnost zasáhnout.',
-  'advice' => 'Žádné poradenství',
-  'advice-content' => 'Obsah Platformy slouží pouze pro obecné informační účely. TraderPoint neposkytuje odborné řemeslné, právní, finanční ani jiné specializované poradenství. Jakékoli rozhodnutí najmout si řemeslníka nebo přijmout zakázku činíte výhradně vy sami a na vlastní odpovědnost. Před uzavřením jakékoli dohody byste si vždy měli sami ověřit zejména kvalifikaci, pojištění a vhodnost druhé strany.',
-  'changes-to-software-and-services' => 'Změny Platformy a služeb',
-  'changes-to-software-and-services-content' => 'TraderPoint si vyhrazuje právo: 1. kdykoli změnit, aktualizovat nebo odebrat (dočasně či trvale) Platformu nebo jakoukoli její část bez předchozího upozornění, přičemž berete na vědomí a souhlasíte, že za takovou změnu nebo odebrání nenese TraderPoint vůči vám odpovědnost; 2. kdykoli změnit, omezit nebo ukončit jakoukoli funkcionalitu, službu, tarif, předplatné, cenu nebo promo akci (včetně, ale nikoli výhradně, poplatků za zveřejnění zakázky, předplatných pro řemeslníky nebo zkušebních období) a berete na vědomí a souhlasíte, že za takovou změnu nebo ukončení nenese TraderPoint odpovědnost; 3. kdykoli změnit nebo ukončit platnost slevových kódů, voucherů či kuponů a nenést za to vůči vám odpovědnost; 4. kdykoli změnit tyto Podmínky, přičemž vaše pokračující používání Platformy po provedení změn se považuje za váš souhlas s těmito změnami.',
-  'links-to-third-party-websites' => 'Odkazy na weby třetích stran',
-  'links-to-third-party-websites-content' => 'Platforma může obsahovat odkazy na webové stránky nebo služby třetích stran (například platební brány, mapové podklady nebo externí zdroje), které jsou provozovány a spravovány jinými subjekty. Jakýkoli odkaz na jiné weby nepředstavuje jejich schválení ani doporučení. Berete na vědomí a souhlasíte, že neneseme odpovědnost za obsah, dostupnost ani praktiky těchto stránek nebo služeb.',
-  'copyright' => 'Autorská a průmyslová práva',
-  'copyright-content' => 'Práva duševního vlastnictví k Platformě a materiálům na ní nebo prostřednictvím ní dostupným náleží TraderPointu nebo jeho poskytovatelům licence. Platformu, její software, design, texty, grafiku, loga a další obsah, jakož i související práva duševního vlastnictví nelze kopírovat, distribuovat, publikovat, licencovat, používat ani jinak rozmnožovat, s výjimkou rozsahu nezbytně nutného pro běžný přístup k Platformě a její používání v souladu s těmito Podmínkami. TraderPoint a logo TraderPoint jsou ochranné známky náležející TraderPointu a nesmí být bez předchozího písemného souhlasu používány, kopírovány ani jinak reprodukovány. „Práva duševního vlastnictví“ zahrnují (kdekoli a kdykoli vzniklá a po celou dobu jejich trvání) zejména: patenty, ochranné známky, obchodní jména, servisní známky, průmyslové vzory, autorská práva, práva k databázím, osobnostní práva autorů, know-how, obchodní tajemství a další důvěrné informace, práva proti nekalé soutěži, právo domáhat se zdržení klamavého označování a obdobná práva, a to jak registrovaná, tak neregistrovaná, včetně přihlášek k jejich registraci.',
-  'limitation-of-liability' => 'Omezení odpovědnosti',
-  'limitation-of-liability-content' => 'Platforma je poskytována v režimu „JAK STOJÍ A LEŽÍ“ („AS IS“) a „DLE DOSTUPNOSTI“ („AS AVAILABLE“) bez jakýchkoli prohlášení, záruk nebo ujištění a bez jakékoli výslovné či předpokládané záruky, včetně (nikoli však výhradně) předpokládaných záruk uspokojivé kvality, vhodnosti pro určitý účel, neporušování práv třetích osob, kompatibility, bezpečnosti a přesnosti. TraderPoint je pouze tržiště (platforma), které propojuje klienty s nezávislými řemeslníky. TraderPoint není smluvní stranou žádné smlouvy mezi klientem a řemeslníkem, neřídí ani nedohlíží na provádění prací a neposkytuje záruku za kvalitu, bezpečnost, zákonnost ani dokončení jakékoli zakázky. Řemeslník (a podle okolností také klient) nese výlučnou odpovědnost za provedení zakázky, vady díla, zpoždění, škody na majetku či jinou újmu vzniklou v souvislosti s danou zakázkou. V maximálním rozsahu, který připouští zákon, nenese TraderPoint odpovědnost za žádnou nepřímou nebo následnou škodu či újmu (včetně, bez omezení, ušlého zisku, ztráty obchodních příležitostí, dat, dobrého jména či pověsti) vzniklou v souvislosti s vaším používáním Platformy nebo jakýmkoli vztahem mezi klienty a řemeslníky. TraderPoint neposkytuje záruku, že funkce Platformy budou nepřetržité nebo bez chyb, že zjištěné chyby budou odstraněny, nebo že Platforma či server, na kterém běží, neobsahují viry či jiné škodlivé prvky. Nic v těchto Podmínkách nesmí být vykládáno tak, že vylučuje nebo omezuje odpovědnost TraderPointu za smrt nebo újmu na zdraví způsobenou jeho úmyslným jednáním nebo hrubou nedbalostí tam, kde takové omezení nebo vyloučení neumožňuje zákon.',
-  'indemnity' => 'Náhrada škody (indemnita)',
-  'indemnity-content' => 'Zavazujete se odškodnit TraderPoint, jeho vlastníky, zaměstnance a zástupce a chránit je před veškerými nároky, odpovědností, soudními výlohami, škodami, ztrátami, náklady a jinými výdaji, které vzniknou v důsledku: (a) jakéhokoli porušení těchto Podmínek z vaší strany; (b) jakéhokoli obsahu, který na Platformu odešlete nebo nahrajete; nebo (c) jakéhokoli sporu mezi vámi a jiným uživatelem (včetně, ale nikoli výhradně, klientů, řemeslníků nebo třetích osob) vzniklého v souvislosti s vaším používáním Platformy.',
-  'severability' => 'Oddělitelnost ustanovení',
-  'severability-content' => 'Pokud bude jakékoli ustanovení této Smlouvy soudem či jiným příslušným orgánem shledáno neplatným, neúčinným, nezákonným nebo jinak nevymahatelným, považuje se takové ustanovení za upravené v minimálním rozsahu nezbytném k tomu, aby bylo platné a vymahatelné při zachování původního záměru stran. Není-li taková úprava možná, považuje se dané ustanovení za této Smlouvy oddělené. V takovém případě zůstávají ostatní ustanovení této Smlouvy v plné platnosti a účinnosti.',
-  'applicable-law-and-dispute' => 'Rozhodné právo a řešení sporů',
-  'applicable-law-and-dispute-content' => 'Tato Smlouva a veškeré nároky nebo spory vznikající z ní nebo v souvislosti s ní, s vaším používáním Platformy či z mimokontraktuálních závazků v této souvislosti se řídí právem České republiky a budou podle něj vykládány. K řešení jakýchkoli sporů nebo nároků jsou příslušné soudy České republiky, přičemž místem plnění se strany dohodou určují Prahu, Česká republika. Tím nejsou dotčena kogentní ustanovení o ochraně spotřebitele, která se mohou uplatnit podle práva země vašeho obvyklého bydliště.',
-  'headings' => 'Nadpisy',
-  'headings-content' => 'Nadpisy v této Smlouvě slouží pouze pro přehlednost a nemají vliv na výklad či obsah jednotlivých ustanovení.',
-  'entire-agreement' => 'Úplnost ujednání',
-  'entire-agreement-content' => 'Tyto Podmínky, společně s dokumenty, na které se výslovně odkazuje (včetně našich zásad ochrany osobních údajů a informací o předplatném a cenách zobrazených při zakoupení tarifu nebo zveřejnění zakázky), představují úplnou dohodu mezi vámi a TraderPointem ohledně vašeho používání Platformy a nahrazují veškeré předchozí dohody, ujednání, ujištění nebo návrhy, ať už písemné či ústní, které se této oblasti týkají.',
-  'company-privacy-policy' => 'Zásady ochrany osobních údajů',
-  'company-privacy-policy-content' => 'Tyto Zásady ochrany osobních údajů vysvětlují, jak shromažďujeme, používáme, uchováváme a sdílíme osobní údaje při vašem používání naší Platformy – ať už zveřejňujete zakázky, žádáte o nabídky, nebo nabízíte své služby jako řemeslník. Dále vysvětlují, jaká máte práva na ochranu osobních údajů a jak vás chrání právní předpisy. Zejména popisují: jaké údaje shromažďujeme, jak údaje získáváme, jak je používáme, na jakých právních základech je zpracováváme, jak dlouho je uchováváme, s kým je sdílíme, jak používáme soubory cookies a podobné technologie a jaká práva vám přísluší podle platných právních předpisů.',
-  'data-collected' => 'Jaké údaje shromažďujeme',
-  'data-collected-content' => 'Můžeme shromažďovat a zpracovávat zejména následující typy osobních údajů: identifikační a kontaktní údaje (např. jméno, e-mailová adresa, telefon); údaje o účtu (např. heslo, jazykové nastavení, preference komunikace); profilové údaje řemeslníků (např. obor činnosti, dovednosti, kvalifikace, praxe, název podnikání, veřejný popis profilu); informace o zakázkách a poptávkách klientů (např. popis požadovaných prací, fotografie nebo videa, která nahrajete, rozpočet, lokalita nebo přibližná adresa); fakturační a platební údaje (např. údaje o předplatném, částečné identifikátory plateb a historie plateb – údaje o platební kartě zpracovávají naši platební poskytovatelé a my je neuchováváme v úplném znění); technické a provozní údaje (např. IP adresa, údaje o zařízení, logy o používání Platformy); a také hodnocení, recenze, zprávy a další obsah, který prostřednictvím Platformy odešlete.',
-  'how-do-we-collect-your-data' => 'Jak údaje získáváme',
-  'how-do-we-collect-your-data-content' => 'Většinu údajů nám poskytujete přímo vy. Údaje shromažďujeme zejména tehdy, když: vytváříte účet; vyplňujete nebo aktualizujete svůj profil; zveřejňujete zakázku nebo žádáte o nabídky; zasíláte zprávy prostřednictvím Platformy; hradíte předplatné nebo jiné poplatky související se zakázkou; nebo se na nás obrátíte s dotazem či žádostí o podporu. Dále automaticky shromažďujeme určité technické a provozní údaje při používání Platformy prostřednictvím cookies a podobných technologií ve vašem prohlížeči či aplikaci. Omezený rozsah informací můžeme získat i od třetích stran, například od platebních poskytovatelů (potvrzení o úspěšné platbě) nebo z údajů o lokalitě odvozených z adresy nebo oblasti, kterou uvedete u zakázky.',
-  'how-will-we-use-your-data' => 'Jak vaše údaje používáme',
-  'how-will-we-use-your-data-content' => 'Vaše údaje používáme zejména k těmto účelům: vytvoření a správa vašeho účtu; provozování a zlepšování Platformy; párování klientů a řemeslníků na základě lokality, oboru a dalších kritérií; umožnění komunikace a zasílání zpráv mezi uživateli; zpracování plateb, předplatného a případných dalších poplatků; odhalování a předcházení podvodům, zneužití nebo porušování těchto Podmínek; zajištění zákaznické podpory; a plnění našich právních povinností. Na základě vašeho souhlasu nebo tam, kde to umožňuje zákon, můžeme vaše kontaktní údaje použít i pro zasílání informací o novinkách na Platformě, aktualizacích, promo akcích či nabídkách, které by pro vás mohly být relevantní. V takových případech vám vždy nabídneme jednoduchou možnost se z marketingových sdělení kdykoli odhlásit. Vaše údaje můžeme sdílet s pečlivě vybranými poskytovateli služeb, kteří nám pomáhají s provozem Platformy (např. hosting, platební brány, e-mailové a SMS služby, analytické nástroje), a to za dodržení odpovídajících zásad ochrany osobních údajů. Vaše osobní údaje neprodáváme.',
-  'company-details' => 'Údaje o provozovateli',
-  'company-details-content' => 'Platformu Trader Point / traderpoint.cz provozuje: Kerrial Newham, osoba samostatně výdělečně činná, identifikační číslo (IČO) 17710634. E-mail: kerrialbeckettnewham@gmail.com, telefon: +420 608 187 548.',
-  'by-continuing-accept-terms' => 'Pokračováním vyjadřujete souhlas s těmito',
-  'title' => '__title',
-  'platform-purpose' => '__platform-purpose',
-  'platform-purpose-content' => '__platform-purpose-content',
-  'subscriptions-and-payments' => '__subscriptions-and-payments',
-  'subscriptions-and-payments-content' => '__subscriptions-and-payments-content',
-  'use-of-the-platform' => '__use-of-the-platform',
-  'use-of-the-platform-content' => '__use-of-the-platform-content',
-  'intellectual-property' => '__intellectual-property',
-  'intellectual-property-content' => '__intellectual-property-content',
-  'changes-to-terms' => '__changes-to-terms',
-  'changes-to-terms-content' => '__changes-to-terms-content',
-  'privacy-and-data-collection' => '__privacy-and-data-collection',
-  'privacy-and-data-collection-content' => '__privacy-and-data-collection-content',
-  'purpose-and-legal-basis' => '__purpose-and-legal-basis',
-  'purpose-and-legal-basis-content' => '__purpose-and-legal-basis-content',
-  'data-sharing' => '__data-sharing',
-  'data-sharing-content' => '__data-sharing-content',
-  'data-retention' => '__data-retention',
-  'data-retention-content' => '__data-retention-content',
-  'cookies-and-tracking' => '__cookies-and-tracking',
-  'cookies-and-tracking-content' => '__cookies-and-tracking-content',
-  'user-rights' => '__user-rights',
-  'user-rights-content' => '__user-rights-content',
-  'security' => '__security',
-  'security-content' => '__security-content',
-  'contact' => '__contact',
-  'contact-content' => '__contact-content',
-  'effective-date' => '__effective-date',
-  'operator' => '__operator',
+    'terms-of-use-agreement' => 'Souhlasím s těmito {link}',
+    'terms-of-use' => 'podmínkami používání a zásadami ochrany osobních údajů',
+    'title' => 'TraderPoint – Podmínky používání a zásady ochrany osobních údajů',
+    'effective-date' => 'Datum účinnosti: {date}',
+    'operator' => 'Provozovatel: Kerrial Newham, osoba samostatně výdělečně činná (IČO 17710634)',
+
+    'acceptance-of-agreement' => 'Přijetí tohoto ujednání',
+    'acceptance-of-agreement-content' => 'Vytvořením účtu a/nebo objednáním předplatného na traderpoint.cz (dále jen „Platforma“) souhlasíte s tím, že budete vázáni těmito Podmínkami používání a Zásadami ochrany osobních údajů. Pokud s nimi nesouhlasíte, nesmíte Platformu používat.',
+
+    'platform-purpose' => 'Účel platformy',
+    'platform-purpose-content' => 'TraderPoint je online platforma pro párování a prezentaci. Řemeslníci si mohou vytvářet profily k propagaci svých služeb a uživatelé si tyto profily mohou prohlížet. TraderPoint neposkytuje, nevykonává, negarantuje ani nedohlíží na žádné práce vzniklé na základě kontaktů navázaných prostřednictvím Platformy.',
+
+    'subscriptions-and-payments' => 'Předplatné a platby',
+    'subscriptions-and-payments-content' => 'Řemeslníci mohou k Platformě přistupovat úhradou předplatného. Tento poplatek je jedinou finanční transakcí zprostředkovanou TraderPointem. TraderPoint se neúčastní žádných smluv, plateb ani ujednání mezi řemeslníky a klienty.',
+
+    'use-of-the-platform' => 'Používání platformy',
+    'use-of-the-platform-content' => 'Zavazujete se:
+
+- používat Platformu v souladu se zákonem
+- poskytovat pravdivé a přesné údaje
+- nezveřejňovat obsah, který porušuje práva duševního vlastnictví nebo práva třetích osob
+- nijak nenarušovat ani nepoškozovat fungování Platformy
+
+TraderPoint si vyhrazuje právo pozastavit nebo ukončit účty, které tyto Podmínky porušují.',
+
+    'intellectual-property' => 'Duševní vlastnictví',
+    'intellectual-property-content' => 'Veškeré materiály na Platformě, včetně softwaru, textů, grafiky, log a obsahu, jsou ve vlastnictví TraderPointu nebo jeho poskytovatelů licence. Takové materiály smíte používat pouze v rozsahu nezbytném pro přístup k Platformě a její používání v souladu s jejím účelem. Jakékoli jiné použití vyžaduje předchozí písemný souhlas.',
+
+    'limitation-of-liability' => 'Omezení odpovědnosti',
+    'limitation-of-liability-content' => 'Platforma je poskytována ve stavu „tak jak je“ („AS IS“) a „podle dostupnosti“ („AS AVAILABLE“). TraderPoint nezaručuje nepřerušovaný přístup ani bezchybný provoz. V rozsahu povoleném právními předpisy nenese TraderPoint odpovědnost za ztrátu dat nebo přístupu ani za nepřímé, nahodilé či následné škody vzniklé v souvislosti s používáním Platformy. Nic v těchto Podmínkách neomezuje odpovědnost TraderPointu za smrt nebo újmu na zdraví způsobenou jeho nedbalostí ani jinou odpovědnost, kterou nelze podle zákona vyloučit.',
+
+    'indemnity' => 'Odškodnění',
+    'indemnity-content' => 'Zavazujete se odškodnit TraderPoint za veškeré nároky, škody nebo náklady vzniklé v důsledku vašeho porušení těchto Podmínek nebo vašeho používání Platformy, včetně jakéhokoli obsahu, který na Platformu nahrajete.',
+
+    'changes-to-terms' => 'Změny podmínek',
+    'changes-to-terms-content' => 'TraderPoint může tyto Podmínky kdykoli změnit. Podstatné změny, které se dotýkají předplatného nebo práv uživatelů, vám budou oznámeny alespoň 14 dní předem. Dalším používáním Platformy po provedení změn vyjadřujete s těmito změnami souhlas.',
+
+    'privacy-and-data-collection' => 'Ochrana soukromí a shromažďování údajů',
+    'privacy-and-data-collection-content' => 'Tato část vysvětluje, jak při používání naší Platformy shromažďujeme, používáme, ukládáme a sdílíme osobní údaje.',
+
+    'data-collected' => 'Shromažďované údaje',
+    'data-collected-content' => 'Můžeme shromažďovat:
+
+- identifikační a kontaktní údaje (jméno, e-mail, telefon)
+- přihlašovací údaje a preference účtu
+- profilové informace řemeslníků (obor, dovednosti, zkušenosti, kvalifikace, veřejný popis)
+- údaje o předplatném a fakturaci
+- technické údaje (IP adresa, zařízení, logy)',
+
+    'purpose-and-legal-basis' => 'Účel a právní základ',
+    'purpose-and-legal-basis-content' => 'Vaše údaje zpracováváme za účelem:
+
+- vytvoření a správy vašeho účtu (plnění smlouvy)
+- provozování a zlepšování Platformy (oprávněný zájem)
+- zpracování plateb za předplatné (plnění smlouvy)
+- zasílání aktualizací a promo akcí (souhlas nebo oprávněný zájem)
+- plnění právních povinností',
+
+    'data-sharing' => 'Sdílení údajů',
+    'data-sharing-content' => 'Vaše údaje neprodáváme. Můžeme je sdílet:
+
+- s poskytovateli služeb (hosting, platby, analytika)
+- s regulátory nebo orgány činnými v trestním řízení, pokud to vyžaduje zákon',
+
+    'data-retention' => 'Doba uchování údajů',
+    'data-retention-content' => 'Údaje uchováváme pouze po dobu nezbytnou k poskytování Platformy a splnění právních povinností. Údaje o účtu uchováváme maximálně 5 let po zrušení účtu, pokud právní předpisy nevyžadují delší dobu.',
+
+    'cookies-and-tracking' => 'Cookies a sledovací technologie',
+    'cookies-and-tracking-content' => 'Používáme soubory cookies a podobné technologie k provozu Platformy a zlepšení uživatelského prostředí. Nastavení cookies můžete upravit ve svém prohlížeči.',
+
+    'user-rights' => 'Práva uživatelů',
+    'user-rights-content' => 'Podle GDPR máte právo:
+
+- na přístup ke svým osobním údajům
+- na opravu nepřesných údajů
+- požadovat výmaz
+- omezit zpracování
+- vznést námitku proti zpracování
+- požadovat přenositelnost údajů
+- podat stížnost u Úřadu pro ochranu osobních údajů',
+
+    'security' => 'Zabezpečení',
+    'security-content' => 'Zavádíme přiměřená technická a organizační opatření k ochraně vašich údajů před neoprávněným přístupem, zveřejněním nebo zničením.',
+
+    'applicable-law-and-dispute' => 'Rozhodné právo a příslušnost soudů',
+    'applicable-law-and-dispute-content' => 'Tyto Podmínky a Zásady ochrany osobních údajů se řídí právem České republiky. K řešení sporů jsou příslušné soudy České republiky, přičemž místem plnění je Praha; tím nejsou dotčena kogentní ustanovení o ochraně spotřebitele.',
+
+    'contact' => 'Kontakt',
+    'contact-content' => 'V případě dotazů k ochraně soukromí nebo pro uplatnění vašich práv nás kontaktujte:
+Kerrial Newham
+E-mail: kerrialbeckettnewham@gmail.com',
+
+    'company-details' => 'Údaje o provozovateli',
+    'company-details-content' => 'Platformu Trader Point / traderpoint.cz provozuje: Kerrial Newham, osoba samostatně výdělečně činná, identifikační číslo (IČO) 17710634. E-mail: kerrialbeckettnewham@gmail.com, telefon: +420 608 187 548.',
+
+    'by-continuing-accept-terms' => 'Pokračováním vyjadřujete souhlas s těmito',
 );

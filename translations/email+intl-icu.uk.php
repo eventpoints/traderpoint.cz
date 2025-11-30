@@ -24,4 +24,6 @@ return array(
     'password-reset' => 'скидання пароля',
     'reset-password' => 'скинути пароль',
     'password-reset-content' => 'Будь ласка, перейдіть за посиланням нижче, щоб скинути пароль.',
+    'email.subject.client.engagement.message' => 'повідомлення щодо розміщеної вами заявки',
+    'email.message-received-content' => 'Ви отримали повідомлення щодо вашої заявки {title}. Натисніть на посилання нижче, щоб переглянути його.',
 );

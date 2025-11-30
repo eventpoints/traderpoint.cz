@@ -88,6 +88,22 @@ final readonly class EmailService
     /**
      * @param array<mixed> $context
      */
+    public function sendEngagementMessageEmail(User $user, string $locale = 'en', array $context = []): void
+    {
+        $this->send(
+            subject: $this->translator->trans(id: 'email.subject.client.engagement.message', parameters: [
+                'title' => $context['engagement']->getTitle(),
+            ], domain: 'email'),
+            template: '/email/client/message-received.html.twig',
+            emailAddress: $user->getEmail(),
+            context: $context,
+            locale: $locale
+        );
+    }
+
+    /**
+     * @param array<mixed> $context
+     */
     public function sendQuoteMadeEmail(User $user, string $locale = 'en', array $context = []): void
     {
         $this->send(

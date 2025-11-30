@@ -269,7 +269,8 @@ return array(
     'public' => 'veřejný',
     'client-profile' => 'profil klienta',
     'client' => 'klient',
-    'job-created' => 'poptávka vytvořena',
+    'i-do-not-have-an-account' => 'Nemám účet, zaregistrujte se nyní',
     'forgot-password' => 'zapomenuté heslo',
+    'job-created' => 'poptávka vytvořena',
 );
 

@@ -136,6 +136,7 @@ class RegistrationController extends AbstractController
             $user->setLastName($userTraderDto->getLastName());
             $user->setEmail($userTraderDto->getEmail());
             $user->setEmail($userTraderDto->getEmail());
+            $user->setPreferredLanguage($request->getLocale());
             $password = $this->userPasswordHasher->hashPassword(user: $user, plainPassword: $form->get('plainPassword')->getData());
             $user->setPassword($password);
 

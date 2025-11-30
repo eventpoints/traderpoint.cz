@@ -24,4 +24,6 @@ return array(
     'password-reset' => 'password reset',
     'reset-password' => 'reset password',
     'password-reset-content' => 'Please click on the link below to reset your password.',
+    'email.subject.client.engagement.message' => 'message received on a job you posted',
+    'email.message-received-content' => 'you have received on your job {title}. Click on the link below to view the message.',
 );

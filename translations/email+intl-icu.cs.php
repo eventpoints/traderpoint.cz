@@ -23,4 +23,6 @@ return array(
     'password-reset' => 'obnovení hesla',
     'reset-password' => 'obnovit heslo',
     'password-reset-content' => 'Klikněte prosím na odkaz níže a obnovte své heslo.',
+    'email.subject.client.engagement.message' => 'zpráva u poptávky, kterou jste zadali',
+    'email.message-received-content' => 'Obdrželi jste zprávu k vaší poptávce {title}. Klikněte na odkaz níže a zobrazte si ji.',
 );

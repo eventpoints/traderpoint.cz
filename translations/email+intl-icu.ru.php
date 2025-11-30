@@ -24,5 +24,6 @@ return [
     'password-reset' => 'сброс пароля',
     'reset-password' => 'сбросить пароль',
     'password-reset-content' => 'Пожалуйста, перейдите по ссылке ниже, чтобы сбросить пароль.',
-
+    'email.subject.client.engagement.message' => 'сообщение по размещённой вами заявке',
+    'email.message-received-content' => 'Вы получили сообщение по вашей заявке {title}. Нажмите на ссылку ниже, чтобы просмотреть его.',
 ];
