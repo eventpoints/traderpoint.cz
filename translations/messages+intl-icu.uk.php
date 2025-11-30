@@ -273,4 +273,6 @@ return array(
     'phone' => 'телефон',
     'i-do-not-have-an-account' => 'У мене немає облікового запису, зареєструватися зараз',
     'forgot-password' => 'забув пароль',
+    'password-reset' => 'Скидання пароля',
+    'send-password-reset' => 'отправить письмо для сброса'
 );

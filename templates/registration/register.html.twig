@@ -27,25 +27,27 @@
                     <div class="card-header">
                         <div class="fs-4 fw-bold">{{ 'register'|trans|title }}</div>
                         <div class="text-end">
-                            <a href="{{ path('trader_register') }}" class="link-dark">{{ 'register-as-trader'|trans }}</a>
+                            <a href="{{ path('trader_register') }}"
+                               class="link-dark">{{ 'register-as-trader'|trans }}</a>
                         </div>
-                    </div>
-                    <div class="card-body vstack gap-3 text-center">
-                        {{ form_row(registrationForm.firstName) }}
-                        {{ form_row(registrationForm.lastName) }}
-                        {{ form_row(registrationForm.email) }}
-                        {{ form_row(registrationForm.plainPassword) }}
-                    </div>
-                    <div class="card-body text-center text-muted">
-                        {{ 'by-continuing-accept-terms'|trans(domain='terms') }} <a href="{{ path('terms_of_use') }}">{{ 'terms-of-use'|trans(domain='terms') }}</a>
                     </div>
                     <div class="card-body text-center text-muted">
                         {{ include('partial/_social_register.html.twig') }}
                     </div>
+                    <div class="card-body vstack gap-3 text-center">
+                        <div class="input-group">
+                            {{ form_row(registrationForm.firstName) }}
+                            {{ form_row(registrationForm.lastName) }}
+                        </div>
+                        {{ form_row(registrationForm.email) }}
+                        {{ form_row(registrationForm.plainPassword) }}
+                    </div>
+                    <div class="card-body text-center text-muted">
+                        {{ 'by-continuing-accept-terms'|trans(domain='terms') }} <a
+                                href="{{ path('terms_of_use') }}">{{ 'terms-of-use'|trans(domain='terms') }}</a>
+                    </div>
                     <div class="card-footer d-flex justify-content-end align-items-center gap-4 border-top">
-                        <a href="{{ path('app_login') }}" type="button"
-                           class="link-dark">{{ 'login'|trans }}</a>
-                        <button type="submit" class="btn btn-primary btn-lg">{{ 'register'|trans }}</button>
+                        <button type="submit" class="btn btn-primary w-100 btn-lg">{{ 'register'|trans }}</button>
                     </div>
                 </div>
                 {{ form_end(registrationForm) }}

@@ -276,5 +276,6 @@ return [
     'job-created' => 'заказ создан',
     'i-do-not-have-an-account' => 'У меня нет учетной записи, зарегистрируйтесь сейчас',
     'forgot-password' => 'Забыли пароль',
-
+    'password-reset' => 'Сброс пароля',
+    'send-password-reset' => 'отправить письмо для сброса'
 ];

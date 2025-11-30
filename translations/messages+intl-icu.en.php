@@ -272,4 +272,6 @@ return array(
     'client' => 'client',
     'i-do-not-have-an-account' => 'I do not have an account, register now',
     'forgot-password' => 'forgot password',
+    'password-reset' => 'Password reset',
+    'send-password-reset' => 'send reset email'
 );

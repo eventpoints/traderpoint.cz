@@ -272,5 +272,7 @@ return array(
     'i-do-not-have-an-account' => 'Nemám účet, zaregistrujte se nyní',
     'forgot-password' => 'zapomenuté heslo',
     'job-created' => 'poptávka vytvořena',
+    'password-reset' => 'Obnovení hesla',
+    'send-password-reset' => 'Odeslat resetovací e-mail'
 );
 
