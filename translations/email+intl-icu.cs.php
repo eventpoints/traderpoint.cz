@@ -21,5 +21,6 @@ return array(
     'verify-email-content' => 'Klikněte prosím na odkaz níže a ověřte svou e-mailovou adresu.',
     'link-expires-in' => 'tento odkaz vyprší za {hours} hodin',
     'password-reset' => 'obnovení hesla',
+    'reset-password' => 'obnovit heslo',
     'password-reset-content' => 'Klikněte prosím na odkaz níže a obnovte své heslo.',
 );
