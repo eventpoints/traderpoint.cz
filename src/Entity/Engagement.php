@@ -84,7 +84,7 @@ class Engagement implements Stringable
     private null|CarbonImmutable|DateTimeInterface $dueAt = null;
 
     #[ORM\Column(enumType: EngagementStatusEnum::class)]
-    private null|EngagementStatusEnum $status = EngagementStatusEnum::PENDING;
+    private null|EngagementStatusEnum $status = EngagementStatusEnum::ACCEPTED;
 
     /**
      * @var Collection<int, Skill>
