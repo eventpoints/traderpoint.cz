@@ -170,7 +170,7 @@ class EngagementController extends AbstractController
             $this->addFlash(type: FlashEnum::SUCCESS->value, message: $this->translator->trans(id: 'flash.quote-sent-successful', domain: 'flash'));
             return $this->redirectToRoute(route: 'trader_show_engagement', parameters: [
                 'id' => $engagement->getId(),
-                'tab' => 'questions',
+                'tab' => 'quote-form',
             ]);
         }
 
