@@ -25,9 +25,10 @@ use Symfony\UX\Map\Point;
 class UserController extends AbstractController
 {
     public function __construct(
-        private readonly UserRepository          $userRepository,
+        private readonly UserRepository $userRepository,
         private readonly TraderProfileRepository $traderProfileRepository,
-        private readonly ImageOptimizer          $imageOptimizer, private readonly TranslatorInterface $translator,
+        private readonly ImageOptimizer $imageOptimizer,
+        private readonly TranslatorInterface $translator,
     )
     {
     }
@@ -86,7 +87,7 @@ class UserController extends AbstractController
         if ($accountForm->isSubmitted() && $accountForm->isValid()) {
             $avatarFile = $accountForm->get('avatar')->getData() ?? null;
 
-            if (!empty($avatarFile)) {
+            if (! empty($avatarFile)) {
                 $optimisedFile = $this->imageOptimizer->getOptimizedAvatarFile($avatarFile);
                 $base64Image = $this->imageOptimizer->toBase64($optimisedFile);
                 $currentUser->setAvatar($base64Image);

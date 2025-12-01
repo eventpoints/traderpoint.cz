@@ -138,7 +138,7 @@ class EngagementController extends AbstractController
         $quoteForm->handleRequest($request);
         if ($quoteForm->isSubmitted() && $quoteForm->isValid()) {
 
-            if($engagement->getOwner()->getNotificationSettings()->isIsClientReceiveEmailOnQuote()) {
+            if($engagement->getOwner()->getNotificationSettings()->isClientReceiveEmailOnQuote()) {
                 $locale = $engagement->getOwner()->getPreferredLanguage() ?? 'cs';
                 $this->emailService->sendQuoteMadeEmail($engagement->getOwner(), $locale, [
                     'quote' => $quote,
@@ -147,14 +147,18 @@ class EngagementController extends AbstractController
                 ]);
             }
 
-            if($engagement->getOwner()->getNotificationSettings()->isClientReceiveSmsOnNewQuote()) {
+            if($engagement->getOwner()->getNotificationSettings()->isClientReceiveSmsOnQuote()) {
                 $locale = $engagement->getOwner()->getPreferredLanguage() ?? 'cs';
                 $url = $this->urlGenerator->generate(
                     'client_show_engagement',
-                    ['id' => $engagement->getId()],
+                    [
+                        'id' => $engagement->getId(),
+                    ],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
-                $this->elksSmsSender->send($engagement->getOwner()->getPhoneNumber()->getE164(), $this->translator->trans(id: 'sms.client.engagement.new-quote', parameters: ['url' => $url], domain: 'sms', locale: $locale));
+                $this->elksSmsSender->send($engagement->getOwner()->getPhoneNumber()->getE164(), $this->translator->trans(id: 'sms.client.engagement.new-quote', parameters: [
+                    'url' => $url,
+                ], domain: 'sms', locale: $locale));
                 $this->emailService->sendQuoteMadeEmail($engagement->getOwner(), $locale, [
                     'quote' => $quote,
                     'engagement' => $engagement,

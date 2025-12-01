@@ -26,7 +26,7 @@ final class UserNotificationSettingsType extends AbstractType
         /** @var User|null $currentUser */
         $currentUser = $options['current_user'] ?? null;
 
-        if (!$currentUser instanceof User) {
+        if (! $currentUser instanceof User) {
             throw new LogicException('UserNotificationSettingsType requires "current_user" option to be a User.');
         }
 

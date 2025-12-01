@@ -17,10 +17,10 @@ final readonly class EngagementTraderMatchSmsNotificationHandler
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private ElksSmsSender          $elksSmsSender,
-        private TranslatorInterface    $translator,
-        private LocaleSwitcher         $localeSwitcher,
-        private UrlGeneratorInterface  $urlGenerator,
+        private ElksSmsSender $elksSmsSender,
+        private TranslatorInterface $translator,
+        private LocaleSwitcher $localeSwitcher,
+        private UrlGeneratorInterface $urlGenerator,
     )
     {
     }
@@ -37,11 +37,11 @@ final readonly class EngagementTraderMatchSmsNotificationHandler
 
         $user = $traderProfile?->getOwner();
 
-        if (!$engagement || !$traderProfile || !$user) {
+        if (! $engagement || ! $traderProfile || ! $user) {
             return;
         }
 
-        if (!$user->getNotificationSettings()->isTraderReceiveSmsOnMatchingJob()) {
+        if (! $user->getNotificationSettings()->isTraderReceiveSmsOnMatchingJob()) {
             return;
         }
 
@@ -50,13 +50,17 @@ final readonly class EngagementTraderMatchSmsNotificationHandler
         $this->localeSwitcher->runWithLocale($locale, function () use ($engagement, $user, $locale): void {
             $url = $this->urlGenerator->generate(
                 'trader_show_engagement',
-                ['id' => (string)$engagement->getId()],
+                [
+                    'id' => (string) $engagement->getId(),
+                ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
             $text = $this->translator->trans(
                 id: 'sms.trader.engagement.new-match',
-                parameters: ['{url}' => $url],
+                parameters: [
+                    '{url}' => $url,
+                ],
                 domain: 'sms',
                 locale: $locale,
             );

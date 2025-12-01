@@ -149,6 +149,4 @@ class UserNotificationSettings
     {
         $this->isReceiveMarketingSms = $isReceiveMarketingSms;
     }
-
-
 }

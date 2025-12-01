@@ -38,7 +38,7 @@ final readonly class EngagementTraderMatchEmailNotificationHandler
         $this->localeSwitcher->runWithLocale($locale, function () use ($user, $traderProfile, $engagement, $locale): void
         {
 
-            if(!$user->getNotificationSettings()->isTraderReceiveEmailOnMatchingJob()){
+            if(! $user->getNotificationSettings()->isTraderReceiveEmailOnMatchingJob()){
                 return;
             }
 
