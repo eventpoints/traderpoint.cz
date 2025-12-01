@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Map\Bridge\Leaflet\LeafletOptions;
 use Symfony\UX\Map\Bridge\Leaflet\Option\TileLayer;
 use Symfony\UX\Map\Map;
@@ -24,9 +25,9 @@ use Symfony\UX\Map\Point;
 class UserController extends AbstractController
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
+        private readonly UserRepository          $userRepository,
         private readonly TraderProfileRepository $traderProfileRepository,
-        private readonly ImageOptimizer $imageOptimizer,
+        private readonly ImageOptimizer          $imageOptimizer, private readonly TranslatorInterface $translator,
     )
     {
     }
@@ -85,7 +86,7 @@ class UserController extends AbstractController
         if ($accountForm->isSubmitted() && $accountForm->isValid()) {
             $avatarFile = $accountForm->get('avatar')->getData() ?? null;
 
-            if (! empty($avatarFile)) {
+            if (!empty($avatarFile)) {
                 $optimisedFile = $this->imageOptimizer->getOptimizedAvatarFile($avatarFile);
                 $base64Image = $this->imageOptimizer->toBase64($optimisedFile);
                 $currentUser->setAvatar($base64Image);
@@ -112,7 +113,7 @@ class UserController extends AbstractController
 
         if ($userNotificationSettingsTypeForm->isSubmitted() && $userNotificationSettingsTypeForm->isValid()) {
             $this->userRepository->save(entity: $currentUser, flush: true);
-            $this->addFlash(FlashEnum::SUCCESS->value, 'flash.notification-settings-saved');
+            $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans(id: 'flash.notification-settings-saved', domain: 'flash'));
 
             return $this->redirectToRoute('user_account', [
                 'tab' => 'notification',

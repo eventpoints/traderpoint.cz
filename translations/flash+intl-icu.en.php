@@ -13,4 +13,5 @@ return array(
     'flash.engagement-deleted' => 'Engagement deleted',
     'flash.issue-created' => 'issue created',
     'flash.password-reset-email-sent' => 'Password reset email sent',
+    'flash.notification-settings-saved' => 'Notification settings saved',
 );

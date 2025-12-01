@@ -13,4 +13,6 @@ return [
     'flash.review.created' => 'Отзыв был создан',
     'flash.issue-created' => 'Проблема была зарегистрирована',
     'flash.password-reset-email-sent' => 'Письмо для сброса пароля отправлено',
+    'flash.notification-settings-saved' => 'Настройки уведомлений сохранены',
+
 ];

@@ -13,7 +13,7 @@ return array(
     'quotation-received-content' => 'your job {title} has received a new quotation of {amount} from {owner}',
     'view-quote' => 'view quote',
     'trader-job-match' => 'New job match: {title}',
-    'trader-job-match-content' => 'budget of {budget} and {distance} from you and fits your skills. Open to review and quote.',
+    'trader-job-match-content' => 'budget of {budget} and {distance} km from you and fits your skills. Open to review and quote.',
     'view-job' => 'view job',
     'nice-try' => 'Nice try! 😉',
     'email.client.subject.verify-email-address' => 'verify email address',

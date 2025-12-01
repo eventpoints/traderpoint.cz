@@ -11,7 +11,7 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Translation\LocaleSwitcher;
 
 #[AsMessageHandler]
-final readonly class EngagementTraderMatchNotificationHandler
+final readonly class EngagementTraderMatchEmailNotificationHandler
 {
     public function __construct(
         private EntityManagerInterface $em,
@@ -35,7 +35,12 @@ final readonly class EngagementTraderMatchNotificationHandler
 
         $locale = $user->getPreferredLanguage() ?? 'cs';
 
-        $this->localeSwitcher->runWithLocale($locale, function () use ($user, $traderProfile, $engagement, $locale): void {
+        $this->localeSwitcher->runWithLocale($locale, function () use ($user, $traderProfile, $engagement, $locale): void
+        {
+
+            if(!$user->getNotificationSettings()->isTraderReceiveEmailOnMatchingJob()){
+                return;
+            }
 
             $this->emailService->sendEngagementMatchEmail(
                 user: $user,

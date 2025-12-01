@@ -13,4 +13,5 @@ return array(
     'flash.review.created' => 'Відгук було створено',
     'flash.issue-created' => 'Проблему було зареєстровано',
     'flash.password-reset-email-sent' => 'Лист для скидання пароля надіслано',
+    'flash.notification-settings-saved' => 'Налаштування сповіщень збережено',
 );

@@ -93,15 +93,15 @@
                         <div class="card">
                             {{ form_start(userNotificationSettingsTypeForm) }}
                             <div class="card-body vstack gap-3">
-                                {{ form_row(userNotificationSettingsTypeForm.marketingEmail) }}
-                                {{ form_row(userNotificationSettingsTypeForm.jobNewMessageEmail) }}
+                                {{ form_row(userNotificationSettingsTypeForm.isReceiveMarketingEmail) }}
 
                                 {% if app.user.isTrader %}
-                                    {{ form_row(userNotificationSettingsTypeForm.traderNewMatchingJobEmail) }}
-                                    {{ form_row(userNotificationSettingsTypeForm.traderNewMatchingJobSms) }}
+                                    {{ form_row(userNotificationSettingsTypeForm.isTraderReceiveEmailOnMatchingJob) }}
+                                    {{ form_row(userNotificationSettingsTypeForm.isTraderReceiveSmsOnMatchingJob) }}
                                 {% else %}
-                                    {{ form_row(userNotificationSettingsTypeForm.clientNewQuoteOnMyJobEmail) }}
-                                    {{ form_row(userNotificationSettingsTypeForm.clientNewQuoteOnMyJobSms) }}
+                                    {{ form_row(userNotificationSettingsTypeForm.isClientReceiveEmailOnEngagementMessage) }}
+                                    {{ form_row(userNotificationSettingsTypeForm.isClientReceiveEmailOnQuote) }}
+                                    {{ form_row(userNotificationSettingsTypeForm.isClientReceiveSmsOnQuote) }}
                                 {% endif %}
                             </div>
                             <div class="card-footer text-end">

@@ -20,35 +20,35 @@ class UserNotificationSettings
     // --- TRADER SIDE ---
     // When a client posts a new job that matches me
     #[ORM\Column(type: 'boolean')]
-    private bool $traderNewMatchingJobEmail = true;
+    private bool $isTraderReceiveEmailOnMatchingJob = true;
 
     #[ORM\Column(type: 'boolean')]
-    private bool $traderNewMatchingJobSms = false;
+    private bool $isTraderReceiveSmsOnMatchingJob = false;
 
     // --- CLIENT SIDE ---
     // When a trader submits a quote on my job
     #[ORM\Column(type: 'boolean')]
-    private bool $clientNewQuoteOnMyJobEmail = true;
+    private bool $isClientReceiveEmailOnQuote = true;
 
     #[ORM\Column(type: 'boolean')]
-    private bool $clientNewQuoteOnMyJobSms = false;
+    private bool $isClientReceiveSmsOnQuote = false;
 
     // When there’s a new message on a job I’m involved in
     #[ORM\Column(type: 'boolean')]
-    private bool $jobNewMessageEmail = true;
+    private bool $isClientReceiveEmailOnEngagementMessage = true;
 
     #[ORM\Column(type: 'boolean')]
-    private bool $jobNewMessageSms = false;
+    private bool $isClientReceiveSmsOnEngagmentMessage = false;
 
     // (Optional) marketing etc.
     #[ORM\Column(type: 'boolean')]
-    private bool $marketingEmail = false;
+    private bool $isReceiveMarketingEmail = false;
 
     #[ORM\Column(type: 'boolean')]
-    private bool $marketingSms = false;
+    private bool $isReceiveMarketingSms = false;
 
     public function __construct(
-        #[ORM\OneToOne(inversedBy: 'notificationSettings', targetEntity: User::class)]
+        #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'notificationSettings')]
         #[ORM\JoinColumn(unique: true, nullable: false)]
         private User $user
     )
@@ -70,83 +70,85 @@ class UserNotificationSettings
         $this->user = $user;
     }
 
-    public function isTraderNewMatchingJobEmail(): bool
+    public function isTraderReceiveEmailOnMatchingJob(): bool
     {
-        return $this->traderNewMatchingJobEmail;
+        return $this->isTraderReceiveEmailOnMatchingJob;
     }
 
-    public function setTraderNewMatchingJobEmail(bool $traderNewMatchingJobEmail): void
+    public function setIsTraderReceiveEmailOnMatchingJob(bool $isTraderReceiveEmailOnMatchingJob): void
     {
-        $this->traderNewMatchingJobEmail = $traderNewMatchingJobEmail;
+        $this->isTraderReceiveEmailOnMatchingJob = $isTraderReceiveEmailOnMatchingJob;
     }
 
-    public function isTraderNewMatchingJobSms(): bool
+    public function isTraderReceiveSmsOnMatchingJob(): bool
     {
-        return $this->traderNewMatchingJobSms;
+        return $this->isTraderReceiveSmsOnMatchingJob;
     }
 
-    public function setTraderNewMatchingJobSms(bool $traderNewMatchingJobSms): void
+    public function setIsTraderReceiveSmsOnMatchingJob(bool $isTraderReceiveSmsOnMatchingJob): void
     {
-        $this->traderNewMatchingJobSms = $traderNewMatchingJobSms;
+        $this->isTraderReceiveSmsOnMatchingJob = $isTraderReceiveSmsOnMatchingJob;
     }
 
-    public function isClientNewQuoteOnMyJobEmail(): bool
+    public function isClientReceiveEmailOnQuote(): bool
     {
-        return $this->clientNewQuoteOnMyJobEmail;
+        return $this->isClientReceiveEmailOnQuote;
     }
 
-    public function setClientNewQuoteOnMyJobEmail(bool $clientNewQuoteOnMyJobEmail): void
+    public function setIsClientReceiveEmailOnQuote(bool $isClientReceiveEmailOnQuote): void
     {
-        $this->clientNewQuoteOnMyJobEmail = $clientNewQuoteOnMyJobEmail;
+        $this->isClientReceiveEmailOnQuote = $isClientReceiveEmailOnQuote;
     }
 
-    public function isClientNewQuoteOnMyJobSms(): bool
+    public function isClientReceiveSmsOnQuote(): bool
     {
-        return $this->clientNewQuoteOnMyJobSms;
+        return $this->isClientReceiveSmsOnQuote;
     }
 
-    public function setClientNewQuoteOnMyJobSms(bool $clientNewQuoteOnMyJobSms): void
+    public function setIsClientReceiveSmsOnQuote(bool $isClientReceiveSmsOnQuote): void
     {
-        $this->clientNewQuoteOnMyJobSms = $clientNewQuoteOnMyJobSms;
+        $this->isClientReceiveSmsOnQuote = $isClientReceiveSmsOnQuote;
     }
 
-    public function isJobNewMessageEmail(): bool
+    public function isClientReceiveEmailOnEngagementMessage(): bool
     {
-        return $this->jobNewMessageEmail;
+        return $this->isClientReceiveEmailOnEngagementMessage;
     }
 
-    public function setJobNewMessageEmail(bool $jobNewMessageEmail): void
+    public function setIsClientReceiveEmailOnEngagementMessage(bool $isClientReceiveEmailOnEngagementMessage): void
     {
-        $this->jobNewMessageEmail = $jobNewMessageEmail;
+        $this->isClientReceiveEmailOnEngagementMessage = $isClientReceiveEmailOnEngagementMessage;
     }
 
-    public function isJobNewMessageSms(): bool
+    public function isClientReceiveSmsOnEngagmentMessage(): bool
     {
-        return $this->jobNewMessageSms;
+        return $this->isClientReceiveSmsOnEngagmentMessage;
     }
 
-    public function setJobNewMessageSms(bool $jobNewMessageSms): void
+    public function setIsClientReceiveSmsOnEngagmentMessage(bool $isClientReceiveSmsOnEngagmentMessage): void
     {
-        $this->jobNewMessageSms = $jobNewMessageSms;
+        $this->isClientReceiveSmsOnEngagmentMessage = $isClientReceiveSmsOnEngagmentMessage;
     }
 
-    public function isMarketingEmail(): bool
+    public function isReceiveMarketingEmail(): bool
     {
-        return $this->marketingEmail;
+        return $this->isReceiveMarketingEmail;
     }
 
-    public function setMarketingEmail(bool $marketingEmail): void
+    public function setIsReceiveMarketingEmail(bool $isReceiveMarketingEmail): void
     {
-        $this->marketingEmail = $marketingEmail;
+        $this->isReceiveMarketingEmail = $isReceiveMarketingEmail;
     }
 
-    public function isMarketingSms(): bool
+    public function isReceiveMarketingSms(): bool
     {
-        return $this->marketingSms;
+        return $this->isReceiveMarketingSms;
     }
 
-    public function setMarketingSms(bool $marketingSms): void
+    public function setIsReceiveMarketingSms(bool $isReceiveMarketingSms): void
     {
-        $this->marketingSms = $marketingSms;
+        $this->isReceiveMarketingSms = $isReceiveMarketingSms;
     }
+
+
 }

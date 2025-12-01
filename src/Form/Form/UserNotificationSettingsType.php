@@ -26,42 +26,42 @@ final class UserNotificationSettingsType extends AbstractType
         /** @var User|null $currentUser */
         $currentUser = $options['current_user'] ?? null;
 
-        if (! $currentUser instanceof User) {
+        if (!$currentUser instanceof User) {
             throw new LogicException('UserNotificationSettingsType requires "current_user" option to be a User.');
         }
 
         if ($currentUser->isTrader()) {
             // TRADER – new matching jobs
             $builder
-                ->add('traderNewMatchingJobEmail', SwitchType::class, [
+                ->add('isTraderReceiveEmailOnMatchingJob', SwitchType::class, [
                     'required' => false,
                     'label' => $this->translator->trans('trader.new_matching_job.email'),
                 ])
-                ->add('traderNewMatchingJobSms', SwitchType::class, [
+                ->add('isTraderReceiveSmsOnMatchingJob', SwitchType::class, [
                     'required' => false,
                     'label' => $this->translator->trans('trader.new_matching_job.sms'),
                 ]);
         } else {
             // CLIENT – quotes on my job
             $builder
-                ->add('clientNewQuoteOnMyJobEmail', SwitchType::class, [
+                ->add('isClientReceiveEmailOnQuote', SwitchType::class, [
                     'required' => false,
                     'label' => $this->translator->trans('client.new_quote.email'),
                 ])
-                ->add('clientNewQuoteOnMyJobSms', SwitchType::class, [
+                ->add('isClientReceiveSmsOnQuote', SwitchType::class, [
                     'required' => false,
                     'label' => $this->translator->trans('client.new_quote.sms'),
+                ])
+                ->add('isClientReceiveEmailOnEngagementMessage', SwitchType::class, [
+                    'required' => false,
+                    'label' => $this->translator->trans('job.new_message.email'),
                 ]);
         }
 
         // SHARED – new messages
         $builder
-            ->add('jobNewMessageEmail', SwitchType::class, [
-                'required' => false,
-                'label' => $this->translator->trans('job.new_message.email'),
-            ])
             // MARKETING / NEWS
-            ->add('marketingEmail', SwitchType::class, [
+            ->add('isReceiveMarketingEmail', SwitchType::class, [
                 'required' => false,
                 'label' => $this->translator->trans('marketing.email'),
             ]);

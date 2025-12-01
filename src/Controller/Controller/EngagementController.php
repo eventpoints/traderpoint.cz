@@ -27,6 +27,7 @@ use App\Repository\UserRepository;
 use App\Security\Voter\EngagementVoter;
 use App\Service\EmailService\EmailService;
 use App\Service\ImageOptimizer;
+use App\Verification\Sender\ElksSmsSender;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Utils\Strings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,6 +37,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -61,7 +63,9 @@ class EngagementController extends AbstractController
         private readonly Security $security,
         private readonly ReactionRepository $reactionRepository,
         private readonly ConversationRepository $conversationRepository,
-        private readonly ConversationFactory $conversationFactory
+        private readonly ConversationFactory $conversationFactory,
+        private readonly ElksSmsSender $elksSmsSender,
+        private readonly UrlGeneratorInterface $urlGenerator
     )
     {
     }
@@ -134,13 +138,29 @@ class EngagementController extends AbstractController
         $quoteForm->handleRequest($request);
         if ($quoteForm->isSubmitted() && $quoteForm->isValid()) {
 
-            $locale = $engagement->getOwner()->getPreferredLanguage() ?? 'cs';
+            if($engagement->getOwner()->getNotificationSettings()->isIsClientReceiveEmailOnQuote()) {
+                $locale = $engagement->getOwner()->getPreferredLanguage() ?? 'cs';
+                $this->emailService->sendQuoteMadeEmail($engagement->getOwner(), $locale, [
+                    'quote' => $quote,
+                    'engagement' => $engagement,
+                    'user' => $engagement->getOwner(),
+                ]);
+            }
 
-            $this->emailService->sendQuoteMadeEmail($engagement->getOwner(), $locale, [
-                'quote' => $quote,
-                'engagement' => $engagement,
-                'user' => $engagement->getOwner(),
-            ]);
+            if($engagement->getOwner()->getNotificationSettings()->isClientReceiveSmsOnNewQuote()) {
+                $locale = $engagement->getOwner()->getPreferredLanguage() ?? 'cs';
+                $url = $this->urlGenerator->generate(
+                    'client_show_engagement',
+                    ['id' => $engagement->getId()],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+                $this->elksSmsSender->send($engagement->getOwner()->getPhoneNumber()->getE164(), $this->translator->trans(id: 'sms.client.engagement.new-quote', parameters: ['url' => $url], domain: 'sms', locale: $locale));
+                $this->emailService->sendQuoteMadeEmail($engagement->getOwner(), $locale, [
+                    'quote' => $quote,
+                    'engagement' => $engagement,
+                    'user' => $engagement->getOwner(),
+                ]);
+            }
 
             $this->quoteRepository->save(entity: $quote, flush: true);
             $this->addFlash(type: FlashEnum::SUCCESS->value, message: $this->translator->trans(id: 'flash.quote-sent-successful', domain: 'flash'));

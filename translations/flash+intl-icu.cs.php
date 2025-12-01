@@ -13,4 +13,6 @@ return array(
     'flash.review.created' => 'Recenze byla vytvořena',
     'flash.issue-created' => 'Problém byl nahlášen',
     'flash.password-reset-email-sent' => 'E-mail pro obnovení hesla byl odeslán',
+    'flash.notification-settings-saved' => 'Nastavení oznámení uloženo',
+
 );
