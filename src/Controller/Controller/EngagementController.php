@@ -49,19 +49,19 @@ use Symfony\UX\Map\Point;
 class EngagementController extends AbstractController
 {
     public function __construct(
-        private readonly TranslatorInterface $translator,
-        private readonly QuoteRepository $quoteRepository,
-        private readonly EngagementRepository $engagementRepository,
-        private readonly UserRepository $userRepository,
-        private readonly ImageOptimizer $imageOptimizer,
-        private readonly EmailService $emailService,
+        private readonly TranslatorInterface      $translator,
+        private readonly QuoteRepository          $quoteRepository,
+        private readonly EngagementRepository     $engagementRepository,
+        private readonly UserRepository           $userRepository,
+        private readonly ImageOptimizer           $imageOptimizer,
+        private readonly EmailService             $emailService,
         private readonly EventDispatcherInterface $dispatcher,
-        private readonly SkillRepository $skillRepository,
-        private readonly UserFactory $userFactory,
-        private readonly Security $security,
-        private readonly ReactionRepository $reactionRepository,
-        private readonly ConversationRepository $conversationRepository,
-        private readonly ConversationFactory $conversationFactory
+        private readonly SkillRepository          $skillRepository,
+        private readonly UserFactory              $userFactory,
+        private readonly Security                 $security,
+        private readonly ReactionRepository       $reactionRepository,
+        private readonly ConversationRepository   $conversationRepository,
+        private readonly ConversationFactory      $conversationFactory
     )
     {
     }
@@ -69,6 +69,9 @@ class EngagementController extends AbstractController
     #[Route(path: 'trader/engagement/{id}', name: 'trader_show_engagement')]
     public function traderShow(Engagement $engagement, Request $request, #[CurrentUser] User $currentUser): Response
     {
+        $tab = $request->query->get('tab', 'quote-form');
+        $focusedMessageId = $request->query->get('focused');
+
         $reactions = $this->reactionRepository->findAll();
         $this->denyAccessUnlessGranted(EngagementVoter::TRADER_VIEW, $engagement);
 
@@ -114,11 +117,15 @@ class EngagementController extends AbstractController
                 $locale = $engagement->getOwner()->getPreferredLanguage() ?? 'cs';
                 $this->emailService->sendEngagementMessageEmail(user: $engagement->getOwner(), locale: $locale, context: [
                     'engagement' => $engagement,
+                    'tab' => 'questions',
+                    'focused' => $message->getId(),
                 ]);
             }
 
             return $this->redirectToRoute('trader_show_engagement', [
                 'id' => $engagement->getId(),
+                'tab' => 'questions',
+                'focused' => $message->getId(),
             ]);
         }
 
@@ -139,6 +146,7 @@ class EngagementController extends AbstractController
             $this->addFlash(type: FlashEnum::SUCCESS->value, message: $this->translator->trans(id: 'flash.quote-sent-successful', domain: 'flash'));
             return $this->redirectToRoute(route: 'trader_show_engagement', parameters: [
                 'id' => $engagement->getId(),
+                'tab' => 'questions',
             ]);
         }
 
@@ -148,12 +156,18 @@ class EngagementController extends AbstractController
             'quoteForm' => $quoteForm,
             'engagement' => $engagement,
             'map' => $map,
+            'tab' => $tab,
+            'focused' => $focusedMessageId
         ]);
     }
 
     #[Route(path: 'client/engagement/{id}', name: 'client_show_engagement')]
     public function clientShow(Engagement $engagement, Request $request, #[CurrentUser] User $currentUser): Response
     {
+        $tab = $request->query->get('tab', 'quotes');
+        $focusedMessageId = $request->query->get('focused');
+
+
         if ($currentUser->isTrader()) {
             $this->addFlash(FlashEnum::WARNING->value, $this->translator->trans('nice-try'));
             return $this->redirectToRoute('trader_show_engagement', [
@@ -197,8 +211,10 @@ class EngagementController extends AbstractController
             $participant->addMessage($message);
             $this->conversationRepository->save($conversation, true);
 
-            return $this->redirectToRoute('trader_show_engagement', [
+            return $this->redirectToRoute('client_show_engagement', [
                 'id' => $engagement->getId(),
+                'tab' => 'questions',
+                'focused' => $message->getId(),
             ]);
         }
 
@@ -208,6 +224,8 @@ class EngagementController extends AbstractController
             'map' => $map,
             'engagement' => $engagement,
             'quotes' => $quotes,
+            'tab' => $tab,
+            'focused' => $focusedMessageId
         ]);
     }
 
@@ -216,11 +234,11 @@ class EngagementController extends AbstractController
     {
         $skills = new ArrayCollection();
         $skillId = $request->query->get('skill');
-        if (! empty($skillId)) {
+        if (!empty($skillId)) {
             $skillUuid = Uuid::fromString($skillId);
             $skill = $this->skillRepository->find($skillUuid);
 
-            if (! $skill instanceof Skill) {
+            if (!$skill instanceof Skill) {
                 return $this->redirectToRoute('landing');
             }
 
@@ -257,7 +275,7 @@ class EngagementController extends AbstractController
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
 
-            if (! $currentUser instanceof User) {
+            if (!$currentUser instanceof User) {
                 $email = $engagementForm->get('email')->getData();
                 $firstName = $engagementForm->get('firstName')->getData();
                 $lastName = $engagementForm->get('lastName')->getData();
@@ -295,9 +313,9 @@ class EngagementController extends AbstractController
     #[Route(path: 'engagement/edit/{id}', name: 'edit_engagement')]
     public function edit(
         Engagement $engagement,
-        Request $request,
+        Request    $request,
         #[CurrentUser]
-        ?User $currentUser = null
+        ?User      $currentUser = null
     ): Response
     {
         // 1) Decide what lat/lng to use for the map centre

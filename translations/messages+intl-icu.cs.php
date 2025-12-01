@@ -273,5 +273,7 @@ return array(
     'forgot-password' => 'zapomenuté heslo',
     'job-created' => 'poptávka vytvořena',
     'password-reset' => 'Obnovení hesla',
-    'send-password-reset' => 'Odeslat resetovací e-mail'
+    'send-password-reset' => 'Odeslat resetovací e-mail',
+    'new-message'=> "napište zde svou zprávu"
+
 );

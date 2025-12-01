@@ -109,49 +109,34 @@
                     <div class="card-header border-bottom-0">
                         <ul class="nav nav-pills nav-justified" id="clientQuoteTabs" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button
-                                        class="nav-link active"
-                                        id="tab-client-quotes-tab"
-                                        data-bs-toggle="tab"
-                                        data-bs-target="#tab-client-quotes"
-                                        type="button"
-                                        role="tab"
-                                        aria-controls="tab-client-quotes"
-                                        aria-selected="true"
+                                <a
+                                        href="{{ path('client_show_engagement', { id: engagement.id, tab: 'quotes' }) }}"
+                                        class="nav-link {{ tab == 'quotes' ? "active" }} d-flex justify-content-between align-items-center"
                                 >
                                     {{ 'tab.quotes'|trans|default('Quotes') }}
-                                </button>
+                                    <twig:Badge class="text-white border border-white" text="{{ engagement.quotes|length|default('0') }}" variant="primary" size="md"/>
+                                </a>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button
-                                        class="nav-link"
-                                        id="tab-client-messages-tab"
-                                        data-bs-toggle="tab"
-                                        data-bs-target="#tab-client-messages"
-                                        type="button"
-                                        role="tab"
-                                        aria-controls="tab-client-messages"
-                                        aria-selected="false"
+                                <a
+                                        href="{{ path('client_show_engagement', { id: engagement.id, tab: 'questions' }) }}"
+                                        class="nav-link {{ tab == 'questions' ? "active" }} d-flex justify-content-between align-items-center"
                                 >
                                     {{ 'tab.clarifying-questions'|trans|default('Messages') }}
-                                </button>
+                                    <twig:Badge class="text-white border border-white" text="{{ engagement.conversation ? engagement.conversation.messages|length : 0 }}" variant="primary" size="md"/>
+
+                                </a>
                             </li>
                         </ul>
                     </div>
 
-                    <div class="card-body tab-content border-top">
-
+                    <div class="card-body border-top">
                         {# ================= TAB: QUOTES ================= #}
-                        <div class="tab-pane fade show active"
-                             id="tab-client-quotes"
-                             role="tabpanel"
-                             aria-labelledby="tab-client-quotes-tab">
-
+                        {% if tab == 'quotes' %}
                             <div class="vstack gap-3">
 
                                 {# 1) Accepted quote exists #}
                                 {% if acceptedQuote %}
-
                                     <div class="card border-0 shadow-sm">
                                         {% include 'engagement/_accepted_quote_summary.html.twig' with {
                                             acceptedQuote: acceptedQuote,
@@ -319,15 +304,12 @@
                                     {% endif %}
                                 {% endif %}
                             </div>
-                        </div>
+                        {% endif %}
 
                         {# ================= TAB: MESSAGES ================= #}
-                        <div class="tab-pane fade"
-                             id="tab-client-messages"
-                             role="tabpanel"
-                             aria-labelledby="tab-client-messages-tab">
+                        {% if tab == 'questions' %}
                             {{ include('engagement/_messages.html.twig', {messageForm: messageForm}) }}
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

@@ -273,5 +273,6 @@ return array(
     'i-do-not-have-an-account' => 'I do not have an account, register now',
     'forgot-password' => 'forgot password',
     'password-reset' => 'Password reset',
-    'send-password-reset' => 'send reset email'
+    'send-password-reset' => 'send reset email',
+    'new-message'=> "write your message here"
 );

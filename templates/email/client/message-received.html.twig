@@ -14,7 +14,9 @@
         <tr>
             <td align="center" style="padding:16px 0;">
                 <a class="btn" href="{{ url('client_show_engagement', {
-                    id: engagement.id
+                    id: engagement.id,
+                    tab: tab,
+                    focused: focused
                 }) }}"
                    style="display:inline-block;">
                     {{ 'view-job'|trans }}

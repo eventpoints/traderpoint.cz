@@ -274,5 +274,6 @@ return array(
     'i-do-not-have-an-account' => 'У мене немає облікового запису, зареєструватися зараз',
     'forgot-password' => 'забув пароль',
     'password-reset' => 'Скидання пароля',
-    'send-password-reset' => 'отправить письмо для сброса'
+    'send-password-reset' => 'отправить письмо для сброса',
+    'new-message'=> "напишіть своє повідомлення тут"
 );

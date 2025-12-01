@@ -1,13 +1,9 @@
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <div class="fw-bold">
-        {{ 'tab.clarifying-questions'|trans|default('Job clarifications') }}
-    </div>
-    <twig:Badge text="{{ engagement.conversation ? engagement.conversation.messages|length : 0 }} {{ 'messages'|trans|default('messages') }}" variant="dark" :isOutline="true" size="md"/>
-</div>
-
-<div class="vstack gap-3 min-vh-50">
+<div class="vstack gap-3 min-vh-50" {{ stimulus_controller('scroll-to-focused') }}>
     {% for message in engagement.conversation.messages %}
-        <div class="card">
+        <div class="card border {{ message.id == focused ? "shadow" }}"
+             id="message-{{ message.id }}"
+             data-message-id="{{ message.id }}"
+        >
             <div class="card-header hstack gap-3 text-end">
                 <div>
                     <img width="50" height="50" class="border object-fit-cover rounded-circle"
@@ -26,7 +22,7 @@
 </div>
 
 <div class="card mt-3">
-    <div class="card-body">
+    <div class="card-body p-0">
         {{ form_start(messageForm) }}
         <div class="position-relative">
             {{ form_row(messageForm.content) }}

@@ -275,5 +275,7 @@ return [
     'i-do-not-have-an-account' => 'У меня нет учетной записи, зарегистрироваться сейчас',
     'forgot-password' => 'Забыли пароль',
     'password-reset' => 'Сброс пароля',
-    'send-password-reset' => 'отправить письмо для сброса'
+    'send-password-reset' => 'отправить письмо для сброса',
+    'new-message'=> "напишите ваше сообщение здесь"
+
 ];
