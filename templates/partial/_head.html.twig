@@ -1,0 +1,139 @@
+{% set site_name = 'TraderPoint' %}
+{% set title = block('meta_title') is defined ? block('meta_title') : 'meta.default.title'|trans(domain='meta') %}
+{% set desc = block('meta_description') is defined ? block('meta_description') : 'meta.default.desc'|trans(domain='meta') %}
+{% set url = block('meta_url') is defined ? block('meta_url') : absolute_url(app.request.uri) %}
+{% set image = block('meta_image') is defined ? block('meta_image') : absolute_url(asset('images/v3/social-logo-v3.png')) %}
+{% set og_locale = 'cs' ? 'cs_CZ' : (is_ru ? 'ru_RU' : 'en_GB') %}
+
+<meta charset="UTF-8">
+<title>{% block title %}Traderpoint{% endblock %}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="{{ desc }}">
+<link rel="icon" href="{{ asset('images/v3/logo.ico') }}"/>
+<link rel="canonical" href="{{ url }}">
+
+{# Hreflang alternates #}
+    {% if app.request.attributes.get('_route') %}
+        {% set params = app.request.attributes.get('_route_params')|default({}) %}
+        <link rel="alternate"
+              href="{{ absolute_url(path(app.request.attributes.get('_route'), params|merge({'_locale': 'en'}))) }}"
+              hreflang="en">
+        <link rel="alternate"
+              href="{{ absolute_url(path(app.request.attributes.get('_route'), params|merge({'_locale': 'cs'}))) }}"
+              hreflang="cs-CZ">
+        <link rel="alternate"
+              href="{{ absolute_url(path(app.request.attributes.get('_route'), params|merge({'_locale': 'ru'}))) }}"
+              hreflang="ru-RU">
+        <link rel="alternate" href="{{ url }}" hreflang="x-default">
+    {% endif %}
+
+    {# Open Graph #}
+<meta property="og:site_name" content="{{ site_name }}">
+<meta property="og:type" content="{% block og_type %}website{% endblock %}">
+<meta property="og:title" content="{{ title }}">
+<meta property="og:description" content="{{ desc }}">
+<meta property="og:url" content="{{ url }}">
+<meta property="og:image" content="{{ image }}">
+<meta property="og:locale" content="{{ og_locale }}">
+<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="cs_CZ">
+<meta property="og:locale:alternate" content="ru_RU">
+
+{# Twitter #}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ title }}">
+<meta name="twitter:description" content="{{ desc }}">
+<meta name="twitter:image" content="{{ image }}">
+
+<meta name="facebook-domain-verification" content="r0qscdakzftxy2kdtgs6esws61nihb"/>
+
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
+
+{% block javascripts %}
+
+    {% if app.environment == 'prod' %}
+        <script>
+            window.dataLayer = window.dataLayer || [];
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                functionality_storage: 'granted',
+                security_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+                wait_for_update: 500
+            });
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script type="text/plain"
+                data-consent="statistics" async
+                src="https://www.googletagmanager.com/gtag/js?id=AW-17709279510"></script>
+        <script type="text/plain"
+                data-consent="statistics">
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'AW-17709279510');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script type="text/plain"
+                data-consent="statistics" async
+                src="https://www.googletagmanager.com/gtag/js?id=G-2V2G7HTZ7E"></script>
+        <script type="text/plain"
+                data-consent="statistics">
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-2V2G7HTZ7E');
+        </script>
+
+        <script type="text/plain"
+                data-consent="statistics marketing">
+            (function(w,d,s,l,i){
+                w[l]=w[l]||[];
+                w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+                var f=d.getElementsByTagName(s)[0],
+                    j=d.createElement(s),
+                    dl=l!='dataLayer' ? '&l='+l : '';
+                j.async = true;
+                j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-TBZRC2ZV');
+        </script>
+
+        <!-- Meta Pixel Code -->
+        <script type="text/plain"
+                data-consent="marketing">
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window, document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '796974643394523');
+            fbq('track', 'PageView');
+        </script>
+        <noscript>
+            <img height="1" width="1" style="display:none"
+                 src="https://www.facebook.com/tr?id=796974643394523&ev=PageView&noscript=1"
+            /></noscript>
+        <!-- End Meta Pixel Code -->
+    {% endif %}
+
+    {% block importmap %}{{ importmap('app') }}{% endblock %}
+
+{% endblock %}
