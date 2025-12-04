@@ -29,7 +29,7 @@
         : 'We match customers and tradespeople by skills, area and budget. You choose which jobs to quote.')) %}
 
     {% set url = block('meta_url') is defined ? block('meta_url') : absolute_url(app.request.uri) %}
-    {% set image = block('meta_image') is defined ? block('meta_image') : absolute_url(asset('images/og/traderpoint-og.png')) %}
+    {% set image = block('meta_image') is defined ? block('meta_image') : absolute_url(asset('images/v3/social-logo-v3.png')) %}
     {% set og_locale = is_cs ? 'cs_CZ' : (is_ru ? 'ru_RU' : 'en_GB') %}
 
     <title>{{ title }}</title>
