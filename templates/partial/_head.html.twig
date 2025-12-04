@@ -1,4 +1,4 @@
-{% set site_name = 'TraderPoint' %}
+{% set site_name = 'Trader Point' %}
 {% set title = block('meta_title') is defined ? block('meta_title') : 'meta.default.title'|trans(domain='meta') %}
 {% set desc = block('meta_description') is defined ? block('meta_description') : 'meta.default.desc'|trans(domain='meta') %}
 {% set url = block('meta_url') is defined ? block('meta_url') : absolute_url(app.request.uri) %}
@@ -6,7 +6,7 @@
 {% set og_locale = 'cs' ? 'cs_CZ' : (is_ru ? 'ru_RU' : 'en_GB') %}
 
 <meta charset="UTF-8">
-<title>{% block title %}Traderpoint{% endblock %}</title>
+<title>{% block title %}{{ site_name }}{% endblock %}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="{{ desc }}">
 <link rel="icon" href="{{ asset('images/v3/logo.ico') }}"/>
