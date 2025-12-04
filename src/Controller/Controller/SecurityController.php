@@ -138,7 +138,6 @@ class SecurityController extends AbstractController
         if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
             $plain = (string) $passwordForm->get('plainPassword')->getData();
             $user->setPassword($hasher->hashPassword($user, $plain));
-
             $user->setPasswordSetAt(CarbonImmutable::now());
 
             $this->userTokenService->consumeAllForUserAndPurpose(

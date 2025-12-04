@@ -19,6 +19,7 @@ use App\Service\EmailService\EmailService;
 use App\Service\StandardPlanSubscriptionService;
 use App\Service\UserTokenService\UserTokenService;
 use App\Service\UserTokenService\UserTokenServiceInterface;
+use Carbon\CarbonImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Exception\ApiErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -76,6 +77,7 @@ class RegistrationController extends AbstractController
 
             $password = $this->userPasswordHasher->hashPassword(user: $user, plainPassword: $form->get('plainPassword')->getData());
             $user->setPassword($password);
+            $user->setPasswordSetAt(CarbonImmutable::now());
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
@@ -139,6 +141,7 @@ class RegistrationController extends AbstractController
             $user->setPreferredLanguage($request->getLocale());
             $password = $this->userPasswordHasher->hashPassword(user: $user, plainPassword: $form->get('plainPassword')->getData());
             $user->setPassword($password);
+            $user->setPasswordSetAt(CarbonImmutable::now());
 
             $traderProfile = new TraderProfile();
             foreach ($userTraderDto->getSkills() as $skill) {
