@@ -20,7 +20,6 @@ use Symfony\UX\Map\Map;
 
 final class MapLocationType extends AbstractType
 {
-
     public function __construct(
         private readonly TranslatorInterface $translator
     )

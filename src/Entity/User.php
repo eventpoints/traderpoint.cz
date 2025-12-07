@@ -146,7 +146,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[ORM\OneToMany(targetEntity: FingerPrint::class, mappedBy: 'owner', cascade: ['persist'])]
     private Collection $fingerprints;
 
-
     /**
      * @var Collection<int, InternetProtocol> $internetProtocols
      */
@@ -550,7 +549,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addFingerprint(FingerPrint $fingerprint): self
     {
-        if (!$this->fingerprints->contains($fingerprint)) {
+        if (! $this->fingerprints->contains($fingerprint)) {
             $this->fingerprints->add($fingerprint);
             $fingerprint->setOwner($this);
         }
@@ -577,7 +576,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addInternetProtocol(InternetProtocol $internetProtocol): self
     {
-        if (!$this->internetProtocols->contains($internetProtocol)) {
+        if (! $this->internetProtocols->contains($internetProtocol)) {
             $this->internetProtocols->add($internetProtocol);
             $internetProtocol->setOwner($this);
         }
@@ -593,6 +592,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
         return $this;
     }
-
 }
 

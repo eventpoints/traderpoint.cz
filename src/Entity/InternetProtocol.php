@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use App\Repository\InternetProtocolRepository;
 use Carbon\CarbonImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
@@ -13,7 +11,7 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints\Ip;
 
 #[ORM\Entity(repositoryClass: InternetProtocolRepository::class)]
-class InternetProtocol
+class InternetProtocol implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -21,30 +19,23 @@ class InternetProtocol
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
     private ?Uuid $id = null;
 
-    #[ORM\Column(length: 45)]
-    #[Ip(
-        version: Ip::ALL,
-        message: 'Please enter a valid IP address.'
-    )]
-    private null|string $address = null;
-
-    #[ORM\Column(length: 2, nullable: true)]
-    protected null|string $countryCode = null;
-
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     protected CarbonImmutable $createdAt;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'internetProtocols')]
     private User $owner;
 
-    /**
-     * @param string|null $address
-     * @param string|null $countryCode
-     */
-    public function __construct(null|string $address, null|string $countryCode = null)
+    public function __construct(
+        #[ORM\Column(length: 45)]
+        #[Ip(
+            version: Ip::ALL,
+            message: 'Please enter a valid IP address.'
+        )]
+        private null|string $address,
+        #[ORM\Column(length: 2, nullable: true)]
+        protected null|string $countryCode = null
+    )
     {
-        $this->address = $address;
-        $this->countryCode = $countryCode;
         $this->createdAt = new CarbonImmutable();
     }
 
@@ -97,5 +88,4 @@ class InternetProtocol
     {
         return $this->getAddress();
     }
-
 }

@@ -11,16 +11,13 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: FingerPrintRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class FingerPrint
+class FingerPrint implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
     private ?Uuid $id = null;
-
-    #[ORM\Column(length: 255, unique: true, nullable: false)]
-    private ?string $fingerprint = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'fingerprints')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
@@ -32,11 +29,12 @@ class FingerPrint
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private CarbonImmutable $createdAt;
 
-    public function __construct(?string $fingerprint)
+    public function __construct(
+        #[ORM\Column(length: 255, unique: true, nullable: false)]
+        private ?string $fingerprint
+    )
     {
         $now = new CarbonImmutable();
-
-        $this->fingerprint = $fingerprint;
         $this->createdAt = $now;
         $this->lastSeenAt = $now;
     }

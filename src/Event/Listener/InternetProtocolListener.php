@@ -18,23 +18,23 @@ use Symfony\Component\HttpKernel\KernelEvents;
 final readonly class InternetProtocolListener
 {
     public function __construct(
-        private Security                   $security,
+        private Security $security,
         private InternetProtocolRepository $internetProtocolRepository,
-        private EntityManagerInterface     $em,
+        private EntityManagerInterface $em,
     )
     {
     }
 
     public function __invoke(RequestEvent $event): void
     {
-        if (!$event->isMainRequest()) {
+        if (! $event->isMainRequest()) {
             return;
         }
 
         /** @var User $user */
         $user = $this->security->getUser();
 
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             return;
         }
 

@@ -128,5 +128,4 @@ class UserController extends AbstractController
             'userNotificationSettingsTypeForm' => $userNotificationSettingsTypeForm,
         ]);
     }
-
 }

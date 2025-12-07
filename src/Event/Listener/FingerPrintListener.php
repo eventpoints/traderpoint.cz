@@ -19,17 +19,17 @@ use Symfony\Component\HttpKernel\KernelEvents;
 final readonly class FingerPrintListener
 {
     public function __construct(
-        private FingerPrintService     $fingerPrintService,
-        private FingerPrintRepository  $fingerPrintRepository,
+        private FingerPrintService $fingerPrintService,
+        private FingerPrintRepository $fingerPrintRepository,
         private EntityManagerInterface $entityManager,
-        private Security               $security,
+        private Security $security,
     )
     {
     }
 
     public function __invoke(RequestEvent $event): void
     {
-        if (!$event->isMainRequest()) {
+        if (! $event->isMainRequest()) {
             return;
         }
 
@@ -44,12 +44,14 @@ final readonly class FingerPrintListener
         $user = $this->security->getUser();
         $owner = $user instanceof User ? $user : null;
 
-        $fingerPrint = $this->fingerPrintRepository->findOneBy(['fingerprint' => $hash]);
+        $fingerPrint = $this->fingerPrintRepository->findOneBy([
+            'fingerprint' => $hash,
+        ]);
 
         if ($fingerPrint === null) {
             $fingerPrint = new FingerPrint($hash);
 
-            if ($owner !== null) {
+            if ($owner instanceof \App\Entity\User) {
                 $fingerPrint->setOwner($owner);
             }
 
@@ -59,9 +61,11 @@ final readonly class FingerPrintListener
             } catch (UniqueConstraintViolationException) {
                 $this->entityManager->clear();
 
-                $fingerPrint = $this->fingerPrintRepository->findOneBy(['fingerprint' => $hash]);
+                $fingerPrint = $this->fingerPrintRepository->findOneBy([
+                    'fingerprint' => $hash,
+                ]);
 
-                if ($fingerPrint !== null && $owner !== null && $fingerPrint->getOwner() === null) {
+                if ($fingerPrint !== null && $owner instanceof \App\Entity\User && $fingerPrint->getOwner() === null) {
                     $fingerPrint->setOwner($owner);
                     $this->entityManager->flush();
                 }
@@ -71,7 +75,7 @@ final readonly class FingerPrintListener
         }
 
         // If user is signed in later, attach owner once
-        if ($owner !== null && $fingerPrint->getOwner() === null) {
+        if ($owner instanceof \App\Entity\User && $fingerPrint->getOwner() === null) {
             $fingerPrint->setOwner($owner);
             $this->entityManager->flush();
         }

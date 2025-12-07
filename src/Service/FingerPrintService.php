@@ -24,7 +24,7 @@ final readonly class FingerPrintService
             $request->headers->get('Accept-Language') ?? '',
         ];
 
-        $payload = implode('|', array_filter($data, static fn($v) => $v !== ''));
+        $payload = implode('|', array_filter($data, static fn($v): bool => $v !== ''));
 
         return hash_hmac('sha256', $payload, $this->secret);
     }
