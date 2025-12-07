@@ -140,6 +140,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[ORM\OneToMany(targetEntity: UserToken::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $tokens;
 
+    /**
+     * @var Collection<int, FingerPrint> $fingerprints
+     */
+    #[ORM\OneToMany(targetEntity: FingerPrint::class, mappedBy: 'owner', cascade: ['persist'])]
+    private Collection $fingerprints;
+
+
+    /**
+     * @var Collection<int, InternetProtocol> $internetProtocols
+     */
+    #[ORM\OneToMany(targetEntity: InternetProtocol::class, mappedBy: 'owner', cascade: ['persist'])]
+    private Collection $internetProtocols;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -151,6 +164,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         $this->externalIdentities = new ArrayCollection();
         $this->reactions = new ArrayCollection();
         $this->tokens = new ArrayCollection();
+        $this->fingerprints = new ArrayCollection();
+        $this->internetProtocols = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -524,5 +539,60 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         $this->tokens->removeElement($userToken);
         return $this;
     }
+
+    /**
+     * @return Collection<int, FingerPrint>
+     */
+    public function getFingerprints(): Collection
+    {
+        return $this->fingerprints;
+    }
+
+    public function addFingerprint(FingerPrint $fingerprint): self
+    {
+        if (!$this->fingerprints->contains($fingerprint)) {
+            $this->fingerprints->add($fingerprint);
+            $fingerprint->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFingerprint(FingerPrint $fingerprint): self
+    {
+        if ($fingerprint->getOwner() === $this) {
+            $this->fingerprints->removeElement($fingerprint);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, InternetProtocol>
+     */
+    public function getInternetProtocols(): Collection
+    {
+        return $this->internetProtocols;
+    }
+
+    public function addInternetProtocol(InternetProtocol $internetProtocol): self
+    {
+        if (!$this->internetProtocols->contains($internetProtocol)) {
+            $this->internetProtocols->add($internetProtocol);
+            $internetProtocol->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInternetProtocol(InternetProtocol $internetProtocol): self
+    {
+        if ($internetProtocol->getOwner() === $this) {
+            $this->internetProtocols->removeElement($internetProtocol);
+        }
+
+        return $this;
+    }
+
 }
 

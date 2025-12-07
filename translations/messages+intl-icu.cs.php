@@ -274,6 +274,7 @@ return array(
     'job-created' => 'poptávka vytvořena',
     'password-reset' => 'Obnovení hesla',
     'send-password-reset' => 'Odeslat resetovací e-mail',
-    'new-message'=> "napište zde svou zprávu"
+    'new-message'=> "napište zde svou zprávu",
+    'service-radius-km' => 'dosah služby (km)',
 
 );

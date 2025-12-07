@@ -274,5 +274,6 @@ return array(
     'forgot-password' => 'forgot password',
     'password-reset' => 'Password reset',
     'send-password-reset' => 'send reset email',
-    'new-message'=> "write your message here"
+    'new-message'=> "write your message here",
+    'service-radius-km' => 'service radius (km)',
 );

@@ -6,13 +6,16 @@ export default class extends Controller {
     connect() {
         this._onConnect = this._onConnect.bind(this);
         this.element.addEventListener("ux:map:connect", this._onConnect);
+
         this._abortGeocode = null;
         this.marker = null;
         this.circle = null;
 
+        this._fitTimer = null;
+
         // react to radius input changes
         if (this.hasRadiusTarget) {
-            this._onRadiusInput = () => this._syncCircle();
+            this._onRadiusInput = () => this._syncCircle({ fit: true });
             this.radiusTarget.addEventListener("input", this._onRadiusInput);
             this.radiusTarget.addEventListener("change", this._onRadiusInput);
         }
@@ -24,6 +27,9 @@ export default class extends Controller {
         if (this.marker) this.marker.off();
         if (this.circle) this.circle.remove();
         if (this.map) this.map.off("click");
+
+        if (this._fitTimer) clearTimeout(this._fitTimer);
+
         if (this.hasRadiusTarget && this._onRadiusInput) {
             this.radiusTarget.removeEventListener("input", this._onRadiusInput);
             this.radiusTarget.removeEventListener("change", this._onRadiusInput);
@@ -32,7 +38,7 @@ export default class extends Controller {
 
     _onConnect(event) {
         const d = event?.detail ?? {};
-        this.map = d.providerMap || d.map;  // Leaflet Map
+        this.map = d.map;          // Leaflet Map (for Leaflet renderer)
         this.L   = d.L || window.L;
 
         if (!this.map || !this.L) {
@@ -62,17 +68,19 @@ export default class extends Controller {
                 riseOnHover: true,
             }).addTo(this.map);
 
+            // While dragging, don't auto-fit (feels horrible)
             this.marker.on("move", () => {
                 const p = this.marker.getLatLng();
                 this._updateInputs(p.lat, p.lng, { fire: false });
-                this._syncCircle();
+                this._syncCircle({ fit: false });
             });
 
+            // After drag finishes, do fit
             this.marker.on("dragend", () => {
                 const p = this.marker.getLatLng();
                 this._updateInputs(p.lat, p.lng, { fire: true });
                 this._reverseGeocode(p.lat, p.lng);
-                this._syncCircle();
+                this._syncCircle({ fit: true });
             });
         } else {
             this.marker.setLatLng(latlng);
@@ -82,10 +90,12 @@ export default class extends Controller {
 
         this._updateInputs(latlng.lat, latlng.lng, { fire: true });
         this._reverseGeocode(latlng.lat, latlng.lng);
-        this._syncCircle();
+
+        // Initial placement should fit
+        this._syncCircle({ fit: true });
     }
 
-    _syncCircle() {
+    _syncCircle({ fit = false } = {}) {
         // Only if radius input exists and we have a marker
         if (!this.marker || !this.hasRadiusTarget) return;
 
@@ -104,10 +114,28 @@ export default class extends Controller {
                 this.circle.setLatLng(center);
                 this.circle.setRadius(meters);
             }
+
+            if (fit) this._fitToCircle();
         } else if (this.circle) {
             this.circle.remove();
             this.circle = null;
         }
+    }
+
+    _fitToCircle() {
+        if (!this.circle || !this.map) return;
+
+        // Small debounce to avoid jitter during fast input changes
+        if (this._fitTimer) clearTimeout(this._fitTimer);
+
+        this._fitTimer = setTimeout(() => {
+            if (!this.circle) return;
+
+            this.map.fitBounds(this.circle.getBounds(), {
+                padding: [24, 24],
+                maxZoom: 14,
+            });
+        }, 50);
     }
 
     _updateInputs(lat, lng, { fire = true } = {}) {

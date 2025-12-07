@@ -276,6 +276,6 @@ return [
     'forgot-password' => 'Забыли пароль',
     'password-reset' => 'Сброс пароля',
     'send-password-reset' => 'отправить письмо для сброса',
-    'new-message'=> "напишите ваше сообщение здесь"
-
+    'new-message'=> "напишите ваше сообщение здесь",
+    'service-radius-km' => 'Радиус обслуживания (km)',
 ];

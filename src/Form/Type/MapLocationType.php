@@ -15,10 +15,18 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Map\Map;
 
 final class MapLocationType extends AbstractType
 {
+
+    public function __construct(
+        private readonly TranslatorInterface $translator
+    )
+    {
+    }
+
     public function getParent(): string
     {
         return FormType::class;
@@ -46,9 +54,12 @@ final class MapLocationType extends AbstractType
         if ($options['with_radius']) {
             $builder->add('radiusKm', NumberType::class, [
                 'required' => false,
-                'label' => $options['radius_label'],
+                'label' => $this->translator->trans('service-radius-km'),
                 'html5' => true,
                 'scale' => 1,
+                'row_attr' => [
+                    'class' => 'form-floating',
+                ],
                 'attr' => array_replace([
                     'min' => $options['radius_min'],
                     'max' => $options['radius_max'],

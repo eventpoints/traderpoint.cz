@@ -3,61 +3,69 @@
 {% block body %}
     {% set tab = tab|default('account') %}
 
-    <div class="container">
-        <div class="row justify-content-center g-3 mt-3">
+<div class="container">
+    <div class="row justify-content-center g-3 mt-3">
 
-            <div class="col-12 col-md-3 mb-3 mb-md-0">
-                <div class="list-group">
-                    <a href="{{ path('user_account', { tab: 'account' }) }}"
-                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if tab == 'account' %}active{% endif %}">
-                        <div>{{ 'account-settings'|trans|title }}</div>
-                        <div>{{ ux_icon('mdi:cog-outline', { style: 'height: 1em;' }) }}</div>
+        <div class="col-12 col-md-3 mb-3 mb-md-0">
+            <div class="list-group">
+                <a href="{{ path('user_account', { tab: 'account' }) }}"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if tab == 'account' %}active{% endif %}">
+                    <div>{{ 'account-settings'|trans|title }}</div>
+                    <div>{{ ux_icon('mdi:cog-outline', { style: 'height: 1em;' }) }}</div>
+                </a>
+                {% if app.user.isTrader %}
+                    <a href="{{ path('user_account', { tab: 'trader' }) }}"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if tab == 'trader' %}active{% endif %}">
+                        <div>{{ 'trader-settings'|trans|title }}</div>
+                        <div>{{ ux_icon('mdi:bank-outline', { style: 'height: 1em;' }) }}</div>
                     </a>
-                    {% if app.user.isTrader %}
-                        <a href="{{ path('user_account', { tab: 'trader' }) }}"
-                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if tab == 'trader' %}active{% endif %}">
-                            <div>{{ 'trader-settings'|trans|title }}</div>
-                            <div>{{ ux_icon('mdi:bank-outline', { style: 'height: 1em;' }) }}</div>
-                        </a>
-                    {% endif %}
-                    <a href="{{ path('user_account', { tab: 'notification' }) }}"
-                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if tab == 'notification' %}active{% endif %}">
-                        <div>{{ 'notification-settings'|trans|title }}</div>
-                        <div>{{ ux_icon('mdi:notification-settings-outline', { style: 'height: 1em;' }) }}</div>
+                {% endif %}
+                <a href="{{ path('user_account', { tab: 'notification' }) }}"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if tab == 'notification' %}active{% endif %}">
+                    <div>{{ 'notification-settings'|trans|title }}</div>
+                    <div>{{ ux_icon('mdi:notification-settings-outline', { style: 'height: 1em;' }) }}</div>
 
-                    </a>
-                </div>
+                </a>
             </div>
+        </div>
 
-            <div class="col-12 col-md-8">
-                <div class="vstack gap-3">
+        <div class="col-12 col-md-8">
+            <div class="vstack gap-3">
 
-                    {# --- TRADER TAB --- #}
-                    {% if tab == 'trader' %}
-                        <div class="card">
-                            {{ form_start(traderAccountForm) }}
-                            <div class="mb-3">
-                                {{ form_row(traderAccountForm.location) }}
+                {# --- TRADER TAB --- #}
+                {% if tab == 'trader' %}
+                <div class="card" data-controller="pick-location">
+                    {{ form_start(traderAccountForm) }}
+                    <div class="mb-3">
+                        {{ form_row(traderAccountForm.location) }}
+                        <div class="card-body vstack gap-3">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    {{ form_row(traderAccountForm.title) }}
+                                </div>
+                                {% if traderAccountForm.location.radiusKm is defined %}
+                                    <div class="col-6">
+                                        {{ form_row(traderAccountForm.location.radiusKm) }}
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="card-body vstack gap-3">
-                                {{ form_row(traderAccountForm.title) }}
-                                {{ form_row(traderAccountForm.skills) }}
-                                <div class="row g-3">
-                                    <div class="col-12 col-md-6">
-                                        {{ form_row(traderAccountForm.country) }}
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        {{ form_row(traderAccountForm.companyNumber) }}
-                                    </div>
+                            {{ form_row(traderAccountForm.skills) }}
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    {{ form_row(traderAccountForm.country) }}
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    {{ form_row(traderAccountForm.companyNumber) }}
                                 </div>
                             </div>
-                            <div class="card-footer text-end">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ 'save'|trans }}
-                                </button>
-                            </div>
-                            {{ form_end(traderAccountForm) }}
                         </div>
+                        <div class="card-footer text-end">
+                            <button type="submit" class="btn btn-primary">
+                                {{ 'save'|trans }}
+                            </button>
+                        </div>
+                        {{ form_end(traderAccountForm) }}
+                    </div>
                     {% endif %}
 
                     {# --- ACCOUNT TAB --- #}
@@ -118,4 +126,4 @@
 
         </div>
     </div>
-{% endblock %}
+    {% endblock %}
