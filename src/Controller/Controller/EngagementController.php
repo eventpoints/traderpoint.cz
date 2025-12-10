@@ -299,7 +299,6 @@ class EngagementController extends AbstractController
             'skills' => $skills,
         ]);
 
-
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
 
