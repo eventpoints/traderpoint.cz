@@ -284,13 +284,9 @@ final class GoogleAuthenticator extends OAuth2Authenticator
 
     private function setupTraderAccount(User $user): void
     {
-        $roles = $user->getRoles();
-        if (! in_array(UserRoleEnum::ROLE_TRADER->name, $roles, true)) {
-            $roles[] = UserRoleEnum::ROLE_TRADER->name;
-            $user->setRoles($roles);
-        }
+        $user->setRoles([UserRoleEnum::ROLE_TRADER->name]);
 
-        if (! $user->getTraderProfile() instanceof \App\Entity\TraderProfile) {
+        if (! $user->getTraderProfile() instanceof TraderProfile) {
             $profile = new TraderProfile();
             $profile->setOwner($user);
             $user->setTraderProfile($profile);

@@ -274,7 +274,6 @@ class EngagementController extends AbstractController
         }
 
         $engagement = new Engagement();
-
         if ($currentUser instanceof User) {
             $engagement->setOwner($currentUser);
         }
@@ -299,6 +298,7 @@ class EngagementController extends AbstractController
             'map' => $map,
             'skills' => $skills,
         ]);
+
 
         $engagementForm->handleRequest($request);
         if ($engagementForm->isSubmitted() && $engagementForm->isValid()) {
