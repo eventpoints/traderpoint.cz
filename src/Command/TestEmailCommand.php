@@ -12,8 +12,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 
 #[AsCommand(name: 'traderpoint:test-email')]
 class TestEmailCommand extends Command
@@ -29,7 +27,9 @@ class TestEmailCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $user = $this->userRepository->findOneBy(['email' => 'bog.sob@gm.com']);
+        $user = $this->userRepository->findOneBy([
+            'email' => 'bog.sob@gm.com',
+        ]);
         $token = $this->userTokenService->issueToken(user: $user, purpose: UserTokenPurposeEnum::EMAIL_VERIFICATION);
 
         $this->emailService->sendTraderWelcomeEmail(user: $user, context: [

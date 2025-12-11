@@ -23,9 +23,9 @@ final class NudgeMissingServiceRadiusCommand extends Command
 {
     public function __construct(
         private readonly TraderProfileRepository $profiles,
-        private readonly EmailService            $emailService,
-        private readonly UrlGeneratorInterface   $urlGenerator,
-        private readonly EntityManagerInterface  $em,
+        private readonly EmailService $emailService,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly EntityManagerInterface $em,
     )
     {
         parent::__construct();
@@ -51,7 +51,9 @@ final class NudgeMissingServiceRadiusCommand extends Command
 
             $settingsUrl = $this->urlGenerator->generate(
                 'user_account',
-                ['tab' => 'trader'],
+                [
+                    'tab' => 'trader',
+                ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 

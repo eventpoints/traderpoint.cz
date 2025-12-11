@@ -34,7 +34,7 @@ final readonly class NotificationTrackingListener
                 $event->context
             );
 
-        if ($notification->getId() === null) {
+        if (! $notification->getId() instanceof \Symfony\Component\Uid\Uuid) {
             $this->em->persist($notification);
         }
 

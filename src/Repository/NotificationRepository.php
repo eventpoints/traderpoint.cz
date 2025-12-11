@@ -8,6 +8,9 @@ use App\Enum\NotificationTypeEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<Notification>
+ */
 final class NotificationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -22,11 +25,11 @@ final class NotificationRepository extends ServiceEntityRepository
      * @param array<mixed>|null $context
      */
     public function findOrCreateForUserTypeAndDedupeKey(
-        User    $user,
-        NotificationTypeEnum  $type,
+        User $user,
+        NotificationTypeEnum $type,
         ?string $dedupeKey,
-        string  $locale,
-        ?array  $context = null,
+        string $locale,
+        ?array $context = null,
     ): Notification
     {
         $existing = $this->findOneBy([
@@ -41,5 +44,4 @@ final class NotificationRepository extends ServiceEntityRepository
 
         return new Notification($user, $type, $locale, $dedupeKey, $context);
     }
-
 }

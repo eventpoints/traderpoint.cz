@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum NotificationTypeEnum : string
+enum NotificationTypeEnum: string
 {
     case CONFIRM_EMAIL_ADDRESS = 'confirm_email_address';
     case NEW_ENGAGEMENT = 'new_engagement';

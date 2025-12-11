@@ -23,21 +23,8 @@ final class NotificationDelivery
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
     private ?Uuid $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Notification::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private ?Notification $notification = null;
-
-    #[ORM\Column(enumType: NotificationChannelEnum::class)]
-    private NotificationChannelEnum $channel;
-
     #[ORM\Column(enumType: NotificationDeliveryStatusEnum::class)]
     private NotificationDeliveryStatusEnum $status = NotificationDeliveryStatusEnum::PENDING;
-
-    /**
-     * Template identifier for email/SMS/push
-     */
-    #[ORM\Column(length: 160, nullable: true)]
-    private ?string $template = null;
 
     /**
      * Provider message ID (SendGrid, Twilio, etc.)
@@ -48,9 +35,6 @@ final class NotificationDelivery
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $errorMessage = null;
 
-    #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $payload = null;
-
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
 
@@ -60,16 +44,23 @@ final class NotificationDelivery
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $deliveredAt = null;
 
+    /**
+     * @param array<string, string>|null $payload
+     */
     public function __construct(
-        Notification $notification,
-        NotificationChannelEnum $channel,
-        ?string $template = null,
-        ?array $payload = null,
+        #[ORM\ManyToOne(targetEntity: Notification::class)]
+        #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+        private ?Notification $notification,
+        #[ORM\Column(enumType: NotificationChannelEnum::class)]
+        private NotificationChannelEnum $channel,
+        /**
+         * Template identifier for email/SMS/push
+         */
+        #[ORM\Column(length: 160, nullable: true)]
+        private ?string $template = null,
+        #[ORM\Column(type: Types::JSON, nullable: true)]
+        private ?array $payload = null,
     ) {
-        $this->notification = $notification;
-        $this->channel = $channel;
-        $this->template = $template;
-        $this->payload = $payload;
         $this->createdAt = CarbonImmutable::now();
     }
 
@@ -127,6 +118,9 @@ final class NotificationDelivery
         return $this->errorMessage;
     }
 
+    /**
+     * @return string[]|null
+     */
     public function getPayload(): ?array
     {
         return $this->payload;
@@ -146,5 +140,4 @@ final class NotificationDelivery
     {
         return $this->deliveredAt;
     }
-
 }

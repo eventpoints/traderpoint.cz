@@ -21,8 +21,8 @@ final readonly class EmailService
     private const SENDER_EMAIL_ADDRESS = 'notifications@traderpoint.cz';
 
     public function __construct(
-        private MailerInterface          $mailer,
-        private TranslatorInterface      $translator,
+        private MailerInterface $mailer,
+        private TranslatorInterface $translator,
         private EventDispatcherInterface $dispatcher,
     ) {
     }
@@ -35,7 +35,9 @@ final readonly class EmailService
         $this->send(
             subject: $this->translator->trans(
                 id: 'email.trader.subject.welcome',
-                parameters: ['firstName' => $user->getFirstName()],
+                parameters: [
+                    'firstName' => $user->getFirstName(),
+                ],
                 domain: 'email'
             ),
             template: '/email/trader/welcome.html.twig',
@@ -55,7 +57,9 @@ final readonly class EmailService
         $this->send(
             subject: $this->translator->trans(
                 id: 'email.client.subject.welcome',
-                parameters: ['firstName' => $user->getFirstName()],
+                parameters: [
+                    'firstName' => $user->getFirstName(),
+                ],
                 domain: 'email'
             ),
             template: '/email/client/welcome.html.twig',
@@ -75,7 +79,9 @@ final readonly class EmailService
         $this->send(
             subject: $this->translator->trans(
                 id: 'email.client.subject.verify-email-address',
-                parameters: ['firstName' => $user->getFirstName()],
+                parameters: [
+                    'firstName' => $user->getFirstName(),
+                ],
                 domain: 'email'
             ),
             template: '/email/verification/email-verification.html.twig',
@@ -95,7 +101,9 @@ final readonly class EmailService
         $this->send(
             subject: $this->translator->trans(
                 id: 'email.trader.engagement.match',
-                parameters: ['firstName' => $user->getFirstName()],
+                parameters: [
+                    'firstName' => $user->getFirstName(),
+                ],
                 domain: 'email'
             ),
             template: '/email/trader/lead.html.twig',
@@ -115,7 +123,9 @@ final readonly class EmailService
         $this->send(
             subject: $this->translator->trans(
                 id: 'email.subject.client.engagement.message',
-                parameters: ['title' => $context['engagement']->getTitle()],
+                parameters: [
+                    'title' => $context['engagement']->getTitle(),
+                ],
                 domain: 'email'
             ),
             template: '/email/client/message-received.html.twig',
@@ -135,7 +145,9 @@ final readonly class EmailService
         $this->send(
             subject: $this->translator->trans(
                 id: 'quote-received',
-                parameters: ['firstName' => $user->getFirstName()],
+                parameters: [
+                    'firstName' => $user->getFirstName(),
+                ],
                 domain: 'email'
             ),
             template: '/email/client/quote.html.twig',
@@ -155,7 +167,9 @@ final readonly class EmailService
         $this->send(
             subject: $this->translator->trans(
                 id: 'email.trader.subject.service-radius-missing',
-                parameters: ['firstName' => $user->getFirstName()],
+                parameters: [
+                    'firstName' => $user->getFirstName(),
+                ],
                 domain: 'email'
             ),
             template: '/email/trader/service-radius-missing.html.twig',
@@ -175,7 +189,9 @@ final readonly class EmailService
         $this->send(
             subject: $this->translator->trans(
                 id: 'password-reset',
-                parameters: ['firstName' => $user->getFirstName()],
+                parameters: [
+                    'firstName' => $user->getFirstName(),
+                ],
                 domain: 'email'
             ),
             template: '/email/security/password-reset.html.twig',
@@ -193,8 +209,8 @@ final readonly class EmailService
     private function compose(
         string $subject,
         string $template,
-        User   $user,
-        array  $context,
+        User $user,
+        array $context,
         string $locale = 'en'
     ): TemplatedEmail {
         $templatedEmail = new TemplatedEmail();
@@ -213,14 +229,14 @@ final readonly class EmailService
      * @param array<mixed>             $notificationContext
      */
     private function send(
-        string               $subject,
-        string               $template,
-        User                 $user,
-        array                $context,
-        string               $locale,
+        string $subject,
+        string $template,
+        User $user,
+        array $context,
+        string $locale,
         NotificationTypeEnum $notificationType,
-        ?string              $dedupeKey = null,
-        array                $notificationContext = [],
+        ?string $dedupeKey = null,
+        array $notificationContext = [],
     ): void {
         $envelope = $this->compose(
             subject: $subject,

@@ -22,55 +22,43 @@ final class Notification
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
     private ?Uuid $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private ?User $user = null;
-
-    /**
-     * Business reason / event key, e.g.:
-     * - trader.service_radius_missing
-     * - membership.renewal_soon
-     * - billing.payment_failed
-     */
-    #[ORM\Column(length: 120, enumType: NotificationTypeEnum::class)]
-    private NotificationTypeEnum $type;
-
-    /**
-     * Optional grouping key to avoid duplicates across time windows,
-     * e.g. "service-radius-2025-12" or a hash.
-     */
-    #[ORM\Column(length: 120, nullable: true)]
-    private ?string $dedupeKey = null;
-
-    /**
-     * Locale used for this notification (e.g. "en", "cs", "ru").
-     * This is the locale we actually rendered the content in.
-     */
-    #[ORM\Column(length: 8)]
-    private string $locale;
-
-    /**
-     * Arbitrary context snapshot (safe, minimal),
-     * e.g. { "radius": null, "profileId": "...", "template": "..." }
-     */
-    #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $context = null;
-
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private CarbonImmutable $createdAt;
 
+    /**
+     * @param array<string, string>|null $context
+     */
     public function __construct(
-        User    $user,
-        NotificationTypeEnum  $type,
-        string  $locale,
-        ?string $dedupeKey = null,
-        ?array  $context = null,
+        #[ORM\ManyToOne(targetEntity: User::class)]
+        #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+        private ?User $user,
+        /**
+         * Business reason / event key, e.g.:
+         * - trader.service_radius_missing
+         * - membership.renewal_soon
+         * - billing.payment_failed
+         */
+        #[ORM\Column(length: 120, enumType: NotificationTypeEnum::class)]
+        private NotificationTypeEnum $type,
+        /**
+         * Locale used for this notification (e.g. "en", "cs", "ru").
+         * This is the locale we actually rendered the content in.
+         */
+        #[ORM\Column(length: 8)]
+        private string $locale,
+        /**
+         * Optional grouping key to avoid duplicates across time windows,
+         * e.g. "service-radius-2025-12" or a hash.
+         */
+        #[ORM\Column(length: 120, nullable: true)]
+        private ?string $dedupeKey = null,
+        /**
+         * Arbitrary context snapshot (safe, minimal),
+         * e.g. { "radius": null, "profileId": "...", "template": "..." }
+         */
+        #[ORM\Column(type: Types::JSON, nullable: true)]
+        private ?array $context = null,
     ) {
-        $this->user      = $user;
-        $this->type      = $type;
-        $this->locale    = $locale;
-        $this->dedupeKey = $dedupeKey;
-        $this->context   = $context;
         $this->createdAt = CarbonImmutable::now();
     }
 
@@ -88,6 +76,7 @@ final class Notification
     {
         return $this->type;
     }
+
     public function getDedupeKey(): ?string
     {
         return $this->dedupeKey;
@@ -98,6 +87,9 @@ final class Notification
         return $this->locale;
     }
 
+    /**
+     * @return array<string, string>|null
+     */
     public function getContext(): ?array
     {
         return $this->context;
