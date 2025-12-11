@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Enum\UserTokenPurposeEnum;
+use App\Repository\UserRepository;
+use App\Service\EmailService\EmailService;
+use App\Service\UserTokenService\UserTokenService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +19,9 @@ use Symfony\Component\Mime\Email;
 class TestEmailCommand extends Command
 {
     public function __construct(
-        private readonly MailerInterface $mailer
+        private readonly EmailService $emailService,
+        private readonly UserRepository $userRepository,
+        private readonly UserTokenService $userTokenService
     )
     {
         parent::__construct();
@@ -23,13 +29,14 @@ class TestEmailCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $email = (new Email())
-            ->from('no-reply@traderpoint.cz')
-            ->to('kerrialbeckettnewham@gmail.com')
-            ->subject('Test email from TraderPoint PROD')
-            ->text('If you see this, MAILER_DSN works on prod.');
+        $user = $this->userRepository->findOneBy(['email' => 'bog.sob@gm.com']);
+        $token = $this->userTokenService->issueToken(user: $user, purpose: UserTokenPurposeEnum::EMAIL_VERIFICATION);
 
-        $this->mailer->send($email);
+        $this->emailService->sendTraderWelcomeEmail(user: $user, context: [
+            'user' => $user,
+            'token' => $token,
+        ]);
+
         $output->writeln('Sent test email.');
         return Command::SUCCESS;
     }

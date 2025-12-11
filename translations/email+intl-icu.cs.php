@@ -25,4 +25,7 @@ return array(
     'password-reset-content' => 'Klikněte prosím na odkaz níže a obnovte své heslo.',
     'email.subject.client.engagement.message' => 'zpráva u poptávky, kterou jste zadali',
     'email.message-received-content' => 'Obdrželi jste zprávu k vaší poptávce {title}. Klikněte na odkaz níže a zobrazte si ji.',
+    'email.trader.subject.service-radius-missing' => 'chybí servisní rádius',
+    'email.trader.subject.service-radius-missing.content' => 'Nemůžeme vám zobrazit potenciální zákazníky, dokud nepřidáte svůj okruh pokrytí. Klikněte na odkaz níže a nastavte si okruh pokrytí, abyste se mohli přiřadit k nabídkám práce.',
+    'update-trader-settings' => 'nastavení aktualizace',
 );

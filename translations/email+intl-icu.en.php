@@ -26,4 +26,7 @@ return array(
     'password-reset-content' => 'Please click on the link below to reset your password.',
     'email.subject.client.engagement.message' => 'message received on a job you posted',
     'email.message-received-content' => 'you have received on your job {title}. Click on the link below to view the message.',
+    'email.trader.subject.service-radius-missing' => 'service radius missing',
+    'email.trader.subject.service-radius-missing.content' => 'We can\'t show you leads until you add your service radius. Click on the link below to set your service radius to get matched with jobs.',
+    'update-trader-settings' => 'update settings',
 );

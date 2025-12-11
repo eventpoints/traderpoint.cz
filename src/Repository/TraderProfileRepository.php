@@ -8,6 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Generator;
+use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @extends ServiceEntityRepository<TraderProfile>
@@ -124,5 +125,18 @@ SQL;
         foreach ($q->toIterable() as $profile) {
             yield $profile;
         }
+    }
+
+    /**
+     * @return TraderProfile[]
+     */
+    public function findWithMissingServiceRadius(int $limit = 500): array
+    {
+        $qb = $this->createQueryBuilder('trader_profile');
+        $qb->andWhere(
+            $qb->expr()->isNull('trader_profile.serviceRadius')
+        )->setMaxResults($limit);
+
+        return $qb->getQuery()->getResult();
     }
 }

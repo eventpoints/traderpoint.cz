@@ -1,0 +1,20 @@
+{% extends 'email/base.html.twig' %}
+{% trans_default_domain 'email' %}
+
+{% block subject %}
+    {{ 'email.trader.subject.service-radius-missing'|trans({title: engagement.title}) }}
+{% endblock %}
+
+{% block content %}
+    <p>{{ 'email.trader.subject.service-radius-missing.content'|trans }}</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center" style="padding:16px 0;">
+                <a class="btn" href="{{ absolute_url(path('user_account',{tab: 'trader'})) }}"
+                   style="display:inline-block;">
+                    {{ 'update-trader-settings'|trans }}
+                </a>
+            </td>
+        </tr>
+    </table>
+{% endblock %}

@@ -26,4 +26,7 @@ return [
     'password-reset-content' => 'Пожалуйста, перейдите по ссылке ниже, чтобы сбросить пароль.',
     'email.subject.client.engagement.message' => 'сообщение по размещённой вами заявке',
     'email.message-received-content' => 'Вы получили сообщение по вашей заявке {title}. Нажмите на ссылку ниже, чтобы просмотреть его.',
+    'email.trader.subject.service-radius-missing' => 'радиус обслуживания отсутствует',
+    'email.trader.subject.service-radius-missing.content' => 'Мы не сможем показать вам потенциальных клиентов, пока вы не укажете радиус обслуживания. Нажмите на ссылку ниже, чтобы установить радиус обслуживания и получать подборки вакансий.',
+    'update-trader-settings' => 'обновить настройки',
 ];
