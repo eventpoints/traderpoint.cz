@@ -14,7 +14,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
 #[ORM\Index(columns: ['type', 'created_at'])]
-final class Notification
+class Notification
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
