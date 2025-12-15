@@ -297,6 +297,7 @@ class EngagementController extends AbstractController
         $engagementForm = $this->createForm(EngagementFormType::class, $engagement, [
             'map' => $map,
             'skills' => $skills,
+            'is_edit' => false,
         ]);
 
         $engagementForm->handleRequest($request);

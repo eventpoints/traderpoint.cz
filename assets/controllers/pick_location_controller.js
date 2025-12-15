@@ -38,7 +38,7 @@ export default class extends Controller {
 
     _onConnect(event) {
         const d = event?.detail ?? {};
-        this.map = d.map;          // Leaflet Map (for Leaflet renderer)
+        this.map = d.map;
         this.L   = d.L || window.L;
 
         if (!this.map || !this.L) {
