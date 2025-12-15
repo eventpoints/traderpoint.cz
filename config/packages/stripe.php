@@ -10,8 +10,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services->set('stripe.client', StripeClient::class)
         ->args([
-        '%env(STRIPE_SECRET_KEY)%',
-    ]);
+            '%env(STRIPE_SECRET_KEY)%',
+        ]);
 
     $services->alias(StripeClient::class, 'stripe.client');
 };
