@@ -255,7 +255,7 @@ class EngagementController extends AbstractController
     #[Route(path: 'engagement/create', name: 'create_engagement')]
     public function create(Request $request, #[CurrentUser] null|User $currentUser = null): Response
     {
-        if ($currentUser->isTrader()) {
+        if ($currentUser instanceof User && $currentUser->isTrader()) {
             $this->addFlash(FlashEnum::WARNING->value, $this->translator->trans('traders-can-not-create-engagements'));
             return $this->redirectToRoute('trader_dashboard');
         }
