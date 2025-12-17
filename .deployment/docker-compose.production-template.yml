@@ -32,6 +32,7 @@ services:
     volumes:
       - ./php/php.ini:/usr/local/etc/php/php.ini:ro
       - ./config/jwt-qr:/app/config/jwt-qr:ro
+      - ./public:/app/public:rw
     healthcheck:
       # keep it simple in prod; FPM process up == OK
       test: ["CMD-SHELL", "php -v >/dev/null 2>&1 || exit 1"]
