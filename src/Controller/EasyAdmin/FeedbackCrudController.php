@@ -14,6 +14,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
+/**
+ * @extends AbstractCrudController<Feedback>
+ */
 class FeedbackCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -26,7 +29,9 @@ class FeedbackCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Feedback')
             ->setEntityLabelInPlural('Feedback')
-            ->setDefaultSort(['createdAt' => 'DESC']);
+            ->setDefaultSort([
+                'createdAt' => 'DESC',
+            ]);
     }
 
     public function configureFields(string $pageName): iterable

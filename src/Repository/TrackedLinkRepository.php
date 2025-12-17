@@ -18,7 +18,10 @@ class TrackedLinkRepository extends ServiceEntityRepository
 
     public function findByCode(string $code): ?TrackedLink
     {
-        return $this->findOneBy(['code' => $code, 'isActive' => true]);
+        return $this->findOneBy([
+            'code' => $code,
+            'isActive' => true,
+        ]);
     }
 
     public function save(TrackedLink $entity, bool $flush = false): void

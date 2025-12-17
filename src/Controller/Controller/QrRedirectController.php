@@ -42,14 +42,14 @@ class QrRedirectController extends AbstractController
 
         // Build redirect target with UTM parameters
         $target = $link->getOriginalUrl();
-        $glue = str_contains($target, '?') ? '&' : '?';
+        $glue = str_contains((string) $target, '?') ? '&' : '?';
 
         $utmParams = [
             'utm_source' => $link->getSource()?->value ?? 'qr',
             'utm_medium' => 'tracked_link',
         ];
 
-        if ($link->getAdvertisingCampaign()) {
+        if ($link->getAdvertisingCampaign() instanceof \App\Entity\AdvertisingCampaign) {
             $utmParams['utm_campaign'] = $link->getAdvertisingCampaign()->getCode();
         }
 

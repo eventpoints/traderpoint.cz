@@ -9,6 +9,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
+/**
+ * @extends AbstractCrudController<TraderProfile>
+ */
 class TraderProfileCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

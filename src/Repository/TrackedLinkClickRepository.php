@@ -41,7 +41,9 @@ class TrackedLinkClickRepository extends ServiceEntityRepository
 
     public function countByTrackedLink(TrackedLink $trackedLink): int
     {
-        return $this->count(['trackedLink' => $trackedLink]);
+        return $this->count([
+            'trackedLink' => $trackedLink,
+        ]);
     }
 
     /**

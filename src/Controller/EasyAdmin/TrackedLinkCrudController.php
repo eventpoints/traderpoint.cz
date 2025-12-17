@@ -13,10 +13,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CodeEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 
+/**
+ * @extends AbstractCrudController<TrackedLink>
+ */
 class TrackedLinkCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -29,7 +31,9 @@ class TrackedLinkCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Tracked Link')
             ->setEntityLabelInPlural('Tracked Links')
-            ->setDefaultSort(['createdAt' => 'DESC']);
+            ->setDefaultSort([
+                'createdAt' => 'DESC',
+            ]);
     }
 
     public function configureFields(string $pageName): iterable

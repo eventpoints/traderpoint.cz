@@ -7,9 +7,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
+/**
+ * @extends AbstractCrudController<AdvertisingCampaign>
+ */
 class AdvertisingCampaignCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -33,5 +35,4 @@ class AdvertisingCampaignCrudController extends AbstractCrudController
                 ->hideOnIndex(),
         ];
     }
-
 }

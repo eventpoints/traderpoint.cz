@@ -77,12 +77,12 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             ],
             [
                 'path' => '^/admin',
-                'roles' => UserRoleEnum::ROLE_ADMIN->name
+                'roles' => UserRoleEnum::ROLE_ADMIN->name,
             ],
             [
                 'path' => '^/[^/]+/qr/',
-                'roles' => UserRoleEnum::ROLE_ADMIN->name
-            ]
+                'roles' => UserRoleEnum::ROLE_ADMIN->name,
+            ],
         ],
     ]);
 

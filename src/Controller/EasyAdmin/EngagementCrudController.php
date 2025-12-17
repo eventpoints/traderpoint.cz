@@ -11,12 +11,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
+/**
+ * @extends AbstractCrudController<Engagement>
+ */
 class EngagementCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -50,5 +50,4 @@ class EngagementCrudController extends AbstractCrudController
             DateTimeField::new('updatedAt'),
         ];
     }
-
 }

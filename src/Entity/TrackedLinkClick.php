@@ -50,6 +50,9 @@ class TrackedLinkClick
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $platform = null;
 
+    /**
+     * @var array<string, string>|null
+     */
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $metadata = null;
 
@@ -183,11 +186,18 @@ class TrackedLinkClick
         return $this;
     }
 
+    /**
+     * @return string[]|null
+     */
     public function getMetadata(): ?array
     {
         return $this->metadata;
     }
 
+    /**
+     * @param array<string, string>|null $metadata
+     * @return $this
+     */
     public function setMetadata(?array $metadata): static
     {
         $this->metadata = $metadata;

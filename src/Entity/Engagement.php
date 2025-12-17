@@ -565,19 +565,19 @@ class Engagement implements Stringable
         return new MapLocationDto(
             (float) ($this->getLatitude() ?? 0),
             (float) ($this->getLongitude() ?? 0),
-            (string) ($this->getAddress() ?? ''),
+            $this->getAddress() ?? '',
             null
         );
     }
 
     public function setMapLocation(?MapLocationDto $dto): void
     {
-        if ($dto === null) {
+        if (! $dto instanceof MapLocationDto) {
             return;
         }
 
-        $this->latitude  = $dto->getLatitude();
+        $this->latitude = $dto->getLatitude();
         $this->longitude = $dto->getLongitude();
-        $this->address   = $dto->getAddress();
+        $this->address = $dto->getAddress();
     }
 }

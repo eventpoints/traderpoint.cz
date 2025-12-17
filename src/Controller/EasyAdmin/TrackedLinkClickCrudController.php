@@ -14,6 +14,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
+/**
+ * @extends AbstractCrudController<TrackedLinkClick>
+ */
 class TrackedLinkClickCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -26,7 +29,9 @@ class TrackedLinkClickCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Link Click')
             ->setEntityLabelInPlural('Link Clicks')
-            ->setDefaultSort(['clickedAt' => 'DESC'])
+            ->setDefaultSort([
+                'clickedAt' => 'DESC',
+            ])
             ->setSearchFields(['ipAddress', 'userAgent', 'referer', 'country', 'city', 'browser', 'device', 'platform']);
     }
 

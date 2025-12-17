@@ -13,7 +13,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TrackedLinkRepository::class)]
 #[ORM\Index(columns: ['code'])]
-class TrackedLink
+class TrackedLink implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -40,6 +40,9 @@ class TrackedLink
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isActive = true;
 
+    /**
+     * @var array<string, mixed>|null
+     */
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $metadata = null;
 
@@ -143,11 +146,17 @@ class TrackedLink
         return $this;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getMetadata(): ?array
     {
         return $this->metadata;
     }
 
+    /**
+     * @param array<string, mixed>|null $metadata
+     */
     public function setMetadata(?array $metadata): static
     {
         $this->metadata = $metadata;
@@ -186,6 +195,6 @@ class TrackedLink
 
     public function __toString(): string
     {
-        return $this->code;
+        return (string) $this->code;
     }
 }

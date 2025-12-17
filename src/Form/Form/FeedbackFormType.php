@@ -27,13 +27,13 @@ final class FeedbackFormType extends AbstractType
         $builder
             ->add('category', EnumType::class, [
                 'class' => FeedbackTypeEnum::class,
-                'choice_label' => fn(FeedbackTypeEnum $type) => $this->translator->trans('feedback.category.' . strtolower($type->value), [], 'messages'),
+                'choice_label' => fn(FeedbackTypeEnum $type): string => $this->translator->trans('feedback.category.' . strtolower($type->value), [], 'messages'),
                 'placeholder' => $this->translator->trans('feedback.select_category', [], 'messages'),
                 'required' => false,
                 'row_attr' => [
                     'class' => 'form-floating mb-3',
                 ],
-                'autocomplete' => true
+                'autocomplete' => true,
             ])
             ->add('content', TextareaType::class, [
                 'label' => $this->translator->trans('feedback.content', [], 'messages'),

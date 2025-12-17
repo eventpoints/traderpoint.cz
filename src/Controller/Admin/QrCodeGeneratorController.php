@@ -39,7 +39,9 @@ class QrCodeGeneratorController extends AbstractController
         // Generate the full URL for the redirect endpoint
         $redirectUrl = $urlGenerator->generate(
             'qr_go',
-            ['code' => $code],
+            [
+                'code' => $code,
+            ],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
