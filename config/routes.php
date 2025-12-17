@@ -26,6 +26,16 @@ return static function (RoutingConfigurator $routingConfigurator): void {
         ]);
 
     $routingConfigurator->import([
+        'path' => __DIR__ . '/../src/Controller/EasyAdmin',
+        'namespace' => 'App\Controller\EasyAdmin',
+    ], 'attribute');
+
+    $routingConfigurator->import([
+        'path' => __DIR__ . '/../src/Controller/Admin',
+        'namespace' => 'App\Controller\Admin',
+    ], 'attribute');
+
+    $routingConfigurator->import([
         'path' => __DIR__ . '/../src/Controller/Stripe',
         'namespace' => 'App\Controller\Stripe',
     ], 'attribute');

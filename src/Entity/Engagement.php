@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\DataTransferObject\MapLocationDto;
 use App\Enum\CurrencyCodeEnum;
 use App\Enum\EngagementStatusEnum;
 use App\Enum\PaymentTypeEnum;
@@ -557,5 +558,26 @@ class Engagement implements Stringable
     public function setIsDeleted(bool $isDeleted): void
     {
         $this->isDeleted = $isDeleted;
+    }
+
+    public function getMapLocation(): MapLocationDto
+    {
+        return new MapLocationDto(
+            (float) ($this->getLatitude() ?? 0),
+            (float) ($this->getLongitude() ?? 0),
+            (string) ($this->getAddress() ?? ''),
+            null
+        );
+    }
+
+    public function setMapLocation(?MapLocationDto $dto): void
+    {
+        if ($dto === null) {
+            return;
+        }
+
+        $this->latitude  = $dto->getLatitude();
+        $this->longitude = $dto->getLongitude();
+        $this->address   = $dto->getAddress();
     }
 }

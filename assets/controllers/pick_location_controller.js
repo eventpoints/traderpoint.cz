@@ -13,6 +13,18 @@ export default class extends Controller {
 
         this._fitTimer = null;
 
+        // CRITICAL: Prevent Leaflet from breaking tom-select dropdowns
+        // Add a capture-phase listener that stops Leaflet from handling clicks on dropdowns
+        this._protectDropdowns = (e) => {
+            const target = e.target;
+            if (target.closest('.ts-wrapper') || target.closest('.ts-dropdown') || target.closest('.ts-control')) {
+                // Don't let Leaflet or other handlers interfere with tom-select
+                e.stopImmediatePropagation();
+            }
+        };
+        document.addEventListener('mousedown', this._protectDropdowns, { capture: true });
+        document.addEventListener('click', this._protectDropdowns, { capture: true });
+
         // react to radius input changes
         if (this.hasRadiusTarget) {
             this._onRadiusInput = () => this._syncCircle({ fit: true });
@@ -23,6 +35,13 @@ export default class extends Controller {
 
     disconnect() {
         this.element.removeEventListener("ux:map:connect", this._onConnect);
+
+        // Remove the dropdown protection listeners
+        if (this._protectDropdowns) {
+            document.removeEventListener('mousedown', this._protectDropdowns, { capture: true });
+            document.removeEventListener('click', this._protectDropdowns, { capture: true });
+        }
+
         if (this._abortGeocode) this._abortGeocode.abort();
         if (this.marker) this.marker.off();
         if (this.circle) this.circle.remove();

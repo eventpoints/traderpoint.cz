@@ -1,0 +1,7 @@
+{% if field.value is empty %}
+    —
+{% else %}
+    {% for skill in field.value %}
+        <span class="badge badge-secondary">{{ skill.name }}</span>
+    {% endfor %}
+{% endif %}

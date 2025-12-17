@@ -83,6 +83,7 @@ class TraderProfile
 
     public function __construct()
     {
+        $this->id = Uuid::v4();
         $this->skills = new ArrayCollection();
         $this->reviews = new ArrayCollection();
     }

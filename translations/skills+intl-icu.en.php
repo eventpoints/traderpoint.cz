@@ -142,4 +142,5 @@ return array (
   'skill.planning_consultant' => 'Planning consultant',
   'skill.interior_designer' => 'Interior designer',
   'skill.energy_assessor' => 'Energy assessor',
+  'skill.clothes' => 'Energy assessor',
 );

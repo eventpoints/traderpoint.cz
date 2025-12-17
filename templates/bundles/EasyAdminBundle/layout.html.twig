@@ -1,0 +1,11 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{% block body_attributes %}
+    {{ parent() }} data-turbo="false"
+{% endblock %}
+
+{% block importmap %}
+    {# Load admin entry point which has a clean Stimulus instance for admin-only controllers #}
+    {# This prevents conflicts with EasyAdmin's built-in tom-select/autocomplete #}
+    {{ importmap('admin') }}
+{% endblock %}

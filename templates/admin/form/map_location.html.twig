@@ -1,0 +1,51 @@
+{# renders your custom MapLocationType #}
+{% block map_location_widget %}
+    <style>
+        /* Wrap map in a container that doesn't interfere with other elements */
+        [data-controller="pick-location"] {
+            position: relative;
+            isolation: isolate;
+        }
+
+        /* Contain the map and prevent it from interfering with other form elements */
+        [data-controller="pick-location"] .leaflet-container {
+            position: relative !important;
+            z-index: 1 !important;
+            contain: layout style paint;
+        }
+
+        /* Prevent Leaflet overlay panes from extending beyond map container */
+        [data-controller="pick-location"] .leaflet-pane {
+            z-index: auto !important;
+        }
+
+        /* Ensure tom-select dropdowns appear on top and are clickable */
+        .ts-wrapper,
+        .ts-control,
+        .ts-dropdown,
+        .ts-dropdown-content {
+            position: relative !important;
+            z-index: 10000 !important;
+            pointer-events: auto !important;
+        }
+    </style>
+
+    {# attach your Stimulus controller to a wrapper so it can see the hidden targets #}
+    <div data-controller="pick-location">
+
+        {{ form_widget(form.latitude) }}
+        {{ form_widget(form.longitude) }}
+        {{ form_widget(form.address) }}
+
+        {% set lat = form.latitude.vars.value ?: 50.0755 %}
+        {% set lng = form.longitude.vars.value ?: 14.4378 %}
+
+        {{ ux_map(
+            center: [lat, lng],
+            zoom: 13,
+            attributes: {
+                style: 'height: ' ~ height ~ '; width: 100%;'
+            }
+        ) }}
+    </div>
+{% endblock %}

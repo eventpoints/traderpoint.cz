@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'feedback.title'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center g-3 mt-3 mb-5">
+
+            <div class="col-12 col-md-8 col-lg-6">
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="fs-4 fw-bold">{{ 'feedback.title'|trans }}</div>
+                        <p class="mb-0 text-muted">{{ 'feedback.description'|trans }}</p>
+                    </div>
+                    {{ form_start(feedbackForm) }}
+                    <div class="card-body vstack gap-3">
+                        {{ form_row(feedbackForm.category) }}
+                        {{ form_row(feedbackForm.content) }}
+                        {{ form_row(feedbackForm.page) }}
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-lg btn-primary">{{ 'feedback.submit'|trans }}</button>
+                        </div>
+                    </div>
+                    {{ form_end(feedbackForm) }}
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

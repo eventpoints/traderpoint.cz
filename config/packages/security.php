@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Entity\User;
 use App\Enum\RolesEnum;
+use App\Enum\UserRoleEnum;
 use App\Security\Social\GoogleAuthenticator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -64,16 +65,24 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         'access_control' => [
             [
                 'path' => '^/login',
-                'roles' => RolesEnum::PUBLIC_ACCESS->value,
+                'roles' => RolesEnum::PUBLIC_ACCESS->name,
             ],
             [
                 'path' => '^/user/set-password',
-                'roles' => RolesEnum::PUBLIC_ACCESS->value,
+                'roles' => RolesEnum::PUBLIC_ACCESS->name,
             ],
             [
                 'path' => '^/connect',
-                'roles' => RolesEnum::PUBLIC_ACCESS->value,
+                'roles' => RolesEnum::PUBLIC_ACCESS->name,
             ],
+//            [
+//                'path' => '^/admin',
+//                'roles' => UserRoleEnum::ROLE_ADMIN->name
+//            ],
+//            [
+//                'path' => '^/[^/]+/qr/',
+//                'roles' => UserRoleEnum::ROLE_ADMIN->name
+//            ]
         ],
     ]);
 

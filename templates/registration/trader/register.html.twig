@@ -6,46 +6,96 @@
     <div class="card text-bg-dark border-0 rounded-0 mb-3 hero-card">
         <img class="hero-img flip-horizontal img-fluid w-100 object-fit-cover card-img hero-card-img card-overlay-image card-img-overlay-filter"
              src="{{ asset('images/4.jpg') }}"
-             alt="Find quality trade jobs near you">
+             alt="Register as a tradesperson and find local trade jobs">
         <div class="card-img-overlay hero-card-overlay">
             <div class="row justify-content-around align-items-center g-1">
                 <div class="col-12 col-md-4">
-                    <div class="display-1 display-md-3 text-white fw-bold">{{ 'get-jobs-you-want-fast'|trans|title }}</div>
-                    <p class="lead mt-2 mb-4 text-white-50">{{ 'trader-tagline-explainer-short'|trans }}</p>
+
+                    {# Make it explicit ABOVE THE FOLD #}
+                    <div class="display-1 display-md-3 text-white fw-bold">
+                        {{ 'trader-register.hero.title'|trans }}
+                    </div>
+
+                    <p class="lead mt-2 mb-3 text-white-50">
+                        {{ 'trader-register.hero.lead'|trans }}
+                    </p>
+
+                    <ul class="list-unstyled text-white-50 mb-4">
+                        <li class="mb-1">• {{ 'trader-register.hero.bullet1'|trans }}</li>
+                        <li class="mb-1">• {{ 'trader-register.hero.bullet2'|trans }}</li>
+                        <li class="mb-1">• {{ 'trader-register.hero.bullet3'|trans }}</li>
+                    </ul>
+
+                    <div class="small text-white-50">
+                        {{ 'trader-register.hero.examples'|trans }}
+                    </div>
                 </div>
+
                 <div class="col-12 col-md-4">
                     {{ form_start(traderForm) }}
                     <div class="card">
                         <div class="card-header">
                             <div class="text-center">
-                                <div class="fw-bold fs-1 lh-1">
+                                <div class="fw-bold fs-2 lh-1">
                                     <div class="text-primary">
                                         {{ 'standard-plan-trial-headline-main'|trans }}
                                     </div>
                                     <div>{{ 'standard-plan-trial-headline-rest'|trans }}</div>
                                 </div>
+
+                                {# Add “for tradespeople” clarity right in the form header #}
+                                <div class="mt-2">
+                                    <span class="badge text-bg-primary">
+                                        {{ 'trader-register.form.badge'|trans }}
+                                    </span>
+                                </div>
+
                                 <div class="mt-3">
                                     {{ 'standard-plan-trial-subline'|trans }}
                                 </div>
+
+                                {# Escape hatch for wrong audience #}
+                                <div class="mt-2 small text-muted">
+                                    {{ 'trader-register.form.hireInstead'|trans }}
+                                    <a href="{{ path('landing') }}" class="fw-semibold">
+                                        {{ 'trader-register.form.hireLink'|trans }}
+                                    </a>
+                                </div>
                             </div>
                         </div>
+
                         <div class="card-body text-center text-muted pb-0">
                             {{ include('partial/_social_register.html.twig') }}
                         </div>
+
                         <div class="card-body vstack gap-2">
+
                             <div class="input-group">
                                 {{ form_row(traderForm.firstName) }}
                                 {{ form_row(traderForm.lastName) }}
                             </div>
+
                             {{ form_row(traderForm.email) }}
-                            {{ form_row(traderForm.skills) }}
+
+                            {# Make skills label/help explicitly “trade skills” #}
+                            {{ form_row(traderForm.skills, {
+                                label: 'trader-register.form.skillsLabel'|trans,
+                                help: 'trader-register.form.skillsHelp'|trans
+                            }) }}
+
                             {{ form_row(traderForm.plainPassword) }}
                         </div>
+
                         <div class="card-footer border-top">
-                            <div class="text-center mb-1 text-muted">{{ 'by-continuing-accept-terms'|trans(domain='terms') }} <a
-                                        href="{{ path('terms_of_use') }}">{{ 'terms-of-use'|trans(domain='terms')|title }}</a>
+                            <div class="text-center mb-1 text-muted">
+                                {{ 'by-continuing-accept-terms'|trans(domain='terms') }}
+                                <a href="{{ path('terms_of_use') }}">{{ 'terms-of-use'|trans(domain='terms')|title }}</a>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-lg w-100">{{ 'register'|trans }}</button>
+
+                            {# CTA that says “tradesperson”, not generic “register” #}
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                {{ 'trader-register.form.submit'|trans }}
+                            </button>
                         </div>
                     </div>
                     {{ form_end(traderForm) }}
@@ -59,7 +109,10 @@
     <div class="container">
         <div class="row justify-content-center align-items-start my-5">
             <div class="col-12 col-md-10">
-                <div class="text-center fs-2 short-underline-heading fw-bold mb-5">{{ 'how-our-service-works'|trans|title }}</div>
+                <div class="text-center fs-2 short-underline-heading fw-bold mb-5">
+                    {{ 'how-our-service-works'|trans|title }}
+                </div>
+
                 <div class="row g-3 justify-content-center">
                     <div class="col-12 col-md-4">
                         <div class="card h-100 border-0 rounded-0">
@@ -103,15 +156,22 @@
                     <div class="row justify-content-between g-3 mt-5">
                         <div class="text-center short-underline-heading">
                             <div class="fs-2 fw-bold">{{ 'faq.title'|trans(domain='faqs')|title }}</div>
-                            <div>{{ 'faq.intro'|trans|trans(domain='faqs') }}</div>
+
+                            {# FIX: you had trans twice #}
+                            <div>{{ 'faq.intro'|trans(domain='faqs') }}</div>
                         </div>
 
                         <div class="col-12 col-md-4">
                             <div class="vstack gap-3">
-                                <img class="img-fluid rounded-3 w-100 object-fit-cover" style="height: 300px" src="{{ asset('images/consumer-box.jpg') }}" alt="Find quality trade jobs near you">
-                                <img class="img-fluid rounded-3 w-100 object-fit-cover" style="height: 300px" src="{{ asset('images/skill-builder.jpg') }}" alt="Find quality trade jobs near you">
+                                <img class="img-fluid rounded-3 w-100 object-fit-cover" style="height: 300px"
+                                     src="{{ asset('images/consumer-box.jpg') }}"
+                                     alt="Local customers looking for tradespeople">
+                                <img class="img-fluid rounded-3 w-100 object-fit-cover" style="height: 300px"
+                                     src="{{ asset('images/skill-builder.jpg') }}"
+                                     alt="Choose your trade skills and get matched">
                             </div>
                         </div>
+
                         <div class="col-12 col-md-8">
                             <div class="accordion" id="faqAccordion">
                                 {% for item in faqs %}

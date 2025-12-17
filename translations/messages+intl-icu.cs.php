@@ -277,4 +277,20 @@ return array(
     'new-message'=> "napište zde svou zprávu",
     'service-radius-km' => 'dosah služby (km)',
 
+    'feedback.title' => 'Odeslat zpětnou vazbu',
+    'feedback.description' => 'Vážíme si vašeho názoru! Sdílejte své myšlenky, nahlaste chyby nebo navrhněte nové funkce.',
+    'feedback.content' => 'Vaše zpětná vazba',
+    'feedback.content_placeholder' => 'Řekněte nám, co vás napadá...',
+    'feedback.email' => 'E-mail (volitelné)',
+    'feedback.email_help' => 'Zanechte e-mail, pokud chcete, abychom vás kontaktovali',
+    'feedback.select_category' => 'Vyberte kategorii (volitelné)',
+    'feedback.submit' => 'Odeslat zpětnou vazbu',
+    'feedback.submitted' => 'Děkujeme! Vaše zpětná vazba byla úspěšně odeslána.',
+    'feedback.category.bug_report' => 'Hlášení chyby',
+    'feedback.category.feature_request' => 'Návrh funkce',
+    'feedback.category.general' => 'Obecná zpětná vazba',
+    'feedback.category.complaint' => 'Stížnost',
+    'feedback.category.praise' => 'Pochvala',
+    'feedback.category.other' => 'Jiné',
+
 );
