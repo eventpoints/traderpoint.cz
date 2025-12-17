@@ -75,14 +75,14 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 'path' => '^/connect',
                 'roles' => RolesEnum::PUBLIC_ACCESS->name,
             ],
-//            [
-//                'path' => '^/admin',
-//                'roles' => UserRoleEnum::ROLE_ADMIN->name
-//            ],
-//            [
-//                'path' => '^/[^/]+/qr/',
-//                'roles' => UserRoleEnum::ROLE_ADMIN->name
-//            ]
+            [
+                'path' => '^/admin',
+                'roles' => UserRoleEnum::ROLE_ADMIN->name
+            ],
+            [
+                'path' => '^/[^/]+/qr/',
+                'roles' => UserRoleEnum::ROLE_ADMIN->name
+            ]
         ],
     ]);
 
