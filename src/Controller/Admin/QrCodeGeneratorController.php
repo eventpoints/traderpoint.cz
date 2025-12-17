@@ -23,7 +23,7 @@ class QrCodeGeneratorController extends AbstractController
     ) {
     }
 
-    #[Route('admin/qr/{code}', name: 'admin_qr_generate', methods: ['GET'], env: 'dev')]
+    #[Route('admin/qr/{code}', name: 'admin_qr_generate', methods: ['GET'])]
     public function __invoke(
         string $code,
         Request $request,

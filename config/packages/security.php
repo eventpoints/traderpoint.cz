@@ -76,10 +76,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 'roles' => RolesEnum::PUBLIC_ACCESS->name,
             ],
             [
-                'path' => '^/admin',
-                'roles' => UserRoleEnum::ROLE_ADMIN->name,
-            ],
-            [
                 'path' => '^/easy-admin',
                 'roles' => UserRoleEnum::ROLE_ADMIN->name,
             ],
