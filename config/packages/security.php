@@ -80,6 +80,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 'roles' => UserRoleEnum::ROLE_ADMIN->name,
             ],
             [
+                'path' => '^/easy-admin',
+                'roles' => UserRoleEnum::ROLE_ADMIN->name,
+            ],
+            [
                 'path' => '^/[^/]+/qr/',
                 'roles' => UserRoleEnum::ROLE_ADMIN->name,
             ],
