@@ -169,8 +169,8 @@ return array(
     'job-created' => 'created {count} job ',
     'nice-try' => 'Nice try! 😉',
     'continue-with' => 'continue with {provider}',
-    'add-your-phone' => 'add your phone number',
-    'add-your-phone-explainer' => 'We need to verify your phone number to ensure traders can contact you.',
+    'add-your-phone' => 'Enter your phone number',
+    'add-your-phone-explainer' => 'We need to verify your phone number to ensure you can be contacted.',
     'send-code' => 'send code',
     'verification-code' => 'verification code',
     'enter-the-6-digit-code-we-sent' => 'Enter the 6-digit code we sent to the number you entered.',
@@ -308,4 +308,5 @@ return array(
     'feedback.category.complaint' => 'Complaint',
     'feedback.category.praise' => 'Praise',
     'feedback.category.other' => 'Other',
+    'enter-verification-code' => 'Enter verification code',
 );

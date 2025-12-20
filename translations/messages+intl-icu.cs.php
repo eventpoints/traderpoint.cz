@@ -166,8 +166,8 @@ return array(
     'decline' => 'odmítnout',
     'accept' => 'přijmout',
     'continue-with' => 'pokračovat s {provider}',
-    'add-your-phone' => 'přidejte své telefonní číslo',
-    'add-your-phone-explainer' => 'Potřebujeme ověřit vaše telefonní číslo, aby vás řemeslníci mohli kontaktovat.',
+    'add-your-phone' => 'Zadejte své telefonní číslo',
+    'add-your-phone-explainer' => 'Abychom vás mohli kontaktovat, musíme ověřit vaše telefonní číslo.',
     'send-code' => 'odeslat kód',
     'verification-code' => 'ověřovací kód',
     'enter-the-6-digit-code-we-sent' => 'Zadejte 6-místný kód, který jsme poslali na vámi zadané číslo.',
@@ -292,5 +292,6 @@ return array(
     'feedback.category.complaint' => 'Stížnost',
     'feedback.category.praise' => 'Pochvala',
     'feedback.category.other' => 'Jiné',
+    'enter-verification-code' => 'Zadejte ověřovací kód',
 
 );
