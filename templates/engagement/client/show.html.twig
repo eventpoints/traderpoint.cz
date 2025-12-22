@@ -2,7 +2,12 @@
 
 {% block body %}
     <div class="container min-vh-100">
-        <div class="row justify-content-center g-3 mt-3">
+        <div class="row justify-content-center g-3 my-3">
+            <div class="col-12 col-md-10">
+                <twig:EngagementWorkflowProgress :engagement="engagement" :viewType="'client'"/>
+            </div>
+        </div>
+        <div class="row justify-content-center g-3">
 
             {# LEFT COLUMN - ENGAGEMENT SUMMARY #}
             <div class="col-12 col-md-4">
@@ -13,7 +18,7 @@
                             <a href="{{ path('client_profile', {id: engagement.owner.id}) }}">
                                 <img class="rounded-circle avatar-50" src="{{ engagement.owner.avatar }}">
                             </a>
-                            <div>
+                            <div class="flex-grow-1">
                                 <div class="fw-bold text-dark fs-4 lh-1">{{ engagement.title }}</div>
                                 <div class="d-flex justify-content-start gap-3">
                                     <a href="{{ path('client_profile', {id: engagement.owner.id}) }}">
@@ -104,216 +109,213 @@
             {# RIGHT COLUMN - QUOTES + MESSAGES (TABS) #}
             <div class="col-12 col-md-6 mb-5">
                 {% set acceptedQuote = engagement.quote %}
+                <div class="nav nav-pills nav-justified w-100 bg-light rounded-pill overflow-hidden mb-3">
+                    <a href="{{ path('client_show_engagement', { id: engagement.id, tab: 'quotes' }) }}"
+                       class="nav-link rounded-pill {{ tab == 'quotes' ? "active shadow" }}"
+                    >
+                        <div class="d-flex justify-content-between align-items-center">
 
-                <div class="card">
-                    <div class="card-header border-bottom-0">
-                        <ul class="nav nav-pills nav-justified" id="clientQuoteTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <a
-                                        href="{{ path('client_show_engagement', { id: engagement.id, tab: 'quotes' }) }}"
-                                        class="nav-link {{ tab == 'quotes' ? "active" }} d-flex justify-content-between align-items-center"
-                                >
-                                    {{ 'tab.quotes'|trans|default('Quotes') }}
-                                    <twig:Badge class="text-white border border-white" text="{{ engagement.quotes|length|default('0') }}" variant="primary" size="md"/>
-                                </a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a
-                                        href="{{ path('client_show_engagement', { id: engagement.id, tab: 'questions' }) }}"
-                                        class="nav-link {{ tab == 'questions' ? "active" }} d-flex justify-content-between align-items-center"
-                                >
-                                    {{ 'tab.clarifying-questions'|trans|default('Messages') }}
-                                    <twig:Badge class="text-white border border-white" text="{{ engagement.conversation ? engagement.conversation.messages|length : 0 }}" variant="primary" size="md"/>
+                            {{ 'tab.quotes'|trans|default('Quotes') }}
+                            <twig:Badge class="text-white border border-white"
+                                        text="{{ engagement.quotes|length|default('0') }}" variant="primary" size="md"/>
+                        </div>
+                    </a>
+                    <a
+                            href="{{ path('client_show_engagement', { id: engagement.id, tab: 'questions' }) }}"
+                            class="nav-link rounded-pill {{ tab == 'questions' ? "active shadow" }}"
+                    >
+                        <div class="d-flex justify-content-between align-items-center">
+                            {{ 'tab.clarifying-questions'|trans|default('Messages') }}
+                            <twig:Badge class="text-white border border-white"
+                                        text="{{ engagement.conversation ? engagement.conversation.messages|length : 0 }}"
+                                        variant="primary" size="md"/>
+                        </div>
+                    </a>
+                </div>
 
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                {# ================= TAB: QUOTES ================= #}
+                {% if tab == 'quotes' %}
+                    <div class="vstack gap-3">
 
-                    <div class="card-body border-top">
-                        {# ================= TAB: QUOTES ================= #}
-                        {% if tab == 'quotes' %}
-                            <div class="vstack gap-3">
+                        {# 1) Accepted quote exists #}
+                        {% if acceptedQuote %}
+                            <div class="card border-0 shadow-sm">
+                                {% include 'engagement/_accepted_quote_summary.html.twig' with {
+                                    acceptedQuote: acceptedQuote,
+                                    engagement: engagement
+                                } %}
+                            </div>
 
-                                {# 1) Accepted quote exists #}
-                                {% if acceptedQuote %}
-                                    <div class="card border-0 shadow-sm">
-                                        {% include 'engagement/_accepted_quote_summary.html.twig' with {
-                                            acceptedQuote: acceptedQuote,
-                                            engagement: engagement
-                                        } %}
-                                    </div>
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header fs-4">
+                                    {{ 'trader-information'|trans|title }}
+                                </div>
 
-                                    <div class="card border-0 shadow-sm">
-                                        <div class="card-header fs-4">
-                                            {{ 'trader-information'|trans|title }}
+                                {% if engagement.quote is not empty %}
+                                    {% set trader = engagement.quote.owner %}
+
+                                    <div class="card-body">
+
+                                        {# Trader #}
+                                        <a href="{{ path('trader_profile', { id: trader.id }) }}"
+                                           class="d-flex align-items-center gap-3 text-decoration-none text-reset mb-3">
+                                            <img class="rounded-circle avatar-50"
+                                                 src="{{ trader.avatar }}"
+                                                 alt="{{ trader.fullName }}">
+                                            <div class="fw-bold">
+                                                {{ trader.fullName|title }}
+                                            </div>
+                                        </a>
+
+                                        {# Phone #}
+                                        <div class="d-flex align-items-center mb-2"
+                                                {{ stimulus_controller('clipboard', {
+                                                    successContent: "<span class='bi bi-check-lg text-success fs-4 ms-1'></span>"
+                                                }) }}
+                                        >
+                                            <div class="flex-grow-1">
+                                                <div class="small text-muted">{{ 'phone'|trans }}</div>
+                                                <div class="lead mb-0"
+                                                     value="{{ trader.phoneNumber.phoneNumberWithPrefix }}"
+                                                        {{ stimulus_target('clipboard', 'source') }}>
+                                                    {{ trader.phoneNumber.phoneNumberWithPrefix }}
+                                                </div>
+                                            </div>
+                                            <a href="#"
+                                               class="ms-3"
+                                                    {{ stimulus_action('clipboard', 'copy', 'click') }}
+                                                    {{ stimulus_target('clipboard', 'button') }}>
+                                                <span class="bi bi-copy fs-4"></span>
+                                            </a>
                                         </div>
 
-                                        {% if engagement.quote is not empty %}
-                                            {% set trader = engagement.quote.owner %}
+                                        {# Email #}
+                                        <div class="d-flex align-items-center"
+                                                {{ stimulus_controller('clipboard', {
+                                                    successContent: "<span class='bi bi-check-lg text-success fs-4 ms-1'></span>"
+                                                }) }}
+                                        >
+                                            <div class="flex-grow-1">
+                                                <div class="small text-muted">{{ 'email'|trans }}</div>
+                                                <div class="lead mb-0"
+                                                     value="{{ trader.email }}"
+                                                        {{ stimulus_target('clipboard', 'source') }}>
+                                                    {{ trader.email }}
+                                                </div>
+                                            </div>
+                                            <a href="#"
+                                               class="ms-3"
+                                                    {{ stimulus_action('clipboard', 'copy', 'click') }}
+                                                    {{ stimulus_target('clipboard', 'button') }}>
+                                                <span class="bi bi-copy fs-4"></span>
+                                            </a>
+                                        </div>
 
-                                            <div class="card-body">
+                                    </div>
+                                {% endif %}
+                            </div>
 
-                                                {# Trader #}
-                                                <a href="{{ path('trader_profile', { id: trader.id }) }}"
-                                                   class="d-flex align-items-center gap-3 text-decoration-none text-reset mb-3">
-                                                    <img class="rounded-circle avatar-50"
-                                                         src="{{ trader.avatar }}"
-                                                         alt="{{ trader.fullName }}">
-                                                    <div class="fw-bold">
-                                                        {{ trader.fullName|title }}
-                                                    </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                {# Workflow action buttons #}
+                                {% if engagement.status.value == 'AWAITING_REVIEW' %}
+                                    <a href="{{ path('review_create', {id: engagement.id}) }}"
+                                       class="btn btn-primary rounded-pill">
+                                        <i class="bi bi-star"></i> {{ 'leave-review'|trans({}, 'messages', app.locale)|default('Leave Review') }}
+                                    </a>
+                                {% endif %}
+
+                                {# Issue resolution #}
+                                {% if engagement.status.value == 'ISSUE_RESOLUTION' %}
+                                    {% set activeIssue = engagement.issues|filter(i => i.status.value in ['ACTIVE', 'AWAITING_OTHER_PARTY', 'AWAITING_SUPPORT'])|first %}
+                                    {% if activeIssue %}
+                                        <a href="{{ path('engagement_issue_show', {id: activeIssue.id}) }}"
+                                           class="btn btn-warning rounded-pill">
+                                            <i class="bi bi-exclamation-triangle-fill"></i> {{ 'view-issue-resolution'|trans }}
+                                        </a>
+                                    {% endif %}
+                                {% elseif engagement.status.value in ['QUOTE_ACCEPTED', 'IN_PROGRESS', 'WORK_COMPLETED'] %}
+                                    <a href="{{ path('engagement_issue', {quote: acceptedQuote.id, user: acceptedQuote.owner.id}) }}"
+                                       class="btn btn-outline-secondary rounded-pill">
+                                        <i class="bi bi-exclamation-triangle"></i> {{ 'something-is-wrong'|trans }}
+                                    </a>
+                                {% endif %}
+                            </div>
+
+                            {# 2) No accepted quote yet → list quotes / empty state #}
+                        {% else %}
+                            {% if engagement.quotes|length == 0 %}
+                                <div class="text-center text-muted mt-4">
+                                    {{ 'no-quotes-received'|trans }}
+                                </div>
+                            {% else %}
+                                {% for quote in quotes %}
+                                    <div class="card border-0 shadow-sm {{ app.request.get('q') == quote.id ? 'shadow-lg border border-2 border-black' }}">
+                                        <div class="card-header d-flex justify-content-between align-items-c gap-1">
+                                            <a href="{{ path('client_profile', {id: quote.owner.id}) }}">
+                                                <img class="rounded-circle avatar-50" src="{{ quote.owner.avatar }}">
+                                            </a>
+                                            <div class="flex-grow-1">
+                                                <div class="fw-bold text-dark lh-1 {{ quote.isRjectedExpiredOrwithdrawn ? 'strikethrough text-muted' }}">{{ quote.price|format_currency(quote.currency.value) }}</div>
+                                                <div class="d-flex justify-content-start gap-3">
+                                                    <a href="{{ path('client_profile', {id: quote.owner.id}) }}">
+                                                        {{ quote.owner.fullName|title }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-header fs-4 d-flex flex-wrap gap-2">
+                                            <twig:Badge text="{{ quote.startAt|format_datetime }}"
+                                                        variant="dark"
+                                                        :isOutline="true"
+                                                        size="lg"/>
+                                            <twig:Badge
+                                                    text="{{ 'duration-in-hours'|trans({ duration: quote.expectedDurationHours }) }}"
+                                                    variant="dark"
+                                                    :isOutline="true"
+                                                    size="lg"/>
+                                            <twig:Badge
+                                                    text="{{ quote.includesMaterials ? 'includes-materials'|trans : 'does-not-includes-materials'|trans }}"
+                                                    variant="dark"
+                                                    :isOutline="true"
+                                                    size="lg"/>
+                                            <twig:Badge
+                                                    text="{{ 'warranty-duration-in-months'|trans({ duration: quote.warrantyMonths }) }}"
+                                                    variant="dark"
+                                                    :isOutline="true"
+                                                    size="lg"/>
+                                        </div>
+
+                                        <div class="card-body">
+                                            {{ quote.message|nl2br }}
+                                        </div>
+
+                                        {% if quote.isUnanswered %}
+                                            <div class="card-footer d-flex gap-3 justify-content-end align-items-center">
+                                                <a href="{{ path('reject_quote', { id: quote.id }) }}"
+                                                   class="btn btn-outline-secondary">
+                                                    {{ 'decline'|trans|title }}
                                                 </a>
-
-                                                {# Phone #}
-                                                <div class="d-flex align-items-center mb-2"
-                                                        {{ stimulus_controller('clipboard', {
-                                                            successContent: "<span class='bi bi-check-lg text-success fs-4 ms-1'></span>"
-                                                        }) }}
-                                                >
-                                                    <div class="flex-grow-1">
-                                                        <div class="small text-muted">{{ 'phone'|trans }}</div>
-                                                        <div class="lead mb-0"
-                                                             value="{{ trader.phoneNumber.phoneNumberWithPrefix }}"
-                                                                {{ stimulus_target('clipboard', 'source') }}>
-                                                            {{ trader.phoneNumber.phoneNumberWithPrefix }}
-                                                        </div>
-                                                    </div>
-                                                    <a href="#"
-                                                       class="ms-3"
-                                                            {{ stimulus_action('clipboard', 'copy', 'click') }}
-                                                            {{ stimulus_target('clipboard', 'button') }}>
-                                                        <span class="bi bi-copy fs-4"></span>
-                                                    </a>
-                                                </div>
-
-                                                {# Email #}
-                                                <div class="d-flex align-items-center"
-                                                        {{ stimulus_controller('clipboard', {
-                                                            successContent: "<span class='bi bi-check-lg text-success fs-4 ms-1'></span>"
-                                                        }) }}
-                                                >
-                                                    <div class="flex-grow-1">
-                                                        <div class="small text-muted">{{ 'email'|trans }}</div>
-                                                        <div class="lead mb-0"
-                                                             value="{{ trader.email }}"
-                                                                {{ stimulus_target('clipboard', 'source') }}>
-                                                            {{ trader.email }}
-                                                        </div>
-                                                    </div>
-                                                    <a href="#"
-                                                       class="ms-3"
-                                                            {{ stimulus_action('clipboard', 'copy', 'click') }}
-                                                            {{ stimulus_target('clipboard', 'button') }}>
-                                                        <span class="bi bi-copy fs-4"></span>
-                                                    </a>
-                                                </div>
-
+                                                <a href="{{ path('accept_quote', { id: quote.id }) }}"
+                                                   class="btn btn-primary">
+                                                    {{ 'accept'|trans|title }}
+                                                </a>
                                             </div>
                                         {% endif %}
                                     </div>
-
-                                    {% if engagement.quote.isAfterStart %}
-                                        <div class="text-end">
-                                            <a href="{{ path('engagement_issue', {quote: acceptedQuote.id, user: acceptedQuote.owner.id}) }}"
-                                               class="btn btn-outline-secondary rounded-pill">
-                                                {{ 'something-is-wrong'|trans }}
-                                            </a>
-                                        </div>
-                                    {% endif %}
-
-                                    {# 2) No accepted quote yet → list quotes / empty state #}
-                                {% else %}
-                                    {% if engagement.quotes|length == 0 %}
-                                        <div class="text-center text-muted mt-4">
-                                            {{ 'no-quotes-received'|trans }}
-                                        </div>
-                                    {% else %}
-                                        {% for quote in quotes %}
-                                            <div class="card border-0 shadow-sm {{ app.request.get('q') == quote.id ? 'shadow-lg border border-2 border-black' }}">
-                                                <div class="card-header d-flex justify-content-between align-items-start">
-                                                    <div class="fs-4 {{ quote.isRjectedExpiredOrwithdrawn ? 'strikethrough text-muted' }}">
-                                                        {{ quote.price|format_currency(quote.currency.value) }}
-                                                    </div>
-                                                    <div class="fs-4">
-                                                        <twig:Badge text="{{ quote.status.value|trans }}"
-                                                                    variant="primary"
-                                                                    :isOutline="true"
-                                                                    size="lg"/>
-                                                    </div>
-                                                </div>
-
-                                                <div class="card-header fs-4 d-flex flex-wrap gap-2">
-                                                    <twig:Badge text="{{ quote.startAt|format_datetime }}"
-                                                                variant="dark"
-                                                                :isOutline="true"
-                                                                size="lg"/>
-                                                    <twig:Badge
-                                                            text="{{ 'duration-in-hours'|trans({ duration: quote.expectedDurationHours }) }}"
-                                                            variant="dark"
-                                                            :isOutline="true"
-                                                            size="lg"/>
-                                                    <twig:Badge
-                                                            text="{{ quote.includesMaterials ? 'includes-materials'|trans : 'does-not-includes-materials'|trans }}"
-                                                            variant="dark"
-                                                            :isOutline="true"
-                                                            size="lg"/>
-                                                    <twig:Badge
-                                                            text="{{ 'warranty-duration-in-months'|trans({ duration: quote.warrantyMonths }) }}"
-                                                            variant="dark"
-                                                            :isOutline="true"
-                                                            size="lg"/>
-                                                </div>
-
-                                                <div class="card-body">
-                                                    {{ quote.message|nl2br }}
-                                                </div>
-
-                                                <div class="list-group list-group-flush">
-                                                    <a href="{{ path('trader_profile', { id: quote.owner.id }) }}"
-                                                       class="list-group-item list-group-item-action">
-                                                        <div class="d-flex flex-wrap gap-2">
-                                                            <div>
-                                                                <img class="rounded-circle avatar-50"
-                                                                     src="{{ quote.owner.avatar }}">
-                                                            </div>
-                                                            <div>
-                                                                <div>{{ quote.owner.fullName|title }}</div>
-                                                                <div class="text-muted small">
-                                                                    {{ quote.createdAt.diffForHumans }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                </div>
-
-                                                {% if quote.isUnanswered %}
-                                                    <div class="card-footer d-flex gap-3 justify-content-end align-items-center">
-                                                        <a href="{{ path('reject_quote', { id: quote.id }) }}"
-                                                           class="btn btn-lg btn-outline-danger fw-bold border-2 rounded-pill">
-                                                            {{ 'decline'|trans|title }}
-                                                        </a>
-                                                        <a href="{{ path('accept_quote', { id: quote.id }) }}"
-                                                           class="btn btn-lg btn-outline-success fw-bold border-2 rounded-pill">
-                                                            {{ 'accept'|trans|title }}
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                        {% endfor %}
-                                    {% endif %}
-                                {% endif %}
-                            </div>
-                        {% endif %}
-
-                        {# ================= TAB: MESSAGES ================= #}
-                        {% if tab == 'questions' %}
-                            {{ include('engagement/_messages.html.twig', {messageForm: messageForm}) }}
+                                {% endfor %}
+                            {% endif %}
                         {% endif %}
                     </div>
-                </div>
-            </div>
+                {% endif %}
 
+                {# ================= TAB: MESSAGES ================= #}
+                {% if tab == 'questions' %}
+                    {{ include('engagement/_messages.html.twig', {messageForm: messageForm}) }}
+                {% endif %}
+            </div>
         </div>
+
+    </div>
     </div>
 {% endblock %}

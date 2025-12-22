@@ -23,10 +23,25 @@ class EngagementIssue
     private EngagementIssueTypeEnum $type;
 
     #[ORM\Column(enumType: EngagementIssueStatusEnum::class)]
-    private EngagementIssueStatusEnum $status;
+    private EngagementIssueStatusEnum $status = EngagementIssueStatusEnum::AWAITING_SUPPORT;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $clientEvidence = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $traderEvidence = null;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?CarbonImmutable $clientSubmittedAt = null;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?CarbonImmutable $traderSubmittedAt = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $aiMediation = null;
 
     /**
      * @var null|string[]
@@ -176,5 +191,70 @@ class EngagementIssue
     public function setResolvedAt(?CarbonImmutable $resolvedAt): void
     {
         $this->resolvedAt = $resolvedAt;
+    }
+
+    public function getClientEvidence(): ?string
+    {
+        return $this->clientEvidence;
+    }
+
+    public function setClientEvidence(?string $clientEvidence): void
+    {
+        $this->clientEvidence = $clientEvidence;
+    }
+
+    public function getTraderEvidence(): ?string
+    {
+        return $this->traderEvidence;
+    }
+
+    public function setTraderEvidence(?string $traderEvidence): void
+    {
+        $this->traderEvidence = $traderEvidence;
+    }
+
+    public function getClientSubmittedAt(): ?CarbonImmutable
+    {
+        return $this->clientSubmittedAt;
+    }
+
+    public function setClientSubmittedAt(?CarbonImmutable $clientSubmittedAt): void
+    {
+        $this->clientSubmittedAt = $clientSubmittedAt;
+    }
+
+    public function getTraderSubmittedAt(): ?CarbonImmutable
+    {
+        return $this->traderSubmittedAt;
+    }
+
+    public function setTraderSubmittedAt(?CarbonImmutable $traderSubmittedAt): void
+    {
+        $this->traderSubmittedAt = $traderSubmittedAt;
+    }
+
+    public function getAiMediation(): ?string
+    {
+        return $this->aiMediation;
+    }
+
+    public function setAiMediation(?string $aiMediation): void
+    {
+        $this->aiMediation = $aiMediation;
+    }
+
+    public function hasClientSubmitted(): bool
+    {
+        return $this->clientSubmittedAt !== null;
+    }
+
+    public function hasTraderSubmitted(): bool
+    {
+        return $this->traderSubmittedAt !== null;
+    }
+
+    public function bothPartiesSubmitted(): bool
+    {
+        return $this->hasClientSubmitted() && $this->hasTraderSubmitted();
     }
 }

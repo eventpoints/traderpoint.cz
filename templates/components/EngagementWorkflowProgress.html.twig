@@ -1,0 +1,91 @@
+{% if this.shouldShowProgress %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-body py-4">
+            {# Desktop Stepper #}
+            <div class="d-none d-md-block">
+                <div class="d-flex align-items-start justify-content-between position-relative">
+                    {% for step in this.steps %}
+                        {# Step container #}
+                        <div class="d-flex flex-column align-items-center" style="z-index: 2; flex: 0 0 auto;">
+                            {# Circle #}
+                            <div class="rounded-circle d-flex align-items-center justify-content-center mb-2
+                                {% if loop.index0 < this.currentIndex %}
+                                    bg-{{ this.currentStatusVariant }} text-white
+                                {% elseif loop.index0 == this.currentIndex %}
+                                    bg-{{ this.currentStatusVariant }} text-white workflow-pulse
+                                {% else %}
+                                    bg-light border border-2 text-muted
+                                {% endif %}"
+                                 style="width: 40px; height: 40px;">
+                                {% if loop.index0 < this.currentIndex %}
+                                    <i class="bi bi-check-lg fs-5"></i>
+                                {% elseif loop.index0 == this.currentIndex %}
+                                    <span class="fw-bold">{{ loop.index }}</span>
+                                {% else %}
+                                    <span class="small">{{ loop.index }}</span>
+                                {% endif %}
+                            </div>
+                            {# Label #}
+                            <div class="text-center small {{ loop.index0 == this.currentIndex ? 'fw-bold text-dark' : 'text-muted' }}"
+                                 style="max-width: 100px; min-height: 32px;">
+                                {{ step.label }}
+                            </div>
+                        </div>
+
+                        {# Connecting line (not after last step) #}
+                        {% if not loop.last %}
+                            <div class="flex-grow-1 mx-2 align-self-start" style="height: 2px; margin-top: 19px; z-index: 1;">
+                                <div class="w-100 h-100 {% if loop.index0 < this.currentIndex %}bg-{{ this.currentStatusVariant }}{% else %}bg-light{% endif %}"></div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            {# Mobile Stepper #}
+            <div class="d-md-none">
+                {# Current status badge #}
+                <div class="mb-3 text-center display-1">
+                    <twig:Badge text="{{ this.currentStatusLabel }}" variant="{{ this.currentStatusVariant }}" :isOutline="true" size="xl-lg"/>
+                </div>
+
+                {# Simplified step indicators #}
+                <div class="d-flex align-items-center justify-content-between">
+                    {% for step in this.steps %}
+                        {# Circle #}
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center
+                                {% if loop.index0 < this.currentIndex %}
+                                    bg-{{ this.currentStatusVariant }} text-white
+                                {% elseif loop.index0 == this.currentIndex %}
+                                    bg-{{ this.currentStatusVariant }} text-white workflow-pulse
+                                {% else %}
+                                    bg-light border text-muted
+                                {% endif %}"
+                                 style="width: 24px; height: 24px; font-size: 0.65rem;">
+                                {% if loop.index0 < this.currentIndex %}
+                                    <i class="bi bi-check"></i>
+                                {% else %}
+                                    {{ loop.index }}
+                                {% endif %}
+                            </div>
+                            {# Label - only show first word on small screens #}
+                            <div class="text-center mt-1 d-none d-sm-block" style="font-size: 0.65rem; max-width: 60px;">
+                                <span class="{{ loop.index0 == this.currentIndex ? 'fw-bold' : 'text-muted' }}">
+                                    {{ step.label|split(' ')|first }}
+                                </span>
+                            </div>
+                        </div>
+
+                        {# Connecting line (not after last step) #}
+                        {% if not loop.last %}
+                            <div class="flex-grow-1 mx-1" style="height: 2px;">
+                                <div class="w-100 h-100 {% if loop.index0 < this.currentIndex %}bg-{{ this.currentStatusVariant }}{% else %}bg-light{% endif %}"></div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

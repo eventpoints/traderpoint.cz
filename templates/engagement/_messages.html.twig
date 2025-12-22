@@ -1,6 +1,6 @@
 <div class="vstack gap-3 min-vh-50" {{ stimulus_controller('scroll-to-focused') }}>
     {% for message in engagement.conversation.messages %}
-        <div class="card border {{ message.id == focused ? "shadow" }}"
+        <div class="card {{ message.id == focused ? "shadow" }}"
              id="message-{{ message.id }}"
              data-message-id="{{ message.id }}"
         >
@@ -17,7 +17,7 @@
             <div class="card-body">{{ message.content|nl2br }}</div>
         </div>
     {% else %}
-        <div class="list-group-item text-center text-muted">{{ 'no-messages-found'|trans }}</div>
+        <div class="list-group-item text-center text-muted my-3">{{ 'no-messages-found'|trans }}</div>
     {% endfor %}
 </div>
 

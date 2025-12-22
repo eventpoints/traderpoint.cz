@@ -37,9 +37,19 @@
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex gap-3 flex-column justify-content-between align-items-start">
                     <div>
                         <div class="fs-5 fw-bold">{{ 'jobs-you-posted'|trans|title }}</div>
+                    </div>
+                    <div class="nav nav-pills nav-justified w-100 bg-light rounded-pill overflow-hidden">
+                        <a class="nav-link rounded-pill {{ app.request.query.get('tab') == 'active' ? "active shadow" }}"
+                           href="{{ path('client_dashboard', {tab: 'active'}) }}">
+                            {{ 'active'|trans|capitalize }}
+                        </a>
+                        <a class="nav-link rounded-pill {{ app.request.query.get('tab') == 'historical' ? "active shadow" }}"
+                           href="{{ path('client_dashboard', {tab: 'historical'}) }}">
+                            {{ 'histroy'|trans|capitalize }}
+                        </a>
                     </div>
                 </div>
                 <hr class="pb-0"/>
@@ -69,9 +79,9 @@
                                                                 {{ 'edit'|trans|title }}
                                                             </a>
                                                         </li>
-                                                    <li>
-                                                        <hr class="dropdown-divider">
-                                                    </li>
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
                                                     {% endif %}
 
                                                     <li>
@@ -94,6 +104,8 @@
                                         </div>
                                         <div class="d-flex align-items-center gap-2">
                                             <div>
+                                                <twig:EngagementStatusBadge :status="job.status" variant="primary"
+                                                                            size="lg"/>
                                                 <twig:Badge
                                                         text="{{ 'quotes-received'|trans({count: job.quotes|length}) }}"
                                                         variant="primary" :isOutline="true" size="lg"/>

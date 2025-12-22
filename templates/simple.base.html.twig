@@ -1,59 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
+    {{ include('partial/_head.html.twig') }}
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    {% endblock %}
+
     {% block javascripts %}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
 </head>
 <body>
-
-<nav class="navbar navbar-expand-lg fixed-top bg-transparent rounded-0 border-0 fixed">
-    <div class="container-fluid d-flex gap-3 justify-content-between align-items-center">
-        <a class="navbar-brand" href="{{ path('landing') }}">
-            <div class="d-flex justify-content-start align-items-center gap-2">
-                <img height="50" src="{{ asset('images/v3/logo-white-v3.png') }}">
-                <div class="fs-4 border-start border-3 ps-2">
-                    <div class="lh-1 fw-bold">{{ 'Trader'|upper }}</div>
-                    <div class="lh-1 fw-bold">{{ 'Point'|upper }}</div>
-                </div>
-            </div>
-        </a>
-        <ul class="navbar-nav align-items-center">
-            <li class="nav-item">
-                <a class="nav-link" type="button" data-bs-toggle="offcanvas"
-                   data-bs-target="#language-menu-offcanvas" aria-controls="language-menu-offcanvas"
-                   aria-label="Language menu">
-                    {{ ux_icon('mdi:web', {style: 'height: 2em;'}) }}
-                </a>
-            </li>
-        </ul>
-    </div>
-</nav>
-
+{{ include('partial/_toast.html.twig') }}
+{{ include('partial/_simple-navbar.html.twig') }}
 
 {% block body %}{% endblock %}
-
-<div class="offcanvas offcanvas-end" tabindex="-1" id="language-menu-offcanvas"
-     aria-labelledby="language-menu-offcanvas-label">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title fs-4" id="offcanvasNavbarLabel">{{ 'language'|trans|title }}</h5>
-        <div class="text-end w-100">
-            <a data-bs-dismiss="offcanvas" type="button">
-                {{ ux_icon('mdi:window-close', {style: 'height: 2em;'}) }}
-            </a>
-        </div>
-    </div>
-    <div class="list-group list-group-flush fs-5">
-        <a class="list-group-item list-group-item-action {{ app.locale == 'cs' ? 'active' }}"
-           href="{{ path('landing', {_locale: 'cs'}) }}">{{ 'čeština'|title }}</a>
-        <a class="list-group-item list-group-item-action {{ app.locale == 'en' ? 'active' }}"
-           href="{{ path('landing', {_locale: 'en'}) }}">{{ 'english'|title }}</a>
-        <a class="list-group-item list-group-item-action {{ app.locale == 'uk' ? 'active' }}"
-           href="{{ path('landing', {_locale: 'uk'}) }}">{{ 'ukrajinština'|title }}</a>
-        <a class="list-group-item list-group-item-action {{ app.locale == 'ru' ? 'active' }}"
-           href="{{ path('landing', {_locale: 'ru'}) }}">{{ 'русский'|title }}</a>
-    </div>
-</div>
 
 </body>
 </html>

@@ -13,21 +13,15 @@
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-12 col-md-8">
-                            <div class="card">
                                 {{ form_start(phoneForm) }}
-                                <div class="card-header">
-                                    <div>{{ 'add-your-phone-explainer'|trans({}) }}</div>
-                                </div>
-                                <div class="card-body">
+                            <div class="vstack gap-3">
+                                <div>{{ 'add-your-phone-explainer'|trans({}) }}</div>
                                     {{ form_row(phoneForm) }}
-                                </div>
-                                <div class="card-footer">
-                                    <button data-turbo="false"  class="btn btn-primary w-100">
+                                    <button data-turbo="false"  class="btn btn-primary btn-lg w-100">
                                         {{ 'send-code'|trans({}) }}
                                     </button>
-                                </div>
-                                {{ form_end(phoneForm) }}
                             </div>
+                                {{ form_end(phoneForm) }}
                         </div>
                 </div>
             </div>

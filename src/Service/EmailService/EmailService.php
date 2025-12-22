@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\EmailService;
 
+use App\Entity\Engagement;
 use App\Entity\User;
 use App\Enum\NotificationChannelEnum;
 use App\Enum\NotificationTypeEnum;
@@ -203,6 +204,39 @@ final readonly class EmailService
         );
     }
 
+    public function sendIssueRaisedEmail(?User $user, User $trader, Engagement $engagement, string $locale, array $context = [])
+    {
+        $this->send(
+            subject: $this->translator->trans(
+                id: 'issue-raised',
+                domain: 'email'
+            ),
+            template: '/email/engagement/issue-raised.html.twig',
+            user: $user,
+            context: $context,
+            locale: $locale,
+            notificationType: NotificationTypeEnum::ENGAGEMENT_ISSUE,
+            dedupeKey: null,
+        );
+    }
+
+    public function sendTraderReviewReceivedEmail(User $user, string $locale = 'cs', array $context = [])
+    {
+        $this->send(
+            subject: $this->translator->trans(
+                id: 'review-received',
+                domain: 'email'
+            ),
+            template: '/email/engagement/review-received.html.twig',
+            user: $user,
+            context: $context,
+            locale: $locale,
+            notificationType: NotificationTypeEnum::TRADER_ENGAGEMENT_REVIEW,
+            dedupeKey: null,
+        );
+    }
+
+
     /**
      * @param array<string|int|object> $context
      */
@@ -269,4 +303,5 @@ final readonly class EmailService
             errorMessage: $error,
         ));
     }
+
 }

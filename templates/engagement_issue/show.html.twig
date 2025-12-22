@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container min-vh-100 py-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                {# Header #}
+                <div class="mb-4">
+                    <h1 class="h3 mb-2">{{ 'issue-resolution'|trans }}</h1>
+                    <p class="text-muted">
+                        {{ 'engagement'|trans }}: {{ engagement.title }}
+                    </p>
+                </div>
+
+                {# Issue Details #}
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'issue-details'|trans }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>{{ 'issue-type'|trans }}:</strong>
+                            {{ issue.type.value|trans }}
+                        </div>
+                        {% if issue.description %}
+                            <div class="mb-3">
+                                <strong>{{ 'description'|trans }}:</strong>
+                                <p class="mb-0">{{ issue.description|nl2br }}</p>
+                            </div>
+                        {% endif %}
+                        <div class="mb-0">
+                            <strong>{{ 'reported-by'|trans }}:</strong>
+                            {{ issue.owner.fullName }}
+                        </div>
+                    </div>
+                </div>
+
+                {# Evidence Submission Form #}
+                {% if canSubmit %}
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">{{ 'submit-your-evidence'|trans }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted">
+                                {{ 'issue-evidence-instructions'|trans }}
+                            </p>
+                            <form method="post">
+                                <div class="mb-3">
+                                    <label for="evidence" class="form-label">{{ 'your-statement'|trans }}</label>
+                                    <textarea
+                                            class="form-control"
+                                            id="evidence"
+                                            name="evidence"
+                                            rows="8"
+                                            required
+                                            placeholder="{{ 'issue-evidence-placeholder'|trans }}"
+                                    ></textarea>
+                                    <div class="form-text">
+                                        {{ 'issue-evidence-help'|trans }}
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-send"></i> {{ 'submit-evidence'|trans }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {# Evidence already submitted #}
+                {% if hasSubmitted %}
+                    <div class="card border-0 shadow-sm mb-4 border-start border-success border-4">
+                        <div class="card-body">
+                            <h5 class="text-success">
+                                <i class="bi bi-check-circle"></i> {{ 'evidence-submitted'|trans }}
+                            </h5>
+                            <p class="mb-3 text-muted">
+                                {{ 'evidence-submitted-message'|trans }}
+                            </p>
+                            <div class="bg-light p-3 rounded">
+                                <strong>{{ 'your-statement'|trans }}:</strong>
+                                <div class="mt-2">
+                                    {{ isClient ? issue.clientEvidence : issue.traderEvidence|nl2br }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {# Waiting for other party #}
+                {% if hasSubmitted and not issue.bothPartiesSubmitted %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-hourglass-split"></i>
+                        {{ 'waiting-for-other-party'|trans }}
+                    </div>
+                {% endif %}
+
+                {# AI Mediation Results #}
+                {% if issue.bothPartiesSubmitted and issue.aiMediation %}
+                    <div class="card border-0 shadow-sm mb-4 border-start border-warning border-4">
+                        <div class="card-header bg-warning">
+                            <h5 class="mb-0">
+                                <i class="bi bi-robot"></i> {{ 'ai-mediation'|trans }}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {{ issue.aiMediation|nl2br }}
+                        </div>
+                    </div>
+
+                    {# Show both parties' evidence to admins after both submitted #}
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0">{{ 'client-statement'|trans }}</h6>
+                                </div>
+                                <div class="card-body">
+                                    <small class="text-muted d-block mb-2">
+                                        {{ 'submitted'|trans }}: {{ issue.clientSubmittedAt.diffForHumans }}
+                                    </small>
+                                    {{ issue.clientEvidence|nl2br }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0">{{ 'trader-statement'|trans }}</h6>
+                                </div>
+                                <div class="card-body">
+                                    <small class="text-muted d-block mb-2">
+                                        {{ 'submitted'|trans }}: {{ issue.traderSubmittedAt.diffForHumans }}
+                                    </small>
+                                    {{ issue.traderEvidence|nl2br }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {# Back to engagement #}
+                <div class="text-center">
+                    <a href="{{ path(isClient ? 'client_show_engagement' : 'trader_show_engagement', {id: engagement.id}) }}"
+                       class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> {{ 'back-to-engagement'|trans }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Controller\Controller;
 
 use App\Entity\User;
+use App\Enum\EngagementStatusGroupEnum;
 use App\Repository\EngagementRepository;
 use App\Repository\SkillRepository;
 use Knp\Component\Pager\PaginatorInterface;
@@ -16,8 +17,8 @@ class ClientController extends AbstractController
 {
     public function __construct(
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaginatorInterface $paginator,
-        private readonly SkillRepository $skillRepository
+        private readonly PaginatorInterface   $paginator,
+        private readonly SkillRepository      $skillRepository
     )
     {
     }
@@ -25,10 +26,33 @@ class ClientController extends AbstractController
     #[Route(path: '/client/dashboard', name: 'client_dashboard', methods: ['GET', 'POST'])]
     public function clientDashboard(
         #[CurrentUser]
-        User $currentUser,
+        User    $currentUser,
         Request $request
-    ): Response {
-        $engagementsQuery = $this->engagementRepository->findByOwner($currentUser, true);
+    ): Response
+    {
+        // If tab parameter is not present, redirect to include it
+        if (!$request->query->has('tab')) {
+            return $this->redirectToRoute('client_dashboard', [
+                'tab' => EngagementStatusGroupEnum::ACTIVE->value,
+            ]);
+        }
+
+        $tabQuery = $request->query->getString('tab');
+        $status = EngagementStatusGroupEnum::tryFrom($tabQuery);
+        if ($status == EngagementStatusGroupEnum::ACTIVE) {
+            $engagementsQuery = $this->engagementRepository->findByOwnerAndEngagementStatus(
+                user: $currentUser,
+                isQuery: true,
+                status: EngagementStatusGroupEnum::ACTIVE,
+            );
+        } else {
+            $engagementsQuery = $this->engagementRepository->findByOwnerAndEngagementStatus(
+                user: $currentUser,
+                isQuery: true,
+                status: EngagementStatusGroupEnum::HISTORICAL,
+            );
+        }
+
         $page = $request->query->getInt('page', 1);
         $limit = $request->query->getInt('limit', 5);
         $pagination = $this->paginator->paginate($engagementsQuery, $page, $limit);

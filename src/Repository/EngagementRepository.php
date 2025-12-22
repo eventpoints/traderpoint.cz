@@ -7,12 +7,16 @@ use App\Entity\Quote;
 use App\Entity\Skill;
 use App\Entity\User;
 use App\Enum\EngagementStatusEnum;
+use App\Enum\EngagementStatusGroupEnum;
+use App\Enum\QuoteStatusEnum;
 use Carbon\CarbonImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Nette\Utils\Strings;
 use Symfony\Component\Uid\Uuid;
 
 /**
@@ -31,14 +35,14 @@ class EngagementRepository extends ServiceEntityRepository
     public function findUpcomingBySkillsAndLocation(User $user, bool $isQuery = false): array|Query
     {
         $profile = $user->getTraderProfile();
-        if (! $profile || $profile->getLatitude() === null || $profile->getLongitude() === null || ! $profile->getServiceRadius()) {
+        if (!$profile || $profile->getLatitude() === null || $profile->getLongitude() === null || !$profile->getServiceRadius()) {
             return $isQuery ? $this->createQueryBuilder('e')->where('1=0')->getQuery() : [];
         }
 
         $lat = $profile->getLatitude();
         $lng = $profile->getLongitude();
-        $radiusKm = (float) $profile->getServiceRadius();
-        $meters = (int) round($radiusKm * 1000);
+        $radiusKm = (float)$profile->getServiceRadius();
+        $meters = (int)round($radiusKm * 1000);
 
         // --- PostGIS helper returns ordered IDs by distance (each row: ['id' => '...', 'dist' => ...])
         $rows = $this->findNearbyIdsOrdered($lat, $lng, $meters);
@@ -67,7 +71,7 @@ class EngagementRepository extends ServiceEntityRepository
 
         $qb->andWhere(
             $qb->expr()->eq('engagement.status', ':status')
-        )->setParameter('status', EngagementStatusEnum::ACCEPTED);
+        )->setParameter('status', EngagementStatusEnum::RECEIVING_QUOTES);
 
         $skillIds = $user->getTraderProfile()->getSkills()
             ->map(fn(Skill $skill): string => $skill->getId()->toRfc4122())
@@ -109,6 +113,7 @@ class EngagementRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
 
     /**
      * @return list<array{id: string, dist: numeric-string}>
@@ -163,17 +168,19 @@ class EngagementRepository extends ServiceEntityRepository
     /**
      * @return array<int, Engagement>|Query
      */
-    public function findByOwner(User $currentUser, bool $isQuery = false): array|Query
+    public function findByOwnerAndEngagementStatus(User $user, bool $isQuery = false, EngagementStatusGroupEnum $status = EngagementStatusGroupEnum::DISCOVER): array|Query
     {
         $qb = $this->createQueryBuilder('engagement');
 
         $qb->andWhere(
             $qb->expr()->eq('engagement.owner', ':owner')
-        )->setParameter('owner', $currentUser->getId());
+        )->setParameter('owner', $user->getId());
 
         $qb->andWhere(
             $qb->expr()->eq('engagement.isDeleted', ':false')
         )->setParameter('false', false);
+
+        $this->findByStatus(qb: $qb, user: $user, engagementStatusGroupEnum: $status, isQuery: true);
 
         $qb->orderBy('engagement.createdAt', Order::Descending->value);
 
@@ -183,4 +190,75 @@ class EngagementRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findByStatus(null|QueryBuilder $qb, User $user, null|EngagementStatusGroupEnum $engagementStatusGroupEnum = EngagementStatusGroupEnum::DISCOVER, bool $isQuery = false): QueryBuilder|array
+    {
+        if (!$qb instanceof QueryBuilder) {
+            $qb = $this->createQueryBuilder('engagement');
+        }
+
+        $statuses = match (true) {
+            $user->isTrader() && $engagementStatusGroupEnum == EngagementStatusGroupEnum::HISTORICAL => EngagementStatusEnum::getHistoricalStatusesForTrader(),
+            $user->isTrader() && $engagementStatusGroupEnum == EngagementStatusGroupEnum::DISCOVER => EngagementStatusEnum::getActiveStatusesForTrader(),
+            !$user->isTrader() && $engagementStatusGroupEnum == EngagementStatusGroupEnum::ACTIVE => EngagementStatusEnum::getActiveStatusesForClient(),
+            !$user->isTrader() && $engagementStatusGroupEnum == EngagementStatusGroupEnum::HISTORICAL => EngagementStatusEnum::getHistoricalStatusesForClient(),
+        };
+
+        $qb->andWhere(
+            $qb->expr()->in('engagement.status', ':statuses')
+        )->setParameter('statuses', $statuses);
+
+        return $isQuery ? $qb : $qb->getQuery()->getResult();
+    }
+
+    public function findByPendingQuoteForTrader(User $user, bool $isQuery = false): array|Query
+    {
+        $qb = $this->createQueryBuilder('engagement');
+        $qb->innerJoin('engagement.quotes', 'quote');
+
+        // Find engagements where this trader has submitted a quote
+        $qb->andWhere(
+            $qb->expr()->eq('quote.owner', ':trader')
+        )->setParameter('trader', $user->getId(), 'uuid');
+
+        // Quote must be in SUBMITTED status (awaiting client response)
+        $qb->andWhere(
+            $qb->expr()->eq('quote.status', ':quoteStatus')
+        )->setParameter('quoteStatus', QuoteStatusEnum::SUBMITTED);
+
+        // Engagement must be in RECEIVING_QUOTES state
+        $qb->andWhere(
+            $qb->expr()->eq('engagement.status', ':engagementStatus')
+        )->setParameter('engagementStatus', EngagementStatusEnum::RECEIVING_QUOTES);
+
+        // Use distinct to avoid duplicate results from join
+        $qb->distinct(true);
+
+        // Order by engagement creation date instead of quote creation date to avoid pagination issues
+        $qb->orderBy('engagement.createdAt', 'DESC');
+
+        return $isQuery ? $qb->getQuery() : $qb->getQuery()->getResult();
+    }
+
+    public function findHistoricalForTrader(User $user, bool $isQuery, null|EngagementStatusEnum $engagementStatusEnum = null) : array|QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('engagement');
+        $qb->leftJoin('engagement.quote', 'quote');
+
+        $qb->andWhere(
+            $qb->expr()->eq('quote.owner', ':owner')
+        )->setParameter('owner', $user->getId(), 'uuid');
+
+        if (!$engagementStatusEnum instanceof EngagementStatusEnum) {
+            $this->findByStatus($qb, $user, EngagementStatusGroupEnum::HISTORICAL, $isQuery);
+        } else {
+            $qb->andWhere(
+                $qb->expr()->eq('engagement.status', ':status')
+            )->setParameter('status', $engagementStatusEnum);
+        }
+
+        return $isQuery ? $qb : $qb->getQuery()->getResult();
+    }
+
+
 }

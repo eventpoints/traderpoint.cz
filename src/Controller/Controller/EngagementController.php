@@ -26,6 +26,7 @@ use App\Repository\SkillRepository;
 use App\Repository\UserRepository;
 use App\Security\Voter\EngagementVoter;
 use App\Service\EmailService\EmailService;
+use App\Service\EngagementWorkflowService;
 use App\Service\ImageOptimizer;
 use App\Verification\Sender\ElksSmsSender;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -57,7 +58,6 @@ class EngagementController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly ImageOptimizer $imageOptimizer,
         private readonly EmailService $emailService,
-        private readonly EventDispatcherInterface $dispatcher,
         private readonly SkillRepository $skillRepository,
         private readonly UserFactory $userFactory,
         private readonly Security $security,
@@ -65,7 +65,8 @@ class EngagementController extends AbstractController
         private readonly ConversationRepository $conversationRepository,
         private readonly ConversationFactory $conversationFactory,
         private readonly ElksSmsSender $elksSmsSender,
-        private readonly UrlGeneratorInterface $urlGenerator
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly EngagementWorkflowService $workflowService,
     )
     {
     }
@@ -324,7 +325,8 @@ class EngagementController extends AbstractController
             $engagement->setAddress($mapLocationDto->getAddress());
 
             $this->engagementRepository->save(entity: $engagement, flush: true);
-            $this->dispatcher->dispatch(new EngagementPostedMessage(engagementId: $engagement->getId()));
+
+            $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans('engagement.submitted_for_admin_review'));
 
             return $this->redirectToRoute('client_show_engagement', [
                 'id' => $engagement->getId(),
@@ -406,16 +408,23 @@ class EngagementController extends AbstractController
     #[Route(path: 'engagement/issue/{quote}/{user}', name: 'engagement_issue')]
     public function engagementIssue(Quote $quote, User $user, Request $request, #[CurrentUser] User $currentUser): Response
     {
-        $engagementIssue = new EngagementIssue(engagement: $quote->getEngagement(), owner: $currentUser, target: $user, quote: $quote);
+        $engagement = $quote->getEngagement();
+        $engagementIssue = new EngagementIssue(engagement: $engagement, owner: $currentUser, target: $user, quote: $quote);
         $engagementIssueForm = $this->createForm(EngagementIssueFormType::class, $engagementIssue);
 
         $engagementIssueForm->handleRequest($request);
 
         if ($engagementIssueForm->isSubmitted() && $engagementIssueForm->isValid()) {
-            $this->engagementRepository->save($quote->getEngagement(), true);
-            $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans(id: 'flash.issue-created', domain: 'flash'));
+            try {
+                // Use workflow to raise issue and transition engagement state
+                $this->workflowService->raiseIssue($engagement, $engagementIssue);
+                $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans(id: 'flash.issue-created', domain: 'flash'));
+            } catch (\LogicException $e) {
+                $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('issue.cannot_raise', ['error' => $e->getMessage()]));
+            }
+
             return $this->redirectToRoute('client_show_engagement', [
-                'id' => $quote->getEngagement()->getId(),
+                'id' => $engagement->getId(),
             ]);
         }
 

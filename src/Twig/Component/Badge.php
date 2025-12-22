@@ -56,6 +56,7 @@ final class Badge
         return match ($this->size) {
             'sm' => ['px-2', 'py-0', 'small'],         // compact
             'lg' => ['px-3', 'py-2', 'fs-6'],         // chunkier
+            'xl-lg' => ['px-3', 'py-3', 'fs-5'],         // chunkier
             default => ['px-2', 'py-1', 'fs-6'],      // md (default)
         };
     }

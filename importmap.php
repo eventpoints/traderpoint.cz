@@ -20,23 +20,29 @@ return [
         'path' => './assets/admin.js',
         'entrypoint' => true,
     ],
-    '@hotwired/stimulus' => [
-        'version' => '3.2.2',
-    ],
     '@symfony/stimulus-bundle' => [
         'path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js',
     ],
+    '@symfony/ux-leaflet-map' => [
+        'path' => './vendor/symfony/ux-leaflet-map/assets/dist/map_controller.js',
+    ],
+    '@symfony/ux-live-component' => [
+        'path' => './vendor/symfony/ux-live-component/assets/dist/live_controller.js',
+    ],
+    '@hotwired/stimulus' => [
+        'version' => '3.2.2',
+    ],
     '@hotwired/turbo' => [
-        'version' => '7.3.0',
+        'version' => '8.0.20',
     ],
     'bootstrap' => [
-        'version' => '5.3.3',
+        'version' => '5.3.8',
     ],
     '@popperjs/core' => [
         'version' => '2.11.8',
     ],
     'bootstrap/dist/css/bootstrap.min.css' => [
-        'version' => '5.3.3',
+        'version' => '5.3.8',
         'type' => 'css',
     ],
     'stimulus-character-counter' => [
@@ -52,13 +58,13 @@ return [
         'version' => '3.2.0',
     ],
     'lightgallery' => [
-        'version' => '2.7.2',
+        'version' => '2.9.0',
     ],
     'stimulus-image-grid' => [
         'version' => '1.0.3',
     ],
     'stimulus' => [
-        'version' => '1.1.1',
+        'version' => '3.2.2',
     ],
     '@stimulus-components/read-more' => [
         'version' => '5.0.0',
@@ -70,16 +76,16 @@ return [
         'version' => '5.0.0',
     ],
     '@symfony/stimulus-bridge' => [
-        'version' => '3.2.2',
+        'version' => '4.0.1',
     ],
     '@symfony/stimulus-bridge/lazy-controller-loader' => [
-        'version' => '3.2.2',
+        'version' => '4.0.1',
     ],
     'tom-select' => [
-        'version' => '2.3.1',
+        'version' => '2.4.3',
     ],
     'tom-select/dist/css/tom-select.bootstrap5.css' => [
-        'version' => '2.3.1',
+        'version' => '2.4.3',
         'type' => 'css',
     ],
     'lightgallery/css/lightgallery.css' => [
@@ -93,15 +99,12 @@ return [
         'version' => '1.9.4',
         'type' => 'css',
     ],
-    '@symfony/ux-leaflet-map' => [
-        'path' => './vendor/symfony/ux-leaflet-map/assets/dist/map_controller.js',
-    ],
     'leaflet/dist/leaflet.css' => [
         'version' => '1.9.4',
         'type' => 'css',
     ],
     '@symfony/ux-dropzone/dist/style.min.css' => [
-        'version' => '2.30.0',
+        'version' => '2.31.0',
         'type' => 'css',
     ],
     'tom-select/dist/css/tom-select.default.css' => [
@@ -112,36 +115,43 @@ return [
         'version' => '2.4.3',
         'type' => 'css',
     ],
-    '@symfony/ux-live-component' => [
-        'path' => './vendor/symfony/ux-live-component/assets/dist/live_controller.js',
-    ],
     '@stripe/stripe-js' => [
-        'version' => '8.4.0',
+        'version' => '8.6.0',
     ],
     'tailwindcss' => [
-        'version' => '4.1.17',
+        'version' => '4.1.18',
     ],
     'tailwindcss/index.min.css' => [
-        'version' => '4.1.17',
+        'version' => '4.1.18',
         'type' => 'css',
     ],
     'flowbite-datepicker' => [
         'version' => '2.0.0',
     ],
     'flatpickr' => [
-        'version' => '4.6.6',
+        'version' => '4.6.13',
     ],
     'flatpickr/dist/flatpickr.min.css' => [
-        'version' => '4.6.6',
+        'version' => '4.6.13',
         'type' => 'css',
     ],
     '@stimulus/core' => [
-        'version' => '1.1.1',
+        'version' => '2.0.0',
     ],
     '@stimulus/mutation-observers' => [
-        'version' => '1.1.1',
+        'version' => '2.0.0',
     ],
     '@stimulus/multimap' => [
         'version' => '2.0.0',
+    ],
+    '@orchidjs/sifter' => [
+        'version' => '1.1.0',
+    ],
+    '@orchidjs/unicode-variants' => [
+        'version' => '1.1.2',
+    ],
+    'tom-select/dist/css/tom-select.default.min.css' => [
+        'version' => '2.4.3',
+        'type' => 'css',
     ],
 ];

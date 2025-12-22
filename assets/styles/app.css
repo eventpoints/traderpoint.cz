@@ -6,6 +6,9 @@ body {
     font-style: normal;
 }
 
+.nav-item-hover:hover {
+    background-color: #e9ecef !important;
+}
 
 .card-img-zoom:hover .trade-category {
     color: var(--bs-black) !important;
@@ -455,5 +458,43 @@ input[type="range"].form-range.range--xl:disabled {
     );
     padding-top: 2rem;
     padding-bottom: 2rem;
+}
+
+/* Workflow Progress Pulse Animation */
+@keyframes workflow-pulse {
+    0% {
+        box-shadow: 0 0 0 0 var(--pulse-color-start);
+    }
+    50% {
+        box-shadow: 0 0 0 10px var(--pulse-color-end);
+    }
+    100% {
+        box-shadow: 0 0 0 0 var(--pulse-color-end);
+    }
+}
+
+.workflow-pulse {
+    animation: workflow-pulse 2s ease-out infinite;
+}
+
+/* Default pulse colors for each variant */
+.bg-primary.workflow-pulse {
+    --pulse-color-start: rgba(236, 78, 32, 0.7);
+    --pulse-color-end: rgba(236, 78, 32, 0);
+}
+
+.bg-warning.workflow-pulse {
+    --pulse-color-start: rgba(255, 193, 7, 0.7);
+    --pulse-color-end: rgba(255, 193, 7, 0);
+}
+
+.bg-danger.workflow-pulse {
+    --pulse-color-start: rgba(220, 53, 69, 0.7);
+    --pulse-color-end: rgba(220, 53, 69, 0);
+}
+
+.bg-success.workflow-pulse {
+    --pulse-color-start: rgba(25, 135, 84, 0.7);
+    --pulse-color-end: rgba(25, 135, 84, 0);
 }
 

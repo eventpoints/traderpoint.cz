@@ -2,17 +2,8 @@
 {% if acceptedQuote is defined and acceptedQuote %}
     <div class="list-group list-group-flush">
         <div class="list-group-item text-center">
-            <div class="fs-4 mb-3">
-                {{ ux_icon('mdi:check-circle-outline', {
-                    style: 'height: 1.8em',
-                    class: 'text-success'
-                }) }}
-            </div>
-            <div class="fw-bold fs-4">
-                {{ 'quote-accepted'|trans|capitalize }}
-            </div>
             <div class="text-muted">
-                {{ 'quote-accepted-explainer'|trans }}
+                {{ 'quote-accepted-explainer'|trans({date: acceptedQuote.startAt|format_datetime(timezone='Europe/Prague') }) }}
             </div>
         </div>
 

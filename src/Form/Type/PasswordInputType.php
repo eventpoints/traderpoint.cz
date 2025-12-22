@@ -25,7 +25,6 @@ class PasswordInputType extends AbstractType
         return PasswordType::class;
     }
 
-// App/Form/Type/PasswordInputType.php
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

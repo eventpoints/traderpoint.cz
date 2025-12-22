@@ -3,6 +3,8 @@
 namespace App\Controller\Controller;
 
 use App\Entity\User;
+use App\Enum\EngagementStatusEnum;
+use App\Enum\EngagementStatusGroupEnum;
 use App\Repository\EngagementRepository;
 use App\Repository\QuoteRepository;
 use Knp\Component\Pager\PaginatorInterface;
@@ -17,8 +19,8 @@ class TraderController extends AbstractController
 {
     public function __construct(
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaginatorInterface $paginator,
-        private readonly QuoteRepository $quoteRepository,
+        private readonly PaginatorInterface   $paginator,
+        private readonly QuoteRepository      $quoteRepository,
     )
     {
     }
@@ -37,14 +39,38 @@ class TraderController extends AbstractController
     #[Route(path: '/dashboard', name: 'trader_dashboard')]
     public function dashboard(#[CurrentUser] User $currentUser, Request $request): Response
     {
-        if (! $currentUser->isTrader()) {
+        if (!$currentUser->isTrader()) {
             return $this->redirectToRoute('client_dashboard');
         }
 
-        $engagementsQuery = $this->engagementRepository->findUpcomingBySkillsAndLocation(
-            user: $currentUser,
-            isQuery: true
-        );
+        // If tab parameter is not present, redirect to include it
+        if (!$request->query->has('tab')) {
+            return $this->redirectToRoute('trader_dashboard', [
+                'tab' => EngagementStatusGroupEnum::DISCOVER->value,
+            ]);
+        }
+
+        $tabParam = $request->query->getString('tab');
+        $statusGroup = EngagementStatusGroupEnum::tryFrom($tabParam);
+        if ($statusGroup === EngagementStatusGroupEnum::PENDING) {
+            $engagementsQuery = $this->engagementRepository->findByPendingQuoteForTrader(
+                user: $currentUser,
+                isQuery: true
+            );
+        } else if ($statusGroup === EngagementStatusGroupEnum::HISTORICAL) {
+            // Default to historical (includes COMPLETED, CANCELLED, etc.)
+            $engagementStatusEnum = EngagementStatusEnum::tryFrom($tabParam);
+            $engagementsQuery = $this->engagementRepository->findHistoricalForTrader(
+                user: $currentUser,
+                isQuery: true,
+                engagementStatusEnum: $engagementStatusEnum
+            );
+        } else {
+            $engagementsQuery = $this->engagementRepository->findUpcomingBySkillsAndLocation(
+                user: $currentUser,
+                isQuery: true
+            );
+        }
 
         $page = $request->query->getInt('page', 1);
         $limit = $request->query->getInt('limit', 5);

@@ -82,7 +82,6 @@ final class TraderAccountFormType extends AbstractType
                     return $qb;
                 },
                 'multiple' => true,
-                'expanded' => false,
                 'required' => false,
                 'autocomplete' => true,
                 'row_attr' => [

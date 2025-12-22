@@ -85,7 +85,7 @@ class Engagement implements Stringable
     private null|CarbonImmutable|DateTimeInterface $dueAt = null;
 
     #[ORM\Column(enumType: EngagementStatusEnum::class)]
-    private null|EngagementStatusEnum $status = EngagementStatusEnum::ACCEPTED;
+    private null|EngagementStatusEnum $status = EngagementStatusEnum::UNDER_ADMIN_REVIEW;
 
     /**
      * @var Collection<int, Skill>
@@ -134,6 +134,12 @@ class Engagement implements Stringable
     private Collection $payments;
 
     /**
+     * @var Collection<int, EngagementIssue>
+     */
+    #[ORM\OneToMany(targetEntity: EngagementIssue::class, mappedBy: 'engagement', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $issues;
+
+    /**
      * @var ArrayCollection<int, EngagementReaction>
      */
     #[ORM\OneToMany(
@@ -158,6 +164,7 @@ class Engagement implements Stringable
     {
         $this->reactions = new ArrayCollection();
         $this->payments = new ArrayCollection();
+        $this->issues = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->skills = new ArrayCollection();
         $this->quotes = new ArrayCollection();
@@ -579,5 +586,77 @@ class Engagement implements Stringable
         $this->latitude = $dto->getLatitude();
         $this->longitude = $dto->getLongitude();
         $this->address = $dto->getAddress();
+    }
+
+    // Workflow helper methods
+
+    public function hasActiveIssue(): bool
+    {
+        // Check if there's an active EngagementIssue
+        // This would require a relationship to EngagementIssue or a query
+        // For now, we check if status is ISSUE_RESOLUTION
+        return $this->status === EngagementStatusEnum::ISSUE_RESOLUTION;
+    }
+
+    public function canReceiveQuotes(): bool
+    {
+        return $this->status === EngagementStatusEnum::RECEIVING_QUOTES;
+    }
+
+    public function isWorkInProgress(): bool
+    {
+        return $this->status === EngagementStatusEnum::IN_PROGRESS;
+    }
+
+    public function isCompleted(): bool
+    {
+        return match ($this->status) {
+            EngagementStatusEnum::WORK_COMPLETED,
+            EngagementStatusEnum::AWAITING_REVIEW,
+            EngagementStatusEnum::REVIEWED => true,
+            default => false,
+        };
+    }
+
+    public function isAwaitingAdminReview(): bool
+    {
+        return $this->status === EngagementStatusEnum::UNDER_ADMIN_REVIEW;
+    }
+
+    public function isReceivingQuotes(): bool
+    {
+        return $this->status === EngagementStatusEnum::RECEIVING_QUOTES;
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->status === EngagementStatusEnum::CANCELLED;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->status === EngagementStatusEnum::REJECTED;
+    }
+
+    /**
+     * @return Collection<int, EngagementIssue>
+     */
+    public function getIssues(): Collection
+    {
+        return $this->issues;
+    }
+
+    public function addIssue(EngagementIssue $issue): void
+    {
+        if (!$this->issues->contains($issue)) {
+            $this->issues->add($issue);
+        }
+    }
+
+    public function removeIssue(EngagementIssue $issue): void
+    {
+        if ($this->issues->contains($issue)) {
+            $this->issues->removeElement($issue);
+        }
     }
 }

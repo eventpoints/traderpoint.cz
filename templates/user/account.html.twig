@@ -34,21 +34,31 @@
 
                 {# --- TRADER TAB --- #}
                 {% if tab == 'trader' %}
-                <div class="card" data-controller="pick-location">
+                <div class="card">
                     {{ form_start(traderAccountForm) }}
                     <div class="mb-3">
-                        {{ form_row(traderAccountForm.location) }}
                         <div class="card-body vstack gap-3">
-                            <div class="row g-3">
-                                <div class="col-6">
-                                    {{ form_row(traderAccountForm.title) }}
-                                </div>
-                                {% if traderAccountForm.location.radiusKm is defined %}
+
+                            <div data-controller="pick-location">
+                                {{ form_row(traderAccountForm.location) }}
+                                <div class="row g-3">
                                     <div class="col-6">
-                                        {{ form_row(traderAccountForm.location.radiusKm) }}
+                                        {{ form_row(traderAccountForm.title) }}
                                     </div>
-                                {% endif %}
+                                    {% if traderAccountForm.location.radiusKm is defined %}
+                                        <div class="col-6">
+                                            {{ form_row(traderAccountForm.location.radiusKm, {
+                                                attr: {
+                                                    'data-pick-location-target': 'radius',
+                                                    'data-action': 'input->pick-location#radiusChanged change->pick-location#radiusChanged'
+                                                }
+                                            }) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
+
+
                             {{ form_row(traderAccountForm.skills) }}
                             <div class="row g-3">
                                 <div class="col-12 col-md-6">

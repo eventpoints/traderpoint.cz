@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
- * @extends Voter<'TRADER_VIEW'|'CLIENT_VIEW'|'EDIT'|'DELETE', Engagement>
+ * @extends Voter<'TRADER_VIEW'|'CLIENT_VIEW'|'EDIT'|'DELETE'|'APPROVE'|'REJECT'|'START_WORK'|'COMPLETE_WORK'|'RAISE_ISSUE'|'REVIEW'|'CANCEL', Engagement>
  */
 final class EngagementVoter extends Voter
 {
@@ -22,10 +22,36 @@ final class EngagementVoter extends Voter
 
     public const DELETE = 'DELETE';
 
+    // Workflow permissions
+    public const APPROVE = 'APPROVE';
+
+    public const REJECT = 'REJECT';
+
+    public const START_WORK = 'START_WORK';
+
+    public const COMPLETE_WORK = 'COMPLETE_WORK';
+
+    public const RAISE_ISSUE = 'RAISE_ISSUE';
+
+    public const REVIEW = 'REVIEW';
+
+    public const CANCEL = 'CANCEL';
+
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return \in_array($attribute, [self::TRADER_VIEW, self::CLIENT_VIEW, self::EDIT, self::DELETE], true)
-            && $subject instanceof Engagement;
+        return \in_array($attribute, [
+            self::TRADER_VIEW,
+            self::CLIENT_VIEW,
+            self::EDIT,
+            self::DELETE,
+            self::APPROVE,
+            self::REJECT,
+            self::START_WORK,
+            self::COMPLETE_WORK,
+            self::RAISE_ISSUE,
+            self::REVIEW,
+            self::CANCEL,
+        ], true) && $subject instanceof Engagement;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -42,6 +68,11 @@ final class EngagementVoter extends Voter
             self::TRADER_VIEW => $this->canTraderView($engagement, $user),
             self::CLIENT_VIEW => $this->canClientView($engagement, $user),
             self::EDIT, self::DELETE => $this->isOwner($engagement, $user),
+            self::APPROVE, self::REJECT => $this->canApproveOrReject($user),
+            self::START_WORK, self::COMPLETE_WORK => $this->canManageWork($engagement, $user),
+            self::RAISE_ISSUE => $this->canRaiseIssue($engagement, $user),
+            self::REVIEW => $this->canReview($engagement, $user),
+            self::CANCEL => $this->canCancel($engagement, $user),
             default => false,
         };
     }
@@ -75,5 +106,48 @@ final class EngagementVoter extends Voter
     private function isOwner(Engagement $engagement, User $user): bool
     {
         return $engagement->getOwner()?->getId() === $user->getId();
+    }
+
+    private function canApproveOrReject(User $user): bool
+    {
+        return \in_array('ROLE_ADMIN', $user->getRoles(), true);
+    }
+
+    private function canManageWork(Engagement $engagement, User $user): bool
+    {
+        // Only the tradesman who owns the accepted quote can manage work
+        $quote = $engagement->getQuote();
+        if ($quote === null) {
+            return false;
+        }
+
+        return $quote->getOwner()->getId() === $user->getId();
+    }
+
+    private function canRaiseIssue(Engagement $engagement, User $user): bool
+    {
+        // Either the engagement owner or the tradesman can raise an issue
+        if ($this->isOwner($engagement, $user)) {
+            return true;
+        }
+
+        $quote = $engagement->getQuote();
+        if ($quote === null) {
+            return false;
+        }
+
+        return $quote->getOwner()->getId() === $user->getId();
+    }
+
+    private function canReview(Engagement $engagement, User $user): bool
+    {
+        // Only the engagement owner can submit a review
+        return $this->isOwner($engagement, $user);
+    }
+
+    private function canCancel(Engagement $engagement, User $user): bool
+    {
+        // Either the engagement owner or an admin can cancel
+        return $this->isOwner($engagement, $user) || $this->canApproveOrReject($user);
     }
 }

@@ -13,5 +13,7 @@ enum NotificationTypeEnum: string
     case ENGAGEMENT_MESSAGE_RECEIVED = 'engagement_message_received';
     case ENGAGEMENT_MATCH = 'engagement_match';
     case VERIFICATION_CODE_VIA_EMAIL = 'verification_code_via_email';
+    case ENGAGEMENT_ISSUE = 'engagement_issue';
+    case TRADER_ENGAGEMENT_REVIEW = 'trader_engagement_review';
 
 }

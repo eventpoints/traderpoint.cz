@@ -592,5 +592,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
         return $this;
     }
+
+    /**
+     * @return string[]
+     */
+    public function getAllLangauges(): array
+    {
+        $preferred = $this->preferredLanguage;
+
+        // remove preferred from the list if it’s already there
+        $others = array_values(array_filter(
+            $this->languages,
+            static fn (string $lang): bool => $lang !== $preferred
+        ));
+
+        // put preferred first (skip if null/empty)
+        return $preferred ? array_merge([$preferred], $others) : $others;
+    }
+
 }
 

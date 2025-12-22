@@ -4,44 +4,38 @@
     <div class="row justify-content-center vh-100 g-0">
         <div class="col-12 col-md-4 text-bg-primary d-flex flex-column">
             <div class="flex-grow-1 d-flex justify-content-center align-items-center">
-                <div class="text-white fs-4">{{ 'enter-verification-code'|trans|title }}</div>
+                <div class="text-white fs-4">{{ 'enter-verification-code'|trans|capitalize }}</div>
             </div>
         </div>
         <div class="col-12 col-md-8 d-flex justify-content-center align-items-center">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-8">
-                        <div class="card my-3">
-                            <div class="card-header">
-                                <div>
-                                    {{ 'enter-the-6-digit-code-we-sent'|trans({}) }}
-                                </div>
+                        {{ form_start(codeForm) }}
+                        <div class="vstack gap-3">
+                            <div>
+                                {{ 'enter-the-6-digit-code-we-sent'|trans }}
                             </div>
-                            <div class="card-body">
-                                {{ form_start(codeForm) }}
-                                {{ form_row(codeForm.code) }}
-                                {# hidden fields from VerificationCodeType #}
-                                {{ form_widget(codeForm.type) }}
-                                {{ form_widget(codeForm.destination) }}
-                                {{ form_widget(codeForm.purpose) }}
-
-                                <div class="mt-3 d-grid">
-                                    <button class="btn btn-dark">
-                                        {{ 'verify'|trans({}) }}
-                                    </button>
-                                </div>
-                                {{ form_end(codeForm) }}
-                            </div>
-                            {# Optional: small helper footer
+                            {{ form_row(codeForm.code) }}
+                            {# hidden fields from VerificationCodeType #}
+                            {{ form_widget(codeForm.type) }}
+                            {{ form_widget(codeForm.destination) }}
+                            {{ form_widget(codeForm.purpose) }}
+                            <button class="btn btn-dark btn-lg">
+                                {{ 'continue'|trans({}) }}
+                            </button>
+                        </div>
+                        {{ form_end(codeForm) }}
+                        {# Optional: small helper footer
           <div class="card-footer text-muted small">
             {{ 'didnt-receive-code'|trans({}, 'messages') }} {{ 'check-spelling-or-resend'|trans({}, 'messages') }}
           </div>
-                            #}
-                        </div>
+                        #}
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
     </div>
 {% endblock %}

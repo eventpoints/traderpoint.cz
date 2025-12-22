@@ -2,52 +2,35 @@
 
 {% block body %}
     <div class="container min-vh-100">
-        <div class="row justify-content-center g-3 mt-3">
+        {% set traderQuote = engagement.getMostRecentQuoteFor(app.user) %}
+        {% set acceptedQuote = engagement.quote %}
+        {% set isQuoteOwner = acceptedQuote and traderQuote and traderQuote.id == acceptedQuote.id %}
+        {% set isQuoteRejected = acceptedQuote and traderQuote and traderQuote.id != acceptedQuote.id %}
+
+        {# Show progress bar if trader submitted a quote #}
+        {% if traderQuote %}
+            <div class="row justify-content-center g-3 my-3">
+                <div class="col-12 col-md-10">
+                    <twig:EngagementWorkflowProgress
+                            :engagement="engagement"
+                            :viewType="'trader'"
+                            :hasSubmittedQuote="true"
+                            :isQuoteRejected="isQuoteRejected"
+                    />
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="row justify-content-center g-3 {{ traderQuote ?? "my-3" }}">
 
             <div class="col-12 col-md-4">
                 <div class="card mb-3">
-                    {% if engagement.quote and app.user == engagement.quote.owner %}
-                        {{ ux_map(map, { style: 'height: 250px' }) }}
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item d-flex justify-content-between">
-                                <div>{{ engagement.address }}</div>
-                                <div></div>
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% set hasMap = engagement.quote and app.user == engagement.quote.owner %}
-                    <div class="card-header d-flex align-items-center {{ hasMap ? 'justify-content-between' : 'justify-content-end' }}">
-                        {% if hasMap %}
-                            <div class="dropdown">
-                                <a class="btn btn-outline-primary rounded-pill" type="button" data-bs-toggle="dropdown"
-                                   aria-expanded="false">
-                                    <i class="bi bi-map fs-4"></i>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item"
-                                           href="https://www.google.com/maps/search/?api=1&query={{ engagement.latitude }},{{ engagement.longitude }}"
-                                           target="_blank">
-                                            Open in Google Maps
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item"
-                                           href="http://maps.apple.com/?ll={{ engagement.latitude }},{{ engagement.longitude }}"
-                                           target="_blank">
-                                            Open in Apple Maps
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        {% endif %}
-                    </div>
                     <div class="card-header">
                         <div class="d-flex justify-content-start align-items-start gap-3">
                             <a href="{{ path('client_profile', {id: engagement.owner.id}) }}">
                                 <img class="rounded-circle avatar-50" src="{{ engagement.owner.avatar }}">
                             </a>
-                            <div class="">
+                            <div class="flex-grow-1">
                                 <div class="fw-bold text-dark fs-4 lh-1">{{ engagement.title }}</div>
                                 <div class="d-flex justify-content-start gap-3">
                                     <a href="{{ path('client_profile', {id: engagement.owner.id}) }}">{{ engagement.owner.fullName|title }}</a>
@@ -95,22 +78,6 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="list-group list-group-flush">
-                        {% if engagement.quote and app.user == engagement.quote.owner %}
-                            <div class="list-group-item d-flex d-flex justify-content-between align-items-center"
-                                    {{ stimulus_controller('clipboard', {
-                                        successContent: "<span class='bi bi-check-lg text-success fs-4'></span>"
-                                    }) }}
-                            >
-                                <div class="w-75 lead"
-                                     value="{{ '+420 749 783 873' }}" {{ stimulus_target('clipboard', 'source') }} >{{ '+420 749 783 873' }}</div>
-                                <a class="me-2"
-                                   href="#" {{ stimulus_action('clipboard', 'copy', 'click') }} {{ stimulus_target('clipboard', 'button') }} >
-                                    <span class="bi bi-copy fs-4"></span>
-                                </a>
-                            </div>
-                        {% endif %}
-                    </div>
 
                     <div class="card-footer">
                         <div class="d-flex justify-content-between align-items-center">
@@ -123,153 +90,468 @@
                 </div>
             </div>
             <div class="col-12 col-md-6">
-                <div class="card h-100">
-                    <div class="card-header border-bottom-0">
-                        <ul class="nav nav-pills nav-justified" id="quoteTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <a
-                                        href="{{ path('trader_show_engagement', {id: engagement.id, tab: 'quote-form'}) }}"
-                                        class="nav-link {{ tab == 'quote-form' ? "active" }}"
-                                >
-                                    {{ 'tab.quote-form'|trans|default('Quotation') }}
-                                </a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a
-                                        href="{{ path('trader_show_engagement', {id: engagement.id, tab: 'questions'}) }}"
-                                        class="nav-link {{ tab == 'questions' ? "active" }}"
-                                >
-                                    {{ 'tab.clarifying-questions'|trans|default('Messages') }}
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="nav nav-pills nav-justified w-100 bg-light rounded-pill overflow-hidden mb-3">
+                    <a
+                            href="{{ path('trader_show_engagement', {id: engagement.id, tab: 'quote-form'}) }}"
+                            class="nav-link rounded-pill {{ tab == 'quote-form' ? "active shadow" }}"
+                    >
+                        {{ 'tab.quote-form'|trans|capitalize }}
+                    </a>
+                    <a
+                            href="{{ path('trader_show_engagement', { id: engagement.id, tab: 'questions' }) }}"
+                            class="nav-link rounded-pill {{ tab == 'questions' ? "active shadow" }} d-flex justify-content-between align-items-center"
+                    >
+                        {{ 'tab.clarifying-questions'|trans|default('Messages') }}
+                        <twig:Badge class="text-white border border-white"
+                                    text="{{ engagement.conversation ? engagement.conversation.messages|length : 0 }}"
+                                    variant="primary" size="md"/>
 
-                    <div class="card-body border-top">
-                        {% if tab == 'quote-form' %}
-                            <div>
-                                {% set acceptedQuote = engagement.quote %}
-                                {% set traderQuote = engagement.getMostRecentQuoteFor(app.user) %}
+                    </a>
+                </div>
 
-                                {# 1) A quote has been accepted #}
-                                {% if acceptedQuote %}
-                                    {% if traderQuote and traderQuote.id == acceptedQuote.id %}
-                                        {# ✅ This trader WON #}
-                                        {{ include('engagement/_accepted_quote_summary.html.twig') }}
+                {% if tab == 'quote-form' %}
+                    {% set workflowState = engagement.status.value %}
+                    {% set acceptedQuote = engagement.quote %}
+                    {% set isQuoteOwner = acceptedQuote and traderQuote and traderQuote.id == acceptedQuote.id %}
 
-                                        <div class="mt-3 text-end">
-                                            <a href="{{ path('engagement_issue', {quote: acceptedQuote.id, user: engagement.owner.id}) }}"
-                                               class="btn btn-outline-secondary rounded-pill btn-sm">
-                                                {{ 'something-is-wrong'|trans }}
+                    {# ==================== WORKFLOW STATE: REJECTED / CANCELLED ==================== #}
+                    {% if workflowState in ['REJECTED', 'CANCELLED'] %}
+                        <div class="text-center py-4">
+                            <div class="fs-4 mb-3">
+                                {{ ux_icon('mdi:close-circle-outline', { style: 'height: 1.8em;' }) }}
+                            </div>
+                            <div class="fw-bold fs-4">
+                                {{ workflowState == 'REJECTED' ? 'engagement-rejected'|trans : 'engagement-cancelled'|trans }}
+                            </div>
+                            <div class="text-muted">
+                                {{ 'engagement-closed-explainer'|trans }}
+                            </div>
+                        </div>
+
+                        {# ==================== WORKFLOW STATE: UNDER_ADMIN_REVIEW ==================== #}
+                    {% elseif workflowState == 'UNDER_ADMIN_REVIEW' %}
+                        <div class="text-center py-4">
+                            <div class="fs-4 mb-3">
+                                {{ ux_icon('mdi:clock-outline', { style: 'height: 1.5em;' }) }}
+                            </div>
+                            <div class="fw-bold fs-4">
+                                {{ 'under-review'|trans|capitalize }}
+                            </div>
+                            <div class="text-muted">
+                                {{ 'under-review-explainer'|trans|default('This engagement is currently being reviewed by our team.') }}
+                            </div>
+                        </div>
+
+                        {# ==================== WORKFLOW STATE: RECEIVING_QUOTES ==================== #}
+                    {% elseif workflowState == 'RECEIVING_QUOTES' %}
+                        {% if traderQuote %}
+                            {# Trader already submitted quote - waiting for client #}
+                            <div class="text-center mb-3">
+                                <div class="fs-4 mb-2">
+                                    {{ ux_icon('mdi:clock-outline', { style: 'height: 1.5em;' }) }}
+                                </div>
+                                <div class="fw-bold">
+                                    {{ 'awaiting-client-response'|trans|capitalize }}
+                                </div>
+                                <div class="text-muted">
+                                    {{ 'awaiting-client-response-explainer'|trans }}
+                                </div>
+                            </div>
+
+                            {# Display submitted quote #}
+                            <div class="border rounded-3">
+                                <div class="p-3 d-flex justify-content-between align-items-start">
+                                    <div class="fs-4">
+                                        {{ traderQuote.price|format_currency(traderQuote.currency.value) }}
+                                    </div>
+                                </div>
+                                <div class="px-3 pb-3 d-flex flex-wrap gap-2">
+                                    <twig:Badge text="{{ traderQuote.startAt|format_datetime }}"
+                                                variant="dark" :isOutline="true" size="lg"/>
+                                    <twig:Badge
+                                            text="{{ 'duration-in-hours'|trans({ duration: traderQuote.expectedDurationHours }) }}"
+                                            variant="primary" :isOutline="true" size="lg"/>
+                                    <twig:Badge
+                                            text="{{ traderQuote.includesMaterials ? 'includes-materials'|trans : 'does-not-includes-materials'|trans }}"
+                                            variant="primary" :isOutline="true" size="lg"/>
+                                    <twig:Badge
+                                            text="{{ 'warranty-duration-in-months'|trans({ duration: traderQuote.warrantyMonths }) }}"
+                                            variant="primary" :isOutline="true" size="lg"/>
+                                </div>
+                                <div class="px-3 pb-3">
+                                    {{ traderQuote.message|nl2br }}
+                                </div>
+                            </div>
+                        {% else %}
+                            {# Show quote form #}
+                            {{ form_errors(quoteForm) }}
+                            {{ form_start(quoteForm) }}
+                            <div class="vstack gap-3">
+                                {{ form_row(quoteForm.startAt) }}
+
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6">
+                                        {{ form_row(quoteForm.expectedDurationHours) }}
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        {{ form_row(quoteForm.price) }}
+                                    </div>
+                                </div>
+
+                                {{ form_row(quoteForm.includesMaterials) }}
+
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6">
+                                        {{ form_row(quoteForm.warrantyMonths) }}
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        {{ form_row(quoteForm.validUntil) }}
+                                    </div>
+                                </div>
+
+                                {{ form_row(quoteForm.message) }}
+                            </div>
+                            <div class="mt-3 text-end">
+                                <button class="btn btn-primary" type="submit">
+                                    {{ 'send'|trans }}
+                                </button>
+                            </div>
+                            {{ form_end(quoteForm) }}
+                        {% endif %}
+
+                        {# ==================== WORKFLOW STATE: QUOTE_ACCEPTED ==================== #}
+                    {% elseif workflowState == 'QUOTE_ACCEPTED' %}
+                        {% if isQuoteOwner %}
+                            {# This trader's quote was accepted #}
+                            <div class="vstack gap-3">
+                                <div class="card border-0 shadow-sm">
+                                    {{ include('engagement/_accepted_quote_summary.html.twig') }}
+                                </div>
+
+                                {# Client Contact Card #}
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header fs-4 d-flex justify-content-between align-items-center">
+                                        {{ 'client-information'|trans }}
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-primary rounded-pill" type="button"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                {{ 'open-in-map'|trans|default('Map') }}
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                       href="https://www.google.com/maps/search/?api=1&query={{ engagement.latitude }},{{ engagement.longitude }}"
+                                                       target="_blank">
+                                                        <i class="bi bi-google me-2"></i>Google Maps
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                       href="http://maps.apple.com/?ll={{ engagement.latitude }},{{ engagement.longitude }}"
+                                                       target="_blank">
+                                                        <i class="bi bi-apple me-2"></i>Apple Maps
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <a href="{{ path('client_profile', {id: engagement.owner.id}) }}"
+                                           class="d-flex align-items-center gap-3 text-decoration-none text-reset mb-3">
+                                            <img class="rounded-circle avatar-50"
+                                                 src="{{ engagement.owner.avatar }}"
+                                                 alt="{{ engagement.owner.fullName }}">
+                                            <div class="fw-bold fs-5">
+                                                {{ engagement.owner.fullName|title }}
+                                            </div>
+                                        </a>
+
+                                        <div class="mb-3">
+                                            <div class="small text-muted">{{ 'address'|trans }}</div>
+                                            <div class="lead">
+                                                <i class="bi bi-geo-alt me-2"></i>{{ engagement.address }}
+                                            </div>
+                                        </div>
+
+                                        {# Phone #}
+                                        <div class="d-flex align-items-center mb-2"
+                                                {{ stimulus_controller('clipboard', {
+                                                    successContent: "<span class='bi bi-check-lg text-success fs-4 ms-1'></span>"
+                                                }) }}>
+                                            <div class="flex-grow-1">
+                                                <div class="small text-muted">{{ 'phone'|trans }}</div>
+                                                <div class="lead mb-0"
+                                                     value="{{ engagement.owner.phoneNumber.phoneNumberWithPrefix }}"
+                                                        {{ stimulus_target('clipboard', 'source') }}>
+                                                    {{ engagement.owner.phoneNumber.phoneNumberWithPrefix }}
+                                                </div>
+                                            </div>
+                                            <a href="#" class="ms-3"
+                                                    {{ stimulus_action('clipboard', 'copy', 'click') }}
+                                                    {{ stimulus_target('clipboard', 'button') }}>
+                                                <span class="bi bi-copy fs-4"></span>
                                             </a>
                                         </div>
-                                    {% else %}
-                                        {# Another trader's quote was accepted #}
-                                        {% if traderQuote %}
-                                            <div class="text-center py-4">
-                                                <div class="fs-4 mb-3">
-                                                    {{ ux_icon('mdi:close-circle-outline', { style: 'height: 1.8em;' }) }}
-                                                </div>
-                                                <div class="fw-bold fs-4">
-                                                    {{ 'quote-not-selected'|trans|capitalize }}
-                                                </div>
-                                                <div class="text-muted">
-                                                    {{ 'quote-not-selected-explainer'|trans }}
-                                                </div>
-                                            </div>
-                                        {% else %}
-                                            <div class="text-center text-muted py-4">
-                                                {{ 'quote-closed-already-accepted'|trans }}
-                                            </div>
-                                        {% endif %}
-                                    {% endif %}
 
-                                    {# 2) No accepted quote yet #}
-                                {% else %}
-                                    {% if traderQuote %}
-                                        {# Trader has already quoted → awaiting response #}
-                                        <div class="text-center mb-3">
-                                            <div class="fs-4 mb-2">
-                                                {{ ux_icon('mdi:clock-outline', { style: 'height: 1.5em;' }) }}
+                                        {# Email #}
+                                        <div class="d-flex align-items-center"
+                                                {{ stimulus_controller('clipboard', {
+                                                    successContent: "<span class='bi bi-check-lg text-success fs-4 ms-1'></span>"
+                                                }) }}>
+                                            <div class="flex-grow-1">
+                                                <div class="small text-muted">{{ 'email'|trans }}</div>
+                                                <div class="lead mb-0"
+                                                     value="{{ engagement.owner.email }}"
+                                                        {{ stimulus_target('clipboard', 'source') }}>
+                                                    {{ engagement.owner.email }}
+                                                </div>
                                             </div>
-                                            <div class="fw-bold">
-                                                {{ 'awaiting-client-response'|trans|capitalize }}
-                                            </div>
-                                            <div class="text-muted">
-                                                {{ 'awaiting-client-response-explainer'|trans }}
-                                            </div>
+                                            <a href="#" class="ms-3"
+                                                    {{ stimulus_action('clipboard', 'copy', 'click') }}
+                                                    {{ stimulus_target('clipboard', 'button') }}>
+                                                <span class="bi bi-copy fs-4"></span>
+                                            </a>
                                         </div>
+                                    </div>
+                                </div>
 
-                                        <div class="border rounded-3">
-                                            <div class="p-3 d-flex justify-content-between align-items-start">
-                                                <div class="fs-4">
-                                                    {{ traderQuote.price|format_currency(traderQuote.currency.value) }}
-                                                </div>
-                                            </div>
-                                            <div class="px-3 pb-3 d-flex flex-wrap gap-2">
-                                                <twig:Badge text="{{ traderQuote.startAt|format_datetime }}"
-                                                            variant="dark"
-                                                            :isOutline="true" size="lg"/>
-                                                <twig:Badge
-                                                        text="{{ 'duration-in-hours'|trans({ duration: traderQuote.expectedDurationHours }) }}"
-                                                        variant="primary" :isOutline="true" size="lg"/>
-                                                <twig:Badge
-                                                        text="{{ traderQuote.includesMaterials ? 'includes-materials'|trans : 'does-not-includes-materials'|trans }}"
-                                                        variant="primary" :isOutline="true" size="lg"/>
-                                                <twig:Badge
-                                                        text="{{ 'warranty-duration-in-months'|trans({ duration: traderQuote.warrantyMonths }) }}"
-                                                        variant="primary" :isOutline="true" size="lg"/>
-                                            </div>
-                                            <div class="px-3 pb-3">
-                                                {{ traderQuote.message|nl2br }}
-                                            </div>
-                                        </div>
-
-                                    {% else %}
-                                        {# Trader has not quoted & job still open → show quote form #}
-                                        {{ form_errors(quoteForm) }}
-                                        {{ form_start(quoteForm) }}
-                                        <div class="vstack gap-3">
-                                            {{ form_row(quoteForm.startAt) }}
-
-                                            <div class="row g-3">
-                                                <div class="col-12 col-md-6">
-                                                    {{ form_row(quoteForm.expectedDurationHours) }}
-                                                </div>
-                                                <div class="col-12 col-md-6">
-                                                    {{ form_row(quoteForm.price) }}
-                                                </div>
-                                            </div>
-
-                                            {{ form_row(quoteForm.includesMaterials) }}
-
-                                            <div class="row g-3">
-                                                <div class="col-12 col-md-6">
-                                                    {{ form_row(quoteForm.warrantyMonths) }}
-                                                </div>
-                                                <div class="col-12 col-md-6">
-                                                    {{ form_row(quoteForm.validUntil) }}
-                                                </div>
-                                            </div>
-
-                                            {{ form_row(quoteForm.message) }}
-                                        </div>
-                                        <div class="mt-3 text-end">
-                                            <button class="btn btn-primary" type="submit">
-                                                {{ 'submit'|trans }}
-                                            </button>
-                                        </div>
-                                        {{ form_end(quoteForm) }}
-                                    {% endif %}
-                                {% endif %}
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <form method="post" action="{{ path('work_progress_start', {id: engagement.id}) }}">
+                                        <button type="submit" class="btn btn-primary rounded-pill">
+                                            <i class="bi bi-play-circle"></i> {{ 'start-work'|trans }}
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% else %}
+                            {# Another trader's quote was accepted - Quote Rejected #}
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center py-5">
+                                    <div class="fs-1 mb-3 text-danger">
+                                        {{ ux_icon('mdi:close-circle-outline', { style: 'height: 3em;' }) }}
+                                    </div>
+                                    <div class="fw-bold fs-3 mb-2">
+                                        {{ 'quote-not-selected'|trans|capitalize }}
+                                    </div>
+                                    <div class="text-muted fs-5">
+                                        {{ 'quote-not-selected-explainer'|trans }}
+                                    </div>
+                                </div>
                             </div>
                         {% endif %}
 
-                        {% if tab == 'questions' %}
-                            {{ include('engagement/_messages.html.twig', { messageForm: messageForm, focused: focused}) }}
+                        {# ==================== WORKFLOW STATE: IN_PROGRESS ==================== #}
+                    {% elseif workflowState == 'IN_PROGRESS' %}
+                        {% if isQuoteOwner %}
+                            <div class="vstack gap-3">
+                                <div class="card border-0 shadow-sm">
+                                    {{ include('engagement/_accepted_quote_summary.html.twig') }}
+                                </div>
+
+                                {# Client Contact Card #}
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header fs-4 d-flex justify-content-between align-items-center">
+                                        {{ 'client-information'|trans }}
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-primary rounded-pill" type="button"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                {{ 'open-in-map'|trans|default('Map') }}
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                       href="https://www.google.com/maps/search/?api=1&query={{ engagement.latitude }},{{ engagement.longitude }}"
+                                                       target="_blank">
+                                                        <i class="bi bi-google me-2"></i>Google Maps
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                       href="http://maps.apple.com/?ll={{ engagement.latitude }},{{ engagement.longitude }}"
+                                                       target="_blank">
+                                                        <i class="bi bi-apple me-2"></i>Apple Maps
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <a href="{{ path('client_profile', {id: engagement.owner.id}) }}"
+                                           class="d-flex align-items-center gap-3 text-decoration-none text-reset mb-3">
+                                            <img class="rounded-circle avatar-50"
+                                                 src="{{ engagement.owner.avatar }}"
+                                                 alt="{{ engagement.owner.fullName }}">
+                                            <div class="fw-bold fs-5">
+                                                {{ engagement.owner.fullName|title }}
+                                            </div>
+                                        </a>
+
+                                        <div class="mb-3">
+                                            <div class="small text-muted">{{ 'address'|trans }}</div>
+                                            <div class="lead">
+                                                <i class="bi bi-geo-alt me-2"></i>{{ engagement.address }}
+                                            </div>
+                                        </div>
+
+                                        {# Phone #}
+                                        <div class="d-flex align-items-center mb-2"
+                                                {{ stimulus_controller('clipboard', {
+                                                    successContent: "<span class='bi bi-check-lg text-success fs-4 ms-1'></span>"
+                                                }) }}>
+                                            <div class="flex-grow-1">
+                                                <div class="small text-muted">{{ 'phone'|trans }}</div>
+                                                <div class="lead mb-0"
+                                                     value="{{ engagement.owner.phoneNumber.phoneNumberWithPrefix }}"
+                                                        {{ stimulus_target('clipboard', 'source') }}>
+                                                    {{ engagement.owner.phoneNumber.phoneNumberWithPrefix }}
+                                                </div>
+                                            </div>
+                                            <a href="#" class="ms-3"
+                                                    {{ stimulus_action('clipboard', 'copy', 'click') }}
+                                                    {{ stimulus_target('clipboard', 'button') }}>
+                                                <span class="bi bi-copy fs-4"></span>
+                                            </a>
+                                        </div>
+
+                                        {# Email #}
+                                        <div class="d-flex align-items-center"
+                                                {{ stimulus_controller('clipboard', {
+                                                    successContent: "<span class='bi bi-check-lg text-success fs-4 ms-1'></span>"
+                                                }) }}>
+                                            <div class="flex-grow-1">
+                                                <div class="small text-muted">{{ 'email'|trans }}</div>
+                                                <div class="lead mb-0"
+                                                     value="{{ engagement.owner.email }}"
+                                                        {{ stimulus_target('clipboard', 'source') }}>
+                                                    {{ engagement.owner.email }}
+                                                </div>
+                                            </div>
+                                            <a href="#" class="ms-3"
+                                                    {{ stimulus_action('clipboard', 'copy', 'click') }}
+                                                    {{ stimulus_target('clipboard', 'button') }}>
+                                                <span class="bi bi-copy fs-4"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <a href="{{ path('engagement_issue', {quote: acceptedQuote.id, user: engagement.owner.id}) }}"
+                                       class="btn btn-outline-secondary rounded-pill">
+                                        <i class="bi bi-exclamation-triangle"></i> {{ 'something-is-wrong'|trans }}
+                                    </a>
+                                    <form method="post"
+                                          action="{{ path('work_progress_complete', {id: engagement.id}) }}">
+                                        <button type="submit" class="btn btn-success rounded-pill">
+                                            <i class="bi bi-check-circle"></i> {{ 'complete-work'|trans }}
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% else %}
+                            {# Quote was rejected #}
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center py-5">
+                                    <div class="fs-1 mb-3 text-danger">
+                                        {{ ux_icon('mdi:close-circle-outline', { style: 'height: 3em;' }) }}
+                                    </div>
+                                    <div class="fw-bold fs-3 mb-2">
+                                        {{ 'quote-not-selected'|trans|capitalize }}
+                                    </div>
+                                    <div class="text-muted fs-5">
+                                        {{ 'quote-not-selected-explainer'|trans }}
+                                    </div>
+                                </div>
+                            </div>
                         {% endif %}
-                    </div>
-                </div>
+
+                        {# ==================== WORKFLOW STATE: ISSUE_RESOLUTION ==================== #}
+                    {% elseif workflowState == 'ISSUE_RESOLUTION' %}
+                        {% if isQuoteOwner %}
+                            {{ include('engagement/_accepted_quote_summary.html.twig') }}
+
+                            <div class="alert alert-warning mt-3">
+                                <i class="bi bi-exclamation-triangle"></i> {{ 'issue-being-resolved-message'|trans|default('There is an issue being resolved. Please wait for further updates.') }}
+                            </div>
+
+                            {% set activeIssue = engagement.issues|filter(i => i.status.value in ['ACTIVE', 'AWAITING_OTHER_PARTY', 'AWAITING_SUPPORT'])|first %}
+                            {% if activeIssue %}
+                                <div class="mt-3 d-flex gap-2 justify-content-end">
+                                    <a href="{{ path('engagement_issue_show', {id: activeIssue.id}) }}"
+                                       class="btn btn-warning rounded-pill">
+                                        <i class="bi bi-exclamation-triangle-fill"></i> {{ 'view-issue-resolution'|trans }}
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            {# Quote was rejected #}
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center py-5">
+                                    <div class="fs-1 mb-3 text-danger">
+                                        {{ ux_icon('mdi:close-circle-outline', { style: 'height: 3em;' }) }}
+                                    </div>
+                                    <div class="fw-bold fs-3 mb-2">
+                                        {{ 'quote-not-selected'|trans|capitalize }}
+                                    </div>
+                                    <div class="text-muted fs-5">
+                                        {{ 'quote-not-selected-explainer'|trans }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {# ==================== WORKFLOW STATE: WORK_COMPLETED / AWAITING_REVIEW / REVIEWED ==================== #}
+                    {% elseif workflowState in ['WORK_COMPLETED', 'AWAITING_REVIEW', 'REVIEWED'] %}
+                        {% if isQuoteOwner %}
+                            {{ include('engagement/_accepted_quote_summary.html.twig') }}
+
+                            <div class="alert alert-success mt-3">
+                                <i class="bi bi-check-circle"></i>
+                                {% if workflowState == 'WORK_COMPLETED' %}
+                                    {{ 'work-completed-message'|trans|default('Work has been completed. Awaiting client confirmation.') }}
+                                {% elseif workflowState == 'AWAITING_REVIEW' %}
+                                    {{ 'awaiting-review-message'|trans|default('Work completed. Client is reviewing the work.') }}
+                                {% else %}
+                                    {{ 'reviewed-message'|trans|default('Work completed and reviewed. Engagement closed.') }}
+                                {% endif %}
+                            </div>
+
+                            {% if workflowState in ['WORK_COMPLETED'] %}
+                                <div class="mt-3 d-flex gap-2 justify-content-end">
+                                    <a href="{{ path('engagement_issue', {quote: acceptedQuote.id, user: engagement.owner.id}) }}"
+                                       class="btn btn-outline-secondary rounded-pill">
+                                        <i class="bi bi-exclamation-triangle"></i> {{ 'something-is-wrong'|trans }}
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            {# Quote was rejected #}
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center py-5">
+                                    <div class="fs-1 mb-3 text-danger">
+                                        {{ ux_icon('mdi:close-circle-outline', { style: 'height: 3em;' }) }}
+                                    </div>
+                                    <div class="fw-bold fs-3 mb-2">
+                                        {{ 'quote-not-selected'|trans|capitalize }}
+                                    </div>
+                                    <div class="text-muted fs-5">
+                                        {{ 'quote-not-selected-explainer'|trans }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {# ==================== FALLBACK ==================== #}
+                    {% else %}
+                        <div class="text-center text-muted py-4">
+                            {{ 'unknown-state'|trans|default('Unable to determine engagement state.') }}
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                {% if tab == 'questions' %}
+                    {{ include('engagement/_messages.html.twig', { messageForm: messageForm, focused: focused}) }}
+                {% endif %}
             </div>
 
         </div>
