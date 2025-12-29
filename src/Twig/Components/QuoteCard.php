@@ -83,6 +83,6 @@ class QuoteCard
             return 'warning';
         }
 
-        return 'secondary';
+        return 'primary';
     }
 }

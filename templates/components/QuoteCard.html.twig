@@ -23,10 +23,10 @@
         {% if showVersion and not showStatus %}
             <div class="text-end">
                 <twig:Badge
-                    text="v{{ quote.version }}"
-                    variant="primary"
-                    :isOutline="true"
-                    size="lg"/>
+                        text="v{{ quote.version }}"
+                        variant="primary"
+                        :isOutline="true"
+                        size="lg"/>
             </div>
         {% endif %}
     </div>
@@ -48,18 +48,22 @@
                 <div class="d-flex gap-2 align-items-center">
                     {% if showVersion %}
                         <twig:Badge
-                            text="v{{ quote.version }}"
-                            variant="primary"
-                            :isOutline="true"/>
+                                text="v{{ quote.version }}"
+                                variant="primary"
+                                :isOutline="true"
+                                size="lg"
+                        />
                     {% endif %}
                     {% if quote.isExpired %}
                         <twig:Badge
-                            text="{{ 'expired'|trans|default('Expired') }}"
-                            variant="warning"/>
+                                text="{{ 'expired'|trans|default('Expired') }}"
+                                variant="warning" :isOutline="true" size="lg"/>
                     {% else %}
                         <twig:Badge
-                            text="{{ quote.status.value|trans }}"
-                            variant="{{ this.statusBadgeVariant }}"/>
+                                text="{{ quote.status.value|trans }}"
+                                variant="{{ this.statusBadgeVariant }}"
+                                :isOutline="true" size="lg"
+                        />
                     {% endif %}
                 </div>
             </div>
@@ -70,32 +74,32 @@
     {% if showAllDetails %}
         <div class="card-header fs-4 d-flex flex-wrap gap-2">
             <twig:Badge
-                text="{{ quote.startAt|format_datetime }}"
-                variant="dark"
-                :isOutline="true"
-                size="lg"/>
-            <twig:Badge
-                text="{{ 'duration-in-hours'|trans({ duration: quote.expectedDurationHours }) }}"
-                variant="dark"
-                :isOutline="true"
-                size="lg"/>
-            {% if showStatus %}
-                <twig:Badge
-                    text="{{ 'valid-until'|trans }}: {{ quote.validUntil|format_datetime }}"
+                    text="{{ quote.startAt|format_datetime }}"
                     variant="dark"
                     :isOutline="true"
                     size="lg"/>
+            <twig:Badge
+                    text="{{ 'duration-in-hours'|trans({ duration: quote.expectedDurationHours }) }}"
+                    variant="dark"
+                    :isOutline="true"
+                    size="lg"/>
+            {% if showStatus %}
+                <twig:Badge
+                        text="{{ 'valid-until'|trans }}: {{ quote.validUntil|format_datetime }}"
+                        variant="dark"
+                        :isOutline="true"
+                        size="lg"/>
             {% endif %}
             <twig:Badge
-                text="{{ quote.includesMaterials ? 'includes-materials'|trans : 'does-not-includes-materials'|trans }}"
-                variant="dark"
-                :isOutline="true"
-                size="lg"/>
+                    text="{{ quote.includesMaterials ? 'includes-materials'|trans : 'does-not-includes-materials'|trans }}"
+                    variant="dark"
+                    :isOutline="true"
+                    size="lg"/>
             <twig:Badge
-                text="{{ 'warranty-duration-in-months'|trans({ duration: quote.warrantyMonths }) }}"
-                variant="dark"
-                :isOutline="true"
-                size="lg"/>
+                    text="{{ 'warranty-duration-in-months'|trans({ duration: quote.warrantyMonths }) }}"
+                    variant="dark"
+                    :isOutline="true"
+                    size="lg"/>
         </div>
     {% endif %}
 
@@ -108,7 +112,8 @@
 
     {% if this.canAcceptOrReject and workflow_can(engagement, 'accept_quote') %}
         <div class="card-footer d-flex gap-3 justify-content-end align-items-center">
-            <form method="post" action="{{ path('reject_quote', { id: quote.id }) }}" onsubmit="return confirm('{{ 'confirm-reject-quote'|trans|default('Are you sure you want to reject this quote?') }}');">
+            <form method="post" action="{{ path('reject_quote', { id: quote.id }) }}"
+                  onsubmit="return confirm('{{ 'confirm-reject-quote'|trans|default('Are you sure you want to reject this quote?') }}');">
                 <button type="submit" class="btn btn-outline-secondary">
                     {{ 'decline'|trans|title }}
                 </button>
