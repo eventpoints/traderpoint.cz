@@ -51,7 +51,7 @@ class IssueMediationAIService
             $data = $response->toArray();
 
             return $data['content'][0]['text'] ?? 'Unable to generate mediation response.';
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // Log error and return fallback message
             return 'We are currently unable to process this mediation. Please contact support for manual assistance.';
         }

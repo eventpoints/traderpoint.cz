@@ -66,7 +66,9 @@ class QuoteFormType extends AbstractType
                 'constraints' => [
                     new GreaterThanOrEqual([
                         'value' => (new \DateTimeImmutable('+7 days'))->format('Y-m-d'),
-                        'message' => $this->translator->trans('quote.valid_until.min_days', ['days' => 7]),
+                        'message' => $this->translator->trans('quote.valid_until.min_days', [
+                            'days' => 7,
+                        ]),
                     ]),
                 ],
                 'attr' => [

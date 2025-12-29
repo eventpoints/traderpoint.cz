@@ -15,22 +15,34 @@ enum EngagementStatusEnum: string
     case REVIEWED = 'REVIEWED';
     case CANCELLED = 'CANCELLED';
 
-    public static function getActiveStatusesForTrader() : array
+    /**
+     * @return array<EngagementStatusEnum>
+     */
+    public static function getActiveStatusesForTrader(): array
     {
         return [EngagementStatusEnum::RECEIVING_QUOTES, EngagementStatusEnum::QUOTE_ACCEPTED, EngagementStatusEnum::IN_PROGRESS, EngagementStatusEnum::ISSUE_RESOLUTION];
     }
 
-    public static function getHistoricalStatusesForTrader() : array
+    /**
+     * @return array<EngagementStatusEnum>
+     */
+    public static function getHistoricalStatusesForTrader(): array
     {
         return [EngagementStatusEnum::REJECTED, EngagementStatusEnum::WORK_COMPLETED, EngagementStatusEnum::REVIEWED, EngagementStatusEnum::CANCELLED];
     }
 
-    public static function getActiveStatusesForClient() : array
+    /**
+     * @return array<EngagementStatusEnum>
+     */
+    public static function getActiveStatusesForClient(): array
     {
         return [EngagementStatusEnum::UNDER_ADMIN_REVIEW, EngagementStatusEnum::RECEIVING_QUOTES, EngagementStatusEnum::QUOTE_ACCEPTED, EngagementStatusEnum::IN_PROGRESS, EngagementStatusEnum::ISSUE_RESOLUTION, EngagementStatusEnum::WORK_COMPLETED];
     }
 
-    public static function getHistoricalStatusesForClient() : array
+    /**
+     * @return array<EngagementStatusEnum>
+     */
+    public static function getHistoricalStatusesForClient(): array
     {
         return [EngagementStatusEnum::REJECTED, EngagementStatusEnum::REVIEWED, EngagementStatusEnum::CANCELLED];
     }

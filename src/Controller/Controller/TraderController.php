@@ -19,8 +19,8 @@ class TraderController extends AbstractController
 {
     public function __construct(
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaginatorInterface   $paginator,
-        private readonly QuoteRepository      $quoteRepository,
+        private readonly PaginatorInterface $paginator,
+        private readonly QuoteRepository $quoteRepository,
     )
     {
     }
@@ -39,12 +39,12 @@ class TraderController extends AbstractController
     #[Route(path: '/dashboard', name: 'trader_dashboard')]
     public function dashboard(#[CurrentUser] User $currentUser, Request $request): Response
     {
-        if (!$currentUser->isTrader()) {
+        if (! $currentUser->isTrader()) {
             return $this->redirectToRoute('client_dashboard');
         }
 
         // If tab parameter is not present, redirect to include it
-        if (!$request->query->has('tab')) {
+        if (! $request->query->has('tab')) {
             return $this->redirectToRoute('trader_dashboard', [
                 'tab' => EngagementStatusGroupEnum::DISCOVER->value,
             ]);
@@ -57,7 +57,7 @@ class TraderController extends AbstractController
                 user: $currentUser,
                 isQuery: true
             );
-        } else if ($statusGroup === EngagementStatusGroupEnum::HISTORICAL) {
+        } elseif ($statusGroup === EngagementStatusGroupEnum::HISTORICAL) {
             // Default to historical (includes COMPLETED, CANCELLED, etc.)
             $engagementStatusEnum = EngagementStatusEnum::tryFrom($tabParam);
             $engagementsQuery = $this->engagementRepository->findHistoricalForTrader(

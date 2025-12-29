@@ -245,12 +245,12 @@ class EngagementIssue
 
     public function hasClientSubmitted(): bool
     {
-        return $this->clientSubmittedAt !== null;
+        return $this->clientSubmittedAt instanceof \Carbon\CarbonImmutable;
     }
 
     public function hasTraderSubmitted(): bool
     {
-        return $this->traderSubmittedAt !== null;
+        return $this->traderSubmittedAt instanceof \Carbon\CarbonImmutable;
     }
 
     public function bothPartiesSubmitted(): bool

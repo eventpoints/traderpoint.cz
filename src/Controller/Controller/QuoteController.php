@@ -4,7 +4,6 @@ namespace App\Controller\Controller;
 
 use App\Entity\Quote;
 use App\Enum\FlashEnum;
-use App\Repository\EngagementRepository;
 use App\Repository\QuoteRepository;
 use App\Security\Voter\QuoteVoter;
 use App\Service\EngagementWorkflowService;
@@ -18,7 +17,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class QuoteController extends AbstractController
 {
     public function __construct(
-        private readonly EngagementRepository $engagementRepository,
         private readonly QuoteRepository $quoteRepository,
         private readonly EngagementWorkflowService $workflowService,
         private readonly TranslatorInterface $translator,
@@ -45,7 +43,9 @@ class QuoteController extends AbstractController
         } catch (\LogicException $e) {
             $this->addFlash(
                 FlashEnum::ERROR->value,
-                $this->translator->trans('quote.cannot_accept', ['error' => $e->getMessage()])
+                $this->translator->trans('quote.cannot_accept', [
+                    'error' => $e->getMessage(),
+                ])
             );
         }
 

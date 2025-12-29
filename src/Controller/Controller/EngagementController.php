@@ -18,7 +18,6 @@ use App\Form\Form\EngagementFormType;
 use App\Form\Form\EngagementIssueFormType;
 use App\Form\Form\MessageFormType;
 use App\Form\Form\QuoteFormType;
-use App\Message\Message\EngagementPostedMessage;
 use App\Repository\ConversationRepository;
 use App\Repository\EngagementRepository;
 use App\Repository\QuoteRepository;
@@ -34,7 +33,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Nette\Utils\Strings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -151,7 +149,7 @@ class EngagementController extends AbstractController
             }
 
             // Validate no quote has been accepted yet
-            if ($engagement->getQuote() !== null) {
+            if ($engagement->getQuote() instanceof \App\Entity\Quote) {
                 $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('quote.error.quote_already_accepted'));
                 return $this->redirectToRoute('trader_show_engagement', [
                     'id' => $engagement->getId(),
@@ -163,7 +161,9 @@ class EngagementController extends AbstractController
             $traderQuoteCount = $engagement->getQuoteCountFor($currentUser);
 
             if ($traderQuoteCount >= self::MAX_QUOTES_PER_TRADER) {
-                $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('quote.error.max_quotes_reached', ['max' => self::MAX_QUOTES_PER_TRADER]));
+                $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('quote.error.max_quotes_reached', [
+                    'max' => self::MAX_QUOTES_PER_TRADER,
+                ]));
                 return $this->redirectToRoute('trader_show_engagement', [
                     'id' => $engagement->getId(),
                     'tab' => 'quote-form',
@@ -456,7 +456,9 @@ class EngagementController extends AbstractController
                 $this->workflowService->raiseIssue($engagement, $engagementIssue);
                 $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans(id: 'flash.issue-created', domain: 'flash'));
             } catch (\LogicException $e) {
-                $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('issue.cannot_raise', ['error' => $e->getMessage()]));
+                $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('issue.cannot_raise', [
+                    'error' => $e->getMessage(),
+                ]));
             }
 
             return $this->redirectToRoute('client_show_engagement', [

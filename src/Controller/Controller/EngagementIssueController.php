@@ -8,7 +8,6 @@ use App\Entity\Engagement;
 use App\Entity\EngagementIssue;
 use App\Entity\User;
 use App\Enum\FlashEnum;
-use App\Repository\EngagementIssueRepository;
 use App\Service\IssueMediationAIService;
 use Carbon\CarbonImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,7 +24,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class EngagementIssueController extends AbstractController
 {
     public function __construct(
-        private readonly EngagementIssueRepository $issueRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly IssueMediationAIService $mediationService,
@@ -36,7 +34,8 @@ class EngagementIssueController extends AbstractController
     public function show(
         EngagementIssue $issue,
         Request $request,
-        #[CurrentUser] User $currentUser
+        #[CurrentUser]
+        User $currentUser
     ): Response {
         $engagement = $issue->getEngagement();
 
@@ -44,7 +43,7 @@ class EngagementIssueController extends AbstractController
         $isClient = $engagement->getOwner()->getId() === $currentUser->getId();
         $isTrader = $engagement->getQuote()?->getOwner()->getId() === $currentUser->getId();
 
-        if (!$isClient && !$isTrader) {
+        if (! $isClient && ! $isTrader) {
             throw $this->createAccessDeniedException('You do not have access to this issue');
         }
 
@@ -93,11 +92,13 @@ class EngagementIssueController extends AbstractController
                 $this->entityManager->flush();
 
                 // If both parties submitted, trigger AI mediation
-                if ($issue->bothPartiesSubmitted() && !$issue->getAiMediation()) {
+                if ($issue->bothPartiesSubmitted() && ! $issue->getAiMediation()) {
                     $this->triggerAiMediation($issue);
                 }
 
-                return $this->redirectToRoute('engagement_issue_show', ['id' => $issue->getId()]);
+                return $this->redirectToRoute('engagement_issue_show', [
+                    'id' => $issue->getId(),
+                ]);
             }
         }
 
@@ -106,7 +107,7 @@ class EngagementIssueController extends AbstractController
             'engagement' => $engagement,
             'isClient' => $isClient,
             'isTrader' => $isTrader,
-            'canSubmit' => ($isClient && !$issue->hasClientSubmitted()) || ($isTrader && !$issue->hasTraderSubmitted()),
+            'canSubmit' => ($isClient && ! $issue->hasClientSubmitted()) || ($isTrader && ! $issue->hasTraderSubmitted()),
             'hasSubmitted' => ($isClient && $issue->hasClientSubmitted()) || ($isTrader && $issue->hasTraderSubmitted()),
         ]);
     }

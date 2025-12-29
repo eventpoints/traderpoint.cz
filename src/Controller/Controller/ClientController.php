@@ -17,8 +17,8 @@ class ClientController extends AbstractController
 {
     public function __construct(
         private readonly EngagementRepository $engagementRepository,
-        private readonly PaginatorInterface   $paginator,
-        private readonly SkillRepository      $skillRepository
+        private readonly PaginatorInterface $paginator,
+        private readonly SkillRepository $skillRepository
     )
     {
     }
@@ -26,12 +26,12 @@ class ClientController extends AbstractController
     #[Route(path: '/client/dashboard', name: 'client_dashboard', methods: ['GET', 'POST'])]
     public function clientDashboard(
         #[CurrentUser]
-        User    $currentUser,
+        User $currentUser,
         Request $request
     ): Response
     {
         // If tab parameter is not present, redirect to include it
-        if (!$request->query->has('tab')) {
+        if (! $request->query->has('tab')) {
             return $this->redirectToRoute('client_dashboard', [
                 'tab' => EngagementStatusGroupEnum::ACTIVE->value,
             ]);

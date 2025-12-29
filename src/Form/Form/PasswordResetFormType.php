@@ -23,7 +23,7 @@ final class PasswordResetFormType extends AbstractType
             'label' => $this->translator->trans('email-address'),
             'attr' => [
                 'autocomplete' => 'email',
-                'placeholder' => $this->translator->trans('email-address')
+                'placeholder' => $this->translator->trans('email-address'),
             ],
             'row_attr' => [
                 'class' => 'form-floating',

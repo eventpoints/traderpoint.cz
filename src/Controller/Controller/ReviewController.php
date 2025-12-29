@@ -24,8 +24,8 @@ class ReviewController extends AbstractController
 {
     public function __construct(
         private readonly EngagementWorkflowService $workflowService,
-        private readonly EntityManagerInterface    $entityManager,
-        private readonly TranslatorInterface       $translator,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
     )
     {
     }
@@ -33,23 +33,26 @@ class ReviewController extends AbstractController
     #[Route('/engagement/{id}/create', name: 'review_create', methods: ['GET', 'POST'])]
     #[IsGranted('REVIEW', 'engagement')]
     public function create(
-        Engagement          $engagement,
-        Request             $request,
-        #[CurrentUser] User $currentUser
+        Engagement $engagement,
+        Request $request,
+        #[CurrentUser]
+        User $currentUser
     ): Response
     {
         // Verify engagement is in AWAITING_REVIEW state
-        if (!$this->workflowService->can($engagement, 'submit_review')) {
+        if (! $this->workflowService->can($engagement, 'submit_review')) {
             $this->addFlash(
                 FlashEnum::ERROR->value,
                 $this->translator->trans('review.cannot_submit')
             );
 
-            return $this->redirectToRoute('engagement_show', ['id' => $engagement->getId()]);
+            return $this->redirectToRoute('engagement_show', [
+                'id' => $engagement->getId(),
+            ]);
         }
 
         $quote = $engagement->getQuote();
-        if ($quote === null) {
+        if (! $quote instanceof \App\Entity\Quote) {
             throw $this->createNotFoundException('No accepted quote found for this engagement');
         }
 
@@ -73,11 +76,15 @@ class ReviewController extends AbstractController
                     $this->translator->trans('review.submitted_successfully')
                 );
 
-                return $this->redirectToRoute('client_show_engagement', ['id' => $engagement->getId()]);
+                return $this->redirectToRoute('client_show_engagement', [
+                    'id' => $engagement->getId(),
+                ]);
             } catch (\LogicException $e) {
                 $this->addFlash(
                     FlashEnum::ERROR->value,
-                    $this->translator->trans('review.submission_failed', ['error' => $e->getMessage()])
+                    $this->translator->trans('review.submission_failed', [
+                        'error' => $e->getMessage(),
+                    ])
                 );
             }
         }

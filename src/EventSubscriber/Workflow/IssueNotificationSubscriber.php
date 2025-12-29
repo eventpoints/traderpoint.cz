@@ -16,7 +16,7 @@ class IssueNotificationSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly EmailService $emailService,
-        private readonly Security     $security,
+        private readonly Security $security,
         private readonly RequestStack $requestStack,
     )
     {
@@ -32,7 +32,7 @@ class IssueNotificationSubscriber implements EventSubscriberInterface
     public function onIssueRaised(CompletedEvent $event): void
     {
         $currentUser = $this->security->getUser();
-        if (!$currentUser instanceof User) {
+        if (! $currentUser instanceof User) {
             return;
         }
 

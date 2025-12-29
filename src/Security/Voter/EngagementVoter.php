@@ -19,6 +19,7 @@ final class EngagementVoter extends Voter
         private readonly WorkflowInterface $engagementStateMachine,
     ) {
     }
+
     public const TRADER_VIEW = 'TRADER_VIEW';
 
     public const CLIENT_VIEW = 'CLIENT_VIEW';
@@ -106,7 +107,7 @@ final class EngagementVoter extends Voter
             }
         }
 
-        if (!$canViewState) {
+        if (! $canViewState) {
             return false;
         }
 
@@ -150,7 +151,7 @@ final class EngagementVoter extends Voter
     {
         // Only the tradesman who owns the accepted quote can manage work
         $quote = $engagement->getQuote();
-        if ($quote === null) {
+        if (! $quote instanceof \App\Entity\Quote) {
             return false;
         }
 
@@ -165,7 +166,7 @@ final class EngagementVoter extends Voter
         }
 
         $quote = $engagement->getQuote();
-        if ($quote === null) {
+        if (! $quote instanceof \App\Entity\Quote) {
             return false;
         }
 

@@ -609,6 +609,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         // put preferred first (skip if null/empty)
         return $preferred ? array_merge([$preferred], $others) : $others;
     }
-
 }
 

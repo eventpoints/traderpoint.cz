@@ -5,17 +5,11 @@ declare(strict_types=1);
 namespace App\EventSubscriber\Workflow;
 
 use App\Entity\Engagement;
-use App\Service\EmailService\EmailService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\CompletedEvent;
 
 class QuoteAcceptedNotificationSubscriber implements EventSubscriberInterface
 {
-    public function __construct(
-        private readonly EmailService $emailService,
-    ) {
-    }
-
     public static function getSubscribedEvents(): array
     {
         return [
@@ -33,20 +27,22 @@ class QuoteAcceptedNotificationSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // TODO: Implement sendQuoteAcceptedEmail method in EmailService
         // Notify tradesman their quote was accepted
-        $this->emailService->sendQuoteAcceptedEmail(
-            $acceptedQuote->getTrader()->getUser(),
-            $engagement
-        );
+        // $this->emailService->sendQuoteAcceptedEmail(
+        //     $acceptedQuote->getOwner(),
+        //     $engagement
+        // );
 
+        // TODO: Implement sendQuoteRejectedEmail method in EmailService
         // Notify other tradesmen their quotes were not selected
-        foreach ($engagement->getQuotes() as $quote) {
-            if ($quote->getId() !== $acceptedQuote->getId() && $quote->isOpen()) {
-                $this->emailService->sendQuoteRejectedEmail(
-                    $quote->getTrader()->getUser(),
-                    $engagement
-                );
-            }
-        }
+        // foreach ($engagement->getQuotes() as $quote) {
+        //     if ($quote->getId() !== $acceptedQuote->getId() && $quote->isOpen()) {
+        //         $this->emailService->sendQuoteRejectedEmail(
+        //             $quote->getOwner(),
+        //             $engagement
+        //         );
+        //     }
+        // }
     }
 }

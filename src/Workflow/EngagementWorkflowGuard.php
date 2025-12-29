@@ -38,7 +38,7 @@ class EngagementWorkflowGuard implements EventSubscriberInterface
         $user = $this->security->getUser();
 
         // Only the engagement owner can accept a quote
-        if (!$user instanceof User || $engagement->getOwner()->getId() !== $user->getId()) {
+        if (! $user instanceof User || $engagement->getOwner()->getId() !== $user->getId()) {
             $event->setBlocked(true, 'Only the engagement owner can accept a quote.');
             return;
         }
@@ -52,7 +52,7 @@ class EngagementWorkflowGuard implements EventSubscriberInterface
             }
         }
 
-        if (!$hasSubmittedQuote) {
+        if (! $hasSubmittedQuote) {
             $event->setBlocked(true, 'No valid quotes available to accept.');
         }
     }
@@ -70,7 +70,7 @@ class EngagementWorkflowGuard implements EventSubscriberInterface
         }
 
         // Only the tradesman who owns the accepted quote can start work
-        if (!$user instanceof User || $engagement->getQuote()->getOwner()->getId() !== $user->getId()) {
+        if (! $user instanceof User || $engagement->getQuote()->getOwner()->getId() !== $user->getId()) {
             $event->setBlocked(true, 'Only the tradesman who owns the accepted quote can start work.');
             return;
         }
@@ -94,7 +94,7 @@ class EngagementWorkflowGuard implements EventSubscriberInterface
         }
 
         // Only the tradesman can mark work as complete
-        if (!$user instanceof User || $engagement->getQuote()->getOwner()->getId() !== $user->getId()) {
+        if (! $user instanceof User || $engagement->getQuote()->getOwner()->getId() !== $user->getId()) {
             $event->setBlocked(true, 'Only the tradesman can mark work as complete.');
         }
     }
@@ -105,7 +105,7 @@ class EngagementWorkflowGuard implements EventSubscriberInterface
         $engagement = $event->getSubject();
         $user = $this->security->getUser();
 
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             $event->setBlocked(true, 'You must be logged in to raise an issue.');
             return;
         }
@@ -120,7 +120,7 @@ class EngagementWorkflowGuard implements EventSubscriberInterface
         $isOwner = $engagement->getOwner()->getId() === $user->getId();
         $isTradesman = $engagement->getQuote()->getOwner()->getId() === $user->getId();
 
-        if (!$isOwner && !$isTradesman) {
+        if (! $isOwner && ! $isTradesman) {
             $event->setBlocked(true, 'Only the engagement owner or tradesman can raise an issue.');
         }
     }
@@ -132,7 +132,7 @@ class EngagementWorkflowGuard implements EventSubscriberInterface
         $user = $this->security->getUser();
 
         // Only the engagement owner can submit a review
-        if (!$user instanceof User || $engagement->getOwner()->getId() !== $user->getId()) {
+        if (! $user instanceof User || $engagement->getOwner()->getId() !== $user->getId()) {
             $event->setBlocked(true, 'Only the engagement owner can submit a review.');
         }
     }
@@ -143,7 +143,7 @@ class EngagementWorkflowGuard implements EventSubscriberInterface
         $engagement = $event->getSubject();
         $user = $this->security->getUser();
 
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             $event->setBlocked(true, 'You must be logged in to cancel an engagement.');
             return;
         }
@@ -152,7 +152,7 @@ class EngagementWorkflowGuard implements EventSubscriberInterface
         $isOwner = $engagement->getOwner()->getId() === $user->getId();
         $isAdmin = $this->security->isGranted('ROLE_ADMIN');
 
-        if (!$isOwner && !$isAdmin) {
+        if (! $isOwner && ! $isAdmin) {
             $event->setBlocked(true, 'Only the engagement owner or an admin can cancel an engagement.');
         }
     }

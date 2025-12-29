@@ -16,7 +16,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class VerificationCodeType extends AbstractType
 {
-
     public function __construct(
         private readonly TranslatorInterface $translator
     )

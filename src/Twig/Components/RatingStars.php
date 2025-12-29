@@ -10,9 +10,13 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 class RatingStars
 {
     public float $rating = 0;
+
     public string $size = 'fs-4'; // Default font size
+
     public string $color = 'text-warning'; // Default color
+
     public bool $showValue = false; // Show numeric value
+
     public ?int $reviewCount = null; // Optional review count
 
     public function getRoundedRating(): float

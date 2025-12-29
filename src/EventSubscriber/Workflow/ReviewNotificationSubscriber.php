@@ -39,8 +39,8 @@ class ReviewNotificationSubscriber implements EventSubscriberInterface
             user: $quote->getOwner(),
             locale: $this->requestStack->getCurrentRequest()?->getLocale(),
             context: [
-                 'engagement' => $engagement
-             ]
+                'engagement' => $engagement,
+            ]
         );
     }
 }

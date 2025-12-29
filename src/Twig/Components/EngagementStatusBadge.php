@@ -11,6 +11,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 class EngagementStatusBadge
 {
     public EngagementStatusEnum $status;
+
     public string $size = 'sm';
 
     public function getVariant(): string

@@ -49,14 +49,16 @@ class EngagementCrudController extends AbstractCrudController
     {
         $approve = Action::new('approve', 'Approve', 'fa fa-check')
             ->linkToCrudAction('approveEngagement')
-            ->displayIf(static fn (Engagement $engagement) =>
+            ->displayIf(
+                static fn (Engagement $engagement): bool =>
                 $engagement->getStatus() === EngagementStatusEnum::UNDER_ADMIN_REVIEW
             )
             ->setCssClass('btn btn-success');
 
         $reject = Action::new('reject', 'Reject', 'fa fa-times')
             ->linkToCrudAction('rejectEngagement')
-            ->displayIf(static fn (Engagement $engagement) =>
+            ->displayIf(
+                static fn (Engagement $engagement): bool =>
                 $engagement->getStatus() === EngagementStatusEnum::UNDER_ADMIN_REVIEW
             )
             ->setCssClass('btn btn-danger');
@@ -106,7 +108,9 @@ class EngagementCrudController extends AbstractCrudController
         } catch (\LogicException $e) {
             $this->addFlash(
                 FlashEnum::ERROR->value,
-                $this->translator->trans('admin.engagement.cannot_approve', ['error' => $e->getMessage()])
+                $this->translator->trans('admin.engagement.cannot_approve', [
+                    'error' => $e->getMessage(),
+                ])
             );
         }
 
@@ -133,7 +137,9 @@ class EngagementCrudController extends AbstractCrudController
         } catch (\LogicException $e) {
             $this->addFlash(
                 FlashEnum::ERROR->value,
-                $this->translator->trans('admin.engagement.cannot_reject', ['error' => $e->getMessage()])
+                $this->translator->trans('admin.engagement.cannot_reject', [
+                    'error' => $e->getMessage(),
+                ])
             );
         }
 

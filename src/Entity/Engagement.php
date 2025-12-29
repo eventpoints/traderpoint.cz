@@ -670,7 +670,7 @@ class Engagement implements Stringable
 
     public function addIssue(EngagementIssue $issue): void
     {
-        if (!$this->issues->contains($issue)) {
+        if (! $this->issues->contains($issue)) {
             $this->issues->add($issue);
         }
     }

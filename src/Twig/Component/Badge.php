@@ -41,7 +41,6 @@ final class Badge
         if ($this->isOutline) {
             $classes[] = 'border';
             $classes[] = 'bg-transparent';
-
             if ($this->variant === 'white') {
                 $classes[] = 'border-white';
                 $classes[] = 'text-white';
@@ -49,15 +48,13 @@ final class Badge
                 $classes[] = "border-{$this->variant}";
                 $classes[] = "text-{$this->variant}";
             }
+        } elseif ($this->variant === 'white') {
+            $classes[] = 'bg-white';
+            $classes[] = 'text-dark';
+            $classes[] = 'border';
+            $classes[] = 'border-white';
         } else {
-            if ($this->variant === 'white') {
-                $classes[] = 'bg-white';
-                $classes[] = 'text-dark';
-                $classes[] = 'border';
-                $classes[] = 'border-white';
-            } else {
-                $classes[] = "text-bg-{$this->variant}";
-            }
+            $classes[] = "text-bg-{$this->variant}";
         }
 
         if ($this->pill) {

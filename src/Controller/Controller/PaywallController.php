@@ -20,7 +20,8 @@ class PaywallController extends AbstractController
     public function __construct(
         private readonly StandardPlanSubscriptionService $standardPlanSubscriptionService,
         #[Autowire('%env(STRIPE_PUBLIC_KEY)%')]
-        private readonly string                          $stripePublicKey, private readonly TranslatorInterface $translator,
+        private readonly string $stripePublicKey,
+        private readonly TranslatorInterface $translator,
     )
     {
     }
@@ -28,7 +29,7 @@ class PaywallController extends AbstractController
     #[Route('/trader/paywall', name: 'trader_paywall', methods: ['GET'])]
     public function paywall(Request $request, #[CurrentUser] ?User $user): Response
     {
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             return $this->redirectToRoute('app_login');
         }
 
@@ -58,10 +59,10 @@ class PaywallController extends AbstractController
     public function subscriptionProcessPayment(
         Request $request,
         #[CurrentUser]
-        ?User   $user,
+        ?User $user,
     ): Response
     {
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             return $this->redirectToRoute('app_login');
         }
 
@@ -69,7 +70,7 @@ class PaywallController extends AbstractController
         $form = $this->createForm(CardPaymentFormType::class);
         $form->handleRequest($request);
 
-        if (!$form->isSubmitted() || !$form->isValid()) {
+        if (! $form->isSubmitted() || ! $form->isValid()) {
             // Generic error → back to paywall
             $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans(id: 'trader_paywall.error.generic', domain: 'flash'));
 
@@ -79,7 +80,7 @@ class PaywallController extends AbstractController
         /** @var string|null $paymentMethodId */
         $paymentMethodId = $form->get('payment_method')->getData();
 
-        if (!$paymentMethodId) {
+        if (! $paymentMethodId) {
             $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans(id: 'trader_paywall.error.generic', domain: 'flash'));
 
             return $this->redirectToRoute('trader_paywall');

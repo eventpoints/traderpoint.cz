@@ -204,7 +204,10 @@ final readonly class EmailService
         );
     }
 
-    public function sendIssueRaisedEmail(?User $user, User $trader, Engagement $engagement, string $locale, array $context = [])
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function sendIssueRaisedEmail(?User $user, User $trader, Engagement $engagement, string $locale, array $context = []): void
     {
         $this->send(
             subject: $this->translator->trans(
@@ -220,7 +223,10 @@ final readonly class EmailService
         );
     }
 
-    public function sendTraderReviewReceivedEmail(User $user, string $locale = 'cs', array $context = [])
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function sendTraderReviewReceivedEmail(User $user, string $locale = 'cs', array $context = []): void
     {
         $this->send(
             subject: $this->translator->trans(
@@ -235,7 +241,6 @@ final readonly class EmailService
             dedupeKey: null,
         );
     }
-
 
     /**
      * @param array<string|int|object> $context
@@ -303,5 +308,4 @@ final readonly class EmailService
             errorMessage: $error,
         ));
     }
-
 }

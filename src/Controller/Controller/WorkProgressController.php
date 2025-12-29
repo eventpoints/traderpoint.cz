@@ -28,7 +28,8 @@ class WorkProgressController extends AbstractController
     #[IsGranted('START_WORK', 'engagement')]
     public function start(
         Engagement $engagement,
-        #[CurrentUser] User $currentUser
+        #[CurrentUser]
+        User $currentUser
     ): Response {
         try {
             $this->workflowService->startWork($engagement);
@@ -40,18 +41,23 @@ class WorkProgressController extends AbstractController
         } catch (\LogicException $e) {
             $this->addFlash(
                 FlashEnum::ERROR->value,
-                $this->translator->trans('work.cannot_start', ['error' => $e->getMessage()])
+                $this->translator->trans('work.cannot_start', [
+                    'error' => $e->getMessage(),
+                ])
             );
         }
 
-        return $this->redirectToRoute('trader_show_engagement', ['id' => $engagement->getId()]);
+        return $this->redirectToRoute('trader_show_engagement', [
+            'id' => $engagement->getId(),
+        ]);
     }
 
     #[Route('/{id}/complete', name: 'work_progress_complete', methods: ['POST'])]
     #[IsGranted('COMPLETE_WORK', 'engagement')]
     public function complete(
         Engagement $engagement,
-        #[CurrentUser] User $currentUser
+        #[CurrentUser]
+        User $currentUser
     ): Response {
         try {
             $this->workflowService->completeWork($engagement);
@@ -68,10 +74,14 @@ class WorkProgressController extends AbstractController
         } catch (\LogicException $e) {
             $this->addFlash(
                 FlashEnum::ERROR->value,
-                $this->translator->trans('work.cannot_complete', ['error' => $e->getMessage()])
+                $this->translator->trans('work.cannot_complete', [
+                    'error' => $e->getMessage(),
+                ])
             );
         }
 
-        return $this->redirectToRoute('trader_show_engagement', ['id' => $engagement->getId()]);
+        return $this->redirectToRoute('trader_show_engagement', [
+            'id' => $engagement->getId(),
+        ]);
     }
 }

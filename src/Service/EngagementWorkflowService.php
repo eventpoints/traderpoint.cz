@@ -50,10 +50,8 @@ class EngagementWorkflowService
 
         // Reject or supersede other quotes
         foreach ($engagement->getQuotes() as $otherQuote) {
-            if ($otherQuote->getId() !== $quoteToAccept->getId()) {
-                if ($otherQuote->getStatus() === QuoteStatusEnum::SUBMITTED) {
-                    $otherQuote->supersede();
-                }
+            if ($otherQuote->getId() !== $quoteToAccept->getId() && $otherQuote->getStatus() === QuoteStatusEnum::SUBMITTED) {
+                $otherQuote->supersede();
             }
         }
 
@@ -89,7 +87,7 @@ class EngagementWorkflowService
             // Issue resolved, but restart engagement (clear quote, back to accepting quotes)
             // Clear the chosen quote
             $currentQuote = $engagement->getQuote();
-            if ($currentQuote !== null) {
+            if ($currentQuote instanceof \App\Entity\Quote) {
                 $currentQuote->supersede();
                 $engagement->setQuote(null);
             }
@@ -123,19 +121,22 @@ class EngagementWorkflowService
         return $this->engagementStateMachine->can($engagement, $transitionName);
     }
 
+    /**
+     * @return array<string>
+     */
     public function getAvailableTransitions(Engagement $engagement): array
     {
         $enabledTransitions = $this->engagementStateMachine->getEnabledTransitions($engagement);
 
         return array_map(
-            static fn($transition) => $transition->getName(),
+            static fn($transition): string => $transition->getName(),
             $enabledTransitions
         );
     }
 
     private function apply(Engagement $engagement, string $transitionName): void
     {
-        if (!$this->engagementStateMachine->can($engagement, $transitionName)) {
+        if (! $this->engagementStateMachine->can($engagement, $transitionName)) {
             throw new \LogicException(
                 sprintf(
                     'Cannot apply transition "%s" to engagement %s in state "%s"',

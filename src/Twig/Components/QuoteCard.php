@@ -4,23 +4,33 @@ declare(strict_types=1);
 
 namespace App\Twig\Components;
 
-use App\Entity\Quote;
 use App\Entity\Engagement;
+use App\Entity\Quote;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent]
 class QuoteCard
 {
     public Quote $quote;
+
     public Engagement $engagement;
+
     public string $viewType = 'client'; // 'client' or 'trader'
+
     public bool $showActions = true; // Show accept/reject buttons (client only)
+
     public bool $showTraderInfo = true; // Show trader name and avatar
+
     public bool $showVersion = true; // Show version badge
+
     public bool $highlight = false; // Highlight the card (e.g., when linked from notification)
+
     public bool $showMessage = true; // Show quote message
+
     public bool $showAllDetails = true; // Show all quote details (duration, materials, warranty)
+
     public bool $showStatus = false; // Show status badge (trader view)
+
     public bool $showCreatedDate = false; // Show created date in header (trader view)
 
     public function isClientView(): bool

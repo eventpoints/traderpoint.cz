@@ -27,7 +27,7 @@ final class PasswordFormType extends AbstractType
                 'label' => $this->translator->trans(id: 'password.new-password'),
                 'attr' => [
                     'autocomplete' => 'new-password',
-                    'placeholder' => $this->translator->trans(id: 'password.new-password')
+                    'placeholder' => $this->translator->trans(id: 'password.new-password'),
                 ],
             ],
             'second_options' => [
@@ -35,8 +35,7 @@ final class PasswordFormType extends AbstractType
                 'label' => $this->translator->trans(id: 'password.repeat-password'),
                 'attr' => [
                     'autocomplete' => 'new-password',
-                    'placeholder' => $this->translator->trans(id: 'password.repeat-password')
-
+                    'placeholder' => $this->translator->trans(id: 'password.repeat-password'),
                 ],
             ],
             // constraints...

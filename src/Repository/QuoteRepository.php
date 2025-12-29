@@ -82,8 +82,8 @@ class QuoteRepository extends ServiceEntityRepository
                     $qb->expr()->lt('quote.validUntil', ':now')
                 )
             )
-            ->setParameter('rejectedStatus', 'rejected')
-            ->setParameter('now', new \DateTimeImmutable());
+                ->setParameter('rejectedStatus', 'rejected')
+                ->setParameter('now', new \DateTimeImmutable());
         }
 
         $qb->orderBy('quote.price', 'ASC');
