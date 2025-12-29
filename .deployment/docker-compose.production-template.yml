@@ -32,7 +32,7 @@ services:
     volumes:
       - ./php/php.ini:/usr/local/etc/php/php.ini:ro
       - ./config/jwt-qr:/app/config/jwt-qr:ro
-      - ./public:/app/public:rw
+      - uploads:/app/public/uploads:rw
     healthcheck:
       # keep it simple in prod; FPM process up == OK
       test: ["CMD-SHELL", "php -v >/dev/null 2>&1 || exit 1"]
@@ -94,7 +94,7 @@ services:
       MERCURE_PUBLISHER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
       MERCURE_SUBSCRIBER_JWT_KEY: "__TRADERPOINT_MERCURE_JWT_SECRET__"
     volumes:
-      - ./public:/app/public:ro
+      - uploads:/app/public/uploads:ro
       - caddy_data:/data
       - caddy_config:/config
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
@@ -149,5 +149,6 @@ networks:
     external: false
 
 volumes:
+  uploads:
   caddy_data:
   caddy_config:
