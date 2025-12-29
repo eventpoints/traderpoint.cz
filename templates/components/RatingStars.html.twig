@@ -1,26 +1,27 @@
-<div class="w-100 d-flex justify-content-between align-items-center gap-1 {{ this.size }} {{ this.color }}"
+<div class="w-100 d-flex justify-content-between align-items-start {{ this.color }}"
      role="img"
      aria-label="{{ this.formattedRating }} / 5">
 
-    <div class="d-flex align-items-center gap-1">
-        {% for i in 1..5 %}
-            {% if this.shouldShowStar(i, 'full') %}
-                <i class="bi bi-star-fill"></i>
-            {% elseif this.shouldShowStar(i, 'half') %}
-                <i class="bi bi-star-half"></i>
-            {% else %}
-                <i class="bi bi-star"></i>
-            {% endif %}
-        {% endfor %}
+    <div>
+        <div class="d-flex align-items-center gap-1 {{ this.size }}">
+            {% for i in 1..5 %}
+                {% if this.shouldShowStar(i, 'full') %}
+                    <i class="bi bi-star-fill"></i>
+                {% elseif this.shouldShowStar(i, 'half') %}
+                    <i class="bi bi-star-half"></i>
+                {% else %}
+                    <i class="bi bi-star"></i>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% if this.reviewCount is not null %}
+            <div>{{ 'reviews-count'|trans({count: this.reviewCount}) }}</div>
+        {% endif %}
     </div>
-
     <div>
         {% if this.showValue %}
-            <span class="badge text-bg-dark rounded-pill ms-2">
+            <span class="badge text-bg-dark rounded-pill ms-2 fs-5">
             {{ this.formattedRating }}
-                {% if this.reviewCount is not null %}
-                    / {{ this.reviewCount }}
-                {% endif %}
         </span>
         {% endif %}
         <div class="visually-hidden">{{ this.formattedRating }} / 5</div>

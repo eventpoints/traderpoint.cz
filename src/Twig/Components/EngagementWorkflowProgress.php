@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Twig\Components;
 
 use App\Entity\Engagement;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent]
@@ -14,34 +15,42 @@ class EngagementWorkflowProgress
     public string $viewType = 'client'; // 'client' or 'trader'
     public bool $hasSubmittedQuote = false; // For trader view - whether they've submitted a quote
     public bool $isQuoteRejected = false; // For trader view - whether their quote was rejected
+    public ?int $quoteVersion = null; // For trader view - version of their quote
+
+    public function __construct(
+        private readonly TranslatorInterface $translator
+    ) {
+    }
 
     public function getSteps(): array
     {
+        $versionSuffix = $this->quoteVersion ? ' (v' . $this->quoteVersion . ')' : '';
+
         if ($this->viewType === 'trader') {
             // If quote was rejected, show different journey
             if ($this->isQuoteRejected) {
                 return [
-                    ['place' => 'QUOTE_SUBMITTED', 'label' => 'Quote Submitted'],
-                    ['place' => 'QUOTE_REJECTED', 'label' => 'Quote Rejected'],
+                    ['place' => 'QUOTE_SUBMITTED', 'label' => $this->translator->trans('workflow.quote-submitted') . $versionSuffix],
+                    ['place' => 'QUOTE_REJECTED', 'label' => $this->translator->trans('workflow.quote-rejected') . $versionSuffix],
                 ];
             }
 
             // Trader perspective: their journey after submitting a quote
             return [
-                ['place' => 'QUOTE_SUBMITTED', 'label' => 'Quote Submitted'],
-                ['place' => 'QUOTE_ACCEPTED', 'label' => 'Quote Accepted'],
-                ['place' => 'IN_PROGRESS', 'label' => $this->isInIssue() ? 'Issue Resolution' : 'In Progress'],
-                ['place' => 'WORK_COMPLETED', 'label' => 'Work Completed'],
+                ['place' => 'QUOTE_SUBMITTED', 'label' => $this->translator->trans('workflow.quote-submitted') . $versionSuffix],
+                ['place' => 'QUOTE_ACCEPTED', 'label' => $this->translator->trans('workflow.quote-accepted') . $versionSuffix],
+                ['place' => 'IN_PROGRESS', 'label' => $this->isInIssue() ? $this->translator->trans('workflow.issue-resolution') : $this->translator->trans('workflow.in-progress')],
+                ['place' => 'WORK_COMPLETED', 'label' => $this->translator->trans('workflow.work-completed')],
             ];
         }
 
         // Client view
         return [
-            ['place' => 'UNDER_ADMIN_REVIEW', 'label' => 'Under Review'],
-            ['place' => 'RECEIVING_QUOTES', 'label' => 'Open for Quotes'],
-            ['place' => 'QUOTE_ACCEPTED', 'label' => 'Quote Accepted'],
-            ['place' => 'IN_PROGRESS', 'label' => $this->isInIssue() ? 'Issue Resolution' : 'In Progress'],
-            ['place' => 'WORK_COMPLETED', 'label' => 'Work Completed'],
+            ['place' => 'UNDER_ADMIN_REVIEW', 'label' => $this->translator->trans('workflow.under-review')],
+            ['place' => 'RECEIVING_QUOTES', 'label' => $this->translator->trans('workflow.open-for-quotes')],
+            ['place' => 'QUOTE_ACCEPTED', 'label' => $this->translator->trans('workflow.quote-accepted')],
+            ['place' => 'IN_PROGRESS', 'label' => $this->isInIssue() ? $this->translator->trans('workflow.issue-resolution') : $this->translator->trans('workflow.in-progress')],
+            ['place' => 'WORK_COMPLETED', 'label' => $this->translator->trans('workflow.work-completed')],
         ];
     }
 
@@ -161,41 +170,44 @@ class EngagementWorkflowProgress
     public function getCurrentStatusLabel(): string
     {
         $currentPlace = $this->getCurrentPlace();
+        $versionSuffix = $this->quoteVersion ? ' (v' . $this->quoteVersion . ')' : '';
 
         // Trader-specific labels
         if ($this->viewType === 'trader') {
             // If quote was rejected, show that regardless of actual workflow state
             if ($this->isQuoteRejected) {
-                return 'Quote Rejected';
+                return $this->translator->trans('workflow.quote-rejected') . $versionSuffix;
             }
 
-            return match ($currentPlace) {
-                'UNDER_ADMIN_REVIEW' => 'Under Review',
-                'RECEIVING_QUOTES' => 'Quote Submitted',
-                'QUOTE_ACCEPTED' => 'Quote Accepted',
-                'IN_PROGRESS' => 'In Progress',
-                'ISSUE_RESOLUTION' => 'Issue Resolution',
-                'WORK_COMPLETED' => 'Work Completed',
-                'AWAITING_REVIEW' => 'Awaiting Review',
-                'REVIEWED' => 'Reviewed',
-                'REJECTED' => 'Rejected',
-                'CANCELLED' => 'Cancelled',
+            $label = match ($currentPlace) {
+                'UNDER_ADMIN_REVIEW' => $this->translator->trans('workflow.under-review'),
+                'RECEIVING_QUOTES' => $this->translator->trans('workflow.quote-submitted') . $versionSuffix,
+                'QUOTE_ACCEPTED' => $this->translator->trans('workflow.quote-accepted') . $versionSuffix,
+                'IN_PROGRESS' => $this->translator->trans('workflow.in-progress'),
+                'ISSUE_RESOLUTION' => $this->translator->trans('workflow.issue-resolution'),
+                'WORK_COMPLETED' => $this->translator->trans('workflow.work-completed'),
+                'AWAITING_REVIEW' => $this->translator->trans('workflow.awaiting-review'),
+                'REVIEWED' => $this->translator->trans('workflow.reviewed'),
+                'REJECTED' => $this->translator->trans('workflow.rejected'),
+                'CANCELLED' => $this->translator->trans('workflow.cancelled'),
                 default => $currentPlace,
             };
+
+            return $label;
         }
 
         // Client labels
         return match ($currentPlace) {
-            'UNDER_ADMIN_REVIEW' => 'Under Review',
-            'RECEIVING_QUOTES' => 'Open for Quotes',
-            'QUOTE_ACCEPTED' => 'Quote Accepted',
-            'IN_PROGRESS' => 'In Progress',
-            'ISSUE_RESOLUTION' => 'Issue Resolution',
-            'WORK_COMPLETED' => 'Work Completed',
-            'AWAITING_REVIEW' => 'Awaiting Review',
-            'REVIEWED' => 'Reviewed',
-            'REJECTED' => 'Rejected',
-            'CANCELLED' => 'Cancelled',
+            'UNDER_ADMIN_REVIEW' => $this->translator->trans('workflow.under-review'),
+            'RECEIVING_QUOTES' => $this->translator->trans('workflow.open-for-quotes'),
+            'QUOTE_ACCEPTED' => $this->translator->trans('workflow.quote-accepted'),
+            'IN_PROGRESS' => $this->translator->trans('workflow.in-progress'),
+            'ISSUE_RESOLUTION' => $this->translator->trans('workflow.issue-resolution'),
+            'WORK_COMPLETED' => $this->translator->trans('workflow.work-completed'),
+            'AWAITING_REVIEW' => $this->translator->trans('workflow.awaiting-review'),
+            'REVIEWED' => $this->translator->trans('workflow.reviewed'),
+            'REJECTED' => $this->translator->trans('workflow.rejected'),
+            'CANCELLED' => $this->translator->trans('workflow.cancelled'),
             default => $currentPlace,
         };
     }

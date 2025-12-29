@@ -11,6 +11,11 @@ final class Badge
 {
     public string $text;
 
+    /**
+     * Bootstrap variants + "white"
+     *
+     * primary|secondary|success|danger|warning|info|light|dark|white
+     */
     public string $variant = 'secondary';
 
     public bool $pill = true;
@@ -20,7 +25,7 @@ final class Badge
     public ?string $icon = null;
 
     /**
-     * sm|md|lg
+     * sm|md|lg|xl-lg
      */
     public string $size = 'md';
 
@@ -32,13 +37,27 @@ final class Badge
         $classes = array_merge($classes, $this->getSizeClasses());
 
         $classes[] = 'fw-normal';
+
         if ($this->isOutline) {
             $classes[] = 'border';
-            $classes[] = "border-{$this->variant}";
-            $classes[] = "text-{$this->variant}";
             $classes[] = 'bg-transparent';
+
+            if ($this->variant === 'white') {
+                $classes[] = 'border-white';
+                $classes[] = 'text-white';
+            } else {
+                $classes[] = "border-{$this->variant}";
+                $classes[] = "text-{$this->variant}";
+            }
         } else {
-            $classes[] = "text-bg-{$this->variant}";
+            if ($this->variant === 'white') {
+                $classes[] = 'bg-white';
+                $classes[] = 'text-dark';
+                $classes[] = 'border';
+                $classes[] = 'border-white';
+            } else {
+                $classes[] = "text-bg-{$this->variant}";
+            }
         }
 
         if ($this->pill) {
@@ -54,10 +73,10 @@ final class Badge
     private function getSizeClasses(): array
     {
         return match ($this->size) {
-            'sm' => ['px-2', 'py-0', 'small'],         // compact
-            'lg' => ['px-3', 'py-2', 'fs-6'],         // chunkier
-            'xl-lg' => ['px-3', 'py-3', 'fs-5'],         // chunkier
-            default => ['px-2', 'py-1', 'fs-6'],      // md (default)
+            'sm' => ['px-2', 'py-0', 'small'],
+            'lg' => ['px-3', 'py-2', 'fs-6'],
+            'xl-lg' => ['px-3', 'py-3', 'fs-5'],
+            default => ['px-2', 'py-1', 'fs-6'],
         };
     }
 }

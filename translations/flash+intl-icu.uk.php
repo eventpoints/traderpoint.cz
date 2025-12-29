@@ -14,4 +14,6 @@ return array(
     'flash.issue-created' => 'Проблему було зареєстровано',
     'flash.password-reset-email-sent' => 'Лист для скидання пароля надіслано',
     'flash.notification-settings-saved' => 'Налаштування сповіщень збережено',
+    'trader_paywall.error.generic' => 'Під час підтвердження картки сталася помилка. Будь ласка, спробуйте ще раз.',
+    'trader_paywall.success.subscription_activated' => 'Ваша підписка активована. Тепер у вас є доступ до всіх функцій для майстрів.',
 );

@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -61,10 +62,17 @@ class QuoteFormType extends AbstractType
             ->add('validUntil', FlatpickrType::class, [
                 'label' => $this->translator->trans('valid-until'),
                 'enable_time' => false,
-                'required' => false,
+                'required' => true,
+                'constraints' => [
+                    new GreaterThanOrEqual([
+                        'value' => (new \DateTimeImmutable('+7 days'))->format('Y-m-d'),
+                        'message' => $this->translator->trans('quote.valid_until.min_days', ['days' => 7]),
+                    ]),
+                ],
                 'attr' => [
                     'placeholder' => $this->translator->trans('valid-until'),
                     'class' => 'form-control',
+                    'min' => (new \DateTimeImmutable('+7 days'))->format('Y-m-d'),
                 ],
                 'row_attr' => [
                     'class' => 'form-floating',

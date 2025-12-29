@@ -11,6 +11,7 @@ use App\Entity\Quote;
 use App\Entity\Skill;
 use App\Entity\User;
 use App\Enum\FlashEnum;
+use App\Enum\QuoteFilterEnum;
 use App\Factory\ConversationFactory;
 use App\Factory\UserFactory;
 use App\Form\Form\EngagementFormType;
@@ -51,6 +52,8 @@ use Symfony\UX\Map\Point;
 
 class EngagementController extends AbstractController
 {
+    private const MAX_QUOTES_PER_TRADER = 3;
+
     public function __construct(
         private readonly TranslatorInterface $translator,
         private readonly QuoteRepository $quoteRepository,
@@ -74,11 +77,11 @@ class EngagementController extends AbstractController
     #[Route(path: 'trader/engagement/{id}', name: 'trader_show_engagement')]
     public function traderShow(Engagement $engagement, Request $request, #[CurrentUser] User $currentUser): Response
     {
+        $this->denyAccessUnlessGranted(EngagementVoter::TRADER_VIEW, $engagement);
+
         $tab = $request->query->get('tab', 'quote-form');
         $focusedMessageId = $request->query->get('focused');
-
         $reactions = $this->reactionRepository->findAll();
-        $this->denyAccessUnlessGranted(EngagementVoter::TRADER_VIEW, $engagement);
 
         $map = null;
 
@@ -138,6 +141,37 @@ class EngagementController extends AbstractController
         $quoteForm = $this->createForm(QuoteFormType::class, $quote);
         $quoteForm->handleRequest($request);
         if ($quoteForm->isSubmitted() && $quoteForm->isValid()) {
+            // Validate engagement is still accepting quotes
+            if ($engagement->getStatus() !== \App\Enum\EngagementStatusEnum::RECEIVING_QUOTES) {
+                $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('quote.error.engagement_not_accepting_quotes'));
+                return $this->redirectToRoute('trader_show_engagement', [
+                    'id' => $engagement->getId(),
+                    'tab' => 'quote-form',
+                ]);
+            }
+
+            // Validate no quote has been accepted yet
+            if ($engagement->getQuote() !== null) {
+                $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('quote.error.quote_already_accepted'));
+                return $this->redirectToRoute('trader_show_engagement', [
+                    'id' => $engagement->getId(),
+                    'tab' => 'quote-form',
+                ]);
+            }
+
+            // Check maximum number of quotes per trader
+            $traderQuoteCount = $engagement->getQuoteCountFor($currentUser);
+
+            if ($traderQuoteCount >= self::MAX_QUOTES_PER_TRADER) {
+                $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('quote.error.max_quotes_reached', ['max' => self::MAX_QUOTES_PER_TRADER]));
+                return $this->redirectToRoute('trader_show_engagement', [
+                    'id' => $engagement->getId(),
+                    'tab' => 'quote-form',
+                ]);
+            }
+
+            // Set the version number for this quote (count + 1)
+            $quote->setVersion($traderQuoteCount + 1);
 
             if($engagement->getOwner()->getNotificationSettings()->isClientReceiveEmailOnQuote()) {
                 $locale = $engagement->getOwner()->getPreferredLanguage() ?? 'cs';
@@ -191,6 +225,7 @@ class EngagementController extends AbstractController
     {
         $tab = $request->query->get('tab', 'quotes');
         $focusedMessageId = $request->query->get('focused');
+        $quotesFilter = QuoteFilterEnum::tryFrom($request->query->get('qs', QuoteFilterEnum::ACTIVE->value)) ?? QuoteFilterEnum::ACTIVE;
 
         if ($currentUser->isTrader()) {
             $this->addFlash(FlashEnum::WARNING->value, $this->translator->trans('nice-try'));
@@ -242,12 +277,13 @@ class EngagementController extends AbstractController
             ]);
         }
 
-        $quotes = $this->quoteRepository->findByEngagement($engagement);
+        $quotes = $this->quoteRepository->findByEngagementAndFilter($engagement, $quotesFilter);
         return $this->render('engagement/client/show.html.twig', [
             'messageForm' => $messageForm,
             'map' => $map,
             'engagement' => $engagement,
             'quotes' => $quotes,
+            'quotesFilter' => $quotesFilter,
             'tab' => $tab,
             'focused' => $focusedMessageId,
         ]);

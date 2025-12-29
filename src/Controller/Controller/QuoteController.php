@@ -26,7 +26,7 @@ class QuoteController extends AbstractController
     {
     }
 
-    #[Route(path: '/accept/{id}', name: 'accept_quote')]
+    #[Route(path: '/accept/{id}', name: 'accept_quote', methods: ['POST'])]
     #[isGranted('IS_AUTHENTICATED_FULLY')]
     public function accept(Quote $quote): Response
     {
@@ -54,7 +54,7 @@ class QuoteController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/reject/{id}', name: 'reject_quote')]
+    #[Route(path: '/reject/{id}', name: 'reject_quote', methods: ['POST'])]
     public function decline(Quote $quote): Response
     {
         $this->denyAccessUnlessGranted(QuoteVoter::REJECT, $quote);

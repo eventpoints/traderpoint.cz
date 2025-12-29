@@ -1,0 +1,123 @@
+<div class="card {{ this.borderClass }} mb-3">
+    {# Header: Trader info, price, version, status #}
+    <div class="card-header d-flex justify-content-between align-items-start gap-1">
+        {% if showTraderInfo %}
+            <a href="{{ path('trader_profile', {id: quote.owner.id}) }}">
+                <img class="rounded-circle avatar-50" src="{{ quote.owner.avatar }}" alt="{{ quote.owner.fullName }}">
+            </a>
+        {% endif %}
+        <div class="flex-grow-1">
+            {% if not showStatus %}
+                <div class="fw-bold text-dark lh-1 {{ quote.isRjectedExpiredOrwithdrawn ? 'strikethrough text-muted' }}">
+                    {{ quote.price|format_currency(quote.currency.value) }}
+                </div>
+                {% if showTraderInfo %}
+                    <div class="d-flex justify-content-start gap-3">
+                        <a href="{{ path('trader_profile', {id: quote.owner.id}) }}">
+                            {{ quote.owner.fullName|title }}
+                        </a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% if showVersion and not showStatus %}
+            <div class="text-end">
+                <twig:Badge
+                    text="v{{ quote.version }}"
+                    variant="primary"
+                    :isOutline="true"
+                    size="lg"/>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Price and status display for trader view (when showing status) #}
+    {% if showStatus %}
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="fw-bold text-dark fs-5">
+                        {{ quote.price|format_currency(quote.currency.value) }}
+                    </div>
+                    {% if showCreatedDate %}
+                        <div class="text-muted small">
+                            {{ quote.createdAt|format_datetime }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                    {% if showVersion %}
+                        <twig:Badge
+                            text="v{{ quote.version }}"
+                            variant="primary"
+                            :isOutline="true"/>
+                    {% endif %}
+                    {% if quote.isExpired %}
+                        <twig:Badge
+                            text="{{ 'expired'|trans|default('Expired') }}"
+                            variant="warning"/>
+                    {% else %}
+                        <twig:Badge
+                            text="{{ quote.status.value|trans }}"
+                            variant="{{ this.statusBadgeVariant }}"/>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Badges: Start date, duration, valid until, materials, warranty #}
+    {% if showAllDetails %}
+        <div class="card-header fs-4 d-flex flex-wrap gap-2">
+            <twig:Badge
+                text="{{ quote.startAt|format_datetime }}"
+                variant="dark"
+                :isOutline="true"
+                size="lg"/>
+            <twig:Badge
+                text="{{ 'duration-in-hours'|trans({ duration: quote.expectedDurationHours }) }}"
+                variant="dark"
+                :isOutline="true"
+                size="lg"/>
+            {% if showStatus %}
+                <twig:Badge
+                    text="{{ 'valid-until'|trans }}: {{ quote.validUntil|format_datetime }}"
+                    variant="dark"
+                    :isOutline="true"
+                    size="lg"/>
+            {% endif %}
+            <twig:Badge
+                text="{{ quote.includesMaterials ? 'includes-materials'|trans : 'does-not-includes-materials'|trans }}"
+                variant="dark"
+                :isOutline="true"
+                size="lg"/>
+            <twig:Badge
+                text="{{ 'warranty-duration-in-months'|trans({ duration: quote.warrantyMonths }) }}"
+                variant="dark"
+                :isOutline="true"
+                size="lg"/>
+        </div>
+    {% endif %}
+
+    {# Message #}
+    {% if showMessage and quote.message %}
+        <div class="card-body">
+            {{ quote.message|nl2br }}
+        </div>
+    {% endif %}
+
+    {% if this.canAcceptOrReject and workflow_can(engagement, 'accept_quote') %}
+        <div class="card-footer d-flex gap-3 justify-content-end align-items-center">
+            <form method="post" action="{{ path('reject_quote', { id: quote.id }) }}" onsubmit="return confirm('{{ 'confirm-reject-quote'|trans|default('Are you sure you want to reject this quote?') }}');">
+                <button type="submit" class="btn btn-outline-secondary">
+                    {{ 'decline'|trans|title }}
+                </button>
+            </form>
+            <form method="post" action="{{ path('accept_quote', { id: quote.id }) }}">
+                <button type="submit" class="btn btn-primary">
+                    {{ 'accept'|trans|title }}
+                </button>
+            </form>
+        </div>
+    {% endif %}
+</div>

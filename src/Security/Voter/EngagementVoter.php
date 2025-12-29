@@ -8,12 +8,17 @@ use App\Entity\TraderProfile;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Workflow\WorkflowInterface;
 
 /**
  * @extends Voter<'TRADER_VIEW'|'CLIENT_VIEW'|'EDIT'|'DELETE'|'APPROVE'|'REJECT'|'START_WORK'|'COMPLETE_WORK'|'RAISE_ISSUE'|'REVIEW'|'CANCEL', Engagement>
  */
 final class EngagementVoter extends Voter
 {
+    public function __construct(
+        private readonly WorkflowInterface $engagementStateMachine,
+    ) {
+    }
     public const TRADER_VIEW = 'TRADER_VIEW';
 
     public const CLIENT_VIEW = 'CLIENT_VIEW';
@@ -88,6 +93,34 @@ final class EngagementVoter extends Voter
             return false;
         }
 
+        // Check if engagement is in a state that traders can view
+        // Traders should only see engagements that have been approved (not UNDER_ADMIN_REVIEW)
+        $marking = $this->engagementStateMachine->getMarking($engagement);
+        $allowedPlaces = ['RECEIVING_QUOTES', 'QUOTE_ACCEPTED', 'IN_PROGRESS', 'ISSUE_RESOLUTION', 'WORK_COMPLETED', 'AWAITING_REVIEW', 'REVIEWED'];
+
+        $canViewState = false;
+        foreach ($allowedPlaces as $place) {
+            if ($marking->has($place)) {
+                $canViewState = true;
+                break;
+            }
+        }
+
+        if (!$canViewState) {
+            return false;
+        }
+
+        // Check if the trader has submitted a quote for this engagement
+        // If they have, they should be able to view it even if their quote wasn't selected
+        $hasSubmittedQuote = $engagement->getQuotes()->exists(
+            static fn (int $i, $quote): bool => $quote->getOwner()->getId() === $user->getId()
+        );
+
+        if ($hasSubmittedQuote) {
+            return true;
+        }
+
+        // Otherwise, check if their skills match
         $traderSkills = $profile->getSkills();
         if ($traderSkills->isEmpty() || $engagement->getSkills()->isEmpty()) {
             return false;

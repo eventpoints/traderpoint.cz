@@ -395,6 +395,28 @@ class Engagement implements Stringable
         return $match->isEmpty() ? null : $match->first();
     }
 
+    public function getQuoteCountFor(User $user): int
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('owner', $user));
+
+        return $this->quotes->matching($criteria)->count();
+    }
+
+    /**
+     * @return Collection<int, Quote>
+     */
+    public function getQuotesFor(User $user): Collection
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('owner', $user))
+            ->orderBy([
+                'version' => Criteria::DESC,
+            ]);
+
+        return $this->quotes->matching($criteria);
+    }
+
     /**
      * @return Collection<int, Image>
      */

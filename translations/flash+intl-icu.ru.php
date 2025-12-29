@@ -14,5 +14,6 @@ return [
     'flash.issue-created' => 'Проблема была зарегистрирована',
     'flash.password-reset-email-sent' => 'Письмо для сброса пароля отправлено',
     'flash.notification-settings-saved' => 'Настройки уведомлений сохранены',
-
+    'trader_paywall.error.generic' => 'Произошла ошибка при подтверждении карты. Пожалуйста, попробуйте ещё раз.',
+    'trader_paywall.success.subscription_activated' => 'Ваша подписка активирована. Теперь у вас есть доступ ко всем функциям для мастеров.',
 ];

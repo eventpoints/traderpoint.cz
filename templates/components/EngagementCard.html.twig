@@ -1,0 +1,139 @@
+{% set displayUser = this.displayUser %}
+{% set profileRoute = this.profileRoute %}
+{% set engagementRoute = this.engagementRoute %}
+
+<div class="card mb-3">
+    {# Header: User info and title #}
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-start gap-2">
+            <div class="d-flex justify-content-start align-items-start gap-2">
+                <a href="{{ path(profileRoute, {id: displayUser.id}) }}">
+                    <img class="rounded-circle avatar-50" src="{{ displayUser.avatar }}" alt="{{ displayUser.fullName }}">
+                </a>
+                <div>
+                    <div class="fw-bold text-dark fs-4 lh-1">
+                        {% if this.isSimpleView %}
+                            <a href="{{ path(engagementRoute, {id: engagement.id}) }}" class="text-decoration-none text-dark">
+                                {{ engagement.title }}
+                            </a>
+                        {% else %}
+                            {{ engagement.title }}
+                        {% endif %}
+                    </div>
+                    <div class="{{ showDateInHeader ? '' : 'd-flex justify-content-start gap-3' }}">
+                        <a href="{{ path(profileRoute, {id: displayUser.id}) }}">
+                            {{ displayUser.fullName|title }}
+                        </a>
+                        {% if showDateInHeader %}
+                            <div class="small text-muted">{{ engagement.createdAt.diffForHumans }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% if showQuoteCountInHeader %}
+                <twig:Badge
+                    text="{{ 'quotes-received'|trans({count: engagement.quotes.count}) }}"
+                    variant="dark"
+                    :isOutline="true"
+                    size="lg"/>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Badges: Budget, skills, distance, timeline #}
+    <div class="card-header">
+        <div class="fs-4 d-flex flex-wrap gap-2">
+            <twig:Badge
+                text="{{ (engagement.budget / 100)|format_currency(engagement.currencyCodeEnum.value, {}, app.locale) }}"
+                variant="dark"
+                :isOutline="true"
+                size="lg"/>
+            {% for skill in engagement.skills %}
+                <twig:Badge
+                    text="{{ skill.name|trans(domain='skills')|title }}"
+                    variant="primary"
+                    :isOutline="true"
+                    size="lg"/>
+            {% endfor %}
+            {% if this.isTraderView and distance is defined and distance is not null %}
+                <twig:Badge
+                    text="{{ 'km.distance'|trans({distance: distance}) }}"
+                    variant="dark"
+                    :isOutline="true"
+                    size="lg"/>
+            {% endif %}
+            <twig:Badge
+                text="{{ engagement.timelinePreferenceEnum.value|trans }}"
+                variant="dark"
+                :isOutline="true"
+                size="lg"/>
+        </div>
+    </div>
+
+    {% if this.isDetailedView %}
+        {# Description #}
+        {% if showDescription and engagement.description %}
+            <div class="card-body {{ showViewButton ? 'pb-0' : '' }}">
+                <div data-controller="read-more"
+                     data-read-more-more-text-value="{{ 'read-more'|trans }}"
+                     data-read-more-less-text-value="{{ 'read-less'|trans }}">
+                    <div class="read-more-content" data-read-more-target="content">
+                        {{ engagement.description|nl2br }}
+                    </div>
+                    {% if engagement.description|length > 255 %}
+                        <div class="text-center text-muted {{ showViewButton ? 'my-1' : 'my-3' }}">
+                            <a data-action="read-more#toggle">{{ 'read-more'|trans }}</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        {# Images #}
+        {% if showImages and engagement.images|length > 0 %}
+            <div class="card-body">
+                <div class="row g-2 justify-content-start" {{ stimulus_controller('lightbox') }}>
+                    {% for image in engagement.images %}
+                        <div href="{{ asset('uploads/images/' ~ image.filename) }}" class="col-6">
+                            <img src="{{ asset('uploads/images/' ~ image.filename) }}"
+                                 class="w-100 object-fit-cover rounded-3 hover-pointer"
+                                 style="height: 150px"
+                                 alt="{{ engagement.title }}"/>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    {# Footer: Viewers/Reactions, quote count, date #}
+    {% if showFooter %}
+        <div class="card-footer {{ showViewButton ? 'pt-0' : '' }}">
+            <div class="d-flex justify-content-between align-items-center">
+                {% if showReactions %}
+                    <div>
+                        {{ component('engagement_reactions', { engagement: engagement }) }}
+                    </div>
+                {% else %}
+                    {{ component('engagement_viewers', {engagement: engagement}) }}
+                {% endif %}
+
+                {% if showViewButton %}
+                    <a class="btn btn-light text-primary rounded-pill"
+                       href="{{ path(engagementRoute, {id: engagement.id}) }}">
+                        <i class="bi bi-arrow-right-short fs-3"></i>
+                    </a>
+                {% else %}
+                    <twig:Badge
+                        text="{{ 'quotes-received'|trans({count: engagement.quotes.count}) }}"
+                        variant="primary"
+                        :isOutline="true"
+                        size="lg"/>
+                {% endif %}
+            </div>
+            {% if not showViewButton %}
+                <div class="text-muted text-center">{{ engagement.createdAt.diffForHumans }}</div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

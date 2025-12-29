@@ -4,37 +4,39 @@
 
 {% block body %}
     <div class="row justify-content-center vh-100 g-0">
-        <div class="col-12 col-md-4 text-bg-primary d-flex flex-column justify-content-center">
-            <div class="d-flex flex-column justify-content-center align-items-center mt-5">
-                <twig:Badge text="{{ 'trader'|trans|title }}" variant="dark" size="lg"/>
-                <img src="{{ user.avatar }}" class="img-fluid rounded-circle mt-1" style="height: 200px;" alt="">
-            </div>
-            <div class="list-group list-group-flush">
-                <div class="list-group-item text-center bg-transparent border-primary d-flex justify-content-center align-items-center">
-                    <div class="fs-2 text-white fw-bold">{{ user.fullName }}</div>
+        <div class="col-12 col-md-4 text-bg-primary d-flex flex-column justify-content-start">
+            <div class="sticky-top">
+                <div class="d-flex flex-column justify-content-center align-items-center mt-5">
+                    <twig:Badge text="{{ 'trader'|trans|title }}" variant="dark" size="lg"/>
+                    <img src="{{ user.avatar }}" class="img-fluid rounded-circle mt-1" style="height: 200px;" alt="">
                 </div>
-                <div class="list-group-item fs-4 bg-transparent border-primary">
-                    {% for skill in user.traderProfile.skills %}
-                        <twig:Badge text="{{ skill.name|trans(domain='skills')|capitalize }}" variant="light"
-                                    outline="true" size="lg"/>
-                    {% endfor %}
-                    <twig:Badge text="{{ 'job-count'|trans({count: user.engagements.count|compact_notation}) }}"
-                                variant="light" outline="true" size="lg"/>
-                </div>
-                <div class="list-group-item fs-4 bg-transparent border-primary">
-                    {% for language in user.getAllLangauges %}
-                        <twig:Badge text="{{ language|language_name }}"
-                                    variant="{{ language == user.preferredLanguage ? 'dark' : 'light' }}" outline="true"
-                                    size="lg"/>
-                    {% endfor %}
-                </div>
-                <div class="list-group-item bg-transparent fs-4 d-flex justify-content-between align-items-center">
-                    <twig:RatingStars
-                            :rating="user.traderProfile.averageRating ?? 0"
-                            size="lg"
-                            :showValue="true"
-                            :reviewCount="user.traderProfile.reviews.count"
-                    />
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item text-center bg-transparent border-primary d-flex justify-content-center align-items-center">
+                        <div class="fs-2 text-white fw-bold">{{ user.fullName }}</div>
+                    </div>
+                    <div class="list-group-item bg-transparent border-primary d-flex justify-content-between align-items-center">
+                        <twig:RatingStars
+                                :rating="user.traderProfile.averageRating ?? 0"
+                                size="fs-4"
+                                :showValue="true"
+                                :reviewCount="user.traderProfile.reviews.count"
+                        />
+                    </div>
+                    <div class="list-group-item fs-4 bg-transparent border-primary">
+                        {% for skill in user.traderProfile.skills %}
+                            <twig:Badge text="{{ skill.name|trans(domain='skills')|capitalize }}" variant="white"
+                                        size="lg"/>
+                        {% endfor %}
+                        <twig:Badge text="{{ 'job-count'|trans({count: user.engagements.count|compact_notation}) }}"
+                                    variant="white" outline="true" size="lg"/>
+                    </div>
+                    <div class="list-group-item fs-4 bg-transparent border-primary">
+                        {% for language in user.getAllLangauges %}
+                            <twig:Badge text="{{ language|language_name }}"
+                                        variant="{{ language == user.preferredLanguage ? 'dark' : 'white' }}"
+                                        size="lg"/>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>

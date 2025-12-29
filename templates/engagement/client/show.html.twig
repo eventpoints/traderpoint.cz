@@ -217,7 +217,7 @@
 
                             <div class="d-flex gap-2 justify-content-end">
                                 {# Workflow action buttons #}
-                                {% if engagement.status.value == 'AWAITING_REVIEW' %}
+                                {% if workflow_can(engagement, 'submit_review') %}
                                     <a href="{{ path('review_create', {id: engagement.id}) }}"
                                        class="btn btn-primary rounded-pill">
                                         <i class="bi bi-star"></i> {{ 'leave-review'|trans({}, 'messages', app.locale)|default('Leave Review') }}
@@ -233,7 +233,8 @@
                                             <i class="bi bi-exclamation-triangle-fill"></i> {{ 'view-issue-resolution'|trans }}
                                         </a>
                                     {% endif %}
-                                {% elseif engagement.status.value in ['QUOTE_ACCEPTED', 'IN_PROGRESS', 'WORK_COMPLETED'] %}
+
+                                {% elseif workflow_can(engagement, 'raise_issue') %}
                                     <a href="{{ path('engagement_issue', {quote: acceptedQuote.id, user: acceptedQuote.owner.id}) }}"
                                        class="btn btn-outline-secondary rounded-pill">
                                         <i class="bi bi-exclamation-triangle"></i> {{ 'something-is-wrong'|trans }}
@@ -243,67 +244,48 @@
 
                             {# 2) No accepted quote yet → list quotes / empty state #}
                         {% else %}
-                            {% if engagement.quotes|length == 0 %}
+                            {# Quote filter tabs #}
+                            <div class="nav nav-pills nav-justified w-100 bg-light rounded-pill overflow-hidden mb-3">
+                                <a class="nav-link rounded-pill {{ quotesFilter.value == 'all' ? 'active shadow' }}"
+                                   href="{{ path('client_show_engagement', {id: engagement.id, tab: 'quotes', qs: 'all'}) }}">
+                                    {{ 'all-quotes'|trans|capitalize }}
+                                </a>
+                                <a class="nav-link rounded-pill {{ quotesFilter.value == 'active' ? 'active shadow' }}"
+                                   href="{{ path('client_show_engagement', {id: engagement.id, tab: 'quotes', qs: 'active'}) }}">
+                                    {{ 'active-quotes'|trans|capitalize }}
+                                </a>
+                                <a class="nav-link rounded-pill {{ quotesFilter.value == 'past' ? 'active shadow' }}"
+                                   href="{{ path('client_show_engagement', {id: engagement.id, tab: 'quotes', qs: 'past'}) }}">
+                                    {{ 'past-quotes'|trans|capitalize }}
+                                </a>
+                            </div>
+
+                            {% if quotes|length == 0 %}
                                 <div class="text-center text-muted mt-4">
-                                    {{ 'no-quotes-received'|trans }}
+                                    {% if quotesFilter.value == 'active' %}
+                                        {{ 'no-active-quotes'|trans|default('No active quotes') }}
+                                    {% elseif quotesFilter.value == 'past' %}
+                                        {{ 'no-past-quotes'|trans|default('No past quotes') }}
+                                    {% else %}
+                                        {{ 'no-quotes-received'|trans }}
+                                    {% endif %}
                                 </div>
                             {% else %}
-                                {% for quote in quotes %}
-                                    <div class="card border-0 shadow-sm {{ app.request.get('q') == quote.id ? 'shadow-lg border border-2 border-black' }}">
-                                        <div class="card-header d-flex justify-content-between align-items-c gap-1">
-                                            <a href="{{ path('client_profile', {id: quote.owner.id}) }}">
-                                                <img class="rounded-circle avatar-50" src="{{ quote.owner.avatar }}">
-                                            </a>
-                                            <div class="flex-grow-1">
-                                                <div class="fw-bold text-dark lh-1 {{ quote.isRjectedExpiredOrwithdrawn ? 'strikethrough text-muted' }}">{{ quote.price|format_currency(quote.currency.value) }}</div>
-                                                <div class="d-flex justify-content-start gap-3">
-                                                    <a href="{{ path('client_profile', {id: quote.owner.id}) }}">
-                                                        {{ quote.owner.fullName|title }}
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="card-header fs-4 d-flex flex-wrap gap-2">
-                                            <twig:Badge text="{{ quote.startAt|format_datetime }}"
-                                                        variant="dark"
-                                                        :isOutline="true"
-                                                        size="lg"/>
-                                            <twig:Badge
-                                                    text="{{ 'duration-in-hours'|trans({ duration: quote.expectedDurationHours }) }}"
-                                                    variant="dark"
-                                                    :isOutline="true"
-                                                    size="lg"/>
-                                            <twig:Badge
-                                                    text="{{ quote.includesMaterials ? 'includes-materials'|trans : 'does-not-includes-materials'|trans }}"
-                                                    variant="dark"
-                                                    :isOutline="true"
-                                                    size="lg"/>
-                                            <twig:Badge
-                                                    text="{{ 'warranty-duration-in-months'|trans({ duration: quote.warrantyMonths }) }}"
-                                                    variant="dark"
-                                                    :isOutline="true"
-                                                    size="lg"/>
-                                        </div>
-
-                                        <div class="card-body">
-                                            {{ quote.message|nl2br }}
-                                        </div>
-
-                                        {% if quote.isUnanswered %}
-                                            <div class="card-footer d-flex gap-3 justify-content-end align-items-center">
-                                                <a href="{{ path('reject_quote', { id: quote.id }) }}"
-                                                   class="btn btn-outline-secondary">
-                                                    {{ 'decline'|trans|title }}
-                                                </a>
-                                                <a href="{{ path('accept_quote', { id: quote.id }) }}"
-                                                   class="btn btn-primary">
-                                                    {{ 'accept'|trans|title }}
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
+                                <div class="vstack gap-3">
+                                    {% for quote in quotes %}
+                                        <twig:QuoteCard
+                                            :quote="quote"
+                                            :engagement="engagement"
+                                            :viewType="'client'"
+                                            :showActions="quotesFilter.value != 'past'"
+                                            :showTraderInfo="true"
+                                            :showVersion="true"
+                                            :highlight="app.request.get('q') == quote.id"
+                                            :showMessage="true"
+                                            :showAllDetails="true"
+                                        />
+                                    {% endfor %}
+                                </div>
                             {% endif %}
                         {% endif %}
                     </div>

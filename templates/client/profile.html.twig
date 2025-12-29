@@ -1,30 +1,33 @@
-{% extends 'base.html.twig' %}
+{% extends 'simple.base.html.twig' %}
 
 {% block title %}{{ 'client-profile'|trans|title }}{% endblock %}
 
 {% block body %}
-
-    <div class="container">
-        <div class="row justify-content-center g-3 my-5">
-            <div class="col-12 col-md-3">
-                <div class="card">
-                    <div class="card-header text-center">
-                        <div class="fs-4 text-end">
-                            <div class="badge text-bg-dark rounded-pill text-white">{{ 'client'|trans|title }}</div>
-                        </div>
-                        <img src="{{ user.avatar }}" class="img-fluid rounded-circle" alt="">
+    <div class="row justify-content-center vh-100 g-0">
+        <div class="col-12 col-md-4 text-bg-primary d-flex flex-column justify-content-start">
+            <div class="sticky-top">
+                <div class="d-flex flex-column gap-2 justify-content-center align-items-center mt-5">
+                    <div class="fs-4 text-end">
+                        <twig:Badge text="{{ 'client'|trans|title }}" variant="dark" size="lg"/>
                     </div>
-                    <div class="list-group list-group-flush">
-                        <div class="list-group-item fs-4 text-center">
-                            <div>{{ user.fullName }}</div>
-                        </div>
-                        <div class="list-group-item fs-4">
-                            <span class="badge rounded-pill text-bg-primary">{{ 'job-created'|trans({count: user.engagements.count|compact_notation}) }}</span>
-                        </div>
+                    <img src="{{ user.avatar }}" class="img-fluid rounded-circle mt-1" style="height: 200px;" alt="">
+                </div>
+                <div class="list-group list-group-flush bg-transparent">
+                    <div class="list-group-item text-center bg-transparent border-primary">
+                        <div class="fs-4 fw-bold text-white">{{ user.fullName }}</div>
+                    </div>
+                    <div class="list-group-item fs-4 border-primary bg-transparent d-flex justify-content-center align-items-between align-self-center">
+                        <span class="badge rounded-pill text-bg-primary">{{ 'job-created'|trans({count: user.engagements.count|compact_notation})|capitalize }}</span>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6">
+        </div>
+        <div class="col-12 col-md-8 d-flex justify-content-center align-items-center">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-6">
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -14,4 +14,6 @@ return array(
     'flash.issue-created' => 'issue created',
     'flash.password-reset-email-sent' => 'Password reset email sent',
     'flash.notification-settings-saved' => 'Notification settings saved',
+    'trader_paywall.error.generic' => 'There was a problem confirming your card. Please try again.',
+    'trader_paywall.success.subscription_activated' => 'Your subscription is now active. You can now access all trader features.',
 );
