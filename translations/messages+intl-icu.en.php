@@ -323,6 +323,7 @@ return array(
     'enter-new-password' => 'Enter new password',
     'new-message'=> "write your message here",
     'service-radius-km' => 'service radius (km)',
+
     'trader-register.hero.title' => 'Trade jobs near you — plumbers, electricians, builders & more',
     'trader-register.hero.lead' => 'Register as a tradesman, choose your skills and service area, and get matched with local customers.',
     'trader-register.hero.bullet1' => 'In-person trade work only (no remote/IT gigs)',

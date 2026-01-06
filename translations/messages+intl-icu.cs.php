@@ -341,4 +341,20 @@ return array(
     'feedback.category.other' => 'Jiné',
     'enter-verification-code' => 'Zadejte ověřovací kód',
 
+    'trader-register.hero.title' => 'Práce řemeslníků ve vašem okolí — instalatéři, elektrikáři, stavitelé a další',
+    'trader-register.hero.lead' => 'Zaregistrujte se jako řemeslník, vyberte své dovednosti a oblast působnosti a propojte se s místními zákazníky.',
+    'trader-register.hero.bullet1' => 'Pouze osobní řemeslnická práce (žádné vzdálené/IT zakázky)',
+    'trader-register.hero.bullet2' => 'Zákazníci zveřejňují rozpočet a harmonogram předem',
+    'trader-register.hero.bullet3' => 'Získávejte hodnocení a opakované zakázky',
+    'trader-register.hero.examples' => 'Příklady: instalatérství • elektrikářství • stavebnictví • truhlářství • malování • údržba • pokrývačství',
+
+    'trader-register.form.badge' => 'Pro řemeslníky',
+    'trader-register.form.hireInstead' => 'Chcete spíše najmout?',
+    'trader-register.form.hireLink' => 'Zadat zakázku',
+    'trader-register.form.noticeTitle' => 'Tato registrace je určena pro řemeslníky hledající práci.',
+    'trader-register.form.noticeBody' => 'Pokud jste zákazník, který chce najmout řemeslníka, použijte „Zadat zakázku".',
+    'trader-register.form.skillsLabel' => 'Řemeslo / dovednosti',
+    'trader-register.form.skillsHelp' => 'Začněte psát: instalatér, elektrikář, stavitel…',
+    'trader-register.form.submit' => 'Zaregistrovat se jako řemeslník',
+
 );

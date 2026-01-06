@@ -342,4 +342,20 @@ return array(
     'feedback.category.other' => 'Інше',
     'enter-verification-code' => 'Введіть код підтвердження',
 
+    'trader-register.hero.title' => 'Робота для майстрів поруч із вами — сантехніки, електрики, будівельники та ін.',
+    'trader-register.hero.lead' => 'Зареєструйтеся як майстер, оберіть свої навички та район роботи і отримуйте замовлення від місцевих клієнтів.',
+    'trader-register.hero.bullet1' => 'Лише робота на місці (ніяких віддалених/IT замовлень)',
+    'trader-register.hero.bullet2' => 'Клієнти вказують бюджет і строки наперед',
+    'trader-register.hero.bullet3' => 'Створюйте рейтинг і отримуйте повторні замовлення',
+    'trader-register.hero.examples' => 'Приклади: сантехніка • електрика • будівництво • столярні роботи • фарбування • ремонт • покрівельні роботи',
+
+    'trader-register.form.badge' => 'Для майстрів',
+    'trader-register.form.hireInstead' => 'Хочете найняти майстра?',
+    'trader-register.form.hireLink' => 'Створити оголошення',
+    'trader-register.form.noticeTitle' => 'Ця реєстрація для майстрів, які шукають роботу.',
+    'trader-register.form.noticeBody' => 'Якщо ви клієнт, який хоче найняти майстра, використовуйте «Створити оголошення».',
+    'trader-register.form.skillsLabel' => 'Спеціальність / навички',
+    'trader-register.form.skillsHelp' => 'Почніть вводити: сантехнік, електрик, будівельник…',
+    'trader-register.form.submit' => 'Зареєструватися як майстер',
+
 );

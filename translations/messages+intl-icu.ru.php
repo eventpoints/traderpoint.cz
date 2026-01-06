@@ -343,4 +343,20 @@ return [
     'feedback.category.other' => 'Другое',
     'enter-verification-code' => 'Введите проверочный код',
 
+    'trader-register.hero.title' => 'Работа для мастеров рядом с вами — сантехники, электрики, строители и др.',
+    'trader-register.hero.lead' => 'Зарегистрируйтесь как мастер, выберите свои навыки и район работы и получайте заказы от местных клиентов.',
+    'trader-register.hero.bullet1' => 'Только работа на месте (никаких удалённых/IT заказов)',
+    'trader-register.hero.bullet2' => 'Клиенты указывают бюджет и сроки заранее',
+    'trader-register.hero.bullet3' => 'Создавайте рейтинг и получайте повторные заказы',
+    'trader-register.hero.examples' => 'Примеры: сантехника • электрика • строительство • столярные работы • покраска • ремонт • кровельные работы',
+
+    'trader-register.form.badge' => 'Для мастеров',
+    'trader-register.form.hireInstead' => 'Хотите нанять мастера?',
+    'trader-register.form.hireLink' => 'Разместить заказ',
+    'trader-register.form.noticeTitle' => 'Эта регистрация для мастеров, ищущих работу.',
+    'trader-register.form.noticeBody' => 'Если вы клиент, желающий нанять мастера, используйте «Разместить заказ».',
+    'trader-register.form.skillsLabel' => 'Специальность / навыки',
+    'trader-register.form.skillsHelp' => 'Начните вводить: сантехник, электрик, строитель…',
+    'trader-register.form.submit' => 'Зарегистрироваться как мастер',
+
 ];
