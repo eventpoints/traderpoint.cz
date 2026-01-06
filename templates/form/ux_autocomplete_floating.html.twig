@@ -1,0 +1,19 @@
+{# templates/form/ux_autocomplete_floating.html.twig #}
+{% use "bootstrap_5_layout.html.twig" %}
+
+{#
+Add a stable marker class to selects enhanced by Symfony UX Autocomplete,
+so we can target the Tom Select wrapper that is injected *after* the <select>.
+#}
+{% block choice_widget_collapsed %}
+    {% set controller = attr['data-controller']|default('') %}
+    {% set is_ux_autocomplete = 'symfony--ux-autocomplete--autocomplete' in controller %}
+
+    {% if is_ux_autocomplete %}
+        {% set attr = attr|merge({
+            class: (attr.class|default('') ~ ' ux-autocomplete-select')|trim
+        }) %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}

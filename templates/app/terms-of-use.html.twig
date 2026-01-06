@@ -1,63 +1,61 @@
-{% extends 'base.html.twig' %}
+{% extends 'simple.base.html.twig' %}
 {% trans_default_domain 'terms' %}
 
 {% block title %}{{ 'title'|trans }}{% endblock %}
 
 {% block body %}
-    <div class="container my-5">
-        {% set sections = [
-            { id: 'acceptance-of-agreement',      title: 'acceptance-of-agreement'|trans,      content: 'acceptance-of-agreement-content'|trans },
-            { id: 'platform-purpose',             title: 'platform-purpose'|trans,             content: 'platform-purpose-content'|trans },
-            { id: 'subscriptions-and-payments',   title: 'subscriptions-and-payments'|trans,   content: 'subscriptions-and-payments-content'|trans },
-            { id: 'use-of-the-platform',          title: 'use-of-the-platform'|trans,          content: 'use-of-the-platform-content'|trans },
-            { id: 'intellectual-property',        title: 'intellectual-property'|trans,        content: 'intellectual-property-content'|trans },
-            { id: 'limitation-of-liability',      title: 'limitation-of-liability'|trans,      content: 'limitation-of-liability-content'|trans },
-            { id: 'indemnity',                    title: 'indemnity'|trans,                    content: 'indemnity-content'|trans },
-            { id: 'changes-to-terms',             title: 'changes-to-terms'|trans,             content: 'changes-to-terms-content'|trans },
 
-            { id: 'privacy-and-data-collection',  title: 'privacy-and-data-collection'|trans,  content: 'privacy-and-data-collection-content'|trans },
-            { id: 'data-collected',               title: 'data-collected'|trans,               content: 'data-collected-content'|trans },
-            { id: 'purpose-and-legal-basis',      title: 'purpose-and-legal-basis'|trans,      content: 'purpose-and-legal-basis-content'|trans },
-            { id: 'data-sharing',                 title: 'data-sharing'|trans,                 content: 'data-sharing-content'|trans },
-            { id: 'data-retention',               title: 'data-retention'|trans,               content: 'data-retention-content'|trans },
-            { id: 'cookies-and-tracking',         title: 'cookies-and-tracking'|trans,         content: 'cookies-and-tracking-content'|trans },
-            { id: 'user-rights',                  title: 'user-rights'|trans,                  content: 'user-rights-content'|trans },
-            { id: 'security',                     title: 'security'|trans,                     content: 'security-content'|trans },
+    {% set sections = [
+        { id: 'acceptance-of-agreement',      title: 'acceptance-of-agreement'|trans,      content: 'acceptance-of-agreement-content'|trans },
+        { id: 'platform-purpose',             title: 'platform-purpose'|trans,             content: 'platform-purpose-content'|trans },
+        { id: 'subscriptions-and-payments',   title: 'subscriptions-and-payments'|trans,   content: 'subscriptions-and-payments-content'|trans },
+        { id: 'use-of-the-platform',          title: 'use-of-the-platform'|trans,          content: 'use-of-the-platform-content'|trans },
+        { id: 'intellectual-property',        title: 'intellectual-property'|trans,        content: 'intellectual-property-content'|trans },
+        { id: 'limitation-of-liability',      title: 'limitation-of-liability'|trans,      content: 'limitation-of-liability-content'|trans },
+        { id: 'indemnity',                    title: 'indemnity'|trans,                    content: 'indemnity-content'|trans },
+        { id: 'changes-to-terms',             title: 'changes-to-terms'|trans,             content: 'changes-to-terms-content'|trans },
+        { id: 'privacy-and-data-collection',  title: 'privacy-and-data-collection'|trans,  content: 'privacy-and-data-collection-content'|trans },
+        { id: 'data-collected',               title: 'data-collected'|trans,               content: 'data-collected-content'|trans },
+        { id: 'purpose-and-legal-basis',      title: 'purpose-and-legal-basis'|trans,      content: 'purpose-and-legal-basis-content'|trans },
+        { id: 'data-sharing',                 title: 'data-sharing'|trans,                 content: 'data-sharing-content'|trans },
+        { id: 'data-retention',               title: 'data-retention'|trans,               content: 'data-retention-content'|trans },
+        { id: 'cookies-and-tracking',         title: 'cookies-and-tracking'|trans,         content: 'cookies-and-tracking-content'|trans },
+        { id: 'user-rights',                  title: 'user-rights'|trans,                  content: 'user-rights-content'|trans },
+        { id: 'security',                     title: 'security'|trans,                     content: 'security-content'|trans },
+        { id: 'applicable-law-and-dispute',   title: 'applicable-law-and-dispute'|trans,   content: 'applicable-law-and-dispute-content'|trans },
+        { id: 'contact',                      title: 'contact'|trans,                      content: 'contact-content'|trans },
+        { id: 'company-details',              title: 'company-details'|trans,              content: 'company-details-content'|trans }
+    ] %}
 
-            { id: 'applicable-law-and-dispute',   title: 'applicable-law-and-dispute'|trans,   content: 'applicable-law-and-dispute-content'|trans },
-            { id: 'contact',                      title: 'contact'|trans,                      content: 'contact-content'|trans },
-            { id: 'company-details',              title: 'company-details'|trans,              content: 'company-details-content'|trans }
-        ] %}
+    <div class="row justify-content-center vh-100 g-0">
+        <div class="col-12 col-md-4 text-bg-primary d-flex flex-column">
+            <div class="sticky-top" style="margin-top: 5rem;top:5rem;">
+                <div id="toc" class="list-group list-group-flush bg-transparent">
+                        <div class="list-group-item bg-transparent border-primary fs-4 fw-bold text-black">{{ 'title'|trans }}</div>
+                    {% for s in sections %}
+                        <a class="list-group-item list-group-item-action border-primary bg-transparent" href="#{{ s.id }}">{{ s.title }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-8 d-flex justify-content-center align-items-center">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-10">
+                        <p class="text-muted mb-4 mt-5">
+                            {{ 'effective-date'|trans({date: '01.10.2025'}) }}<br>
+                            {{ 'operator'|trans }}
+                        </p>
 
-        <div class="row gx-4">
-            <aside class="col-12 col-lg-4">
-                <div class="card sticky-top" style="top: 1rem;">
-                    <div class="card-body">
-                        <h2 class="h5 mb-3">{{ 'title'|trans }}</h2>
-                        <nav id="toc" class="nav nav-pills flex-column">
-                            {% for s in sections %}
-                                <a class="nav-link" href="#{{ s.id }}">{{ s.title }}</a>
-                            {% endfor %}
-                        </nav>
+                        {% for s in sections %}
+                            <section id="{{ s.id }}" class="pt-2 pb-4 mb-4 border-bottom">
+                                <h3 class="h4">{{ s.title }}</h3>
+                                <p class="mb-0">{{ s.content }}</p>
+                            </section>
+                        {% endfor %}
                     </div>
                 </div>
-            </aside>
-
-            <main class="col-12 col-lg-8">
-                <h1 class="mb-2">{{ 'title'|trans }}</h1>
-
-                <p class="text-muted mb-4">
-                    {{ 'effective-date'|trans({date: '01.10.2025'}) }}<br>
-                    {{ 'operator'|trans }}
-                </p>
-
-                {% for s in sections %}
-                    <section id="{{ s.id }}" class="pt-2 pb-4 mb-4 border-bottom">
-                        <h3 class="h4">{{ s.title }}</h3>
-                        <p class="mb-0">{{ s.content }}</p>
-                    </section>
-                {% endfor %}
-            </main>
+            </div>
         </div>
     </div>
 {% endblock %}

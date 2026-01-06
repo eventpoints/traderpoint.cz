@@ -1,9 +1,15 @@
-<nav class="navbar navbar-expand-lg fixed-top bg-transparent rounded-0 border-0 fixed">
+<nav class="navbar navbar-expand-lg fixed-top bg-transparent rounded-0 border-0"
+     data-controller="adaptive-logo"
+     data-adaptive-logo-white-logo-value="{{ asset('images/v3/logo-white-v3.png') }}"
+     data-adaptive-logo-colored-logo-value="{{ asset('images/v3/logo-v3.png') }}">
     <div class="container-fluid d-flex gap-3 justify-content-between align-items-center">
         <a class="navbar-brand" href="{{ path('landing') }}">
             <div class="d-flex justify-content-start align-items-center gap-2">
-                <img height="50" src="{{ asset('images/v3/logo-white-v3.png') }}">
-                <div class="fs-4 border-start border-3 ps-2">
+                <img height="50"
+                     src="{{ asset('images/v3/logo-white-v3.png') }}"
+                     data-adaptive-logo-target="logo"
+                >
+                <div class="fs-4 border-start border-3 border-light ps-2" >
                     <div class="lh-1 fw-bold">{{ 'Trader'|upper }}</div>
                     <div class="lh-1 fw-bold">{{ 'Point'|upper }}</div>
                 </div>
@@ -11,8 +17,11 @@
         </a>
         <ul class="navbar-nav align-items-center">
             <li class="nav-item">
-                <a class="nav-link" type="button" data-bs-toggle="offcanvas"
-                   data-bs-target="#language-menu-offcanvas" aria-controls="language-menu-offcanvas"
+                <a class="nav-link link-dark"
+                   type="button"
+                   data-bs-toggle="offcanvas"
+                   data-bs-target="#language-menu-offcanvas"
+                   aria-controls="language-menu-offcanvas"
                    aria-label="Language menu">
                     {{ ux_icon('mdi:web', {style: 'height: 2em;'}) }}
                 </a>

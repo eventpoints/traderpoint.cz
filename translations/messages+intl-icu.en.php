@@ -66,7 +66,7 @@ return array(
     'find-clients-fast' => 'Find quality leads. Fast.',
     'landing-client-explainer-short' => 'Plumbers, electricians, builders & more — get a quote in minutes.',
     'join-client-tagline' => 'Free to join • Free to post job • No hidden fees',
-    'advertise-job' => 'Post a job',
+    'advertise-job' => 'Advertise a job',
     'advertise-job-sub-heading' => 'Describe the work once and get quotes – your job stays visible for 30 days.',
     'advertise-job-explainer' => 'Sign up & post your job for free — tell us what you need and when.',
     'receive-quotes' => 'Get quotes',

@@ -10,6 +10,7 @@ import './bootstrap.js';
 import './styles/theme.boostrap.css'
 import 'bootstrap';
 import './styles/app.css';
+import './styles/ux-autocomplete-floating.css';
 import 'leaflet/dist/leaflet.css';
 import 'lightgallery/css/lightgallery.css'
 import 'flatpickr/dist/flatpickr.min.css';

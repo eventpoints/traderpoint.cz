@@ -1,59 +1,60 @@
-{% extends 'base.html.twig' %}
+{% extends 'simple.base.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {# Leaflet CSS is imported by JS, but this helps if you prefer CSS via link #}
-{% endblock %}
+{% form_theme engagementForm 'form/_form_theme.html.twig' %}
 
 {% block body %}
-    <div class="container min-vh-100" data-controller="pick-location">
-        <div class="row justify-content-center g-3 my-3">
-            <div class="col-12 col-md-6">
-                <div class="card mb-5">
-                    {{ form_start(engagementForm,   attr: {
-                        'data-turbo': 'false'
-                    }) }}
-                    <div class="card-header">
-                        <div class="fs-4 fw-bold">{{ 'advertise-job'|trans }}</div>
-                        <div>{{ 'advertise-job-sub-heading'|trans }}</div>
-                        <hr/>
-                    </div>
-                    {{ form_row(engagementForm.location) }}
-                    <div class="card-body vstack gap-3">
-                        {{ form_row(engagementForm.title) }}
-                        {{ form_row(engagementForm.description) }}
+    <div class="row justify-content-center vh-100 g-0" data-controller="pick-location">
+        <div class="col-12 col-md-4 text-bg-primary d-flex flex-column">
+            <div class="flex-grow-1 d-flex justify-content-center align-items-center py-5 sticky-top"
+                 style="max-height: 100vh">
+                <div class="text-white fs-4 py-5">{{ 'advertise-job'|trans|capitalize }}</div>
+            </div>
+        </div>
+        <div class="col-12 col-md-8 d-flex justify-content-center align-items-center">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-10">
+                        {{ form_start(engagementForm) }}
+                        <div class="vstack gap-3 my-5">
+                            <div class="mt-5">{{ 'advertise-job-sub-heading'|trans }}</div>
+                            <hr/>
+                            {{ form_row(engagementForm.location) }}
+                            {{ form_row(engagementForm.title) }}
+                            {{ form_row(engagementForm.description) }}
 
-                        {% if engagementForm.vars.is_edit %}
-                            <div class="row g-2 justify-content-start" {{ stimulus_controller('lightbox') }}>
-                                {% for image in engagement.images %}
-                                    <div href="{{ asset('uploads/images/' ~ image.filename) }}" class="col-6">
-                                        <img src="{{ asset('uploads/images/' ~ image.filename) }}"
-                                             class="w-100 object-fit-cover rounded-3 hover-pointer"
-                                             style="height: 150px"/>
-                                    </div>
-                                {% endfor %}
+                            {% if engagementForm.vars.is_edit %}
+                                <div class="row g-2 justify-content-start" {{ stimulus_controller('lightbox') }}>
+                                    {% for image in engagement.images %}
+                                        <div href="{{ asset('uploads/images/' ~ image.filename) }}" class="col-6">
+                                            <img src="{{ asset('uploads/images/' ~ image.filename) }}"
+                                                 class="w-100 object-fit-cover rounded-3 hover-pointer"
+                                                 style="height: 150px"/>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            {{ form_row(engagementForm.images) }}
+                            {% if engagementForm.firstName is defined and engagementForm.lastName is defined %}
+                                <div class="row justify-content-between align-items-center g-3">
+                                    <div class="col-12 col-md-6">{{ form_row(engagementForm.firstName) }}</div>
+                                    <div class="col-12 col-md-6">{{ form_row(engagementForm.lastName) }}</div>
+                                </div>
+                            {% endif %}
+                            {% if engagementForm.email is defined %}
+                                {{ form_row(engagementForm.email) }}
+                            {% endif %}
+                            {{ form_row(engagementForm.skills) }}
+                            {{ form_row(engagementForm.timelinePreferenceEnum) }}
+                            {{ form_row(engagementForm.budget) }}
+
+                            <div class="d-grid">
+                                <button data-turbo="false"
+                                        class="btn btn-lg btn-primary">{{ 'continue'|trans }}</button>
                             </div>
-                        {% endif %}
-
-                        {{ form_row(engagementForm.images) }}
-                        {% if engagementForm.firstName is defined and engagementForm.lastName is defined %}
-                            <div class="input-group">
-                                {{ form_row(engagementForm.firstName) }}
-                                {{ form_row(engagementForm.lastName) }}
-                            </div>
-                        {% endif %}
-                        {% if engagementForm.email is defined %}
-                            {{ form_row(engagementForm.email) }}
-                        {% endif %}
-                        {{ form_row(engagementForm.skills) }}
-                        {{ form_row(engagementForm.timelinePreferenceEnum) }}
-                        {{ form_row(engagementForm.budget) }}
-
-                        <div class="d-grid">
-                            <button data-turbo="false" class="btn btn-lg btn-primary">{{ 'submit'|trans }}</button>
                         </div>
+                        {{ form_end(engagementForm) }}
                     </div>
-                    {{ form_end(engagementForm) }}
                 </div>
             </div>
         </div>

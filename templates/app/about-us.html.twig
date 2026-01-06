@@ -1,39 +1,43 @@
-{% extends 'base.html.twig' %}
+{% extends 'simple.base.html.twig' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}{{ 'about'|trans|capitalize }}{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="row justify-content-center my-3 min-vh-80 align-items-center">
-
-            <div class="col-12 col-md-4">
-
-                <div class="card mb-3">
-                    <div class="card-header">
-                       <div class="fs-4">{{ 'company-details'|trans|title }}</div>
-                    </div>
-                    <div class="list-group list-group-flush">
-                        <div class="list-group-item text-center">
-                            Operated by Kerrial Newham, sole trader, trading as "Trader Point" or "traderpoint.cz".
-                        </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div class="fw-bold">IČO</div>
-                            <div>17710634</div>
-                        </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div class="fw-bold">E-mail address</div>
-                            <div>kerrialbeckettnewham@gmail.com</div>
-                        </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div class="fw-bold">Phone Number</div>
-                            <div>+420 608 187 548</div>
-                        </div>
-                    </div>
-                </div>
-
-
+    <div class="row justify-content-center vh-100 g-0">
+        <div class="col-12 col-md-4 text-bg-primary d-flex flex-column">
+            <div class="flex-grow-1 d-flex justify-content-center align-items-center">
+                <div class="text-white fs-4">{{ 'company-details'|trans|title }}</div>
             </div>
+        </div>
+        <div class="col-12 col-md-8 d-flex justify-content-center align-items-center">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-8">
 
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item text-center">
+                                Operated by Kerrial Newham, sole trader, trading as "Trader Point" or
+                                "traderpoint.cz".
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="fw-bold">IČO</div>
+                                <div>17710634</div>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="fw-bold">E-mail address</div>
+                                <div>kerrialbeckettnewham@gmail.com</div>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="fw-bold">Phone Number</div>
+                                <div>+420 608 187 548</div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

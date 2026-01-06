@@ -1,0 +1,114 @@
+/* Bootstrap 5 floating labels + Symfony UX Autocomplete (Tom Select) */
+/* Tom Select injects: <select> + <div class="ts-wrapper"> ... + <label> (still last) */
+.form-floating > select.ux-autocomplete-select + .ts-wrapper {
+    /* Bootstrap .form-select height is ~3.5rem; keep a minimum so label/padding fits */
+    min-height: calc(3.5rem + 2px);
+}
+
+/* Make the visible control mimic Bootstrap's floating select padding */
+.form-floating > select.ux-autocomplete-select + .ts-wrapper .ts-control {
+    min-height: calc(3.5rem + 2px);
+    padding: 1.625rem 0.75rem 0.625rem; /* same idea as BS floating select */
+}
+
+/* Bootstrap floating label position (for <select>, Bootstrap keeps label floated) */
+.form-floating > select.ux-autocomplete-select + .ts-wrapper ~ label {
+    position: absolute !important;
+    transform: scale(.85) translateY(-1.8rem) translateX(.15rem);
+}
+
+/* Focus styles (use Bootstrap CSS vars so it matches your theme) */
+.form-floating > select.ux-autocomplete-select + .ts-wrapper.focus .ts-control {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 .25rem rgba(var(--bs-primary-rgb), .25);
+}
+
+/* Disabled state */
+.form-floating > select.ux-autocomplete-select:disabled + .ts-wrapper .ts-control,
+.form-floating > select.ux-autocomplete-select + .ts-wrapper.disabled .ts-control {
+    background-color: var(--bs-secondary-bg);
+}
+
+
+/* Symfony UX Autocomplete (Tom Select) chips -> Bootstrap-ish pill badge */
+
+/* multi-select chips */
+.ts-wrapper.multi .ts-control > .item {
+    position: relative !important;
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    border-radius: 9999px;
+    padding: .25rem .6rem;
+    background: var(--bs-secondary-bg);
+    color: var(--bs-body-color);
+    font-size: var(--bs-body-font-size);
+    line-height: 1.25;
+    font-weight: 400;
+    border: none !important;
+}
+
+/* spacing between chips */
+.ts-wrapper.multi .ts-control {
+    gap: .35rem;
+}
+
+/* remove (x) button inside chip, when remove_button plugin is used */
+/* FIX: huge remove button that DOES NOT overlap chip text */
+.ts-wrapper.multi .ts-control > .item .remove {
+    position: static !important;      /* <-- stop overlaying the text */
+    top: auto !important;
+    right: auto !important;
+    transform: none !important;
+
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    margin-left: .35rem;
+    flex: 0 0 auto;
+
+    width: 2.5rem;
+    height: 2em;
+    font-size: 1.5em !important;
+    line-height: 1;
+
+    border: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    cursor: pointer;
+}
+
+
+.ts-wrapper.multi .ts-control > .item .remove:hover {
+    color: var(--bs-danger);
+    background: transparent !important;
+    opacity: 1!important;
+}
+
+/* active chip (keyboard focus / selected) */
+.ts-wrapper.multi .ts-control > .item.active {
+    background: var(--bs-primary-bg-subtle);
+    color: var(--bs-primary-text-emphasis);
+    border-color: var(--bs-primary-border-subtle);
+}
+
+/* single select "chip" style (optional) */
+.ts-wrapper.single .ts-control .item {
+    display: inline-block;
+    font-size: var(--bs-body-font-size);
+    font-weight: 500;
+}
+
+/* keep input text aligned nicely with chips */
+.ts-wrapper.multi .ts-control > input {
+    padding: .25rem 0;
+    margin: 0;
+    min-width: 6ch;
+}
+
+/* if chips look cramped in form-floating, add a touch more top padding */
+.form-floating .ts-wrapper.multi .ts-control {
+    padding-top: 1.75rem; /* tweak if needed */
+}
