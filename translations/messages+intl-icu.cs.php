@@ -2,7 +2,7 @@
 
 return array(
     'app-tag-line' => 'Vyřešte to!',
-    'app-sub-tag-line' => 'Potřebujete opravu, rekonstrukci, či udělat jakoukoliv jionou práci? Zadejte poptávku a získejte nabídky od tisíců ověřených řemeslníků. Zdarma, rychle a bezpečně.',
+    'app-sub-tag-line' => 'Potřebujete opravu, rekonstrukci, či udělat jakoukoliv jinou práci? Zadejte poptávku a získejte nabídky od tisíců ověřených řemeslníků. Zdarma, rychle a bezpečně.',
     'name' => 'celé jméno',
     'client-register' => 'zaregistrovat se jako klient',
     'login' => 'přihlášení',
