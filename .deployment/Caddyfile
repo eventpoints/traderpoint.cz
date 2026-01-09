@@ -16,11 +16,18 @@ route {
 
     encode zstd gzip
 
+    # Serve static files if they exist
+    @static {
+        file
+        not path *.php
+    }
+    handle @static {
+        file_server
+    }
+
+    # Everything else goes to PHP
     php_fastcgi php:9000 {
-        try_files {path} /index.php
         env HTTPS on
         header_up X-Real-IP {remote}
     }
-
-    file_server
 }
