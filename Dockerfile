@@ -20,6 +20,7 @@ RUN composer dump-autoload --classmap-authoritative
 RUN composer symfony:dump-env prod
 
 RUN php bin/console importmap:install --no-interaction
+RUN php bin/console assets:install --no-interaction
 RUN php bin/console asset-map:compile --no-interaction
 
 RUN chmod -R 777 var
