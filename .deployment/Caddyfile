@@ -16,12 +16,11 @@ route {
 
     encode zstd gzip
 
-    # Serve static files first
-    file_server
-
-    # Then fallback to PHP for everything else
     php_fastcgi php:9000 {
+        try_files {path} /index.php
         env HTTPS on
         header_up X-Real-IP {remote}
     }
+
+    file_server
 }
