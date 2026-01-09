@@ -10,6 +10,7 @@ use App\Entity\Message;
 use App\Entity\Quote;
 use App\Entity\Skill;
 use App\Entity\User;
+use App\Enum\EngagementStatusEnum;
 use App\Enum\FlashEnum;
 use App\Enum\QuoteFilterEnum;
 use App\Factory\ConversationFactory;
@@ -140,7 +141,7 @@ class EngagementController extends AbstractController
         $quoteForm->handleRequest($request);
         if ($quoteForm->isSubmitted() && $quoteForm->isValid()) {
             // Validate engagement is still accepting quotes
-            if ($engagement->getStatus() !== \App\Enum\EngagementStatusEnum::RECEIVING_QUOTES) {
+            if ($engagement->getStatus() !== EngagementStatusEnum::RECEIVING_QUOTES) {
                 $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('quote.error.engagement_not_accepting_quotes'));
                 return $this->redirectToRoute('trader_show_engagement', [
                     'id' => $engagement->getId(),
@@ -149,7 +150,7 @@ class EngagementController extends AbstractController
             }
 
             // Validate no quote has been accepted yet
-            if ($engagement->getQuote() instanceof \App\Entity\Quote) {
+            if ($engagement->getQuote() instanceof Quote) {
                 $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans('quote.error.quote_already_accepted'));
                 return $this->redirectToRoute('trader_show_engagement', [
                     'id' => $engagement->getId(),

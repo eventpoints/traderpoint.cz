@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -77,8 +78,8 @@ class EngagementCrudController extends AbstractCrudController
             TextField::new('title'),
             TextField::new('address'),
             TextareaField::new('description'),
-            Field::new('status', 'Status')
-                ->formatValue(static fn ($value) => $value instanceof EngagementStatusEnum ? $value->value : ''),
+            ChoiceField::new('status', 'Status')
+                ->setChoices(EngagementStatusEnum::cases()),
             BooleanField::new('isDeleted'),
             Field::new('mapLocation', 'Location')
                 ->setFormType(MapLocationType::class)

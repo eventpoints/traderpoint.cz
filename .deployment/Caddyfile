@@ -16,11 +16,12 @@ route {
 
     encode zstd gzip
 
+    # Serve static files first
+    file_server
+
+    # Then fallback to PHP for everything else
     php_fastcgi php:9000 {
         env HTTPS on
-        # Caddy already forwards most headers; keep only what you want explicit
         header_up X-Real-IP {remote}
     }
-
-    file_server
 }
