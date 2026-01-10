@@ -16,7 +16,7 @@
                                      src="{{ asset(skill.imagePath) }}"
                                      alt="Find quality trade jobs near you">
                                 <div class="card-img-overlay d-flex flex-column justify-content-end align-items-center text-center px-5">
-                                    <div class="fs-5 lh-1 fw-bold trade-category text-uppercase mb-3">{{ 'i-need-a'|trans({article: 'a', skill: skill.title|trans(domain='skills')})|title }}</div>
+                                    <div class="fs-5 lh-1 fw-bold trade-category text-uppercase mb-3">{{ ('landing.skill.' ~ skill.title)|trans }}</div>
                                 </div>
                                 <a href="{{ path('create_engagement', {skill: skill.id}) }}"
                                    class="stretched-link"></a>
