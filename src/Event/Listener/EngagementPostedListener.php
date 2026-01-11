@@ -9,10 +9,10 @@ use App\Message\Message\EngagementPostedMessage;
 use App\Message\Message\EngagementTraderMatchNotification;
 use App\Repository\EngagementRepository;
 use App\Repository\TraderProfileRepository;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[AsEventListener(event: EngagementPostedMessage::class, method: '__invoke')]
+#[AsMessageHandler]
 final readonly class EngagementPostedListener
 {
     public function __construct(

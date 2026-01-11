@@ -7,6 +7,7 @@ use App\Enum\EngagementStatusEnum;
 use App\Enum\FlashEnum;
 use App\Form\Type\MapLocationType;
 use App\Service\EngagementWorkflowService;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -33,6 +34,7 @@ class EngagementCrudController extends AbstractCrudController
         private readonly EngagementWorkflowService $workflowService,
         private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly TranslatorInterface $translator,
+        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -97,8 +99,15 @@ class EngagementCrudController extends AbstractCrudController
 
     public function approveEngagement(AdminContext $context): RedirectResponse
     {
-        /** @var Engagement $engagement */
-        $engagement = $context->getEntity()->getInstance();
+        $engagement = $this->getEngagementFromContext($context);
+
+        if (! $engagement instanceof \App\Entity\Engagement) {
+            $this->addFlash(FlashEnum::ERROR->value, 'Engagement not found');
+            return $this->redirect($this->adminUrlGenerator
+                ->setController(self::class)
+                ->setAction(Action::INDEX)
+                ->generateUrl());
+        }
 
         try {
             $this->workflowService->approve($engagement);
@@ -109,9 +118,7 @@ class EngagementCrudController extends AbstractCrudController
         } catch (\LogicException $e) {
             $this->addFlash(
                 FlashEnum::ERROR->value,
-                $this->translator->trans('admin.engagement.cannot_approve', [
-                    'error' => $e->getMessage(),
-                ])
+                'Cannot approve: ' . $e->getMessage()
             );
         }
 
@@ -126,8 +133,15 @@ class EngagementCrudController extends AbstractCrudController
 
     public function rejectEngagement(AdminContext $context): RedirectResponse
     {
-        /** @var Engagement $engagement */
-        $engagement = $context->getEntity()->getInstance();
+        $engagement = $this->getEngagementFromContext($context);
+
+        if (! $engagement instanceof \App\Entity\Engagement) {
+            $this->addFlash(FlashEnum::ERROR->value, 'Engagement not found');
+            return $this->redirect($this->adminUrlGenerator
+                ->setController(self::class)
+                ->setAction(Action::INDEX)
+                ->generateUrl());
+        }
 
         try {
             $this->workflowService->reject($engagement, 'Rejected by admin');
@@ -138,9 +152,7 @@ class EngagementCrudController extends AbstractCrudController
         } catch (\LogicException $e) {
             $this->addFlash(
                 FlashEnum::ERROR->value,
-                $this->translator->trans('admin.engagement.cannot_reject', [
-                    'error' => $e->getMessage(),
-                ])
+                'Cannot reject: ' . $e->getMessage()
             );
         }
 
@@ -151,5 +163,18 @@ class EngagementCrudController extends AbstractCrudController
             ->generateUrl();
 
         return $this->redirect($url);
+    }
+
+    private function getEngagementFromContext(AdminContext $context): ?Engagement
+    {
+        // Get entity ID from request query parameters
+        $request = $context->getRequest();
+        $entityId = $request->query->get('entityId');
+
+        if ($entityId === null) {
+            return null;
+        }
+
+        return $this->entityManager->getRepository(Engagement::class)->find($entityId);
     }
 }

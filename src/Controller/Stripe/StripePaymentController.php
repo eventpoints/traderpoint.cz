@@ -5,11 +5,9 @@ namespace App\Controller\Stripe;
 use App\Entity\Payment;
 use App\Entity\User;
 use App\Enum\FlashEnum;
-use App\Message\Message\EngagementPostedMessage;
 use App\Repository\PaymentRepository;
 use Stripe\StripeClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,7 +20,6 @@ class StripePaymentController extends AbstractController
         private readonly StripeClient $stripe,
         private readonly PaymentRepository $paymentRepository,
         private readonly TranslatorInterface $translator,
-        private readonly EventDispatcherInterface $dispatcher,
     )
     {
     }
@@ -70,7 +67,6 @@ class StripePaymentController extends AbstractController
         $paymentStatus = ($session->payment_status ?? '');
 
         if ($paymentStatus === 'paid') {
-            $this->dispatcher->dispatch(new EngagementPostedMessage(engagementId: $payment->getEngagement()->getId()));
             $this->addFlash(FlashEnum::SUCCESS->value, $this->translator->trans(id: 'flash.payment.success', domain: 'flash'));
         } elseif ($status === 'expired') {
             $this->addFlash(FlashEnum::ERROR->value, $this->translator->trans(id: 'flash.payment.expired', domain: 'flash'));
